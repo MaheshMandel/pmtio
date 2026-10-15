@@ -1,0 +1,481 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import LucideIcon from '../../../components/LucideIcon.astro';
+import FaqAccordion from '../../../components/FaqAccordion.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const canonical = absoluteLocalizedPath(locale, 'propfirms/boxcar-trading');
+
+// Independent, hand-researched page — not driven by config/propfirms.json — so it
+// carries no automation/copier CTAs for this firm (see supported-propfirms.astro,
+// where the review icon is shown for this slug but the automation/copier icons
+// are gated to firms that actually have those pages).
+const tiers = [
+  { size: '$25K', fee: '$90', wasFee: '$129', target: '$1,250', maxLoss: '$1,000', dailyLoss: '$600', contracts: '2 / 20' },
+  { size: '$50K', fee: '$140', wasFee: '$200', target: '$3,000', maxLoss: '$2,000', dailyLoss: '$1,200', contracts: '4 / 40' },
+  { size: '$100K', fee: '$225', wasFee: '$321', target: '$6,000', maxLoss: '$3,000', dailyLoss: '$1,800', contracts: '6 / 60' },
+  { size: '$150K', fee: '$300', wasFee: '$429', target: '$9,000', maxLoss: '$4,500', dailyLoss: '$2,700', contracts: '10 / 100' },
+];
+
+const platforms = ['Rithmic Trader Pro', 'NinjaTrader', 'MotiveWave', 'Quantower', 'Sierra Chart', 'Jigsaw', 'Bookmap', 'ATAS', 'MultiCharts'];
+
+const quickFacts = [
+  { icon: 'layers' as const, label: t('boxcar_trading.quickfacts_label_platform'), value: 'Rithmic' },
+  { icon: 'users' as const, label: t('boxcar_trading.quickfacts_label_accounts'), value: '$25K – $150K' },
+  { icon: 'pie-chart' as const, label: t('boxcar_trading.quickfacts_label_split'), value: '90% / 10%' },
+  { icon: 'file-text' as const, label: t('boxcar_trading.quickfacts_label_fees'), value: '$90 – $300 (one-time)' },
+  { icon: 'server' as const, label: t('boxcar_trading.quickfacts_label_vps'), value: 'Free Chicago VPS (<1ms)' },
+];
+
+const rules = [
+  { icon: 'bar-chart-3' as const, color: 'accent', title: t('boxcar_trading.rules_drawdown_title'), desc: t('boxcar_trading.rules_drawdown_desc') },
+  { icon: 'calendar-check' as const, color: 'info', title: t('boxcar_trading.rules_consistency_title'), desc: t('boxcar_trading.rules_consistency_desc') },
+  { icon: 'banknote' as const, color: 'success', title: t('boxcar_trading.rules_payout_title'), desc: t('boxcar_trading.rules_payout_desc') },
+  { icon: 'route' as const, color: 'accent', title: t('boxcar_trading.rules_path_title'), desc: t('boxcar_trading.rules_path_desc') },
+];
+
+const faqs = [
+  { question: t('boxcar_trading.faq_q1'), answer: t('boxcar_trading.faq_a1') },
+  { question: t('boxcar_trading.faq_q2'), answer: t('boxcar_trading.faq_a2') },
+  { question: t('boxcar_trading.faq_q3'), answer: t('boxcar_trading.faq_a3') },
+  { question: t('boxcar_trading.faq_q4'), answer: t('boxcar_trading.faq_a4') },
+  { question: t('boxcar_trading.faq_q5'), answer: t('boxcar_trading.faq_a5') },
+  { question: t('boxcar_trading.faq_q6'), answer: t('boxcar_trading.faq_a6') },
+];
+
+// FaqAccordion renders plain divs, not <details>, so the post-build
+// faq-schema.mjs mirror (which only scans <details>/<summary>) can't see it —
+// this page's FAQPage schema is authored by hand from the same `faqs` array
+// the accordion renders, so the two can't drift apart.
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Boxcar Trading',
+  url: 'https://boxcartrading.com',
+  description: 'Boxcar Trading is a Rithmic-based futures trader-development program offering simulated evaluations, a simulated funded stage with real cash payouts, and a selective path to live-capital accounts.',
+  sameAs: [
+    'https://x.com/TradingBoxcar',
+    'https://www.instagram.com/BoxcarFunding/',
+  ],
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteLocalizedPath(locale) },
+    { '@type': 'ListItem', position: 2, name: 'Prop Firms', item: absoluteLocalizedPath(locale, 'supported-propfirms') },
+    { '@type': 'ListItem', position: 3, name: 'Boxcar Trading', item: canonical },
+  ],
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('boxcar_trading.meta_title')}
+  description={t('boxcar_trading.meta_description')}
+  keywords={t('boxcar_trading.meta_keywords')}
+  canonical={canonical}
+  structuredData={[orgSchema, breadcrumbSchema, faqSchema]}
+  lcpImage="/assets/propfirm/boxcar-trading-dashboard.webp"
+>
+  <style>
+    .bc-page {
+      --bc-bg: #04121f;
+      --bc-surface: #071b2c;
+      --bc-surface-2: #0a2338;
+      --bc-border: rgba(125, 165, 195, 0.16);
+      --bc-border-strong: rgba(125, 165, 195, 0.34);
+      --bc-text: #f5f7fa;
+      --bc-text-secondary: #aab8c7;
+      --bc-text-muted: #718398;
+      --bc-accent: #ff8a00;
+      --bc-accent-hover: #ffa033;
+      --bc-accent-ink: #1a0f02;
+      --bc-info: #4da3ff;
+      --bc-success: #20c997;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      color: var(--bc-text);
+      /* One continuous backdrop instead of alternating section blocks, so
+         sections blend into each other with no visible seams. */
+      background: linear-gradient(
+        180deg,
+        #04121f 0%,
+        #061726 20%,
+        #04121f 42%,
+        #071b2c 64%,
+        #04121f 100%
+      );
+    }
+    .bc-page a:focus-visible,
+    .bc-page summary:focus-visible,
+    .bc-page button:focus-visible {
+      outline: 2px solid var(--bc-accent);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    .bc-page .bc-tabular { font-variant-numeric: tabular-nums; }
+    /* Re-tint the shared FaqAccordion component's blue active/hover state to
+       this page's orange accent, scoped to .bc-faq so every other page that
+       uses FaqAccordion keeps its default site-blue styling untouched. */
+    .bc-faq :global(.faq-item) { background: rgba(255, 255, 255, 0.02); }
+    .bc-faq :global(.faq-item:hover) { border-color: rgba(255, 138, 0, 0.25); }
+    .bc-faq :global(.faq-question:hover),
+    .bc-faq :global(.faq-question.active) { color: var(--bc-accent); }
+    .bc-faq :global(.faq-icon) { background: rgba(255, 138, 0, 0.12); }
+    .bc-faq :global(.faq-icon.active) { background: var(--bc-accent); color: var(--bc-accent-ink); }
+    .bc-glow {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(110px);
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+
+  <div class="bc-page font-sans">
+    <div class="bc-glow" style="top:-160px; left:-120px; width:560px; height:560px; background:rgba(255,138,0,0.10);" aria-hidden="true"></div>
+    <div class="bc-glow" style="top:20px; right:-160px; width:680px; height:680px; background:rgba(77,163,255,0.14);" aria-hidden="true"></div>
+    <div class="bc-glow" style="top:1000px; left:30%; width:760px; height:760px; background:rgba(32,201,151,0.05);" aria-hidden="true"></div>
+
+    <div class="relative z-10">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="pt-20 pb-5">
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-8 flex items-center justify-between gap-4">
+        <ol class="flex items-center gap-2 text-sm text-[var(--bc-text-muted)]">
+          <li><a href={localizedPath(locale)} class="hover:text-white transition-colors">{t('propfirm_guide.breadcrumb_home')}</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href={localizedPath(locale, 'supported-propfirms')} class="hover:text-white transition-colors">{t('propfirm_guide.breadcrumb_propfirms')}</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-white font-medium">Boxcar Trading</li>
+        </ol>
+        <a href={localizedPath(locale, 'supported-propfirms')}
+          class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-[10px] border border-[var(--bc-border)] text-sm text-[var(--bc-text-secondary)] hover:text-white hover:border-[var(--bc-border-strong)] transition-colors duration-200">
+          <LucideIcon name="chevron-left" class="w-4 h-4" strokeWidth={1.8} />
+          {t('boxcar_trading.back_to_propfirms')}
+        </a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="py-14 sm:py-20">
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
+        <div>
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full border border-[var(--bc-accent)]/30 bg-[var(--bc-accent)]/[0.06]">
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--bc-success)]" aria-hidden="true"></span>
+            <span class="text-[11px] font-semibold text-[var(--bc-accent)] uppercase tracking-[0.08em]">{t('boxcar_trading.hero_badge')}</span>
+          </div>
+
+          <!-- Logo + h1 inline lockup -->
+          <div class="flex items-center gap-5 mb-8">
+            <img
+              src="/assets/propfirm/logo-boxcar.png"
+              alt="Boxcar Trading logo"
+              width="1536"
+              height="1024"
+              class="h-16 sm:h-20 w-auto object-contain shrink-0"
+              loading="eager"
+              decoding="async"
+            />
+            <h1 class="text-[40px] sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight text-white m-0">
+              Boxcar Trading
+            </h1>
+          </div>
+
+          <p class="text-[var(--bc-text-secondary)] text-lg leading-[1.6] max-w-[620px] mb-8">
+            {t('boxcar_trading.hero_subtitle')}
+          </p>
+
+          <div class="flex flex-wrap gap-3 mb-9">
+            <a href="https://boxcartrading.com/" target="_blank" rel="noopener noreferrer nofollow"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] bg-[var(--bc-accent)] text-[var(--bc-accent-ink)] font-semibold text-sm hover:bg-[var(--bc-accent-hover)] hover:-translate-y-px transition-all duration-200 shadow-[0_8px_20px_rgba(255,138,0,0.16)]">
+              {t('boxcar_trading.hero_cta_visit')}
+              <LucideIcon name="external-link" class="w-4 h-4" strokeWidth={2} />
+            </a>
+            <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] border border-[var(--bc-border)] text-white font-semibold text-sm hover:border-[var(--bc-border-strong)] hover:bg-white/[0.03] hover:-translate-y-px transition-all duration-200">
+              {t('boxcar_trading.hero_cta_rithmic')}
+            </a>
+          </div>
+
+          <div class="flex flex-wrap gap-x-8 gap-y-4">
+            <div class="flex items-center gap-3">
+              <span class="w-9 h-9 rounded-[10px] bg-[var(--bc-accent)]/10 flex items-center justify-center text-[var(--bc-accent)] shrink-0">
+                <LucideIcon name="scale" class="w-[18px] h-[18px]" strokeWidth={1.8} />
+              </span>
+              <span class="text-white font-semibold text-sm">{t('boxcar_trading.hero_stat_split')}</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="w-9 h-9 rounded-[10px] bg-[var(--bc-success)]/10 flex items-center justify-center text-[var(--bc-success)] shrink-0">
+                <LucideIcon name="server" class="w-[18px] h-[18px]" strokeWidth={1.8} />
+              </span>
+              <span class="text-white font-semibold text-sm">{t('boxcar_trading.hero_stat_vps')}</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="w-9 h-9 rounded-[10px] bg-[var(--bc-info)]/10 flex items-center justify-center text-[var(--bc-info)] shrink-0">
+                <LucideIcon name="zap" class="w-[18px] h-[18px]" strokeWidth={1.8} />
+              </span>
+              <span class="text-white font-semibold text-sm">{t('boxcar_trading.hero_stat_speed')}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <picture>
+            <img
+              src="/assets/propfirm/boxcar-trading-dashboard.webp"
+              alt="Boxcar Trading futures dashboard showing a live Rithmic-fed MNQ candlestick chart with real-time futures prices"
+              width="1536"
+              height="1024"
+              class="w-full h-auto drop-shadow-[0_25px_60px_rgba(0,0,0,0.5)]"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
+          <div class="hidden sm:flex absolute -bottom-6 right-4 sm:right-6 max-w-[270px] items-start gap-3 bg-[var(--bc-surface-2)] border border-[var(--bc-border)] rounded-[12px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+            <span class="w-9 h-9 rounded-[10px] bg-[var(--bc-info)]/10 flex items-center justify-center text-[var(--bc-info)] shrink-0">
+              <LucideIcon name="bar-chart-3" class="w-[18px] h-[18px]" strokeWidth={1.8} />
+            </span>
+            <div>
+              <div class="text-white font-semibold text-sm leading-snug">{t('boxcar_trading.callout_title')}</div>
+              <div class="text-[var(--bc-text-muted)] text-xs leading-snug mt-1">{t('boxcar_trading.callout_desc')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-8 mt-12 sm:mt-8">
+        <div class="flex items-start gap-3 bg-[var(--bc-info)]/[0.07] border border-[var(--bc-info)]/25 rounded-[12px] px-5 py-4">
+          <LucideIcon name="info" class="w-[18px] h-[18px] text-[var(--bc-info)] mt-0.5 shrink-0" strokeWidth={1.8} />
+          <p class="text-sm text-[var(--bc-text-secondary)] leading-relaxed">{t('boxcar_trading.hero_disclosure')}</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Quick Facts / Overview -->
+    <section class="py-16 sm:py-20">
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.08em] mb-3">{t('boxcar_trading.eyebrow_overview')}</div>
+          <h2 class="text-3xl sm:text-[36px] font-bold text-white mb-3">{t('boxcar_trading.quickfacts_title')}</h2>
+          <p class="text-[var(--bc-text-secondary)]">{t('boxcar_trading.quickfacts_subtitle')}</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {quickFacts.map((fact) => (
+            <div class="bg-[var(--bc-surface)]/70 backdrop-blur-sm border border-[var(--bc-border)] rounded-[12px] p-5 flex items-start gap-4 transition-all duration-200 hover:border-[var(--bc-border-strong)] hover:-translate-y-0.5">
+              <span class="w-10 h-10 rounded-[10px] bg-white/[0.04] flex items-center justify-center text-[var(--bc-text-secondary)] shrink-0">
+                <LucideIcon name={fact.icon} class="w-[18px] h-[18px]" strokeWidth={1.8} />
+              </span>
+              <div>
+                <div class="text-[11px] uppercase tracking-[0.06em] text-[var(--bc-text-muted)] mb-1.5">{fact.label}</div>
+                <div class="text-white font-semibold">{fact.value}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="py-16 sm:py-20">
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <div class="text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.08em] mb-3">{t('boxcar_trading.eyebrow_pricing')}</div>
+          <h2 class="text-3xl sm:text-[36px] font-bold text-white mb-3">{t('boxcar_trading.pricing_title')}</h2>
+          <p class="text-[var(--bc-text-secondary)]">{t('boxcar_trading.pricing_subtitle')}</p>
+        </div>
+
+        <div class="border border-[var(--bc-border)] rounded-[14px] overflow-x-auto bg-[var(--bc-surface)]">
+          <table class="w-full text-sm min-w-[700px] bc-tabular">
+            <thead>
+              <tr class="bg-[var(--bc-surface-2)] border-b border-[var(--bc-border)]">
+                <th class="px-5 py-3.5 text-left text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.06em]">{t('boxcar_trading.pricing_th_account')}</th>
+                <th class="px-4 py-3.5 text-right text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.06em]">{t('supported_propfirms.th_fee')}</th>
+                <th class="px-4 py-3.5 text-right text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.06em]">{t('supported_propfirms.th_profit')}</th>
+                <th class="px-4 py-3.5 text-right text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.06em]">{t('supported_propfirms.th_drawdown')}</th>
+                <th class="px-4 py-3.5 text-right text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.06em]">{t('boxcar_trading.pricing_th_daily')}</th>
+                <th class="px-5 py-3.5 text-right text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.06em]">{t('boxcar_trading.pricing_th_contracts')}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[var(--bc-border)]">
+              {tiers.map((tier) => (
+                <tr class="hover:bg-white/[0.02] transition-colors duration-150">
+                  <td class="px-5 py-4 font-semibold text-white whitespace-nowrap">{tier.size}</td>
+                  <td class="px-4 py-4 text-right text-[var(--bc-text-secondary)] whitespace-nowrap">
+                    <span class="text-white font-semibold">{tier.fee}</span>
+                    <span class="text-[var(--bc-text-muted)] line-through ml-1.5 text-xs">{tier.wasFee}</span>
+                  </td>
+                  <td class="px-4 py-4 text-right text-[var(--bc-text-secondary)] whitespace-nowrap">{tier.target}</td>
+                  <td class="px-4 py-4 text-right text-[var(--bc-text-secondary)] whitespace-nowrap">{tier.maxLoss}</td>
+                  <td class="px-4 py-4 text-right text-[var(--bc-text-secondary)] whitespace-nowrap">{tier.dailyLoss}</td>
+                  <td class="px-5 py-4 text-right text-[var(--bc-text-secondary)] whitespace-nowrap">{tier.contracts}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-[var(--bc-text-muted)] mt-5 max-w-3xl mx-auto text-center leading-relaxed">{t('boxcar_trading.pricing_note')}</p>
+      </div>
+    </section>
+
+    <!-- Rules & Funding Path -->
+    <section class="py-16 sm:py-20">
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <div class="text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.08em] mb-3">{t('boxcar_trading.eyebrow_rules')}</div>
+          <h2 class="text-3xl sm:text-[36px] font-bold text-white mb-3">{t('boxcar_trading.rules_title')}</h2>
+          <p class="text-[var(--bc-text-secondary)]">{t('boxcar_trading.rules_intro')}</p>
+        </div>
+
+        <div class="border border-[var(--bc-border)] rounded-[14px] overflow-hidden bg-[var(--bc-surface)]/70 backdrop-blur-sm divide-y divide-[var(--bc-border)]">
+          {rules.map((rule) => (
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 p-6">
+              <div class="flex items-center gap-3 sm:w-60 shrink-0">
+                <span class={`w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 ${rule.color === 'accent' ? 'bg-[var(--bc-accent)]/10 text-[var(--bc-accent)]' : rule.color === 'info' ? 'bg-[var(--bc-info)]/10 text-[var(--bc-info)]' : 'bg-[var(--bc-success)]/10 text-[var(--bc-success)]'}`}>
+                  <LucideIcon name={rule.icon} class="w-[18px] h-[18px]" strokeWidth={1.8} />
+                </span>
+                <h3 class="text-white font-semibold">{rule.title}</h3>
+              </div>
+              <p class="text-[var(--bc-text-secondary)] text-sm leading-relaxed flex-1">{rule.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Platforms -->
+    <section class="py-16 sm:py-20">
+      <div class="max-w-[900px] mx-auto px-4 sm:px-8 text-center">
+        <div class="text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.08em] mb-3">{t('boxcar_trading.eyebrow_platforms')}</div>
+        <h2 class="text-3xl sm:text-[36px] font-bold text-white mb-3">{t('boxcar_trading.platforms_title')}</h2>
+        <p class="text-[var(--bc-text-secondary)] max-w-2xl mx-auto mb-8">{t('boxcar_trading.platforms_desc')}</p>
+        <div class="flex flex-wrap justify-center gap-2.5 mb-8">
+          {platforms.map((p) => (
+            <span class="px-3.5 py-1.5 bg-[var(--bc-surface-2)] border border-[var(--bc-border)] rounded-[8px] text-sm text-[var(--bc-text-secondary)]">{p}</span>
+          ))}
+        </div>
+        <p class="text-sm text-[var(--bc-text-muted)] max-w-2xl mx-auto leading-relaxed">{t('boxcar_trading.platforms_note')}</p>
+      </div>
+    </section>
+
+    <!-- Pros & Cons -->
+    <section class="py-16 sm:py-20">
+      <div class="max-w-[1100px] mx-auto px-4 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <div class="text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.08em] mb-3">{t('boxcar_trading.eyebrow_proscons')}</div>
+          <h2 class="text-3xl sm:text-[36px] font-bold text-white mb-3">{t('boxcar_trading.proscons_title')}</h2>
+          <p class="text-[var(--bc-text-secondary)]">{t('boxcar_trading.proscons_subtitle')}</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="bg-[var(--bc-surface)]/70 backdrop-blur-sm border border-[var(--bc-border)] rounded-[14px] p-6">
+            <div class="flex items-center gap-2.5 mb-5">
+              <LucideIcon name="circle-check" class="w-5 h-5 text-[var(--bc-success)]" strokeWidth={1.8} />
+              <h3 class="text-white font-semibold">{t('boxcar_trading.pros_title')}</h3>
+            </div>
+            <ul class="space-y-3.5">
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-success)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.pros_1')}</span>
+              </li>
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-success)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.pros_2')}</span>
+              </li>
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-success)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.pros_3')}</span>
+              </li>
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-success)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.pros_4')}</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-[var(--bc-surface)]/70 backdrop-blur-sm border border-[var(--bc-border)] rounded-[14px] p-6">
+            <div class="flex items-center gap-2.5 mb-5">
+              <LucideIcon name="triangle-alert" class="w-5 h-5 text-[var(--bc-accent)]" strokeWidth={1.8} />
+              <h3 class="text-white font-semibold">{t('boxcar_trading.cons_title')}</h3>
+            </div>
+            <ul class="space-y-3.5">
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-accent)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.cons_1')}</span>
+              </li>
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-accent)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.cons_2')}</span>
+              </li>
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-accent)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.cons_3')}</span>
+              </li>
+              <li class="flex gap-3 text-sm text-[var(--bc-text-secondary)] leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-[var(--bc-accent)] mt-2 shrink-0" aria-hidden="true"></span>
+                <span>{t('boxcar_trading.cons_4')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-16 sm:py-20">
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-8 grid lg:grid-cols-[340px_1fr] gap-10 lg:gap-16">
+        <div class="lg:sticky lg:top-28 lg:self-start">
+          <div class="text-[11px] font-semibold text-[var(--bc-text-muted)] uppercase tracking-[0.08em] mb-3">{t('boxcar_trading.eyebrow_faq')}</div>
+          <h2 class="text-3xl sm:text-[36px] font-bold text-white mb-3">{t('boxcar_trading.faq_title')}</h2>
+          <p class="text-[var(--bc-text-secondary)]">{t('boxcar_trading.faq_subtitle')}</p>
+        </div>
+
+        <div class="bc-faq">
+          <FaqAccordion items={faqs} />
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 sm:py-20">
+      <div class="max-w-[900px] mx-auto px-4 sm:px-8 text-center">
+        <div class="bg-[var(--bc-surface)] border border-[var(--bc-border)] rounded-[16px] p-10 sm:p-12">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('boxcar_trading.cta_title')}</h2>
+          <p class="text-[var(--bc-text-secondary)] mb-8 max-w-xl mx-auto leading-relaxed">{t('boxcar_trading.cta_subtitle')}</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-3">
+            <a href={localizedPath(locale, 'page/contact')}
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[10px] border border-[var(--bc-border)] text-white font-semibold text-sm hover:border-[var(--bc-border-strong)] hover:bg-white/[0.03] hover:-translate-y-px transition-all duration-200">
+              {t('boxcar_trading.cta_request')}
+            </a>
+            <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[10px] bg-[var(--bc-accent)] text-[var(--bc-accent-ink)] font-semibold text-sm hover:bg-[var(--bc-accent-hover)] hover:-translate-y-px transition-all duration-200 shadow-[0_8px_20px_rgba(255,138,0,0.16)]">
+              {t('boxcar_trading.cta_rithmic')}
+              <LucideIcon name="arrow-right" class="w-4 h-4" strokeWidth={2} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    </div>
+  </div>
+</BaseLayout>

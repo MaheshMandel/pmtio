@@ -1,0 +1,40 @@
+{
+  "name": "pickmytrade",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.19.5"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "dev:help": "node scripts/with-help.mjs dev",
+    "build:help": "node scripts/with-help.mjs build",
+    "start": "astro dev",
+    "build": "node scripts/generate-content-dates.mjs && astro check && astro build && node scripts/check-faq-schema.mjs",
+    "content-dates": "node scripts/generate-content-dates.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "i18n:report": "node scripts/check-i18n-coverage.mjs",
+    "check:faq-schema": "node scripts/check-faq-schema.mjs",
+    "indexnow": "node scripts/submit-indexnow.mjs",
+    "seo-check": "node scripts/seo-check.mjs"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/react": "^4.4.0",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.0",
+    "lenis": "^1.3.23",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0"
+  }
+}

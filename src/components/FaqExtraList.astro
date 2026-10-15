@@ -1,0 +1,35 @@
+---
+import type { FaqExtra } from "../data/traderFaqExtras";
+
+interface Props {
+  items: FaqExtra[];
+  /** Emit schema.org microdata (off where the page already ships FAQPage JSON-LD only). */
+  microdata?: boolean;
+}
+
+const { items, microdata = true } = Astro.props;
+---
+
+{items.map((item) => (
+  <div
+    class="faq-item bg-[#002040]/60 border border-white/10 rounded-xl mb-4 overflow-hidden"
+    itemscope={microdata || undefined}
+    itemprop={microdata ? "mainEntity" : undefined}
+    itemtype={microdata ? "https://schema.org/Question" : undefined}
+  >
+    <div class="faq-question">
+      <span class="font-semibold pr-4" itemprop={microdata ? "name" : undefined}>{item.q}</span>
+      <div class="faq-icon" aria-hidden="true">
+        <i class="fa-solid fa-plus"></i>
+      </div>
+    </div>
+    <div
+      class="faq-answer"
+      itemscope={microdata || undefined}
+      itemprop={microdata ? "acceptedAnswer" : undefined}
+      itemtype={microdata ? "https://schema.org/Answer" : undefined}
+    >
+      <div itemprop={microdata ? "text" : undefined} set:html={item.html} />
+    </div>
+  </div>
+))}

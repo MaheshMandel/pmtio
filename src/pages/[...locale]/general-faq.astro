@@ -1,0 +1,173 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FaqList from "../../components/FaqList.astro";
+import {
+  getLocalePaths,
+  localizedPath,
+  absoluteLocalizedPath,
+  useTranslations,
+} from "../../i18n/utils";
+import { LOCALE_BCP47, type Locale } from "../../i18n/config";
+import { SPOKES, HUB_SECTIONS, answerParams, stripHtml } from "../../data/faqItems";
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const hubUrl = absoluteLocalizedPath(locale, "general-faq");
+const spokeUrl = (slug: string) => absoluteLocalizedPath(locale, `faq/${slug}`);
+
+// Questions that remain on the hub (general / educational sections).
+const hubIds = HUB_SECTIONS.flatMap((s) => s.ids);
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t("general_faq.breadcrumb_home"), item: absoluteLocalizedPath(locale) },
+      { "@type": "ListItem", position: 2, name: t("general_faq.breadcrumb_faq"), item: hubUrl },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: t("faq_hub.itemlist_name"),
+    description: t("faq_hub.itemlist_description"),
+    numberOfItems: SPOKES.length,
+    itemListOrder: "https://schema.org/ItemListUnordered",
+    itemListElement: SPOKES.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: t(`${s.ns}.card_title` as any),
+      url: spokeUrl(s.slug),
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${hubUrl}#faq`,
+    inLanguage: LOCALE_BCP47[locale],
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: [".faq-question", ".faq-answer"],
+    },
+    mainEntity: hubIds.map((id) => ({
+      "@type": "Question",
+      name: t(`general_faq.faq_q${id}` as any),
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: stripHtml(t(`general_faq.faq_a${id}` as any, answerParams(locale, id))),
+      },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={t("general_faq.page_title")}
+  description={t("general_faq.page_description")}
+  keywords={t("general_faq.page_keywords")}
+  structuredData={structuredData}
+>
+  <main id="main-content" role="main">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] pt-28 pb-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+        <nav aria-label="Breadcrumb" class="flex justify-center mb-6" data-aos="fade-down">
+          <ol class="flex items-center space-x-2 text-sm text-gray-400">
+            <li><a href={localizedPath(locale, "")} class="hover:text-[#2B77EE] transition-colors">{t("general_faq.breadcrumb_home")}</a></li>
+            <li><i class="fa-solid fa-chevron-right text-xs text-gray-600"></i></li>
+            <li class="text-[#2B77EE]">{t("general_faq.breadcrumb_faq")}</li>
+          </ol>
+        </nav>
+        <h1 class="text-3xl md:text-5xl font-bold mb-6 leading-tight text-white" data-aos="fade-up">
+          {t("general_faq.hero_title_pre")}<span class="bg-gradient-to-r from-[#2B77EE] to-blue-400 bg-clip-text text-transparent">{t("general_faq.hero_badge")}</span>{t("general_faq.hero_title_post")}
+        </h1>
+        <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">
+          {t("general_faq.hero_subtitle")}
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
+          <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25">
+            {t("general_faq.cta_start_trial")}<i class="fa-solid fa-arrow-right ml-2"></i>
+          </a>
+          <a href="#topics" class="px-8 py-3 border border-white/20 hover:border-[#2B77EE]/50 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/5">
+            {t("general_faq.hero_browse")}<i class="fa-solid fa-chevron-down ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Browse FAQs by Topic -->
+    <section id="topics" class="bg-[#002040] py-16" aria-label="FAQ topics">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-12" data-aos="fade-up">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
+            <i class="fa-solid fa-layer-group text-[#2B77EE] mr-3" aria-hidden="true"></i>{t("faq_hub.browse_title")}
+          </h2>
+          <p class="text-gray-400 max-w-2xl mx-auto">{t("faq_hub.browse_subtitle")}</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SPOKES.map((s) => (
+            <a href={localizedPath(locale, `faq/${s.slug}`)} class="bg-[#001429] border border-white/10 rounded-xl p-5 hover:border-[#2B77EE]/50 hover:bg-[#001f3f] transition-all group">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-xl flex-shrink-0">
+                  <i class={s.icon} aria-hidden="true"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-white font-bold text-lg group-hover:text-[#2B77EE] transition-colors mb-1">{t(`${s.ns}.card_title` as any)}</h3>
+                  <p class="text-gray-400 text-sm mb-3">{t(`${s.ns}.card_desc` as any)}</p>
+                  <span class="text-[#2B77EE] text-xs font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all">{t("faq_hub.card_cta")} <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- General FAQ (kept on the hub) -->
+    <section class="bg-[#001429] py-16" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-12" data-aos="fade-up">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">{t("faq_hub.general_title")}</h2>
+          <p class="text-gray-400 max-w-2xl mx-auto">{t("faq_hub.general_subtitle")}</p>
+        </div>
+
+        {HUB_SECTIONS.map((section) => (
+          <div class="mb-12">
+            <h2 class="text-xl md:text-2xl font-bold mb-6 pb-3 border-b-2 border-[#2B77EE] flex items-center gap-3 text-white" data-aos="fade-up">
+              <i class="fa-solid fa-circle-question text-[#2B77EE]" aria-hidden="true"></i>{t(section.headingKey as any)}
+            </h2>
+            <FaqList locale={locale} ids={section.ids} />
+          </div>
+        ))}
+
+        <!-- Author Attribution -->
+        <div class="mt-16 p-6 bg-[#002040]/60 border border-white/10 rounded-xl">
+          <p class="text-gray-500 text-sm">
+            {t("general_faq.author_updated")}<a href="https://discord.gg/FkJ7g7498S" class="text-[#2B77EE] hover:text-blue-400">{t("general_faq.author_discord")}</a>{t("general_faq.author_contact")}<a href="mailto:support@pickmytrade.com" class="text-[#2B77EE] hover:text-blue-400">{t("general_faq.author_email")}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-r from-[#2B77EE] to-blue-600 py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center" data-aos="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">{t("general_faq.cta_title")}</h2>
+        <p class="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">{t("general_faq.cta_subtitle")}</p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-3 bg-white text-[#2B77EE] font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg">
+            {t("general_faq.cta_start_trial")}<i class="fa-solid fa-arrow-right ml-2"></i>
+          </a>
+          <a href="https://docs.pickmytrade.io/docs/" target="_blank" rel="noopener" class="px-8 py-3 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-all" aria-label={t("general_faq.cta_docs_aria")}>
+            {t("general_faq.cta_docs")}
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const canonical = absoluteLocalizedPath(locale, 'page/contact');
+
+// The breadcrumb previously declared only "Home" while the visible trail has two
+// levels, so the machine-readable trail disagreed with the rendered one.
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": t('contact.breadcrumb_home'), "item": absoluteLocalizedPath(locale) },
+    { "@type": "ListItem", "position": 2, "name": t('contact.breadcrumb_current'), "item": canonical }
+  ]
+};
+
+// The page whose entire purpose is "how do I reach PickMyTrade" previously
+// carried no ContactPage, Organization or ContactPoint markup at all — making
+// the most contact-relevant URL on the site the least machine-readable one.
+// Organization is referenced by its canonical @id (defined on the homepage)
+// rather than inlined, so all pages resolve to one entity.
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "@id": `${canonical}#contactpage`,
+  "url": canonical,
+  "name": t('contact.page_title'),
+  "description": t('contact.page_description'),
+  "inLanguage": LOCALE_BCP47[locale],
+  "isPartOf": { "@id": "https://pickmytrade.io/#website" },
+  "about": { "@id": "https://pickmytrade.io/#organization" },
+  "mainEntity": {
+    "@id": "https://pickmytrade.io/#organization",
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "legalName": "PickMyTrade Pvt. Ltd.",
+    "url": "https://pickmytrade.io",
+    "logo": "https://pickmytrade.io/assets/logo.png",
+    "email": "support@pickmytrade.com",
+    "address": { "@type": "PostalAddress", "addressCountry": "IN" },
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "contactType": "Customer Support",
+        "email": "support@pickmytrade.com",
+        "url": canonical,
+        "availableLanguage": ["English"],
+        "areaServed": "Worldwide"
+      },
+      {
+        "@type": "ContactPoint",
+        "contactType": "Technical Support",
+        "url": "https://discord.gg/FkJ7g7498S",
+        "availableLanguage": ["English"],
+        "areaServed": "Worldwide"
+      }
+    ]
+  }
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('contact.page_title')}
+  description={t('contact.page_description')}
+  keywords={t('contact.page_keywords')}
+  canonical={canonical}
+  structuredData={[schema1, schema2]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('contact.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('contact.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="mt-10 pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+    <div
+      class="inline-block bg-blue-500/15 border border-blue-500/30 px-6 py-2 rounded-full text-xs tracking-widest font-semibold text-blue-400 mb-6 electrolize">
+      {t('contact.hero_badge')}
+    </div>
+    <h1
+      class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+      {t('contact.hero_title')}
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+      {t('contact.hero_subtitle')}
+    </p>
+  </section>
+
+  <!-- Contact Cards -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 relative">
+    <div class="gradient-blur gradient-blur-1"></div>
+    <div class="gradient-blur gradient-blur-2"></div>
+
+    <div class="grid md:grid-cols-2 gap-8 relative z-10">
+      <!-- Email Card -->
+      <a href="mailto:support@pickmytrade.com"
+        class="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 hover:border-blue-500/50 hover:shadow-[0_20px_60px_rgba(43,119,238,0.3)] transition-all duration-300 hover:-translate-y-2">
+        <div
+          class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
+          <i class="fa-solid fa-envelope"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-3">{t('contact.email_title')}</h3>
+        <p class="text-gray-400 mb-4">{t('contact.email_desc')}</p>
+        <div class="flex items-center gap-2 text-blue-400 font-semibold">
+          <span>support@pickmytrade.com</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+          </div>
+          </a>
+<!-- Discord Card -->
+<a href="https://discord.gg/FkJ7g7498S" target="_blank"
+  class="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 hover:border-purple-500/50 hover:shadow-[0_20px_60px_rgba(147,51,234,0.3)] transition-all duration-300 hover:-translate-y-2">
+  <div
+    class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/30">
+    <i class="fa-brands fa-discord"></i>
+  </div>
+        <h3 class="text-2xl font-bold mb-3">{t('contact.discord_title')}</h3>
+        <p class="text-gray-400 mb-4">{t('contact.discord_desc')}</p>
+        <div class="flex items-center gap-2 text-purple-400 font-semibold">
+          <span>{t('contact.discord_link')}</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+          </div>
+          </a>
+    </div>
+  </section>
+
+  <!-- Response Time -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div class="bg-gradient-to-r from-blue-500/15 to-blue-500/5 border border-blue-500/30 rounded-3xl p-8 text-center">
+      <div
+        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+        <i class="fa-solid fa-clock"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-2">{t('contact.response_title')}</h3>
+      <p class="text-gray-300">
+        {t('contact.response_desc')}
+      </p>
+    </div>
+  </section>
+
+  <!-- Self-Service Resources -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">{t('contact.resources_title')}</h2>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+        {t('contact.resources_subtitle')}
+      </p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- YouTube -->
+      <a href="https://youtu.be/DfUYaURJnDQ?si=OKSJvGGkWocKWRit" target="_blank"
+        class="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-red-500/50 hover:shadow-[0_12px_40px_rgba(255,0,0,0.2)] transition-all duration-300 hover:-translate-y-1">
+        <div
+          class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+          <i class="fa-brands fa-youtube"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">{t('contact.res_youtube_title')}</h3>
+        <p class="text-gray-400 text-sm">
+          {t('contact.res_youtube_desc')}
+        </p>
+      </a>
+<!-- Documentation -->
+<a href="https://docs.pickmytrade.io/docs/" target="_blank"
+  class="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-blue-500/50 hover:shadow-[0_12px_40px_rgba(43,119,238,0.2)] transition-all duration-300 hover:-translate-y-1">
+  <div
+    class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-book"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">{t('contact.res_docs_title')}</h3>
+        <p class="text-gray-400 text-sm">
+          {t('contact.res_docs_desc')}
+        </p>
+      </a>
+
+      <!-- FAQ -->
+      <a href="https://docs.pickmytrade.io/docs/" target="_blank"
+        class="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-green-500/50 hover:shadow-[0_12px_40px_rgba(34,197,94,0.2)] transition-all duration-300 hover:-translate-y-1">
+        <div
+          class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-circle-question"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">{t('contact.res_faq_title')}</h3>
+        <p class="text-gray-400 text-sm">
+          {t('contact.res_faq_desc')}
+        </p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

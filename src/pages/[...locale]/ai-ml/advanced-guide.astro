@@ -1,0 +1,1482 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ReadingMotion from '../../../components/ReadingMotion.astro';
+import SectionHeader from '../../../components/SectionHeader.astro';
+import { getLocalePaths, localizedPath, useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+// This page carries several hundred content strings under the ai_ml_advanced_guide
+// namespace; a thin helper keeps the template readable.
+const g = (k: string): string => t(('ai_ml_advanced_guide.' + k) as Parameters<typeof t>[0]);
+
+const pageUrl = 'https://pickmytrade.io/ai-ml/advanced-guide/';
+
+// ---------------------------------------------------------------------------
+// TODO(pre-launch): finalize these three items before this page goes live.
+//   1. CANONICAL — <BaseLayout> auto-emits the locale-prefixed canonical from
+//      astro.config `site`: https://pickmytrade.io/<locale>/ai-ml/advanced-guide.
+//      `pageUrl` above (used in the JSON-LD) omits the /<locale> prefix — confirm
+//      the intended public canonical and align both. To pin a fixed canonical,
+//      pass an explicit `canonical="..."` prop to <BaseLayout> below.
+//   2. OG IMAGE — `OG_IMAGE` below is still the generic /logo.png fallback.
+//      Replace with a page-specific 1200x630 social card before launch
+//      (suggested path: /og/ai-ml-advanced-guide.png).
+//   3. FOOTER LINK — Footer.astro links this page via `footer.link_ai_advanced_guide`.
+//      Keep that key translated in every locale (en ✓, de ✓).
+// ---------------------------------------------------------------------------
+const OG_IMAGE = '/logo.png'; // TODO(pre-launch): swap for /og/ai-ml-advanced-guide.png (1200x630)
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Advanced AI Trading Guide: The Complete ML Library, Model & Framework Reference for Quants",
+  "description": "A deep technical reference for quants, ML engineers, and experienced algo-traders: classical and deep-learning models, Hugging Face time-series foundation models, financial NLP, reinforcement learning, Microsoft Qlib, Lopez de Prado methods (mlfinpy, skfolio), regime detection, backtesting engines, portfolio construction, MLOps, and a full reference pipeline wired to PickMyTrade execution.",
+  "proficiencyLevel": "Expert",
+  "dependencies": "Python, pandas, scikit-learn, PyTorch",
+  "author": { "@type": "Organization", "name": "PickMyTrade", "url": "https://pickmytrade.io/" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/logo.png" }
+  },
+  "datePublished": "2026-07-03",
+  "dateModified": "2026-07-06",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": pageUrl },
+  "image": "https://pickmytrade.io/logo.png",
+  "about": ["algorithmic trading", "machine learning", "time series foundation models", "Hugging Face", "quantitative finance", "meta-labeling", "backtesting", "MLOps"],
+  "isPartOf": { "@type": "CreativeWorkSeries", "name": "AI Trading with PickMyTrade" }
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io/" },
+    { "@type": "ListItem", "position": 2, "name": "Beginner's AI Trading Guide", "item": "https://pickmytrade.io/ai-ml/trading-plan/" },
+    { "@type": "ListItem", "position": 3, "name": "Advanced AI Trading Guide", "item": pageUrl }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={g('page_title')}
+  description={g('page_description')}
+  keywords={g('page_keywords')}
+  ogImage={OG_IMAGE}
+  structuredData={[schema1, schema2]}
+>
+  <ReadingMotion />
+  <link slot="head" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{g('breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{g('breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Educational disclaimer strip -->
+  <div class="bg-[#001429] border-y border-blue-500/20 text-center text-xs sm:text-sm text-gray-400 py-2 px-4" set:html={g('banner_disclaimer')} />
+
+  <div class="bg-[#001429]">
+    <!-- Hero -->
+    <section class="relative pt-20 pb-20 overflow-hidden">
+      <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-orange-600/10"></div>
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+        <div class="absolute inset-0 opacity-[0.02]" style="background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 50px 50px;"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" data-aos="fade-up">
+        <span class="inline-flex items-center gap-2.5 bg-zinc-800/70 backdrop-blur-sm border border-blue-500/40 rounded-full px-5 py-1.5 mb-8 text-xs sm:text-sm font-bold tracking-[0.14em] text-zinc-300 uppercase electrolize-regular"><span class="w-1.5 h-1.5 rounded-full bg-[#2B77EE] shadow-[0_0_10px_#2B77EE]"></span>{g('hero_eyebrow')}</span>
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-7 leading-[1.05] tracking-[-0.03em] text-white max-w-5xl">
+          {g('hero_title_1')}<span class="bg-gradient-to-r from-[#2B77EE] to-[#7c3aed] bg-clip-text text-transparent">{g('hero_title_grad')}</span>{g('hero_title_2')}
+        </h1>
+        <p class="text-lg md:text-xl text-gray-300 leading-relaxed max-w-3xl mb-8">{g('hero_subhead')}</p>
+
+        <div class="flex flex-wrap gap-3 sm:gap-4 mb-8 text-sm">
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{g('hero_badge_trial')}</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-credit-card text-blue-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{g('hero_badge_nocard')}</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-infinity text-purple-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{g('hero_badge_unlimited')}</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{g('hero_badge_instant')}</span>
+          </div>
+        </div>
+        <aside class="adv-body bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm border border-gray-700/50 border-l-4 border-l-orange-500 rounded-2xl p-6 sm:p-7 max-w-4xl">
+          <h2 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">{g('hero_box_title')}</h2>
+          <p class="text-gray-300 mb-3" set:html={g('hero_box_p1')} />
+          <p class="text-gray-300 mb-0" set:html={g('hero_box_p2')} />
+        </aside>
+      </div>
+    </section>
+
+    <!-- Main content — reference-console two-pane shell -->
+    <div class="adv-shell max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+
+      <!-- Sticky reference index (left rail). The TOC keeps its
+           aria-label so ReadingMotion's scrollspy tracks the active section. -->
+      <aside class="adv-rail">
+        <div class="adv-rail-inner">
+          <h2 class="adv-rail-label electrolize-regular"><span class="adv-rail-dot" aria-hidden="true"></span>{g('toc_title')}</h2>
+          <nav aria-label="Table of contents" data-aos="fade-up">
+            <ol class="adv-toc" set:html={g('toc_list')} />
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content pane -->
+      <div class="adv-main adv-body">
+
+      <!-- Cross-link to beginner page -->
+      <div class="adv-crosslink" data-aos="fade-up">
+        <div class="adv-crosslink-icon" aria-hidden="true">👋</div>
+        <p class="m-0 flex-1 min-w-[240px]">
+          <strong class="text-white">{g('beginner_link_strong')}</strong> {g('beginner_link_text')}
+          <a href={localizedPath(locale, 'ai-ml/trading-plan')} class="adv-crosslink-cta">{g('beginner_link_cta')}</a> {g('beginner_link_after')}
+        </p>
+      </div>
+
+      <!-- 1. Tabular ML -->
+      <section id="tabular-ml" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s1_title')} />
+        <p class="adv-lede" set:html={g('s1_lede')} />
+        <h3 class="adv-h3">{g('s1_why_h3')}</h3>
+        <ul class="adv-ul" set:html={g('s1_why_list')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Library</th><th>License</th><th>Maturity / stars*</th><th>Categorical handling</th><th>Speed</th><th>Best fit here</th></tr></thead>
+            <tbody>
+              <tr><td>LightGBM</td><td><span class="lic lic-safe">MIT</span></td><td>Mature · moved <code>microsoft/LightGBM</code> → <code>lightgbm-org/LightGBM</code> Mar 2026, still MIT</td><td>Native (histogram-based, leaf-wise growth)</td><td>Fastest of the three on CPU, large-N</td><td>Default meta-label / primary classifier</td></tr>
+              <tr><td>XGBoost</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Mature, dmlc-maintained, huge ecosystem</td><td>Needs one-hot or target-encoding (or <code>enable_categorical</code>)</td><td>Slightly slower than LightGBM on CPU histogram mode</td><td>Second opinion / ensembling partner for LightGBM</td></tr>
+              <tr><td>CatBoost</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Mature, Yandex-maintained</td><td>Best-in-class native categorical handling (ordered target stats)</td><td>Slower to train, fast to score</td><td>When you have many high-cardinality categoricals (symbol, sector, exchange)</td></tr>
+              <tr><td>scikit-learn</td><td><span class="lic lic-safe">BSD-3-Clause</span></td><td>Foundational, ~19+ years</td><td>Via <code>ColumnTransformer</code>/<code>OneHotEncoder</code></td><td>N/A — utility layer</td><td>CV splitters, metrics, pipelines, calibration, GMM — the glue, not the model</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="adv-srcnote">{g('s1_srcnote')}</p>
+        <div class="card-grid">
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>LightGBM</h4><span class="lic lic-safe">MIT</span></div>
+            <p set:html={g('s1_card_lgbm_mech')} />
+            <p set:html={g('s1_card_lgbm_use')} />
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s1_code_lgbm_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`import lightgbm as lgb
+from sklearn.model_selection import train_test_split
+
+# X: one row per primary-strategy signal date. Columns e.g.
+#   log_ret_5d, log_ret_20d, realized_vol_20d, atr_14, frac_diff_price,
+#   ema_slope, rsi_14, bb_pctb, obv_z, dist_200ma
+# y: triple-barrier label from mlfinpy -> 1 = profit barrier hit first, 0 = stop/time first
+# w: sample weight from mlfinpy uniqueness/time-decay (NEVER plain 1s -- labels overlap)
+X, y, w = features_df[feature_cols], labels_df["tb_label"], labels_df["sample_weight"]
+
+X_train, X_val, y_train, y_val, w_train, w_val = train_test_split(
+    X, y, w, test_size=0.2, shuffle=False              # never shuffle time series
+)
+
+params = {
+    "objective": "binary", "metric": "auc",
+    "num_leaves": 31, "learning_rate": 0.03,
+    "feature_fraction": 0.7, "bagging_fraction": 0.7, "bagging_freq": 5,
+    "min_data_in_leaf": 50,
+    # financial priors: e.g. [trend, vol, ...] -> win-prob non-decreasing in trend,
+    # non-increasing in realized vol, unconstrained (0) elsewhere
+    "monotone_constraints": [1, 0, -1, 0, 0, 1, 0, 0, 0, -1],
+    "verbosity": -1,
+}
+train_set = lgb.Dataset(X_train, label=y_train, weight=w_train)
+val_set   = lgb.Dataset(X_val, label=y_val, weight=w_val, reference=train_set)
+
+model = lgb.train(params, train_set, num_boost_round=2000,
+                   valid_sets=[val_set], callbacks=[lgb.early_stopping(100)])
+
+meta_label_proba = model.predict(X_new)  # P(this signal hits the profit barrier first)`}</pre></div>
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>XGBoost</h4><span class="lic lic-safe">Apache-2.0</span></div>
+            <p set:html={g('s1_card_xgb_mech')} />
+            <p set:html={g('s1_card_xgb_use')} />
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s1_code_install_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install xgboost
+# minimal use: xgboost.XGBClassifier(n_estimators=800, max_depth=4, learning_rate=0.03,
+#   subsample=0.7, colsample_bytree=0.7, monotone_constraints="(1,0,-1,0,0,1,0,0,0,-1)")`}</pre></div>
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>CatBoost</h4><span class="lic lic-safe">Apache-2.0</span></div>
+            <p set:html={g('s1_card_cat_mech')} />
+            <p set:html={g('s1_card_cat_use')} />
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s1_code_install_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install catboost
+# CatBoostClassifier(cat_features=["sector","exchange"], iterations=1500,
+#   depth=6, learning_rate=0.03, monotone_constraints="1:1,2:-1")`}</pre></div>
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>scikit-learn</h4><span class="lic lic-safe">BSD-3-Clause</span></div>
+            <p set:html={g('s1_card_sklearn_role')} />
+          </article>
+        </div>
+        <div class="callout co-warn"><span class="co-title">{g('s1_callout_title')}</span><p set:html={g('s1_callout_body')} /></div>
+      </section>
+
+      <!-- 2. DL time-series -->
+      <section id="dl-timeseries" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s2_title')} />
+        <p class="adv-lede" set:html={g('s2_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Architecture</th><th>Year / venue</th><th>Core idea</th><th>Problem vs. plain LSTM</th><th>Financial-data verdict</th></tr></thead>
+            <tbody>
+              <tr><td>LSTM / GRU</td><td>1997 / 2014</td><td>Gated recurrent units carry a cell state across time steps to fight vanishing gradients.</td><td>— (baseline)</td><td>Still a reasonable baseline for sequence classification (e.g. regime state); rarely beats GBDT on tabular-framed return prediction and is slower to train/tune.</td></tr>
+              <tr><td>TCN</td><td>Bai et al. 2018</td><td>Stacked causal, dilated 1-D convolutions (WaveNet-style) give an exponentially growing receptive field with fully parallel training.</td><td>Parallelizable (no sequential recurrence) and avoids vanishing/exploding gradients over long lookbacks.</td><td>Solid, fast baseline in <code>neuralforecast</code>; no documented financial edge over GBDT, but useful when you specifically need a long causal receptive field cheaply.</td></tr>
+              <tr><td>N-BEATS</td><td>Oreshkin et al. 2020 (ICLR)</td><td>Pure fully-connected stacks with backward/forward residual "basis expansion" blocks; interpretable trend/seasonality decomposition, no recurrence or attention.</td><td>Much simpler and more parallel than RNN/attention stacks; beat the M4-competition winner by ~3% and a statistical benchmark by ~11%.</td><td>Benchmarks are M3/M4/tourism — non-financial. Useful as a fast, interpretable univariate baseline; not evidence of edge on returns.</td></tr>
+              <tr><td>N-HiTS</td><td>Challu et al. 2023 (AAAI)</td><td>Extends N-BEATS with hierarchical interpolation and multi-rate input sampling so different blocks specialize in different frequency bands.</td><td>Cuts long-horizon compute and reportedly beats Transformer baselines by &gt;25% on long-horizon benchmarks.</td><td>Same caveat as N-BEATS — a strong long-horizon forecaster on benchmark data, unproven on financial returns specifically.</td></tr>
+              <tr><td>Temporal Fusion Transformer (TFT)</td><td>Lim et al. 2021 (Int. J. Forecasting)</td><td>LSTM encoder for local processing + interpretable multi-head self-attention for long-range dependencies + a variable-selection gating network that also yields feature-importance-like interpretability.</td><td>Natively handles static covariates, known-future inputs (e.g. expiry date), and produces quantile forecasts with built-in interpretability — none of which vanilla LSTM offers.</td><td>The most finance-plausible of the deep architectures because of native covariate support; still no peer-reviewed evidence of consistent OOS financial-return edge over GBDT meta-labeling.</td></tr>
+              <tr><td>Informer</td><td>Zhou et al. 2021 (AAAI, best paper)</td><td>ProbSparse self-attention selects only the top-scoring queries, cutting attention cost from O(L²) to O(L log L) for very long sequences.</td><td>Makes long-sequence (thousands of steps) transformer forecasting computationally tractable.</td><td>Designed for long-horizon benchmark forecasting, not noisy short-memory financial returns; see the DLinear caveat below.</td></tr>
+              <tr><td>Autoformer</td><td>Wu et al. 2021 (NeurIPS)</td><td>Replaces standard attention with an auto-correlation mechanism plus built-in series decomposition (trend/seasonal) between blocks.</td><td>Captures periodicity more directly than dot-product attention; more robust on strongly seasonal series.</td><td>Financial returns have weak/no reliable seasonality at daily/swing frequency — decomposition assumption is a weaker fit than on electricity/traffic data.</td></tr>
+              <tr><td>FEDformer</td><td>Zhou et al. 2022 (ICML)</td><td>Performs attention in the frequency domain (via Fourier/wavelet transforms) with a mixture-of-experts decomposition for trend.</td><td>Frequency-domain attention scales sub-quadratically and captures global periodic structure.</td><td>Same seasonality-dependence caveat as Autoformer; frequency-domain priors are a mismatch for near-random-walk return series.</td></tr>
+              <tr><td>PatchTST</td><td>Nie et al. 2023 (ICLR)</td><td>Splits each series into subseries "patches" as transformer tokens (like ViT for time series) and treats each channel independently, sharing one transformer backbone across all channels.</td><td>Patch tokenization retains local semantics and cuts attention cost quadratically vs. point-wise tokens; channel-independence avoids spurious cross-channel overfitting. Reported ~21% MSE reduction over prior transformer SOTA on long-horizon benchmarks.</td><td>The architectural basis for several foundation models below (see §3); channel-independence is a genuinely useful inductive bias, but the MSE gains are on ETT/weather/traffic, not equities.</td></tr>
+              <tr><td>iTransformer</td><td>Liu et al. 2024 (ICLR spotlight)</td><td>"Inverts" the standard transformer: each <em>variate's whole time series</em> becomes one token, and attention runs across variates instead of across time steps, with a per-series FFN handling temporal encoding.</td><td>Captures multivariate correlations directly via attention without modifying core transformer components; generalizes to unseen variate counts.</td><td>Notably, in a 2026 financial-return benchmark (arXiv:2606.27100, see §3), iTransformer <em>beat</em> the pretrained foundation models on META — a rare case of a from-scratch architecture outperforming zero-shot foundation models on a specific liquid single-name equity.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout co-warn"><span class="co-title">{g('s2_callout_title')}</span><p set:html={g('s2_callout_body')} /></div>
+      </section>
+
+      <!-- 3. Foundation models -->
+      <section id="foundation-models" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s3_title')} />
+        <p class="adv-lede" set:html={g('s3_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Model</th><th>Org</th><th>Architecture family</th><th>Params</th><th>Context</th><th>License</th></tr></thead>
+            <tbody>
+              <tr><td>Chronos / Chronos-Bolt</td><td>Amazon Science</td><td>T5-style encoder-decoder over quantized/tokenized values (Chronos) or direct patch-based multi-step regression heads (Bolt)</td><td>Bolt-base 205M (mini→large family)</td><td>Model-dependent, typically up to ~2048 pts</td><td><span class="lic lic-safe">Apache-2.0</span></td></tr>
+              <tr><td>TimesFM</td><td>Google Research</td><td>Decoder-only transformer over fixed-length input/output patches (32-in / 128-out patch config)</td><td>200M (v1.0) / 500M (v2.0)</td><td>Up to 2048 pts trained context</td><td><span class="lic lic-safe">Apache-2.0</span></td></tr>
+              <tr><td>Moirai / Moirai-MoE</td><td>Salesforce</td><td>Masked-encoder transformer with "any-variate" attention (flattens multiple series into one token sequence so it natively handles arbitrary channel counts and covariates)</td><td>Small/Base/Large (14M–311M)</td><td>Flexible, any positive length</td><td><span class="lic lic-restricted">CC BY-NC-4.0</span></td></tr>
+              <tr><td>Lag-Llama</td><td>ServiceNow / Morgan Stanley / Mila et al.</td><td>LLaMA-style decoder-only transformer fed engineered lag features (not raw tokenized values) as its "vocabulary"</td><td>~2.45M (deliberately tiny)</td><td>Recommended 32–1024 pts, tunable</td><td><span class="lic lic-safe">Apache-2.0</span></td></tr>
+              <tr><td>MOMENT</td><td>Auton Lab, CMU</td><td>Transformer trained multi-task (forecast + classify + detect anomalies + impute) on the "Time-series Pile" corpus</td><td>Small/Base/Large (~40M–341M)</td><td>Task-dependent</td><td><span class="lic lic-safe">MIT</span></td></tr>
+              <tr><td>IBM Granite-TimeSeries (PatchTSMixer / PatchTST / TTM)</td><td>IBM Research</td><td>PatchTSMixer = all-MLP mixer over patches (no attention); PatchTST variant = patch-transformer; TTM = "Tiny Time Mixer," a very small pretrained mixer</td><td>PatchTSMixer ~1M (task head), TTM sub-5M</td><td>512-in / 96-out typical configs</td><td><span class="lic lic-safe">Apache-2.0</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-grid">
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>Amazon Chronos / Chronos-Bolt</h4><span class="lic lic-safe">Apache-2.0 · 205M</span></div>
+            <p set:html={g('s3_card_chronos_card')} />
+            <p set:html={g('s3_card_chronos_arch')} />
+            <p set:html={g('s3_card_chronos_verdict')} />
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s3_code_chronos_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install chronos-forecasting torch
+
+import torch
+from chronos import BaseChronosPipeline
+
+pipeline = BaseChronosPipeline.from_pretrained(
+    "amazon/chronos-bolt-base",     # T5-style encoder-decoder, 205M params, Apache-2.0
+    device_map="cpu",               # CPU is fine for daily-bar, small-batch inference
+    torch_dtype=torch.bfloat16,
+)
+
+# Feed REALIZED VOLATILITY, not raw price -- this is a vol forecaster, not an oracle
+context = torch.tensor(realized_vol_20d.values[-512:])
+
+quantiles, mean = pipeline.predict_quantiles(
+    context=context,
+    prediction_length=10,                   # 10-day-ahead vol forecast
+    quantile_levels=[0.1, 0.5, 0.9],
+)
+vol_forecast_median = quantiles[0, :, 1]    # feed straight into GARCH/vol-target sizing (see §10)`}</pre></div>
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>Google TimesFM</h4><span class="lic lic-safe">Apache-2.0 · 200M/500M</span></div>
+            <p set:html={g('s3_card_timesfm_card')} />
+            <p set:html={g('s3_card_timesfm_verdict')} />
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s1_code_install_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install timesfm
+# tfm = timesfm.TimesFm(context_len=512, horizon_len=10, backend="cpu")
+# tfm.load_from_checkpoint(huggingface_repo_id="google/timesfm-2.0-500m-pytorch")
+# point_fc, quantile_fc = tfm.forecast([realized_vol_20d.values], freq=[0])`}</pre></div>
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>Salesforce Moirai / Moirai-MoE</h4><span class="lic lic-restricted">CC BY-NC-4.0</span></div>
+            <p set:html={g('s3_card_moirai_card')} />
+            <div class="callout co-warn m-0 mt-2"><span class="co-title">{g('s3_card_moirai_license_title')}</span><p set:html={g('s3_card_moirai_license_body')} /></div>
+            <p class="mt-3" set:html={g('s3_card_moirai_verdict')} />
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>Lag-Llama</h4><span class="lic lic-safe">Apache-2.0 · ~2.45M</span></div>
+            <p set:html={g('s3_card_lagllama_card')} />
+            <p set:html={g('s3_card_lagllama_verdict')} />
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>MOMENT</h4><span class="lic lic-safe">MIT · ~341M</span></div>
+            <p set:html={g('s3_card_moment_card')} />
+            <p set:html={g('s3_card_moment_use')} />
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>IBM Granite-TimeSeries</h4><span class="lic lic-safe">Apache-2.0</span></div>
+            <p set:html={g('s3_card_granite_card')} />
+            <p set:html={g('s3_card_granite_use')} />
+          </article>
+        </div>
+        <div class="callout co-tip"><span class="co-title">{g('s3_callout_title')}</span><p set:html={g('s3_callout_body')} /></div>
+      </section>
+
+      <!-- 4. Financial NLP -->
+      <section id="financial-nlp" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s4_title')} />
+        <p class="adv-lede" set:html={g('s4_lede')} />
+        <article class="adv-card nlp-featured">
+          <div class="adv-card-head"><h4>FinBERT (ProsusAI)</h4><span class="lic lic-safe">Apache-2.0 · ~110M</span></div>
+          <div class="nlp-featured-grid">
+            <div class="nlp-featured-copy">
+              <p set:html={g('s4_card_finbert_card')} />
+              <p set:html={g('s4_card_finbert_use')} />
+            </div>
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s4_code_finbert_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install transformers torch
+
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+
+tok = AutoTokenizer.from_pretrained("ProsusAI/finbert")
+model = AutoModelForSequenceClassification.from_pretrained("ProsusAI/finbert")
+model.eval()
+
+headlines = ["Company X beats earnings estimates, raises guidance",
+             "Regulators open investigation into Company X"]
+
+with torch.no_grad():
+    inputs = tok(headlines, return_tensors="pt", padding=True, truncation=True)
+    probs = torch.softmax(model(**inputs).logits, dim=-1)
+
+# label order per config.id2label: 0=positive, 1=negative, 2=neutral
+labels = ["positive", "negative", "neutral"]
+scores = [dict(zip(labels, p.tolist())) for p in probs]
+# aggregate to a daily sentiment score; use ONLY as a veto/regime feature, not alpha`}</pre></div>
+          </div>
+        </article>
+        <div class="card-grid nlp-sub">
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>FinGPT</h4><span class="lic lic-safe">MIT (code)</span></div>
+            <p set:html={g('s4_card_fingpt_repo')} />
+            <p set:html={g('s4_card_fingpt_use')} />
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>FinBERT-tone</h4><span class="lic lic-safe">Apache-2.0 · ~110M</span></div>
+            <p set:html={g('s4_card_finberttone_card')} />
+            <p set:html={g('s4_card_finberttone_use')} />
+          </article>
+        </div>
+      </section>
+
+      <!-- 5. RL -->
+      <section id="reinforcement-learning" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s5_title')} />
+        <p class="adv-lede" set:html={g('s5_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Library</th><th>License</th><th>Role</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>FinRL</td><td><span class="lic lic-safe">MIT</span></td><td>Financial RL framework: environments, agents, DRL algorithm wrappers for stock/order-execution tasks</td><td>Active; ~15k★, runs the annual FinRL Contest</td></tr>
+              <tr><td>FinRL-Meta</td><td><span class="lic lic-safe">MIT</span></td><td>Dynamic market-environment and dataset layer for FinRL (hundreds of market simulators)</td><td>Active, smaller community (~1–2k★)</td></tr>
+              <tr><td>Stable-Baselines3</td><td><span class="lic lic-safe">MIT</span></td><td>Reliable, well-tested implementations of the underlying RL algorithms (PPO, SAC, DQN, A2C, TD3, DDPG, HER) that FinRL wraps</td><td>Actively maintained, the de facto standard PyTorch RL library</td></tr>
+              <tr><td>TensorTrade</td><td><span class="lic lic-caution">Apache-2.0</span></td><td>RL trading-environment framework (Gym-style)</td><td><strong>Maintenance stalled</strong> — a community fork, TensorTrade-NG, was created explicitly because the original "needed a lot of refactoring, was outdated, and looked not really maintained." Treat as unmaintained for planning purposes.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="adv-h3">{g('s5_algos_h3')}</h3>
+        <ul class="adv-ul" set:html={g('s5_algos_list')} />
+        <div class="callout co-warn"><span class="co-title">{g('s5_callout_title')}</span><p set:html={g('s5_callout_body')} /></div>
+        <p set:html={g('s5_scope')} />
+      </section>
+
+      <!-- 6. Qlib -->
+      <section id="qlib-pipelines" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s6_title')} />
+        <p class="adv-lede" set:html={g('s6_lede')} />
+        <h3 class="adv-h3">{g('s6_alpha_h3')}</h3>
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th></th><th>Alpha158</th><th>Alpha360</th></tr></thead>
+            <tbody>
+              <tr><td>What it is</td><td>~158 hand-engineered technical/formulaic alpha features (returns, moving averages, volatility ratios, volume ratios, etc.)</td><td>Raw normalized OHLCV history flattened over a 60-day lookback (6 fields × 60 days = 360 columns), essentially no feature engineering</td></tr>
+              <tr><td>Feature relationships</td><td>Low spatial/temporal structure between columns — a classic tabular feature matrix</td><td>Strong spatial-temporal structure — designed for models that learn their own representation from raw sequences</td></tr>
+              <tr><td>Best-paired models</td><td>LightGBM, XGBoost, CatBoost, linear/MLP models</td><td>GRU, LSTM, Transformer-family, ALSTM, GATs — sequence models that benefit from raw structure</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="adv-h3">{g('s6_workflow_h3')}</h3>
+        <p set:html={g('s6_workflow_p')} />
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s6_code_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`qlib_init:
+  provider_uri: "~/.qlib/qlib_data/custom_nse"   # see note below on pointing Qlib at NSE data
+  region: in                                       # generic region tag; India isn't a stock Qlib region out of the box
+
+market: &market custom_nse_500
+benchmark: &benchmark NIFTY500
+
+data_handler_config: &data_handler_config
+  start_time: 2010-01-01
+  end_time: 2025-12-31
+  fit_start_time: 2010-01-01
+  fit_end_time: 2019-12-31
+  instruments: *market
+
+task:
+  model:
+    class: LGBModel
+    module_path: qlib.contrib.model.gbdt
+    kwargs:
+      loss: binary
+      num_leaves: 31
+      learning_rate: 0.03
+      monotone_constraints: [1, 0, -1, 0]
+  dataset:
+    class: DatasetH
+    module_path: qlib.data.dataset
+    kwargs:
+      handler:
+        class: Alpha158
+        module_path: qlib.contrib.data.handler
+        kwargs: *data_handler_config
+      segments:
+        train: [2010-01-01, 2019-12-31]
+        valid: [2020-01-01, 2021-12-31]
+        test:  [2022-01-01, 2025-12-31]
+
+# run with:  qrun this_config.yaml`}</pre></div>
+        <div class="callout co-info"><span class="co-title">{g('s6_callout_title')}</span><p set:html={g('s6_callout_body')} /></div>
+      </section>
+
+      <!-- 7. López de Prado -->
+      <section id="lopez-de-prado" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s7_title')} />
+        <p class="adv-lede" set:html={g('s7_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Package</th><th>License</th><th>Covers</th></tr></thead>
+            <tbody>
+              <tr><td>mlfinpy</td><td><span class="lic lic-safe">MIT</span></td><td>Triple-barrier labeling, meta-labeling, fractional differentiation, sample-weight/uniqueness utilities — a modern Pythonic re-implementation of the AFML code snippets</td></tr>
+              <tr><td>skfolio</td><td><span class="lic lic-safe">BSD-3-Clause</span></td><td>scikit-learn-compatible portfolio optimization <em>and</em> model selection: <code>CombinatorialPurgedCV</code> out of the box, plus HRP, HERC, risk-budgeting, CVaR/CDaR optimization</td></tr>
+              <tr><td>mlfinlab (paid)</td><td><span class="lic lic-caution">Commercial</span></td><td>The original, packaged, paid version — only worth it if you specifically want Hudson &amp; Thames' maintained extras beyond what the two free packages cover</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s7_code_tb_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install mlfinpy
+
+from mlfinpy.labeling import get_events, add_vertical_barrier, get_bins
+from mlfinpy.util import get_daily_vol
+
+# causal, EWMA-based daily volatility -- uses data strictly up to t, no leakage
+daily_vol = get_daily_vol(close=prices, lookback=50)
+
+vertical_barriers = add_vertical_barrier(
+    t_events=signal_dates, close=prices, num_days=10       # time-limit barrier
+)
+
+triple_barrier_events = get_events(
+    close=prices,
+    t_events=signal_dates,             # your primary (Pine) strategy's signal dates
+    pt_sl=[2.0, 1.5],                  # profit-take / stop-loss as multiples of daily_vol
+    target=daily_vol,
+    min_ret=0.0005,
+    num_threads=4,
+    vertical_barrier_times=vertical_barriers,
+)
+
+labels = get_bins(triple_barrier_events, prices)
+# labels['bin']    -> 1 = profit barrier hit first, 0 = stop/time barrier hit first
+# labels['ret']    -> realized return at the barrier that was hit
+# labels['t1']     -> the barrier-touch timestamp (needed for purging downstream)`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s7_code_cpcv_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install skfolio
+
+from skfolio.model_selection import CombinatorialPurgedCV, cross_val_predict
+from sklearn.pipeline import Pipeline
+import lightgbm as lgb
+
+meta_label_pipeline = Pipeline([
+    ("model", lgb.LGBMClassifier(num_leaves=31, learning_rate=0.03,
+                                  min_child_samples=50)),
+])
+
+# n_folds=10, n_test_folds=2  ->  C(10,2) = 45 combinatorial train/test paths
+# purged_size / embargo_size sized to the max holding horizon (t1 - t0), NOT a flat 1%
+cv = CombinatorialPurgedCV(n_folds=10, n_test_folds=2,
+                            purged_size=10, embargo_size=10)
+
+# returns an empirical DISTRIBUTION of out-of-sample paths, not one score --
+# use it to compute PBO and the Deflated Sharpe Ratio, not a single train/test split
+oos_paths = cross_val_predict(estimator=meta_label_pipeline, X=X, y=y,
+                               cv=cv, sample_weight=w)`}</pre></div>
+        <h3 class="adv-h3">{g('s7_tech_h3')}</h3>
+        <ul class="adv-ul" set:html={g('s7_tech_list')} />
+      </section>
+
+      <!-- 8. Regime detection -->
+      <section id="regime-detection" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s8_title')} />
+        <p class="adv-lede" set:html={g('s8_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Library</th><th>License</th><th>Maturity</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td>hmmlearn</td><td><span class="lic lic-safe">BSD</span></td><td>Mature, scikit-learn-style API, ~3k★</td><td>Gaussian/GMM/Categorical HMMs for a discrete calm/stormy regime state</td></tr>
+              <tr><td>ruptures</td><td><span class="lic lic-safe">BSD-2-Clause</span></td><td>Mature, academic (ENS Paris-Saclay/CNRS)</td><td>Offline changepoint detection — PELT (exact, linear-cost, unknown number of changes), binary segmentation (BinSeg, greedy/approximate), and sliding-window methods</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout co-warn"><span class="co-title">{g('s8_callout_title')}</span><p set:html={g('s8_callout_body')} /></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s8_code_wrong_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`from hmmlearn.hmm import GaussianHMM
+
+model = GaussianHMM(n_components=2, covariance_type="diag", n_iter=1000)
+model.fit(X_full)                    # fit on the ENTIRE history -- future leaks into the fit
+regimes = model.predict(X_full)      # Viterbi = globally-smoothed decode over the whole path
+# regimes[t] used information from t+1 ... T. This is look-ahead bias.
+# Any backtest of a regime gate built this way is invalid and will not reproduce live.`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s8_code_right_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`from hmmlearn.hmm import GaussianHMM
+import numpy as np
+
+regime_at_t = np.full(len(X), np.nan)
+model, refit_every, min_train = None, 63, 500     # e.g. refit quarterly
+
+for t in range(min_train, len(X)):
+    if model is None or t % refit_every == 0:
+        model = GaussianHMM(n_components=2, covariance_type="diag", n_iter=200)
+        model.fit(X[:t])                          # ONLY data strictly before t
+
+    # forward-algorithm FILTERED posterior using data up to and including t --
+    # no smoothing, no future information, no re-fit on data that includes t's label use
+    posteriors = model.predict_proba(X[:t + 1])
+    regime_at_t[t] = posteriors[-1].argmax()       # today's regime, knowable today
+
+# regime_at_t is safe to merge into the feature frame for both backtest and live use.
+# Expect a MUCH smaller, laggier drawdown benefit than the full-sample-smoothed version --
+# that gap IS the size of the leakage bug you just closed.`}</pre></div>
+        <p set:html={g('s8_ruptures_p')} />
+      </section>
+
+      <!-- 9. Backtesting engines -->
+      <section id="backtesting-engines" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s9_title')} />
+        <p class="adv-lede" set:html={g('s9_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Engine</th><th>Speed</th><th>Fill realism</th><th>License</th><th>Maintenance</th><th>Best-fit use case</th></tr></thead>
+            <tbody>
+              <tr><td>vectorbt (community)</td><td>Extremely fast (Numba-vectorized, thousands of configs at once)</td><td>Weak — vectorized fills, easy to fool yourself</td><td><span class="lic lic-caution">Apache-2.0 + Commons Clause</span></td><td>Community edition maintenance-frozen; active dev moved to paid vectorbtPRO</td><td>Fast first-pass parameter sweep / triage only</td></tr>
+              <tr><td>backtrader</td><td>Moderate (pure Python, event-driven)</td><td>Moderate (configurable slippage/commission, but manual)</td><td><span class="lic lic-caution">GPL-3.0</span></td><td><strong>Stalled ~2021</strong> — open PRs/issues unmerged for years</td><td>Legacy strategies only; don't start new work here</td></tr>
+              <tr><td>Zipline-reloaded</td><td>Moderate</td><td>Good (Quantopian-derived fill/slippage models)</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Community-maintained fork (stefan-jansen), modest but real activity</td><td>Research backtests wanting the original Zipline/Quantopian API and pipeline model</td></tr>
+              <tr><td>NautilusTrader</td><td>Fast (Rust core)</td><td><strong>High</strong> — same strategy code path for backtest and live</td><td><span class="lic lic-caution">LGPL-3.0-or-later</span></td><td>Very active, ~24k★, production-grade</td><td><strong>Final realistic-fill re-validation and the bridge to live</strong> — the one tool built for research-to-live parity</td></tr>
+              <tr><td>QuantConnect LEAN</td><td>Fast (C#/.NET core, Python API)</td><td>High — institutional-grade fill/slippage/margin models</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Very active, ~19k★, backs a commercial cloud platform</td><td>Full-featured alternative to NautilusTrader, especially with QuantConnect's hosted data/cloud/live options</td></tr>
+              <tr><td>bt</td><td>Moderate</td><td>Moderate (higher-level "Algo" abstraction over vectorized fills)</td><td><span class="lic lic-safe">MIT</span></td><td>Actively maintained (releases into 2026)</td><td>Fast, readable portfolio-level (multi-asset allocation) backtests, less suited to per-trade microstructure realism</td></tr>
+              <tr><td>backtesting.py</td><td>Fast (single-asset, vectorized-ish)</td><td>Basic (simple slippage/commission model)</td><td><span class="lic lic-restricted">AGPL-3.0</span></td><td>Active, small footprint, ~2.4k★</td><td>Quick single-asset prototyping only — AGPL is a real constraint if you build a hosted/SaaS product on it</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="adv-h3">{g('s9_nautilus_h3')}</h3>
+        <p set:html={g('s9_nautilus_p')} />
+        <div class="callout co-info"><span class="co-title">{g('s9_callout_title')}</span><p set:html={g('s9_callout_body')} /></div>
+      </section>
+
+      <!-- 10. Portfolio & risk -->
+      <section id="portfolio-risk" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s10_title')} />
+        <p class="adv-lede" set:html={g('s10_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Library</th><th>License</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td>PyPortfolioOpt</td><td><span class="lic lic-safe">MIT</span></td><td>Classical mean-variance / efficient frontier, Black-Litterman, shrinkage covariance estimators, and HRP — the most approachable API of the three</td></tr>
+              <tr><td>Riskfolio-Lib</td><td><span class="lic lic-safe">BSD-3-Clause</span></td><td>Deeper risk-based allocation: HRP/HERC, ~24 risk measures including CVaR/CDaR/EVaR, risk-parity/risk-budgeting, built on CVXPY convex optimization</td></tr>
+              <tr><td>arch</td><td><span class="lic lic-safe">NCSA</span></td><td>GARCH/EGARCH/GJR-GARCH/TARCH volatility-family models — the standard econometric volatility forecaster feeding vol-targeted sizing</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s10_code_garch_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install arch
+
+from arch import arch_model
+import numpy as np
+
+returns_pct = 100 * log_returns.dropna()      # arch expects % returns for numerical stability
+# GJR-GARCH(1,1,1) with Student-t errors -- captures the leverage effect (vol reacts more to
+# negative returns than positive ones), which plain GARCH(1,1) misses
+am = arch_model(returns_pct, vol="GARCH", p=1, o=1, q=1, dist="t")
+res = am.fit(disp="off", last_obs=train_end_date)   # fit only on data up to the current date
+
+fcast = res.forecast(horizon=10, reindex=False)
+vol_forecast_daily = np.sqrt(fcast.variance.values[-1]) / 100   # back to decimal daily vol
+
+target_vol_daily = 0.10 / (252 ** 0.5)        # ~10% annualized portfolio vol target
+position_scale = target_vol_daily / vol_forecast_daily[0]
+position_size = base_size * min(position_scale, max_leverage_cap)   # always cap leverage`}</pre></div>
+        <div class="card-grid">
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>PyPortfolioOpt</h4><span class="lic lic-safe">MIT</span></div>
+            <p set:html={g('s10_card_pypfopt_use')} />
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s10_code_hrp_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`from pypfopt import HRPOpt
+hrp = HRPOpt(returns=daily_returns_df)   # NOT prices -- pass returns
+weights = hrp.optimize()                 # hierarchical-clustering-based, no covariance inversion`}</pre></div>
+          </article>
+          <article class="adv-card">
+            <div class="adv-card-head"><h4>Riskfolio-Lib</h4><span class="lic lic-safe">BSD-3</span></div>
+            <p set:html={g('s10_card_riskfolio_use')} />
+            <div class="prompt-box"><div class="prompt-head"><span>{g('s10_code_cvar_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`import riskfolio as rp
+port = rp.Portfolio(returns=daily_returns_df)
+port.assets_stats(method_mu="hist", method_cov="hist")
+weights = port.optimization(model="Classic", rm="CVaR", obj="MinRisk", rf=0, l=0)`}</pre></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 11. Feature engineering -->
+      <section id="feature-engineering" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s11_title')} />
+        <p class="adv-lede" set:html={g('s11_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Library</th><th>License</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td>tsfresh</td><td><span class="lic lic-safe">MIT</span></td><td>Automated extraction of hundreds of statistical/signal-processing time-series features, with a built-in hypothesis-testing-based relevance filter (the "FRESH" algorithm) to control false-discovery rate on the feature explosion</td></tr>
+              <tr><td>Nixtla statsforecast</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Fast classical/econometric baselines — AutoARIMA, AutoETS, AutoCES, Theta — the mandatory benchmark before believing any ML "edge"</td></tr>
+              <tr><td>Nixtla mlforecast</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Machine-learning forecasting at scale (pandas/polars/Spark/Dask/Ray backends) with the same lag-feature-engineering plumbing regardless of backend</td></tr>
+              <tr><td>Nixtla neuralforecast</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>30+ neural architectures under one API — every model in §2 (NBEATS, NHITS, TFT, Informer, Autoformer, FEDformer, PatchTST, iTransformer, TimeLLM, ...) available without hand-rolling each paper's code</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s11_code_tsfresh_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install tsfresh
+from tsfresh import extract_relevant_features
+
+# long-format df: columns [id, time, value]; y indexed by id (e.g. triple-barrier label)
+features = extract_relevant_features(
+    long_format_df, y=labels_by_id, column_id="id", column_sort="time",
+    fdr_level=0.01,           # false-discovery-rate control -- do NOT skip this on financial data
+)
+# re-run the relevance filter INSIDE each CV fold in production, never on the full dataset`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s11_code_baseline_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install statsforecast
+from statsforecast import StatsForecast
+from statsforecast.models import AutoARIMA, AutoETS
+
+sf = StatsForecast(models=[AutoARIMA(), AutoETS()], freq="D", n_jobs=-1)
+sf.fit(train_df)
+baseline_forecast = sf.predict(h=10)
+# your GBDT / foundation-model forecast must beat THIS, net of cost, or there is no edge`}</pre></div>
+      </section>
+
+      <!-- 12. MLOps -->
+      <section id="mlops" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s12_title')} />
+        <p class="adv-lede" set:html={g('s12_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Tool</th><th>License</th><th>Role</th><th>When to adopt</th></tr></thead>
+            <tbody>
+              <tr><td>MLflow</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Experiment tracking (params/metrics/artifacts) + model registry with stage transitions</td><td><strong>Early</strong> — every single backtest run, from day one, feeds the DSR trial count</td></tr>
+              <tr><td>Evidently AI</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Input-feature and prediction-distribution drift detection (KS-test, PSI, Wasserstein, 100+ built-in metrics)</td><td>Once a strategy is running on a schedule against live data</td></tr>
+              <tr><td>NannyML</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Label-free live performance estimation — CBPE for classifiers, DLE for regressors — estimates real-world accuracy before ground-truth labels are even available</td><td>Once paper/live trading is running and labels arrive with a lag (exactly the triple-barrier situation)</td></tr>
+              <tr><td>Prefect</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Pythonic pipeline orchestration: scheduling, retries, caching, event-driven triggers for the nightly ingest→feature→predict→size→alert DAG</td><td>Once a plain cron script becomes unwieldy — not needed for an MVP</td></tr>
+              <tr><td>Dagster</td><td><span class="lic lic-safe">Apache-2.0</span></td><td>Alternative orchestrator with stronger data-asset lineage/typing — heavier but better observability at scale</td><td>If you outgrow Prefect's simplicity and want asset-level lineage across many pipelines</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s12_code_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`pip install mlflow
+import mlflow
+
+with mlflow.start_run(run_name="lgbm_meta_label_v37"):
+    mlflow.log_params(params)                                   # every hyperparameter tried
+    mlflow.log_param("cv_scheme", "CombinatorialPurgedCV(10,2)")
+    mlflow.log_param("feature_set_hash", feature_set_hash)       # so re-used feature sets don't double count
+    mlflow.log_metric("oos_sharpe_median", oos_sharpe_median)    # across the CPCV path distribution
+    mlflow.log_metric("pbo", pbo_value)
+    mlflow.log_metric("trial_number_in_family", trial_counter)   # THIS feeds the Deflated Sharpe N
+    mlflow.lightgbm.log_model(model, "model")
+
+# Query the full run history to compute N for the Deflated Sharpe Ratio -- include prior
+# Pine-Script optimization trials too (see §14), not just the ML runs.`}</pre></div>
+        <div class="callout co-tip"><span class="co-title">{g('s12_callout_title')}</span><p set:html={g('s12_callout_body')} /></div>
+      </section>
+
+      <!-- 13. Data & datasets -->
+      <section id="data-datasets" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s13_title')} />
+        <p class="adv-lede" set:html={g('s13_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Dataset</th><th>Type</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://huggingface.co/datasets/mito0o852/OHLCV-1m" rel="nofollow noopener">mito0o852/OHLCV-1m</a></td><td>US equities, minute OHLCV</td><td>Thousands of US stocks, 1992–2026, sourced from Finnhub.io</td></tr>
+              <tr><td><a href="https://huggingface.co/datasets/TimKoornstra/financial-tweets-sentiment" rel="nofollow noopener">TimKoornstra/financial-tweets-sentiment</a></td><td>Social sentiment</td><td>Labeled Twitter/X financial sentiment — useful for fine-tuning or validating a FinBERT-style veto filter</td></tr>
+              <tr><td><code>huggingface.co/datasets?search=finance</code></td><td>Hub search</td><td>The Hub's finance-tagged dataset list changes frequently — always re-search rather than trusting a static list; verify licensing per-dataset before any commercial use</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="adv-h3">{g('s13_numerai_h3')}</h3>
+        <p set:html={g('s13_numerai_p')} />
+      </section>
+
+      <!-- 14. Reference architecture -->
+      <section id="reference-architecture" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s14_title')} />
+        <p class="adv-lede" set:html={g('s14_lede')} />
+        <figure class="my-6">
+          <div class="fig-frame adv-tablewrap">
+            <svg viewBox="0 0 1480 240" width="1480" style="min-width:1320px" role="img" aria-label="Flow diagram of the advanced reference pipeline in seven stages connected by arrows, left to right: data ingestion; feature engineering; triple-barrier labeling; LightGBM meta-label model validated with Combinatorial Purged Cross-Validation; causal HMM regime gate with GARCH volatility-targeted sizing; NautilusTrader backtest and live execution sharing one code path; MLflow logging feeding a PickMyTrade webhook.">
+              <title>Reference pipeline: data → features → labels → meta-label CV → regime/sizing → NautilusTrader → MLflow → PickMyTrade</title>
+              <defs>
+                <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#8fb3e8"/>
+                </marker>
+              </defs>
+              <g>
+                <rect x="10" y="50" width="190" height="130" rx="14" fill="#0e2036" stroke="#0055fe" stroke-width="1.6"/>
+                <text x="105" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#eaf2ff">1 · Data ingestion</text>
+                <text x="105" y="100" text-anchor="middle" font-size="11.5" fill="#a7bcd6">Point-in-time OHLCV +</text>
+                <text x="105" y="115" text-anchor="middle" font-size="11.5" fill="#a7bcd6">constituent/delisting</text>
+                <text x="105" y="130" text-anchor="middle" font-size="11.5" fill="#a7bcd6">table; Parquet/DuckDB</text>
+                <text x="105" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#60a5fa">no survivorship bias</text>
+              </g>
+              <line x1="200" y1="115" x2="230" y2="115" stroke="#8fb3e8" stroke-width="2" marker-end="url(#arrow2)"/>
+              <g>
+                <rect x="234" y="50" width="190" height="130" rx="14" fill="#0e2036" stroke="#0084d1" stroke-width="1.6"/>
+                <text x="329" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#eaf2ff">2 · Features</text>
+                <text x="329" y="100" text-anchor="middle" font-size="11.5" fill="#a7bcd6">Qlib Alpha158 + tsfresh</text>
+                <text x="329" y="115" text-anchor="middle" font-size="11.5" fill="#a7bcd6">+ mlfinpy fractional</text>
+                <text x="329" y="130" text-anchor="middle" font-size="11.5" fill="#a7bcd6">differentiation (FFD)</text>
+                <text x="329" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#60a5fa">fit inside-fold only</text>
+              </g>
+              <line x1="424" y1="115" x2="454" y2="115" stroke="#8fb3e8" stroke-width="2" marker-end="url(#arrow2)"/>
+              <g>
+                <rect x="458" y="50" width="190" height="130" rx="14" fill="#0e2036" stroke="#4a90e2" stroke-width="1.6"/>
+                <text x="553" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#eaf2ff">3 · Triple-barrier</text>
+                <text x="553" y="100" text-anchor="middle" font-size="11.5" fill="#a7bcd6">mlfinpy: causal EWMA</text>
+                <text x="553" y="115" text-anchor="middle" font-size="11.5" fill="#a7bcd6">vol → PT/SL/vertical</text>
+                <text x="553" y="130" text-anchor="middle" font-size="11.5" fill="#a7bcd6">barriers + sample weight</text>
+                <text x="553" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#60a5fa">uniqueness-weighted</text>
+              </g>
+              <line x1="648" y1="115" x2="678" y2="115" stroke="#8fb3e8" stroke-width="2" marker-end="url(#arrow2)"/>
+              <g>
+                <rect x="682" y="50" width="190" height="130" rx="14" fill="#0e2036" stroke="#0055fe" stroke-width="1.6"/>
+                <text x="777" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#eaf2ff">4 · Meta-label model</text>
+                <text x="777" y="100" text-anchor="middle" font-size="11.5" fill="#a7bcd6">LightGBM inside skfolio</text>
+                <text x="777" y="115" text-anchor="middle" font-size="11.5" fill="#a7bcd6">CombinatorialPurgedCV</text>
+                <text x="777" y="130" text-anchor="middle" font-size="11.5" fill="#a7bcd6">→ PBO + Deflated Sharpe</text>
+                <text x="777" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#60a5fa">reject if PBO &gt; 50%</text>
+              </g>
+              <line x1="872" y1="115" x2="902" y2="115" stroke="#8fb3e8" stroke-width="2" marker-end="url(#arrow2)"/>
+              <g>
+                <rect x="906" y="50" width="190" height="130" rx="14" fill="#0e2036" stroke="#e93d00" stroke-width="1.6"/>
+                <text x="1001" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#eaf2ff">5 · Regime + sizing</text>
+                <text x="1001" y="100" text-anchor="middle" font-size="11.5" fill="#a7bcd6">Causal filtered hmmlearn</text>
+                <text x="1001" y="115" text-anchor="middle" font-size="11.5" fill="#a7bcd6">gate + GARCH (arch) vol-</text>
+                <text x="1001" y="130" text-anchor="middle" font-size="11.5" fill="#a7bcd6">targeted fractional Kelly</text>
+                <text x="1001" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#ff7a4d">deterministic math</text>
+              </g>
+              <line x1="1096" y1="115" x2="1126" y2="115" stroke="#8fb3e8" stroke-width="2" marker-end="url(#arrow2)"/>
+              <g>
+                <rect x="1130" y="50" width="170" height="130" rx="14" fill="#0e2036" stroke="#4a90e2" stroke-width="1.6"/>
+                <text x="1215" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#eaf2ff">6 · NautilusTrader</text>
+                <text x="1215" y="100" text-anchor="middle" font-size="11.5" fill="#a7bcd6">One strategy class,</text>
+                <text x="1215" y="115" text-anchor="middle" font-size="11.5" fill="#a7bcd6">backtest → paper → live</text>
+                <text x="1215" y="130" text-anchor="middle" font-size="11.5" fill="#a7bcd6">(only adapters swap)</text>
+                <text x="1215" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#60a5fa">research/live parity</text>
+              </g>
+              <line x1="1300" y1="115" x2="1330" y2="115" stroke="#8fb3e8" stroke-width="2" marker-end="url(#arrow2)"/>
+              <g>
+                <rect x="1334" y="50" width="146" height="130" rx="14" fill="#040913" stroke="#4a90e2" stroke-width="1.6"/>
+                <text x="1407" y="76" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">7 · MLflow →</text>
+                <text x="1407" y="93" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">PickMyTrade</text>
+                <text x="1407" y="112" text-anchor="middle" font-size="11" fill="#bcd4f7">Every run logged;</text>
+                <text x="1407" y="127" text-anchor="middle" font-size="11" fill="#bcd4f7">webhook JSON →</text>
+                <text x="1407" y="142" text-anchor="middle" font-size="11" fill="#bcd4f7">broker bracket order</text>
+                <text x="1407" y="165" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ff7a4d">execute, don't build</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption class="adv-figcaption">{g('s14_fig_caption')}</figcaption>
+        </figure>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s14_code_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`"""
+Reference pipeline skeleton: data ingestion -> PickMyTrade execution.
+Every preprocessing step is fit INSIDE the CPCV training fold only -- never on
+the full dataset. Illustrative structure; wire in your own data store / config.
+"""
+import numpy as np
+import pandas as pd
+import lightgbm as lgb
+import mlflow
+import requests
+from hmmlearn.hmm import GaussianHMM
+from arch import arch_model
+from mlfinpy.labeling import get_events, add_vertical_barrier, get_bins
+from mlfinpy.util import get_daily_vol
+from mlfinpy.features import frac_diff_ffd
+from skfolio.model_selection import CombinatorialPurgedCV, cross_val_predict
+from sklearn.pipeline import Pipeline
+from qlib.contrib.data.handler import Alpha158
+from tsfresh import extract_relevant_features
+from nautilus_trader.backtest.engine import BacktestEngine
+from nautilus_trader.trading.strategy import Strategy
+
+
+# 1. DATA INGESTION -- point-in-time, survivorship-bias-free universe only
+def load_point_in_time_universe(as_of_date, min_adv_usd=2_500_000):
+    """Never filter by TODAY's liquidity -- that imports survivorship bias."""
+    raw = data_store.query_asof(as_of_date=as_of_date)          # Parquet/DuckDB store
+    return raw[raw["adv_20d_asof"] > min_adv_usd]
+
+
+# 2. FEATURES -- Qlib Alpha158 for technicals, tsfresh + mlfinpy for the rest
+def build_features(prices: pd.DataFrame) -> pd.DataFrame:
+    alpha158 = Alpha158(instruments=prices["symbol"].unique().tolist(),
+                         start_time=prices.index.min(), end_time=prices.index.max())
+    tech_features = alpha158.fetch()
+
+    tsfresh_features = extract_relevant_features(
+        prices.reset_index(), y=None, column_id="symbol", column_sort="date", fdr_level=0.01,
+    )
+
+    d = find_min_ffd_order(prices["close"], adf_pvalue=0.05, min_corr=0.9)   # search d in [0.1, 1.0]
+    frac_diff_price = frac_diff_ffd(prices["close"], d=d, threshold=1e-4)    # stationary, RETAINS memory
+
+    return tech_features.join(tsfresh_features, how="inner").assign(frac_diff_price=frac_diff_price)
+
+
+# 3. LABELS -- causal EWMA vol -> ATR-scaled triple barrier (mlfinpy)
+def label_events(prices: pd.Series, signal_dates: pd.DatetimeIndex) -> pd.DataFrame:
+    daily_vol = get_daily_vol(close=prices, lookback=50)
+    vertical_barriers = add_vertical_barrier(t_events=signal_dates, close=prices, num_days=10)
+    events = get_events(close=prices, t_events=signal_dates, pt_sl=[2.0, 1.5], target=daily_vol,
+                         min_ret=0.0005, num_threads=4, vertical_barrier_times=vertical_barriers)
+    return get_bins(events, prices)          # -> bin (0/1), ret, t1 (needed for purging)
+
+
+# 4. META-LABEL MODEL -- LightGBM inside nested Combinatorial Purged CV
+def train_meta_label_model(X: pd.DataFrame, y: pd.Series, w: pd.Series, trial_counter: int):
+    pipeline = Pipeline([("model", lgb.LGBMClassifier(
+        num_leaves=31, learning_rate=0.03, min_child_samples=50,
+        monotone_constraints=MONO_CONSTRAINTS))])
+
+    cv = CombinatorialPurgedCV(n_folds=10, n_test_folds=2, purged_size=10, embargo_size=10)
+    oos_paths = cross_val_predict(estimator=pipeline, X=X, y=y, cv=cv, sample_weight=w)
+
+    pbo = compute_pbo(oos_paths)
+    dsr = compute_deflated_sharpe(oos_paths, n_trials=get_trial_count_from_mlflow() + trial_counter)
+    if pbo > 0.50 or dsr.p_value > 0.05:
+        raise ValueError(f"Model rejected: PBO={pbo:.2f}, DSR p={dsr.p_value:.3f}")
+
+    final_model = pipeline.fit(X, y, model__sample_weight=w)
+    return final_model, pbo, dsr
+
+
+# 5. REGIME GATE -- causal, walk-forward, FILTERED (never smoothed) HMM posterior
+def causal_regime_state(vol_return_features: np.ndarray, t: int, model_cache: dict,
+                         refit_every: int = 63, min_train: int = 500) -> int:
+    if t < min_train:
+        return 1  # default "calm" until enough history exists
+    if t % refit_every == 0 or "model" not in model_cache:
+        hmm = GaussianHMM(n_components=2, covariance_type="diag", n_iter=200)
+        hmm.fit(vol_return_features[:t])                       # only data strictly before t
+        model_cache["model"] = hmm
+    posteriors = model_cache["model"].predict_proba(vol_return_features[: t + 1])
+    return int(posteriors[-1].argmax())                        # filtered state at t, no look-ahead
+
+
+# 6. VOL-TARGETED SIZING -- GJR-GARCH forecast -> fractional-Kelly-scaled size
+def size_position(returns_pct: pd.Series, meta_label_confidence: float, regime_state: int,
+                   target_vol_annual: float = 0.10, kelly_fraction: float = 0.5,
+                   max_leverage: float = 1.5) -> float:
+    if regime_state == 0:                                       # 0 = "stormy" -- stand aside
+        return 0.0
+    res = arch_model(returns_pct, vol="GARCH", p=1, o=1, q=1, dist="t").fit(disp="off")
+    vol_fc = np.sqrt(res.forecast(horizon=1, reindex=False).variance.values[-1, 0]) / 100
+    vol_scale = (target_vol_annual / (252 ** 0.5)) / vol_fc
+    kelly_scale = kelly_fraction * max(2 * meta_label_confidence - 1, 0)   # confidence -> edge proxy
+    return float(np.clip(vol_scale * kelly_scale, 0, max_leverage))
+
+
+# 7. BACKTEST -- NautilusTrader (same strategy class runs backtest AND live)
+class MetaLabelStrategy(Strategy):
+    def __init__(self, model, hmm_cache, config):
+        super().__init__(config)
+        self.model, self.hmm_cache = model, hmm_cache
+
+    def on_bar(self, bar):
+        feats = self.build_live_features(bar)                   # same code path as build_features()
+        confidence = self.model.predict_proba(feats)[:, 1][0]
+        regime = causal_regime_state(self.vol_history, self.clock.timestamp_ns, self.hmm_cache)
+        size = size_position(self.returns_pct_history, confidence, regime)
+        if confidence > 0.55 and size > 0:
+            self.submit_bracket_order(side="BUY", size=size, sl_atr_mult=1.5, tp_atr_mult=2.0)
+
+
+def run_backtest(historical_bars, final_model, strat_config):
+    engine = BacktestEngine()
+    engine.add_data(historical_bars)
+    engine.add_strategy(MetaLabelStrategy(model=final_model, hmm_cache={}, config=strat_config))
+    return engine.run()      # the SAME strategy object later promotes to paper/live -- adapters swap only
+
+
+# 8. MLFLOW LOGGING -- every trial, forever (feeds the Deflated Sharpe trial count)
+def log_run(params, pbo, dsr, backtest_results, final_model, trial_counter):
+    with mlflow.start_run(run_name=f"pipeline_v{trial_counter}"):
+        mlflow.log_params(params)
+        mlflow.log_metric("pbo", pbo)
+        mlflow.log_metric("dsr_p_value", dsr.p_value)
+        mlflow.log_metric("backtest_sharpe", backtest_results.sharpe_ratio)
+        mlflow.log_metric("backtest_max_dd", backtest_results.max_drawdown)
+        mlflow.log_metric("trial_number_in_family", trial_counter)
+        mlflow.lightgbm.log_model(final_model, "meta_label_model")
+
+
+# 9. EXECUTION -- PickMyTrade webhook JSON (paper first, then tiny live)
+def send_to_pickmytrade(symbol, side, qty, sl_price, tp_price, webhook_url, secret):
+    payload = {
+        "secret": secret, "symbol": symbol, "action": side,     # "buy" / "sell"
+        "quantity": qty, "stopLoss": sl_price, "takeProfit": tp_price, "orderType": "market",
+    }
+    resp = requests.post(webhook_url, json=payload, timeout=5)
+    resp.raise_for_status()
+    return resp.json()`}</pre></div>
+        <div class="callout co-tip"><span class="co-title">{g('s14_callout_title')}</span><p set:html={g('s14_callout_body')} /></div>
+      </section>
+
+      <!-- 14.5 Claude Fable -->
+      <section id="claude-fable" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s145_title')} />
+        <p class="adv-lede" set:html={g('s145_lede')} />
+        <p set:html={g('s145_intro')} />
+        <ul class="adv-ul" set:html={g('s145_list')} />
+        <p set:html={g('s145_prompts_intro')} />
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s145_code_p1_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`Review this skfolio CombinatorialPurgedCV setup [paste code]: 10 folds, 2 test folds, on triple-barrier-labeled
+signals where barriers can resolve up to 10 trading days after the signal (get_events num_days=10). Check whether
+purged_size and embargo_size are large enough to cover that full label-resolution window plus my slowest feature's
+lookback. Flag any fold where a training sample's resolution window overlaps a test sample's, explain the leak, and
+give me corrected purge/embargo values with the reasoning shown.`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s145_code_p2_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`Here is my hmmlearn regime-detection code [paste code]. Confirm it only calls predict_proba on data up to and
+including index t when producing the label used AT time t, and that it never calls hmm.decode() or reads a Viterbi
+path computed over the full series. If it's using the full-sample smoothed posterior, rewrite it as a walk-forward
+loop that refits every N bars on strictly past data and returns the filtered (not smoothed) posterior at each step,
+matching the causal pattern, not the leaky one.`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s145_code_p3_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`I want Microsoft Qlib's Alpha158 handler running on NSE (India) equities, not one of Qlib's built-in regions.
+Here's my current workflow YAML [paste config]. Write a custom data handler/provider that points Alpha158's feature
+computation at my own point-in-time OHLCV store instead of Qlib's default region data, keeping the Alpha158 feature
+set intact. Explain specifically what breaks -- calendar, instrument universe, trading-day alignment -- if I just
+change the region tag without supplying compatible replacements.`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s145_code_p4_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`Here is my end-to-end pipeline: data ingestion, feature engineering, triple-barrier labeling, LightGBM meta-label
+training inside CombinatorialPurgedCV, HMM regime gate, GARCH-based sizing, and NautilusTrader backtest [paste code].
+Walk it stage by stage and flag every point where a transform -- scaler, feature selector, frac-diff order search, HMM
+fit -- is fit on data outside the current CV training fold, or a feature could see information unavailable at signal
+time. Rank findings by how much each would inflate the backtest Sharpe if left uncorrected.`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s145_code_p5_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`Here is my TradingView Pine Script strategy [paste script]. Convert its entry logic into a Python function that
+takes a pandas DataFrame of OHLCV bars and returns a boolean signal series, matching the Pine version bar-for-bar on
+identical historical data. This becomes the primary-model signal feeding my meta-labeling filter, so flag anything --
+security() calls with lookahead, use of the current bar's close before it closes -- that would make the two versions
+diverge.`}</pre></div>
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s145_code_p6_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`Write a Python function that takes a meta-label confidence score, ATR-based stop/target multiples, and a
+position size from my vol-targeted sizing calc, and builds the JSON payload for a PickMyTrade webhook POST -- symbol,
+side, quantity, stopLoss, takeProfit. Add a deterministic idempotency key (hash of symbol + signal timestamp + bar
+index) as a payload field, and wrap the POST in retry-with-backoff logic that treats a timeout as "unknown, reconcile
+before retrying" rather than blindly resubmitting.`}</pre></div>
+        <div class="callout co-warn"><span class="co-title">{g('s145_callout_title')}</span><p set:html={g('s145_callout_body')} /></div>
+      </section>
+
+      <!-- 14.6 Execution bridge -->
+      <section id="execution-bridge" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s146_title')} />
+        <p class="adv-lede" set:html={g('s146_lede')} />
+        <div class="card-grid">
+          <article class="adv-card"><h3 class="adv-card-h3">{g('s146_card1_h3')}</h3><p set:html={g('s146_card1_p')} /></article>
+          <article class="adv-card"><h3 class="adv-card-h3">{g('s146_card2_h3')}</h3><p set:html={g('s146_card2_p')} /></article>
+          <article class="adv-card"><h3 class="adv-card-h3">{g('s146_card3_h3')}</h3><p set:html={g('s146_card3_p')} /></article>
+          <article class="adv-card"><h3 class="adv-card-h3">{g('s146_card4_h3')}</h3><p set:html={g('s146_card4_p')} /></article>
+        </div>
+        <h3 class="adv-h3">{g('s146_where_h3')}</h3>
+        <p set:html={g('s146_where_p')} />
+        <div class="prompt-box"><div class="prompt-head"><span>{g('s146_code_label')}</span><button class="copy-btn" type="button">Copy</button></div><pre>{`{
+  "idempotencyKey": "SIG-MES-2026-07-03T14:32:00Z-000481",
+  "symbol": "MES",
+  "side": "buy",
+  "quantity": 2,
+  "orderType": "market",
+  "stopLoss": 5320.25,
+  "takeProfit": 5364.75,
+  "meta": {
+    "metaLabelConfidence": 0.62,
+    "atr14": 14.8,
+    "slAtrMult": 1.5,
+    "tpAtrMult": 2.0,
+    "regimeState": 1
+  }
+}`}</pre></div>
+        <p class="adv-srcnote" set:html={g('s146_srcnote')} />
+        <div class="callout co-warn"><span class="co-title">{g('s146_callout_fail_title')}</span><p set:html={g('s146_callout_fail_body')} /></div>
+        <div class="callout co-tip"><span class="co-title">{g('s146_callout_blast_title')}</span><p set:html={g('s146_callout_blast_body')} /></div>
+        <div class="callout co-info"><span class="co-title">{g('s146_callout_infra_title')}</span><p set:html={g('s146_callout_infra_body')} /></div>
+      </section>
+
+      <!-- 15. Decision matrix -->
+      <section id="decision-matrix" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s15_title')} />
+        <p class="adv-lede" set:html={g('s15_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>I need to…</th><th>Use</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>Filter trade quality (meta-label)</td><td>LightGBM + mlfinpy triple-barrier</td><td>Highest-ROI, lowest-risk ML addition; GBDT dominates tabular financial data</td></tr>
+              <tr><td>Detect market regime causally</td><td>hmmlearn (filtered posterior) + ruptures cross-check</td><td>Cheap, interpretable; ruptures independently confirms structural breaks the HMM finds</td></tr>
+              <tr><td>Size positions</td><td>arch (GARCH) vol forecast + fractional Kelly</td><td>Deterministic math owns sizing — this is where drawdown control actually lives</td></tr>
+              <tr><td>Get a zero-shot volatility forecast</td><td>Chronos-Bolt or TimesFM</td><td>Apache-2.0, CPU-runnable, no training needed, legitimately useful for vol (not direction)</td></tr>
+              <tr><td>Validate without leakage</td><td>skfolio <code>CombinatorialPurgedCV</code> + PBO + Deflated Sharpe</td><td>Produces an OOS performance <em>distribution</em>, not one lucky split; lower PBO than plain walk-forward</td></tr>
+              <tr><td>Track every experiment / enforce trial-count honesty</td><td>MLflow</td><td>The DSR correction is only as honest as your trial count — MLflow makes it a queryable fact, not a memory</td></tr>
+              <tr><td>Fast first-pass parameter sweep</td><td>vectorbt (community)</td><td>Numba-vectorized triage of thousands of configs in seconds — never trust it as the final answer</td></tr>
+              <tr><td>Re-validate with realistic fills before capital</td><td>NautilusTrader</td><td>Only engine here with true research-to-live parity — same strategy code, real fill/slippage modeling</td></tr>
+              <tr><td>Build a full quant research pipeline fast</td><td>Microsoft Qlib</td><td>Data handler + Alpha158/360 + model zoo + walk-forward harness, all wired via one YAML config</td></tr>
+              <tr><td>Extract automated time-series features</td><td>tsfresh</td><td>Hundreds of candidate features with a built-in FDR-controlled relevance filter</td></tr>
+              <tr><td>Benchmark before trusting any "edge"</td><td>Nixtla <code>statsforecast</code> AutoARIMA/AutoETS</td><td>Mandatory sanity check — DLinear/AAAI-23 showed complexity alone proves nothing</td></tr>
+              <tr><td>Allocate across a correlated basket</td><td>HRP via PyPortfolioOpt, skfolio, or Riskfolio-Lib</td><td>Robust to noisy covariance estimates, unlike mean-variance optimization</td></tr>
+              <tr><td>Optimize for tail risk specifically (CVaR/CDaR)</td><td>Riskfolio-Lib</td><td>Purpose-built convex-optimization risk measures beyond variance — matches a "least drawdown" mandate</td></tr>
+              <tr><td>Detect live input/prediction drift</td><td>Evidently AI</td><td>Statistical drift tests (KS, PSI, Wasserstein) across features and predictions</td></tr>
+              <tr><td>Estimate live performance before labels arrive</td><td>NannyML (CBPE/DLE)</td><td>Label-free — critical since triple-barrier outcomes only resolve after the barrier is hit</td></tr>
+              <tr><td>Use financial sentiment as a risk veto</td><td>FinBERT (ProsusAI)</td><td>Apache-2.0, CPU, sub-second — defensive filter, not an alpha engine</td></tr>
+              <tr><td>Cheaply fine-tune an LLM on financial text</td><td>FinGPT (LoRA on LLaMA)</td><td>~3.67M trainable params vs. 6.17B full fine-tune — fits on one consumer GPU</td></tr>
+              <tr><td>Orchestrate the nightly pipeline</td><td>Prefect (Dagster at scale)</td><td>Scheduling/retries/caching once a cron script becomes unwieldy — not needed pre-MVP</td></tr>
+              <tr><td>Avoid a non-commercial license trap</td><td>Prefer Chronos / TimesFM / Lag-Llama / MOMENT over Moirai</td><td>Moirai is CC BY-NC-4.0 — not usable in a system that manages your own capital</td></tr>
+              <tr><td>Find structural breaks / changepoints</td><td>ruptures (PELT)</td><td>Linear-cost exact search, no assumed number of breakpoints</td></tr>
+              <tr><td>Use RL without it blowing up your backtest</td><td>Stable-Baselines3 (PPO) on a narrow sub-problem, PBO-tested</td><td>FinRL's own contests reject overfit agents at 10% significance — confine RL accordingly</td></tr>
+              <tr><td>Execute live orders</td><td>PickMyTrade webhook</td><td>Execution is a solved, hardened problem — your edge lives in the model layers, not order plumbing</td></tr>
+              <tr><td>Draft / review pipeline code quickly</td><td>Claude Fable (<code>claude-fable-5</code>)</td><td>Pair-engineer for CPCV fold math, causal HMM decoding, and leakage review — see §14.5; every merge is still a human decision</td></tr>
+              <tr><td>Bridge a model signal to a live broker order</td><td>PickMyTrade (webhook execution bridge)</td><td>One idempotent POST replaces weeks of broker auth, retry, and OCO state-machine engineering — see §14.6</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 16. Licensing appendix -->
+      <section id="licensing-appendix" class="adv-section" data-aos="fade-up">
+        <SectionHeader title={g('s16_title')} />
+        <p class="adv-lede" set:html={g('s16_lede')} />
+        <div class="adv-tablewrap">
+          <table class="adv-table">
+            <thead><tr><th>Tool / model</th><th>License</th><th>Flag</th><th>Note</th></tr></thead>
+            <tbody>
+              <tr><td>LightGBM</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>XGBoost</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>CatBoost</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>scikit-learn</td><td>BSD-3-Clause</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>neuralforecast / statsforecast / mlforecast (Nixtla)</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>Covers §2's from-scratch DL architectures via one API</td></tr>
+              <tr><td>Nixtla TimeGPT</td><td>Proprietary / paid API</td><td><span class="lic lic-caution">Caution</span></td><td>Closed, vendor lock-in; prefer open Chronos/TimesFM instead</td></tr>
+              <tr><td>Amazon Chronos / Chronos-Bolt</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>Google TimesFM</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>Salesforce Moirai / Moirai-MoE</td><td><strong>CC BY-NC-4.0</strong></td><td><span class="lic lic-restricted">Restricted</span></td><td><strong>Non-commercial only</strong> — do not use in a system managing your own capital without a separate license</td></tr>
+              <tr><td>Lag-Llama</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>MOMENT</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>IBM Granite-TimeSeries (PatchTSMixer/PatchTST/TTM)</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>FinBERT (ProsusAI)</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>FinBERT-tone</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>FinGPT (code)</td><td>MIT</td><td><span class="lic lic-caution">Caution</span></td><td>Code is MIT, but fine-tuned checkpoints inherit the base LLaMA weights' separate Meta community license — check that independently</td></tr>
+              <tr><td>FinRL / FinRL-Meta</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>Stable-Baselines3</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>TensorTrade</td><td>Apache-2.0</td><td><span class="lic lic-caution">Caution</span></td><td>License is permissive, but maintenance has stalled enough that a community fork (TensorTrade-NG) exists specifically to address it — plan accordingly</td></tr>
+              <tr><td>Microsoft Qlib</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>mlfinpy</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>skfolio</td><td>BSD-3-Clause</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>mlfinlab (paid)</td><td>Commercial</td><td><span class="lic lic-caution">Caution</span></td><td>Paid license required — the two free packages above already cover the essentials</td></tr>
+              <tr><td>hmmlearn</td><td>BSD</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>ruptures</td><td>BSD-2-Clause</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>vectorbt (community)</td><td>Apache-2.0 + Commons Clause</td><td><span class="lic lic-caution">Caution</span></td><td>Commons Clause blocks selling a product/service whose value derives primarily from the software itself; fine for internal use, and maintenance-frozen</td></tr>
+              <tr><td>backtrader</td><td><strong>GPL-3.0</strong></td><td><span class="lic lic-restricted">Restricted</span></td><td>Strong copyleft; also stalled since ~2021 — avoid for new work on both grounds</td></tr>
+              <tr><td>Zipline-reloaded</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>NautilusTrader</td><td>LGPL-3.0-or-later</td><td><span class="lic lic-caution">Caution</span></td><td>Permits linking from closed-source strategy code; modifications to NautilusTrader itself must be shared back — verify current terms before commercial deployment</td></tr>
+              <tr><td>QuantConnect LEAN</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>bt</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>backtesting.py</td><td><strong>AGPL-3.0</strong></td><td><span class="lic lic-restricted">Restricted</span></td><td>Network-use copyleft — a real constraint if you build a hosted/SaaS product on it; fine for private, non-distributed use</td></tr>
+              <tr><td>freqtrade</td><td><strong>GPL-3.0</strong></td><td><span class="lic lic-restricted">Restricted</span></td><td>Exchange-focused bot; strong copyleft restricts closed-source commercial derivatives — flagged since it's a common trap</td></tr>
+              <tr><td>PyPortfolioOpt</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>Riskfolio-Lib</td><td>BSD-3-Clause</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>arch</td><td>NCSA</td><td><span class="lic lic-safe">Safe</span></td><td>Permissive, commercial-OK</td></tr>
+              <tr><td>tsfresh</td><td>MIT</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>MLflow</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>Evidently AI</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>NannyML</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>Prefect</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>Dagster</td><td>Apache-2.0</td><td><span class="lic lic-safe">Safe</span></td><td>—</td></tr>
+              <tr><td>PickMyTrade</td><td>Proprietary / paid SaaS</td><td><span class="lic lic-caution">Caution</span></td><td>Execution API, not an installable library — no open-source or self-hosted option; a subscription gates access (see §14.6), a vendor-dependency call rather than an OSS-license one</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout co-warn"><span class="co-title">{g('s16_callout_title')}</span><p set:html={g('s16_callout_body')} /></div>
+      </section>
+
+      <!-- Financial disclaimer -->
+      <section id="full-disclaimer" class="adv-section" data-aos="fade-up">
+        <div class="disclaimer-box">
+          <h2 class="adv-h3 mt-0">{g('disc_title')}</h2>
+          <p set:html={g('disc_p1')} />
+          <p set:html={g('disc_p2')} />
+          <p set:html={g('disc_p3')} />
+          <p set:html={g('disc_p4')} />
+          <p set:html={g('disc_p5')} />
+          <p set:html={g('disc_p6')} />
+          <p set:html={g('disc_p7')} />
+        </div>
+        <p class="mt-4"><a href="#main" class="text-blue-400 hover:underline text-sm">{g('back_to_top')}</a></p>
+      </section>
+      </div><!-- /.adv-main -->
+    </div><!-- /.adv-shell -->
+
+    <!-- Final CTA -->
+    <section class="py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-aos="fade-up">
+        <div class="bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-blue-500/40 rounded-3xl p-10 sm:p-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">{g('cta_title')}</h2>
+          <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">{g('cta_subtitle')}</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="https://app.pickmytrade.io/?register=true" class="px-9 py-4 text-lg rounded-xl shadow-lg transition hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] hover:scale-105 electrolize-regular bg-[#0F3EC3] text-white">
+              {g('cta_trial')}
+            </a>
+            <a href="https://docs.pickmytrade.io/docs/" class="px-9 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-lg transition-all duration-300 electrolize-regular text-white">
+              {g('cta_docs')}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    /* =====================================================================
+       Advanced Guide — "Reference Console" layout system
+       Docs-style two-pane shell: a fixed sticky left index rail + a right
+       content pane. Flat, crisp surfaces — hairline-bordered cards/tables
+       with colored top-accent bars, monospace section pills and code chips,
+       information-dense spacing. Brand navy / blue(#2B77EE) / purple(#7c3aed)
+       / orange(#e93d00). Mono = JetBrains Mono.
+       ===================================================================== */
+
+    /* global.css sets `html, body { overflow-x: hidden }`, which makes the root
+       a scroll container and breaks `position: sticky` for the index rail.
+       `overflow-x: clip` still prevents horizontal scroll but does NOT create a
+       scroll container, so sticky works. Scoped to this page via :global(). */
+    :global(html), :global(body) { overflow-x: clip; }
+
+    /* ---- Two-pane shell: [ index rail | content pane ] ---- */
+    .adv-shell {
+      display: grid;
+      grid-template-columns: 244px minmax(0, 1fr);
+      gap: 3.25rem;
+      align-items: start;
+    }
+    @media (max-width: 1023px) {
+      .adv-shell { grid-template-columns: 1fr; gap: 0; }
+    }
+
+    /* Sticky reference index rail — the grid ITEM is sticky (align-self:start
+       keeps it content-height at the top of the tall grid row so it has room
+       to travel); the inner div is just the scroll container for a long index. */
+    .adv-rail { position: sticky; top: 6rem; align-self: start; }
+    .adv-rail-inner {
+      max-height: calc(100vh - 7.5rem);
+      overflow-y: auto;
+      padding: 1.25rem 1rem 1.5rem 0.25rem;
+      border-right: 1px solid rgba(59,130,246,0.12);
+      scrollbar-width: thin; scrollbar-color: rgba(59,130,246,0.4) transparent;
+    }
+    .adv-rail-label {
+      display: flex; align-items: center; gap: 0.55rem;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #6b7f98; margin: 0 0 1rem;
+    }
+    .adv-rail-dot { width: 6px; height: 6px; border-radius: 999px; background: #2B77EE; box-shadow: 0 0 8px #2B77EE; flex: 0 0 auto; }
+    @media (max-width: 1023px) {
+      .adv-rail { position: static; top: auto; }
+      .adv-rail-inner {
+        max-height: none; overflow: visible;
+        border-right: none; border: 1px solid rgba(59,130,246,0.12);
+        border-radius: 0.9rem; background: #06101c;
+        margin: 0 0 2.5rem; padding: 1.1rem 1.25rem 1.35rem;
+      }
+    }
+
+    /* Cross-link banner — flat hairline card with blue top accent */
+    .adv-crosslink {
+      display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+      background: #06101c; border: 1px solid rgba(59,130,246,0.12);
+      border-top: 2px solid #2B77EE; border-radius: 0.7rem;
+      padding: 1rem 1.25rem; margin: 0 0 2.25rem; color: #889bb4;
+      transition: border-color 0.3s ease;
+    }
+    .adv-crosslink:hover { border-color: rgba(59,130,246,0.35); }
+    .adv-crosslink-icon {
+      width: 2.1rem; height: 2.1rem; flex: none; border-radius: 0.5rem;
+      background: rgba(43,119,238,0.1); border: 1px solid rgba(43,119,238,0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .adv-crosslink-cta { color: #60a5fa; font-weight: 600; text-decoration: none; }
+    .adv-crosslink-cta:hover { text-decoration: underline; }
+
+    /* ---- Section = breakout grid: [full | content(measure) | full] ---- */
+    .adv-section {
+      position: relative;
+      display: grid;
+      grid-template-columns:
+        [full-start] minmax(0, 1fr)
+        [content-start] min(100%, 76ch) [content-end]
+        minmax(0, 1fr) [full-end];
+      padding: 3.75rem 0 0.75rem;
+      margin: 0;
+      scroll-margin-top: 5.5rem;
+      border-top: 1px solid rgba(59, 130, 246, 0.12);
+    }
+    .adv-section:first-of-type { border-top: none; padding-top: 2rem; }
+    /* every direct child rides the centered measure by default … */
+    .adv-section > * { grid-column: content; }
+    /* … except media, which breaks out to the full container width */
+    .adv-section > .adv-tablewrap,
+    .adv-section > .prompt-box,
+    .adv-section > .card-grid,
+    .adv-section > .nlp-featured,
+    .adv-section > figure { grid-column: full; }
+
+    /* Disclaimer section: no divider, no top padding jump */
+    .adv-section:has(.disclaimer-box) { border-top: none; }
+
+    @media (max-width: 640px) {
+      .adv-section { padding-top: 2.75rem; }
+    }
+
+    /* ---- Sub-headings ---- */
+    .adv-h3 {
+      position: relative;
+      font-size: 1.28rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+      margin: 2.4rem 0 0.7rem;
+      padding-left: 0.9rem;
+    }
+    .adv-h3::before {
+      content: "";
+      position: absolute; left: 0; top: 0.18em; bottom: 0.18em;
+      width: 3px; border-radius: 999px;
+      background: linear-gradient(180deg, #2B77EE, #7c3aed);
+      box-shadow: 0 0 10px rgba(43, 119, 238, 0.5);
+    }
+
+    /* ---- Standfirst / lede ---- */
+    .adv-lede {
+      font-size: clamp(1.1rem, 1.5vw, 1.24rem);
+      color: #dce5f1;
+      font-weight: 500;
+      line-height: 1.72;
+      margin: 0 0 1.5rem;
+    }
+    .adv-figcaption { font-size: 0.85rem; color: #7e8ea3; text-align: center; margin-top: 0.7rem; }
+    .adv-srcnote { font-size: 0.82rem; color: #7e8ea3; margin-top: 0.1rem; }
+
+    /* ---- Prose injected via set:html ---- */
+    .adv-body { color: #c6d2e2; line-height: 1.75; }
+    .adv-body p { margin: 0 0 1.1rem; }
+    .adv-body :global(strong) { color: #fff; font-weight: 700; }
+    .adv-body :global(em) { font-style: italic; color: #e2e8f0; }
+    .adv-body :global(a) { color: #60a5fa; text-decoration: underline; text-underline-offset: 2px; transition: color 0.2s ease; }
+    .adv-body :global(a:hover) { color: #93c5fd; }
+    .adv-body :global(code) { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; background: rgba(59,130,246,0.12); color: #93c5fd; padding: 0.1em 0.38em; border-radius: 5px; font-size: 0.86em; }
+    .adv-ul { list-style: none; padding-left: 0; margin: 0 0 1.2rem; }
+    .adv-ul :global(li) { position: relative; padding-left: 1.7rem; margin-bottom: 0.6rem; }
+    .adv-ul :global(li)::before { content: "\f105"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; left: 0.4rem; top: 0.05rem; color: #2B77EE; }
+
+    /* ---- Reference index — compact single-column rail nav ---- */
+    .adv-toc { list-style: none; margin: 0; padding: 0; }
+    .adv-toc :global(li) { margin: 0; }
+    .adv-toc :global(a) {
+      display: block;
+      padding: 0.4rem 0.5rem 0.4rem 0.85rem;
+      border-left: 2px solid rgba(59,130,246,0.14);
+      color: #8ea0b8;
+      text-decoration: none;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .adv-toc :global(a):hover {
+      color: #fff;
+      border-left-color: #2B77EE;
+      background: rgba(59,130,246,0.07);
+    }
+    @media (max-width: 1023px) {
+      .adv-toc { columns: 2; column-gap: 2rem; }
+      .adv-toc :global(li) { break-inside: avoid; }
+    }
+    @media (max-width: 640px) { .adv-toc { columns: 1; } }
+
+    /* ---- Cards — flat hairline tiles with a colored top-accent bar ---- */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1.6rem 0; }
+    .adv-card {
+      background: #06101c;
+      border: 1px solid rgba(59,130,246,0.12);
+      border-top: 2px solid #2B77EE;
+      border-radius: 0.7rem;
+      padding: 1.35rem 1.45rem;
+      color: #c6d2e2;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .adv-card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,0.35); }
+    .card-grid > .adv-card:nth-child(3n+2) { border-top-color: #7c3aed; }
+    .card-grid > .adv-card:nth-child(3n+3) { border-top-color: #e93d00; }
+    .adv-card p { margin: 0 0 0.7rem; font-size: 0.95rem; }
+    .adv-card p:last-child { margin-bottom: 0; }
+    .adv-card-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(148,163,184,0.12); }
+    .adv-card-head h4 { font-size: 1.06rem; font-weight: 700; color: #fff; margin: 0; }
+    .adv-card-h3 { font-size: 1.06rem; font-weight: 700; color: #fff; margin: 0 0 0.6rem; }
+
+    /* ---- Financial-NLP: full-width featured FinBERT (text + code side-by-side) ---- */
+    .nlp-featured { margin: 1.6rem 0 1rem; }
+    .nlp-featured-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .nlp-featured-copy p { font-size: 0.95rem; }
+    .nlp-featured-copy p:last-child { margin-bottom: 0; }
+    .nlp-featured .prompt-box { margin: 0; }
+    .nlp-sub { margin-top: 0; }
+    @media (max-width: 860px) {
+      .nlp-featured-grid { grid-template-columns: 1fr; gap: 1.15rem; }
+    }
+
+    /* ---- License badges ---- */
+    .lic { display: inline-block; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; border: 1px solid transparent; white-space: nowrap; }
+    .lic-safe { background: rgba(16,185,129,0.12); color: #6ee7b7; border-color: rgba(16,185,129,0.3); }
+    .lic-caution { background: rgba(234,179,8,0.12); color: #fcd34d; border-color: rgba(234,179,8,0.3); }
+    .lic-restricted { background: rgba(239,68,68,0.12); color: #fca5a5; border-color: rgba(239,68,68,0.3); }
+
+    /* ---- Callouts — flat left-accent asides w/ monospace label ---- */
+    .callout { position: relative; border-radius: 0.4rem; padding: 0.95rem 1.2rem 0.95rem 1.3rem; margin: 1.3rem 0; border: 1px solid; border-left-width: 4px; font-size: 0.92rem; color: #889bb4; background-clip: padding-box; }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout .co-title { font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .callout .co-title::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: currentColor; flex: 0 0 auto; box-shadow: 0 0 8px currentColor; }
+    .co-info { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.3); border-left-color: #60a5fa; }
+    .co-info .co-title { color: #60a5fa; }
+    .co-tip { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); border-left-color: #34d399; }
+    .co-tip .co-title { color: #34d399; }
+    .co-warn { background: rgba(234,179,8,0.08); border-color: rgba(234,179,8,0.3); border-left-color: #fbbf24; }
+    .co-warn .co-title { color: #fbbf24; }
+
+    /* ---- Tables — flat full-bleed hairline panel ---- */
+    .adv-tablewrap {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      margin: 1.6rem 0;
+      border: 1px solid rgba(59,130,246,0.12);
+      border-radius: 0.7rem;
+      background: #06101c;
+    }
+    .adv-table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.875rem; color: #c6d2e2; }
+    .adv-table th { text-align: left; background: rgba(255,255,255,0.03); color: #889bb4; padding: 0.7rem 1rem; border-bottom: 1px solid rgba(59,130,246,0.14); white-space: nowrap; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .adv-table td { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(59,130,246,0.08); vertical-align: top; }
+    .adv-table tbody tr { transition: background 0.18s ease; }
+    .adv-table tbody tr:nth-child(even) { background: rgba(148,163,184,0.03); }
+    .adv-table tbody tr:hover { background: rgba(59,130,246,0.08); }
+    .adv-table tr:last-child td { border-bottom: none; }
+    .adv-table td:first-child { font-weight: 600; color: #e2e8f0; }
+    .adv-table :global(code) { font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; background: rgba(59,130,246,0.12); color: #93c5fd; padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.85em; }
+    .adv-table :global(a) { color: #60a5fa; text-decoration: underline; }
+    .adv-table :global(strong) { color: #fff; }
+    .adv-table :global(em) { font-style: italic; }
+
+    /* Figure frame */
+    .fig-frame { padding: 1.1rem; }
+
+    /* ---- Code / prompt blocks — flat window w/ monospace filename chip ---- */
+    .prompt-box {
+      margin: 1.6rem 0;
+      background: #030812;
+      border: 1px solid rgba(59,130,246,0.12);
+      border-radius: 0.7rem;
+      overflow: hidden;
+    }
+    .prompt-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+      padding: 0.5rem 0.7rem 0.5rem 0.8rem;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(59,130,246,0.1);
+    }
+    .prompt-head > span {
+      display: inline-block;
+      background: rgba(59,130,246,0.1); color: #93c5fd;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.02em;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .prompt-box pre { padding: 1.1rem 1.2rem; white-space: pre-wrap; overflow-wrap: anywhere; font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.8rem; line-height: 1.6; color: #cddcf0; margin: 0; }
+    .copy-btn { background: none; color: #7e8ea3; border: none; border-radius: 4px; padding: 0.25rem 0.55rem; font-size: 0.68rem; cursor: pointer; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; flex: 0 0 auto; font-family: "JetBrains Mono", ui-monospace, monospace; transition: color 0.2s ease, background 0.2s ease; }
+    .copy-btn:hover { color: #fff; background: rgba(59,130,246,0.12); }
+
+    /* Nested code inside cards must not try to break out */
+    .adv-card .prompt-box { margin: 1rem 0 0.2rem; }
+
+    /* ---- Disclaimer box ---- */
+    .disclaimer-box {
+      background: #030812;
+      border: 1px solid rgba(59,130,246,0.12);
+      border-top: 4px solid #ef4444;
+      border-radius: 0.7rem;
+      padding: 1.7rem 1.85rem;
+      font-size: 0.86rem; color: #7e8ea3;
+    }
+    .disclaimer-box p { margin: 0 0 0.9rem; }
+    .disclaimer-box p:last-child { margin-bottom: 0; }
+    .disclaimer-box :global(strong) { color: #fff; }
+
+    /* ---- Slim on-brand scrollbars everywhere scrollable ---- */
+    .prompt-box pre, .adv-tablewrap { scrollbar-width: thin; scrollbar-color: rgba(59,130,246,0.4) transparent; }
+    .prompt-box pre::-webkit-scrollbar, .adv-tablewrap::-webkit-scrollbar { height: 8px; width: 8px; }
+    .prompt-box pre::-webkit-scrollbar-track, .adv-tablewrap::-webkit-scrollbar-track { background: transparent; }
+    .prompt-box pre::-webkit-scrollbar-thumb, .adv-tablewrap::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.35); border-radius: 999px; }
+    .prompt-box pre::-webkit-scrollbar-thumb:hover, .adv-tablewrap::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.6); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .adv-card { transition: none; }
+    }
+  </style>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.copy-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var box = btn.closest('.prompt-box');
+          var pre = box ? box.querySelector('pre') : null;
+          if (!pre) return;
+          var text = pre.innerText;
+          function done() { btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(function () {});
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = text; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) {}
+            document.body.removeChild(ta);
+          }
+        });
+      });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Locale } from "../i18n/config";
+import { answerParams } from "../data/faqItems";
+
+interface Props {
+  locale: Locale;
+  /** Question ids to render, in order (see src/data/faqItems.ts). */
+  ids: number[];
+}
+
+const { locale, ids } = Astro.props;
+const t = useTranslations(locale);
+
+// Question/answer keys are resolved dynamically; the `general_faq.faq_q{N}` /
+// `faq_a{N}` strings live in every locale dictionary.
+const q = (id: number) => t(`general_faq.faq_q${id}` as any);
+const a = (id: number) => t(`general_faq.faq_a${id}` as any, answerParams(locale, id));
+---
+
+{ids.map((id) => (
+  <div
+    class="faq-item bg-[#002040]/60 border border-white/10 rounded-xl mb-4 overflow-hidden"
+    itemscope
+    itemprop="mainEntity"
+    itemtype="https://schema.org/Question"
+  >
+    <div class="faq-question">
+      <span class="font-semibold pr-4" itemprop="name">{q(id)}</span>
+      <div class="faq-icon" aria-hidden="true">
+        <i class="fa-solid fa-plus"></i>
+      </div>
+    </div>
+    <div
+      class="faq-answer"
+      itemscope
+      itemprop="acceptedAnswer"
+      itemtype="https://schema.org/Answer"
+    >
+      <div itemprop="text" set:html={a(id)} />
+    </div>
+  </div>
+))}

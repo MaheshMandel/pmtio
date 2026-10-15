@@ -1,0 +1,181 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import TwsDisclaimers from "../../../../components/TwsDisclaimers.astro";
+import { rithmicArticles, rithmicUi, localizeRithmicHtml, RITHMIC_LOCALES, RITHMIC_SITE, RITHMIC_INDEXABLE, type RithmicArticle } from "../../../../data/rithmicHelp";
+import { localizedPath, absoluteLocalizedPath } from "../../../../i18n/utils";
+import { LOCALE_BCP47, type Locale } from "../../../../i18n/config";
+
+import { HELP_PAGES_ENABLED } from "../../../../data/helpPages";
+
+export function getStaticPaths() {
+  if (!HELP_PAGES_ENABLED) return [];
+  return RITHMIC_LOCALES.flatMap((locale) =>
+    rithmicArticles(locale).map((a) => ({
+      params: { locale: locale === "en" ? undefined : locale, slug: a.slug },
+      props: { locale, article: a },
+    })),
+  );
+}
+
+const { article: a, locale } = Astro.props as { article: RithmicArticle; locale: Locale };
+const ui = rithmicUi(locale);
+const L = (html: string) => localizeRithmicHtml(html, locale);
+const hubPath = localizedPath(locale, "help/rithmic");
+const pageUrl = absoluteLocalizedPath(locale, `help/rithmic/${a.slug}`);
+const groupLabel = ui.groups[a.group] ?? a.group;
+const titleTag = `${a.title} | PickMyTrade`;
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": `${pageUrl}#article`,
+    url: pageUrl,
+    headline: a.title,
+    description: a.description,
+    inLanguage: LOCALE_BCP47[locale],
+    dateModified: a.modified,
+    author: { "@type": "Organization", name: "PickMyTrade" },
+    publisher: { "@type": "Organization", name: "PickMyTrade", url: `${RITHMIC_SITE}/` },
+    mainEntityOfPage: pageUrl,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: ui.twsHelp, item: absoluteLocalizedPath(locale, "help/rithmic") },
+      { "@type": "ListItem", position: 2, name: a.title, item: pageUrl },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: a.faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a.replace(/<[^>]+>/g, "") },
+    })),
+  },
+];
+
+const toc = [
+  { id: "answer", label: ui.toc.answer },
+  ...a.toc.map((t) => ({ id: t.id, label: t.label })),
+  { id: "faq", label: ui.toc.faq },
+  { id: "related", label: ui.toc.related },
+  { id: "disclaimers", label: ui.toc.disclaimers },
+];
+const h2 = "text-2xl font-bold text-white mt-12 mb-4 pb-3 border-b border-white/10";
+---
+
+<BaseLayout
+  locale={locale}
+  title={titleTag}
+  description={a.description}
+  canonical={pageUrl}
+  structuredData={structuredData}
+  robots={RITHMIC_INDEXABLE ? undefined : "noindex, follow"}
+>
+  <section class="bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] pt-28 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-gray-400">
+          <li><a href={localizedPath(locale, "")} class="hover:text-[#2B77EE] transition-colors">{ui.home}</a></li>
+          <li><i class="fa-solid fa-chevron-right text-xs text-gray-600" aria-hidden="true"></i></li>
+          <li><a href={hubPath} class="hover:text-[#2B77EE] transition-colors">{ui.twsHelp}</a></li>
+          <li><i class="fa-solid fa-chevron-right text-xs text-gray-600" aria-hidden="true"></i></li>
+          <li class="text-[#2B77EE]">{groupLabel}</li>
+        </ol>
+      </nav>
+      <span class="inline-block px-4 py-1.5 rounded-full bg-[#2B77EE]/10 border border-[#2B77EE]/30 text-[#2B77EE] text-xs font-semibold uppercase tracking-wider mb-5">
+        {groupLabel}
+      </span>
+      <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight text-white">{a.title}</h1>
+    </div>
+  </section>
+
+  <section class="bg-[#001429] py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-8">
+      <aside class="hidden lg:block">
+        <nav aria-label={ui.onThisPage} class="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto text-sm">
+          <strong class="block text-white mb-3">{ui.onThisPage}</strong>
+          <ul class="space-y-2 border-l border-white/10">
+            {toc.map(({ id, label }) => (
+              <li><a href={`#${id}`} class="block pl-4 text-gray-400 hover:text-[#2B77EE] transition-colors">{label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+      <article class="rithmic-prose min-w-0">
+        <section id="answer" class="rounded-xl border border-[#2B77EE]/40 bg-[#002040] p-5 sm:p-6">
+          <strong class="text-[#7FB8F9] text-xs uppercase tracking-wider">{ui.quickAnswer}</strong>
+          <p class="text-lg text-white leading-relaxed mt-2" data-answer-block set:html={L(a.answer)} />
+        </section>
+
+        <p class="text-sm text-gray-400 mt-4">
+          {ui.educationalNote}
+          <a href="#disclaimers" class="text-[#2B77EE] hover:underline">{ui.readDisclaimers}</a>.
+        </p>
+
+        <div set:html={L(a.body)} />
+
+        <h2 id="faq" class={h2}>{ui.faq}</h2>
+        <div class="space-y-4">
+          {a.faq.map((f) => (
+            <div class="bg-[#001a33] border border-white/10 rounded-xl p-5">
+              <h3 class="text-white font-semibold mb-2">{f.q}</h3>
+              <p class="text-gray-300 leading-relaxed" set:html={L(f.a)} />
+            </div>
+          ))}
+        </div>
+
+        <h2 id="related" class={h2}>{ui.related}</h2>
+        <div class="grid sm:grid-cols-2 gap-3">
+          {a.related.map((r) => (
+            <a href={localizedPath(locale, `help/rithmic/${r.slug}`)} class="group bg-[#001a33] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/60 transition-colors text-white font-medium text-sm">
+              <span class="group-hover:text-[#2B77EE] transition-colors">{r.title}</span>
+            </a>
+          ))}
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="bg-[#002040] py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <TwsDisclaimers ui={ui} urls={[]} />
+      <p class="text-xs text-gray-500 mt-6">{ui.footerNote}</p>
+    </div>
+  </section>
+
+  <section class="bg-gradient-to-r from-[#2B77EE] to-blue-600 py-14">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">{ui.ctaTitle}</h2>
+      <a href={localizedPath(locale, "broker/tradingview-to-rithmic")} class="px-8 py-3 bg-white text-[#2B77EE] font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg inline-block">
+        {ui.ctaButton}<i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .rithmic-prose p { color: #d1d5db; line-height: 1.75; margin: 0 0 1rem; }
+  .rithmic-prose a { color: #2b77ee; }
+  .rithmic-prose a:hover { text-decoration: underline; }
+  .rithmic-prose p.meta { font-size: 0.875rem; color: #9ca3af; }
+  .rithmic-prose figure { margin: 1.5rem 0; background: #001a33; border: 1px solid rgba(255,255,255,.1); border-radius: .75rem; padding: 1rem; }
+  .rithmic-prose figure img { display: block; max-width: 100%; height: auto; border-radius: .5rem; margin: 0 auto; }
+  .rithmic-prose figcaption { margin-top: .75rem; font-size: .875rem; color: #9ca3af; line-height: 1.6; }
+  .rithmic-prose h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 3rem 0 1rem; padding-bottom: .75rem; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .rithmic-prose h3 { color: #fff; font-weight: 600; margin: 1.5rem 0 .5rem; }
+  .rithmic-prose ul, .rithmic-prose ol { color: #d1d5db; line-height: 1.75; margin: 0 0 1rem; padding-left: 1.5rem; }
+  .rithmic-prose ul { list-style: disc; } .rithmic-prose ol { list-style: decimal; }
+  .rithmic-prose li { margin: .35rem 0; }
+  .rithmic-prose .table-scroll { overflow-x: auto; margin: 1.25rem 0; border: 1px solid rgba(255,255,255,.1); border-radius: .75rem; }
+  .rithmic-prose table { width: 100%; border-collapse: collapse; font-size: .9rem; color: #d1d5db; }
+  .rithmic-prose th { text-align: left; color: #fff; background: #001a33; padding: .65rem .85rem; }
+  .rithmic-prose td { padding: .65rem .85rem; border-top: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+  .rithmic-prose strong { color: #fff; }
+  .rithmic-prose code { background: rgba(43,119,238,.12); padding: .1rem .35rem; border-radius: .25rem; }
+</style>

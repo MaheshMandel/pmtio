@@ -1,0 +1,825 @@
+﻿---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AnswerBlock from '../../../components/AnswerBlock.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "image": "https://pickmytrade.io/assets/logo.png",
+    "name": "PickMyTrade - TradingView to MatchTrader Automation",
+    "alternateName": "MatchTrader Stock Trading Bot",
+    "description": "Automated trading system for MatchTrader Brokerage connecting TradingView alerts to MatchTrader accounts. Full support for MatchTrader API automation, algorithmic trading, and real-time execution. Works with MatchTrader trading platform for Forex, CFDs, and commodities.",
+    "url": absoluteLocalizedPath(locale, 'broker/tradingview-to-matchtrader'),
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web-based, Windows, Mac, Linux",
+    "keywords": "matchtrader automated trading, matchtrader trading bot, matchtrader api trading, matchtrader algorithmic trading, matchtrader brokerage automation, automated stock trading matchtrader, matchtrader options bot",
+    "offers": {
+      "@type": "Offer",
+      "price": "50.00",
+      "priceCurrency": "USD",
+      "priceValidUntil": "2026-12-31",
+      "availability": "https://schema.org/InStock",
+      "description": "7-day free trial, no credit card required"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "support@pickmytrade.com",
+        "contactType": "Customer Support",
+        "availableLanguage": "English"
+      },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade",
+      "https://blog.pickmytrade.io",
+      "https://docs.pickmytrade.io"
+    ]
+  },
+    "featureList": [
+      "TradingView Alert Integration",
+      "MatchTrader API Connectivity",
+      "Automated Order Execution for MatchTrader",
+      "Forex Trading Automation",
+      "MatchTrader Brokerage Integration",
+      "Real-time Trade Execution",
+      "Multi Account Management",
+      "MatchTrader Auto Trading System",
+      "Risk Management Tools",
+      "Stop Loss & Take Profit Automation",
+      "No Coding Required"
+    ]
+  };
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which MatchTrader brokers are supported?",
+        "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade works with brokers and prop firms that run on the Match-Trader platform, such as Lux Trading Firm. Check with your broker or firm to confirm they use Match-Trader and allow automation." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I trade all Forex pairs on MatchTrader?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes, you can automate trades for any currency pair or instrument available in your MatchTrader account, including major pairs, minors, exotics, CFDs, and commodities." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my MatchTrader account secure?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes, we use bank-level encryption to protect your credentials. Your login information is encrypted and never shared. We never have permission to withdraw funds." }
+      },
+      {
+        "@type": "Question",
+        "name": "How fast are trades executed?",
+        "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade processes your order in under 200ms on our side. Your total fill time also depends on your Match-Trader broker's execution speed, network latency, and how quickly TradingView sends the alert." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you connect TradingView to Match-Trader?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. PickMyTrade connects TradingView to Match-Trader (MatchTrader) so your alerts place live orders automatically. You connect your Match-Trader account in PickMyTrade, paste a webhook into your TradingView alert, and every time the alert fires PickMyTrade places the matching trade. It works with any Match-Trader-powered broker and needs no coding." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you set up a webhook for Match-Trader?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Connect your Match-Trader account in PickMyTrade, then generate your webhook URL and alert message. In TradingView, open Create Alert, delete the default message, paste the PickMyTrade message, and add the PickMyTrade webhook URL under Notifications. Test the alert on a 1-minute chart and confirm the order in your Match-Trader account. Webhook alerts require a paid TradingView plan (Pro, Pro+ or Premium)." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you copy trades across multiple Match-Trader accounts?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Connect each Match-Trader account to PickMyTrade and one TradingView alert executes across all of them at once, with a quantity you set per account. If any account is with a prop firm, copy trading and automation rules vary by firm and change over time, so confirm your firm's current policy first." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you need a VPS or MT bridge to automate Match-Trader?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade runs in the cloud around the clock, so there is no VPS to rent and no MetaTrader-style bridge or EA to install. Once your Match-Trader account is connected and your alert is live, trades execute automatically even when your computer is switched off." }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does it cost and is there a free trial?",
+        "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade is $50 per month or $500 per year, and every account starts with a 7-day free trial that needs no credit card. The subscription includes the webhook automation and the multi-account copier, with 24/7 live support." }
+      }
+    ]
+  };
+const schema3 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Brokers",
+        "item": absoluteLocalizedPath(locale, 'broker')
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "TradingView to Match-Trader",
+        "item": absoluteLocalizedPath(locale, 'broker/tradingview-to-matchtrader')
+      }
+    ]
+  };
+const schema4 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to connect TradingView to Match-Trader with PickMyTrade",
+                  "name": "How to connect TradingView to Match-Trader with PickMyTrade",
+                  "description": "Auto-execute TradingView alerts on a Match-Trader account by connecting the account to PickMyTrade and pasting a webhook into a TradingView alert. No coding, no VPS.",
+                  "image": "https://pickmytrade.io/assets/logo.png",
+                  "timeRequired": "PT5M",
+                  "dependencies": "PickMyTrade account; Match-Trader broker account; TradingView Pro, Pro+ or Premium (for webhook alerts)",
+                  "articleSection": [
+                    "Connect your Match-Trader account — Create a PickMyTrade account and add your Match-Trader broker account with your broker login, then set your default position size, stop-loss and take-profit.",
+                    "Generate your webhook URL and alert message — In PickMyTrade, generate the webhook URL and the ready-made alert message for your buy and sell signals. There is nothing to code.",
+                    "Add the alert in TradingView — Create an alert in TradingView, delete the default message, paste the PickMyTrade message, and set the PickMyTrade webhook URL under Notifications. Webhook alerts need a paid TradingView plan.",
+                    "Test and go live — Put the alert on a 1-minute chart, wait for it to trigger, confirm the order in your PickMyTrade alert log and in Match-Trader, then enable the alert."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+---
+<BaseLayout
+  locale={locale}
+  title={t('broker_matchtrader.page_title')}
+  description={t('broker_matchtrader.page_description')}
+  keywords={t('broker_matchtrader.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_matchtrader.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, 'broker/')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_matchtrader.breadcrumb_brokers')}</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('broker_matchtrader.breadcrumb_current')}</span>
+          <meta itemprop="position" content="3" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION - REDESIGNED -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040]">
+    <!-- Animated Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <canvas id="tradingCanvas" class="w-full h-full" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#001429]/30 to-[#002040]"></div>
+
+    <!-- Content Container -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-20 sm:pb-28">
+      <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+
+        <!-- Top Badge -->
+        <div
+          class="inline-flex items-center gap-2 mb-6 sm:mb-8 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 sm:px-6 py-2 sm:py-3"
+          data-aos="fade-down" data-aos-delay="100">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B77EE] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#2B77EE]"></span>
+          </span>
+          <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+            {t('broker_matchtrader.hero_badge')}
+          </span>
+          <i class="fa-solid fa-check-circle text-[#2B77EE]" aria-hidden="true"></i>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight"
+          data-aos="fade-up" data-aos-delay="200">
+          <span class="block text-white mb-2">{t('broker_matchtrader.hero_title_line1')}</span>
+          <span class="block bg-gradient-to-r from-[#2B77EE] via-[#4B94FF] to-[#7FB8F9] bg-clip-text text-transparent">
+            {t('broker_matchtrader.hero_title_line2')}
+          </span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="max-w-3xl mx-auto text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 sm:mb-10 leading-relaxed px-4"
+          data-aos="fade-up" data-aos-delay="300">
+          {t('broker_matchtrader.hero_subtitle_pre')} <strong class="text-white">{t('broker_matchtrader.hero_subtitle_alerts')}</strong> {t('broker_matchtrader.hero_subtitle_mid')} <strong
+            class="text-white">{t('broker_matchtrader.hero_subtitle_broker')}</strong> {t('broker_matchtrader.hero_subtitle_post')}
+          <span class="block mt-2 text-[#7FB8F9]">{t('broker_matchtrader.hero_subtitle_highlight')}</span>
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10 sm:mb-12 px-4" data-aos="fade-up"
+          data-aos-delay="400">
+          <a href="https://app.pickmytrade.io/?register=true" rel="noopener" aria-label={t('broker_matchtrader.hero_aria_register')}
+            class="group relative inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl overflow-hidden shadow-lg hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span
+              class="absolute inset-0 w-full h-full bg-gradient-to-r from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <span class="relative flex items-center gap-2">
+              <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+              {t('broker_matchtrader.cta_start_trial')}
+            </span>
+          </a>
+
+          <a href="https://app.pickmytrade.io" rel="noopener" aria-label={t('broker_matchtrader.hero_aria_login')}
+            class="group inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-[#2B77EE] bg-white/10 backdrop-blur-sm border-2 border-[#2B77EE]/50 rounded-xl hover:bg-white/20 hover:border-[#2B77EE] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i>
+              {t('broker_matchtrader.cta_login')}
+            </span>
+          </a>
+        </div>
+
+        <!-- Feature Pills -->
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 text-sm sm:text-base" data-aos="fade-up"
+          data-aos-delay="500">
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_matchtrader.pill_trial')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-credit-card text-blue-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_matchtrader.pill_card')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-globe text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_matchtrader.pill_forex')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_matchtrader.pill_execution')}</span>
+          </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-12 sm:mt-16 pt-8 border-t border-white/10" data-aos="fade-up" data-aos-delay="600">
+          <p class="text-xs sm:text-sm text-gray-400 mb-4 uppercase tracking-wider">{t('broker_matchtrader.trust_heading')}</p>
+          <div class="flex flex-wrap justify-center items-center gap-8 sm:gap-12">
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">50,000+</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_matchtrader.trust_rating_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">99.9%</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_matchtrader.trust_uptime_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">&lt;5min</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_matchtrader.trust_setup_label')}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Smooth Wave Transition -->
+    <div class="absolute bottom-0 left-0 right-0 z-20">
+      <svg class="w-full h-16 sm:h-20 md:h-24" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none">
+        <path
+          d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+          fill="url(#wave-gradient)" />
+        <defs>
+          <linearGradient id="wave-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#002040" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#002040" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </header>
+
+  <AnswerBlock
+    locale={locale}
+    answer={t('broker_matchtrader.answer_block')}
+    factsHeading={t('broker_matchtrader.facts_heading')}
+    asOfLabel={t('broker_matchtrader.facts_as_of')}
+    asOfDate="2026-10-01"
+    facts={[
+      { label: t('broker_matchtrader.facts_connection_label'), value: t('broker_matchtrader.facts_connection_value') },
+      { label: t('broker_matchtrader.facts_firms_label'), value: t('broker_matchtrader.facts_firms_value') },
+      { label: t('broker_matchtrader.facts_markets_label'), value: t('broker_matchtrader.facts_markets_value') },
+      { label: t('broker_matchtrader.facts_multi_label'), value: t('broker_matchtrader.facts_multi_value') },
+      { label: t('broker_matchtrader.facts_infra_label'), value: t('broker_matchtrader.facts_infra_value') },
+      { label: t('broker_matchtrader.facts_tv_plan_label'), value: t('broker_matchtrader.facts_tv_plan_value') },
+      { label: t('broker_matchtrader.facts_price_label'), value: t('broker_matchtrader.facts_price_value') },
+    ]}
+    notSupportedHeading={t('broker_matchtrader.not_supported_heading')}
+    notSupported={[t('broker_matchtrader.not_supported_1'), t('broker_matchtrader.not_supported_2'), t('broker_matchtrader.not_supported_3')]}
+    reviewedBy={t('broker_matchtrader.reviewed_by')}
+    updatedLabel={t('broker_matchtrader.updated_label')}
+  />
+
+  <!-- Which brokers and prop firms use Match-Trader -->
+  <section id="answer" class="relative py-14 sm:py-20 px-4 sm:px-5 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-5 text-white electrolize-regular">
+        {t('broker_matchtrader.firms_h2')}
+      </h2>
+      <p class="text-gray-300 leading-relaxed mb-4 text-base sm:text-lg">{t('broker_matchtrader.firms_p1')}</p>
+      <p class="text-gray-300 leading-relaxed text-base sm:text-lg">{t('broker_matchtrader.firms_p2')} <a href={localizedPath(locale, 'prop-firm-faq/lux-trading-firm')} class="text-[#2B77EE] hover:underline">{t('broker_matchtrader.firms_link')}</a>.</p>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section id="benefits" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-star text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.benefits_eyebrow')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular">
+          <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            {t('broker_matchtrader.benefits_title')}
+          </span>
+        </h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80" data-aos="fade-up">
+          <div class="text-4xl mb-4 text-[#2B77EE] group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_matchtrader.benefit1_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.benefit1_desc')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80" data-aos="fade-up" data-aos-delay="100">
+          <div class="text-4xl mb-4 text-[#2B77EE] group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-chart-candlestick"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_matchtrader.benefit2_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.benefit2_desc')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-4xl mb-4 text-[#2B77EE] group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_matchtrader.benefit3_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.benefit3_desc')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80" data-aos="fade-up">
+          <div class="text-4xl mb-4 text-[#2B77EE] group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-code-slash"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_matchtrader.benefit4_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.benefit4_desc')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80" data-aos="fade-up" data-aos-delay="100">
+          <div class="text-4xl mb-4 text-[#2B77EE] group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_matchtrader.benefit5_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.benefit5_desc')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-4xl mb-4 text-[#2B77EE] group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-building-columns"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_matchtrader.benefit6_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.benefit6_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="howitworks" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-10 right-20 w-64 h-64 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-cogs text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.how_eyebrow')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular">
+          <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            {t('broker_matchtrader.how_title')}
+          </span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 sm:gap-12">
+        <div class="text-center group" data-aos="fade-up">
+          <div class="relative w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] rounded-full flex items-center justify-center text-3xl sm:text-4xl font-bold text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-[#2B77EE]/50">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <span class="relative">1</span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold mb-4 text-white">{t('broker_matchtrader.step1_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.step1_desc')}</p>
+        </div>
+
+        <div class="text-center group" data-aos="fade-up" data-aos-delay="100">
+          <div class="relative w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] rounded-full flex items-center justify-center text-3xl sm:text-4xl font-bold text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-[#2B77EE]/50">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <span class="relative">2</span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold mb-4 text-white">{t('broker_matchtrader.step2_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.step2_desc')}</p>
+        </div>
+
+        <div class="text-center group" data-aos="fade-up" data-aos-delay="200">
+          <div class="relative w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] rounded-full flex items-center justify-center text-3xl sm:text-4xl font-bold text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-[#2B77EE]/50">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <span class="relative">3</span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold mb-4 text-white">{t('broker_matchtrader.step3_title')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.step3_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Webhook Setup Section -->
+  <section id="setup" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <div class="text-center mb-10 sm:mb-14" data-aos="fade-up">
+        <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-link text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.webhook_eyebrow')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular text-white">{t('broker_matchtrader.webhook_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">{t('broker_matchtrader.webhook_intro')}</p>
+      </div>
+
+      <ol class="space-y-4 sm:space-y-6">
+        <li class="flex gap-4 bg-[#001429]/50 p-5 sm:p-6 rounded-xl border border-[#2B77EE]/30" data-aos="fade-up">
+          <span class="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] text-white font-bold flex items-center justify-center">1</span>
+          <p class="text-gray-300"><strong class="text-white">{t('broker_matchtrader.webhook_step1_lead')}</strong> {t('broker_matchtrader.webhook_step1_text')}</p>
+        </li>
+        <li class="flex gap-4 bg-[#001429]/50 p-5 sm:p-6 rounded-xl border border-[#2B77EE]/30" data-aos="fade-up" data-aos-delay="100">
+          <span class="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] text-white font-bold flex items-center justify-center">2</span>
+          <p class="text-gray-300"><strong class="text-white">{t('broker_matchtrader.webhook_step2_lead')}</strong> {t('broker_matchtrader.webhook_step2_text')}</p>
+        </li>
+        <li class="flex gap-4 bg-[#001429]/50 p-5 sm:p-6 rounded-xl border border-[#2B77EE]/30" data-aos="fade-up" data-aos-delay="200">
+          <span class="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] text-white font-bold flex items-center justify-center">3</span>
+          <p class="text-gray-300"><strong class="text-white">{t('broker_matchtrader.webhook_step3_lead')}</strong> {t('broker_matchtrader.webhook_step3_text')}</p>
+        </li>
+        <li class="flex gap-4 bg-[#001429]/50 p-5 sm:p-6 rounded-xl border border-[#2B77EE]/30" data-aos="fade-up" data-aos-delay="300">
+          <span class="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] text-white font-bold flex items-center justify-center">4</span>
+          <p class="text-gray-300"><strong class="text-white">{t('broker_matchtrader.webhook_step4_lead')}</strong> {t('broker_matchtrader.webhook_step4_text')}</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Trade Copier Section -->
+  <section id="copier" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <div class="relative z-10 max-w-4xl mx-auto" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-copy text-[#2B77EE]"></i>
+        <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.copier_eyebrow')}</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 electrolize-regular text-white">{t('broker_matchtrader.copier_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_matchtrader.copier_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_matchtrader.copier_p2')}</p>
+      <p class="text-gray-400 leading-relaxed text-sm sm:text-base border-l-4 border-[#2B77EE]/50 pl-4">{t('broker_matchtrader.copier_p3')}</p>
+    </div>
+  </section>
+
+  <!-- Alert Body Example Section -->
+  <section id="alert-example" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <div class="relative z-10 max-w-4xl mx-auto" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-code text-[#2B77EE]"></i>
+        <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.alert_eyebrow')}</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 electrolize-regular text-white">{t('broker_matchtrader.alert_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-6">{t('broker_matchtrader.alert_intro')}</p>
+      <pre class="bg-[#000d1f] border border-[#2B77EE]/30 rounded-xl p-5 sm:p-6 overflow-x-auto text-sm sm:text-base text-[#7FB8F9] font-mono leading-relaxed"><code>{"{"}
+  "token": "YOUR_PICKMYTRADE_TOKEN",
+  "symbol": "EURUSD",
+  "action": "buy",
+  "quantity": 1
+{"}"}</code></pre>
+      <p class="text-gray-300 leading-relaxed mt-6">{t('broker_matchtrader.alert_after')}</p>
+    </div>
+  </section>
+
+  <!-- Examples Section -->
+  <section id="examples" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-chart-bar text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.examples_eyebrow')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular">
+          <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            {t('broker_matchtrader.examples_title')}
+          </span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
+        <div class="group bg-[#001429]/50 p-6 sm:p-8 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-xl sm:text-2xl font-bold mb-4 text-[#2B77EE]">{t('broker_matchtrader.example1_title')}</h3>
+          <p class="text-gray-400 mb-4">{t('broker_matchtrader.example1_desc')}</p>
+          <ul class="space-y-2 text-gray-300">
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example1_li1')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example1_li2')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example1_li3')}</li>
+          </ul>
+        </div>
+
+        <div class="group bg-[#001429]/50 p-6 sm:p-8 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+          <h3 class="text-xl sm:text-2xl font-bold mb-4 text-[#2B77EE]">{t('broker_matchtrader.example2_title')}</h3>
+          <p class="text-gray-400 mb-4">{t('broker_matchtrader.example2_desc')}</p>
+          <ul class="space-y-2 text-gray-300">
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example2_li1')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example2_li2')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example2_li3')}</li>
+          </ul>
+        </div>
+
+        <div class="group bg-[#001429]/50 p-6 sm:p-8 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-xl sm:text-2xl font-bold mb-4 text-[#2B77EE]">{t('broker_matchtrader.example3_title')}</h3>
+          <p class="text-gray-400 mb-4">{t('broker_matchtrader.example3_desc')}</p>
+          <ul class="space-y-2 text-gray-300">
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example3_li1')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example3_li2')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example3_li3')}</li>
+          </ul>
+        </div>
+
+        <div class="group bg-[#001429]/50 p-6 sm:p-8 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+          <h3 class="text-xl sm:text-2xl font-bold mb-4 text-[#2B77EE]">{t('broker_matchtrader.example4_title')}</h3>
+          <p class="text-gray-400 mb-4">{t('broker_matchtrader.example4_desc')}</p>
+          <ul class="space-y-2 text-gray-300">
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example4_li1')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example4_li2')}</li>
+            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> {t('broker_matchtrader.example4_li3')}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-80 h-80 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-question-circle text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.faq_eyebrow')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular">
+          <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            {t('broker_matchtrader.faq_title')}
+          </span>
+        </h2>
+      </div>
+
+      <div class="space-y-4 sm:space-y-6">
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq_q2')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq_a2')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq_q3')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq_a3')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq_q4')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq_a4')}</p>
+        </div>
+
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq_q5')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq_a5')}</p>
+        </div>
+
+      </div>
+
+      <!-- View Full FAQ CTA -->
+      <div class="text-center mt-12" data-aos="fade-up">
+        <p class="text-gray-400 mb-4">{t('broker_matchtrader.faq_more_text')}</p>
+        <a href={localizedPath(locale, 'broker-faq/matchtrader-faq/')}
+          class="inline-flex items-center gap-2 px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25">
+          <i class="fa-solid fa-circle-question"></i>
+          {t('broker_matchtrader.faq_view_all')}
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Match-Trader Automation FAQ Section -->
+  <section id="matchtrader-automation-faq" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-circle-question text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.faq2_eyebrow')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular">
+          <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            {t('broker_matchtrader.faq2_h2')}
+          </span>
+        </h2>
+      </div>
+
+      <div class="space-y-4 sm:space-y-6">
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq2_q1')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq2_a1')}</p>
+        </div>
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq2_q2')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq2_a2')}</p>
+        </div>
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq2_q3')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq2_a3')}</p>
+        </div>
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq2_q4')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq2_a4')}</p>
+        </div>
+        <div class="group bg-[#001429]/50 p-6 rounded-xl border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300" data-aos="fade-up">
+          <h3 class="text-lg sm:text-xl font-bold mb-3 text-[#2B77EE]">{t('broker_matchtrader.faq2_q5')}</h3>
+          <p class="text-gray-400">{t('broker_matchtrader.faq2_a5')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <div class="relative z-10 max-w-4xl mx-auto text-center" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-tag text-[#2B77EE]"></i>
+        <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.pricing_eyebrow')}</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 electrolize-regular text-white">{t('broker_matchtrader.pricing_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed max-w-2xl mx-auto mb-4">{t('broker_matchtrader.pricing_p1')}</p>
+      <p class="text-gray-300 leading-relaxed max-w-2xl mx-auto">{t('broker_matchtrader.pricing_p2')}</p>
+    </div>
+  </section>
+
+  <!-- Related Pages Section -->
+  <section id="related-pages" class="relative py-16 sm:py-20 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <div class="relative z-10 max-w-4xl mx-auto" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-diagram-project text-[#2B77EE]"></i>
+        <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.related_eyebrow')}</span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-bold mb-5 electrolize-regular text-white">{t('broker_matchtrader.related_h2')}</h2>
+      <ul class="space-y-3">
+        <li><a href={localizedPath(locale, 'broker-faq/matchtrader-faq')} class="inline-flex items-center gap-2 text-[#7FB8F9] hover:text-[#2B77EE] transition"><i class="fa-solid fa-arrow-right text-sm"></i>{t('broker_matchtrader.related_link1')}</a></li>
+        <li><a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')} class="inline-flex items-center gap-2 text-[#7FB8F9] hover:text-[#2B77EE] transition"><i class="fa-solid fa-arrow-right text-sm"></i>{t('broker_matchtrader.related_link2')}</a></li>
+        <li><a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="inline-flex items-center gap-2 text-[#7FB8F9] hover:text-[#2B77EE] transition"><i class="fa-solid fa-arrow-right text-sm"></i>{t('broker_matchtrader.related_link3')}</a></li>
+        <li><a href="https://pickmytrade.trade/tradovate-trade-copier/" rel="noopener" class="inline-flex items-center gap-2 text-[#7FB8F9] hover:text-[#2B77EE] transition"><i class="fa-solid fa-arrow-right text-sm"></i>{t('broker_matchtrader.related_link4')}</a></li>
+        <li><a href="https://pickmytrade.trade/use-cases/multi-account-traders/" rel="noopener" class="inline-flex items-center gap-2 text-[#7FB8F9] hover:text-[#2B77EE] transition"><i class="fa-solid fa-arrow-right text-sm"></i>{t('broker_matchtrader.related_link5')}</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-1/4 left-10 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center" data-aos="fade-up">
+      <div class="bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] p-1 rounded-2xl">
+        <div class="bg-[#001429] p-8 sm:p-12 rounded-2xl">
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 electrolize-regular">
+            <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+              {t('broker_matchtrader.cta_title')}
+            </span>
+          </h2>
+          <p class="text-lg sm:text-xl mb-8 text-gray-300">
+            {t('broker_matchtrader.cta_subtitle')}
+          </p>
+          <a href="https://app.pickmytrade.io/?register=true"
+            class="inline-block px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] text-white font-semibold rounded-xl hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 electrolize-regular">
+            {t('broker_matchtrader.cta_button')}
+          </a>
+          <p class="mt-6 text-gray-400">
+            {t('broker_matchtrader.cta_footnote')}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-10 left-20 w-64 h-64 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-headset text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_matchtrader.contact_eyebrow')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular">
+          <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            {t('broker_matchtrader.contact_title')}
+          </span>
+        </h2>
+        <p class="text-lg sm:text-xl text-gray-300">
+          {t('broker_matchtrader.contact_subtitle')}
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
+        <a href="mailto:support@pickmytrade.com"
+          class="px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] text-white font-semibold rounded-xl hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 electrolize-regular">
+          <i class="fa-solid fa-envelope mr-2"></i> {t('broker_matchtrader.contact_email')}
+        </a>
+        <a href="https://discord.gg/FkJ7g7498S"
+          class="px-8 py-4 border-2 border-[#2B77EE]/50 text-white font-semibold rounded-xl hover:bg-white/10 hover:border-[#2B77EE] transition-all duration-300 electrolize-regular">
+          <i class="fa-brands fa-discord mr-2"></i> {t('broker_matchtrader.contact_discord')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+</BaseLayout>

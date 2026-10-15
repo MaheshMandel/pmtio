@@ -1,0 +1,789 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AnswerBlock from '../../../components/AnswerBlock.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "image": "https://pickmytrade.io/assets/logo.png",
+    "name": "PickMyTrade - TradingView to cTrader Automation",
+    "alternateName": "cTrader Multi-Broker Trading Bot",
+    "description": "Automated trading system connecting TradingView alerts to any cTrader broker account via the cTrader Open API. Full support for forex, indices, commodities and crypto CFD automation across every cTrader-compatible broker.",
+    "url": absoluteLocalizedPath(locale, 'broker/tradingview-to-ctrader'),
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web-based, Windows, Mac, Linux",
+    "keywords": "ctrader automated trading, ctrader trading bot, ctrader api trading, ctrader open api, ctrader algorithmic trading, ctrader webhook automation",
+    "offers": {
+      "@type": "Offer",
+      "price": "50.00",
+      "priceCurrency": "USD",
+      "priceValidUntil": "2026-12-31",
+      "availability": "https://schema.org/InStock",
+      "description": "$50 per month or $500 per year. 7-day free trial, no credit card required."
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "support@pickmytrade.com",
+        "contactType": "Customer Support",
+        "availableLanguage": "English"
+      },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade",
+      "https://blog.pickmytrade.io",
+      "https://docs.pickmytrade.io"
+    ]
+  },
+    "featureList": [
+      "TradingView Alert Integration",
+      "cTrader Open API Connectivity",
+      "Automated Order Execution for cTrader",
+      "Forex, Indices, Commodities & Crypto CFD Automation",
+      "Works Across Every cTrader Broker",
+      "Real-time Trade Execution",
+      "Multi Account Management",
+      "Risk Management Tools",
+      "Stop Loss & Take Profit Automation",
+      "No Coding Required"
+    ]
+  };
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1","h2",".faq-question",".faq-answer","summary","details > div","details > p"] },
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why can't a cBot just listen for my TradingView webhook directly?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Because cBots running on cTrader Cloud have no internet access, by design — a webhook can never reach them there, and running one locally means keeping a VPS or your own PC online 24/7. PickMyTrade avoids this entirely by running server-side against cTrader's Open API instead of inside a cBot, so there's no cloud restriction to work around." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is cTrader a broker?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. cTrader is a trading platform built by Spotware, offered by many independent brokers — including IC Markets, Pepperstone, FP Markets, FxPro, and BlackBull Markets, among others. You open an account with one of those brokers and choose cTrader as your platform; PickMyTrade then connects to that account." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to know C# or cTrader Automate to automate cTrader?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. cTrader Automate (formerly cAlgo) is for traders who want to hand-code their own C# cBots inside the platform. PickMyTrade is a separate, no-code path: you connect your account, generate a webhook, and paste it into TradingView — no programming involved." }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my cTrader account commission-based instead of spread-only?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "cTrader is built as an ECN/STP platform, so every account is raw spread plus a per-lot commission — there's no fixed-spread account type the way some MetaTrader accounts offer. That's a platform-level design choice by Spotware, not something specific to any one broker."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does cTrader support prop firm and funded accounts?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. A number of prop firms run their evaluation and funded accounts on cTrader, including FTMO, FundingPips, The5ers, FundedNext, and Alpha Capital Group. Copy trading and automation rules vary by firm and change over time, so confirm your firm's current policy before automating a funded account."
+        }
+      }
+    ]
+  };
+const schema3 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "TradingView to cTrader",
+        "item": absoluteLocalizedPath(locale, 'broker/tradingview-to-ctrader')
+      }
+    ]
+  };
+const schema4 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to automate cTrader from TradingView with PickMyTrade",
+                  "name": "How to automate cTrader from TradingView with PickMyTrade",
+                  "description": "Connect any cTrader broker account to PickMyTrade, generate a webhook, paste it into a TradingView alert, and place live forex, indices, commodity and crypto CFD orders on cTrader automatically via the Open API. No coding required.",
+                  "image": "https://pickmytrade.io/assets/logo.png",
+                  "timeRequired": "PT5M",
+                  "dependencies": "PickMyTrade account; a broker account on the cTrader platform (live or demo); TradingView Pro, Pro+ or Premium (for webhook alerts)",
+                  "articleSection": [
+                    "Connect cTrader — Create a PickMyTrade account and add your cTrader connection. Set your default risk management (stop-loss, take-profit, and position sizing). Optionally point it at a cTrader demo account to test first.",
+                    "Generate your webhook — In PickMyTrade, generate the alert message and webhook URL for your cTrader order. There is nothing to code.",
+                    "Format the alert in TradingView — Create a TradingView alert, delete the default text, paste the PickMyTrade message, and set the PickMyTrade webhook URL in the alert's Notifications tab. Webhook alerts need a paid TradingView plan.",
+                    "Go live — Fire a test alert, confirm the order in your PickMyTrade alert log and in cTrader, then enable the alert. Signals now execute on cTrader automatically, 24/7, through the Open API."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+---
+<BaseLayout
+  locale={locale}
+  title={t('broker_ctrader.page_title')}
+  description={t('broker_ctrader.page_description')}
+  keywords={t('broker_ctrader.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_ctrader.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('broker_ctrader.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040]">
+    <!-- Animated Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <canvas id="tradingCanvas" class="w-full h-full" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#001429]/30 to-[#002040]"></div>
+
+    <!-- Content Container -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-20 sm:pb-28">
+      <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+
+        <!-- Top Badge -->
+        <div
+          class="inline-flex items-center gap-2 mb-6 sm:mb-8 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 sm:px-6 py-2 sm:py-3"
+          data-aos="fade-down" data-aos-delay="100">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B77EE] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#2B77EE]"></span>
+          </span>
+          <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+            {t('broker_ctrader.hero_badge')}
+          </span>
+          <i class="fa-solid fa-check-circle text-[#2B77EE]" aria-hidden="true"></i>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight"
+          data-aos="fade-up" data-aos-delay="200">
+          <span class="block text-white mb-2">{t('broker_ctrader.hero_title_line1')}</span>
+          <span class="block bg-gradient-to-r from-[#2B77EE] via-[#4B94FF] to-[#7FB8F9] bg-clip-text text-transparent">
+            {t('broker_ctrader.hero_title_line2')}
+          </span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="max-w-3xl mx-auto text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 sm:mb-10 leading-relaxed px-4"
+          data-aos="fade-up" data-aos-delay="300">
+          {t('broker_ctrader.hero_subtitle_pre')} <strong class="text-white">{t('broker_ctrader.hero_subtitle_strong1')}</strong> {t('broker_ctrader.hero_subtitle_mid')} <strong
+            class="text-white">{t('broker_ctrader.hero_subtitle_strong2')}</strong> {t('broker_ctrader.hero_subtitle_post')}
+          <span class="block mt-2 text-[#7FB8F9]">{t('broker_ctrader.hero_subtitle_line2')}</span>
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10 sm:mb-12 px-4" data-aos="fade-up"
+          data-aos-delay="400">
+          <a href="https://app.pickmytrade.io/?register=true" rel="noopener" aria-label={t('broker_ctrader.hero_cta_primary_aria')}
+            class="group relative inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl overflow-hidden shadow-lg hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span
+              class="absolute inset-0 w-full h-full bg-gradient-to-r from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <span class="relative flex items-center gap-2">
+              <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+              {t('broker_ctrader.hero_cta_primary')}
+            </span>
+          </a>
+
+          <a href="https://app.pickmytrade.io" rel="noopener" aria-label={t('broker_ctrader.hero_cta_secondary_aria')}
+            class="group inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-[#2B77EE] bg-white/10 backdrop-blur-sm border-2 border-[#2B77EE]/50 rounded-xl hover:bg-white/20 hover:border-[#2B77EE] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i>
+              {t('broker_ctrader.hero_cta_secondary')}
+            </span>
+          </a>
+        </div>
+
+        <!-- Feature Pills -->
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 text-sm sm:text-base" data-aos="fade-up"
+          data-aos-delay="500">
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_ctrader.pill_trial')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-credit-card text-blue-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_ctrader.pill_no_card')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-layer-group text-orange-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_ctrader.pill_multi_broker')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_ctrader.pill_instant')}</span>
+          </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-12 sm:mt-16 pt-8 border-t border-white/10" data-aos="fade-up" data-aos-delay="600">
+          <p class="text-xs sm:text-sm text-gray-400 mb-4 uppercase tracking-wider">{t('broker_ctrader.trust_heading')}</p>
+          <div class="flex flex-wrap justify-center items-center gap-8 sm:gap-12">
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_ctrader.trust_rating_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_ctrader.trust_rating_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_ctrader.trust_uptime_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_ctrader.trust_uptime_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_ctrader.trust_setup_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_ctrader.trust_setup_label')}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Smooth Wave Transition -->
+    <div class="absolute bottom-0 left-0 right-0 z-20">
+      <svg class="w-full h-16 sm:h-20 md:h-24" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none">
+        <path
+          d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+          fill="url(#wave-gradient)" />
+        <defs>
+          <linearGradient id="wave-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#002040" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#002040" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </header>
+
+  <AnswerBlock
+    locale={locale}
+    answer={t('broker_ctrader.answer_block')}
+    factsHeading={t('broker_ctrader.facts_heading')}
+    asOfLabel={t('broker_ctrader.facts_as_of')}
+    asOfDate="2026-10-01"
+    facts={[
+      { label: t('broker_ctrader.facts_connection_label'), value: t('broker_ctrader.facts_connection_value') },
+      { label: t('broker_ctrader.facts_brokers_label'), value: t('broker_ctrader.facts_brokers_value') },
+      { label: t('broker_ctrader.facts_accounts_label'), value: t('broker_ctrader.facts_accounts_value') },
+      { label: t('broker_ctrader.facts_instruments_label'), value: t('broker_ctrader.facts_instruments_value') },
+      { label: t('broker_ctrader.facts_tv_plan_label'), value: t('broker_ctrader.facts_tv_plan_value') },
+      { label: t('broker_ctrader.facts_speed_label'), value: t('broker_ctrader.facts_speed_value') },
+      { label: t('broker_ctrader.facts_price_label'), value: t('broker_ctrader.facts_price_value') },
+    ]}
+    notSupportedHeading={t('broker_ctrader.not_supported_heading')}
+    notSupported={[t('broker_ctrader.not_supported_1'), t('broker_ctrader.not_supported_2'), t('broker_ctrader.not_supported_3')]}
+    reviewedBy={t('broker_ctrader.reviewed_by')}
+    updatedLabel={t('broker_ctrader.updated_label')}
+  />
+
+  <!-- SETUP + WEBHOOK + AUTOMATE + FAQ + PRICING -->
+  <section class="relative py-16 sm:py-20 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <div class="relative z-10 max-w-5xl mx-auto space-y-16 sm:space-y-20">
+
+      <!-- Step-by-step setup -->
+      <div id="how-to" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-white">{t('broker_ctrader.walkthrough_heading')}</h2>
+        <ol class="space-y-5">
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">1</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_ctrader.walkthrough_step1_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_ctrader.walkthrough_step1_desc')}</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">2</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_ctrader.walkthrough_step2_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_ctrader.walkthrough_step2_desc')}</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">3</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_ctrader.walkthrough_step3_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_ctrader.walkthrough_step3_desc')}</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">4</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_ctrader.walkthrough_step4_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_ctrader.walkthrough_step4_desc')}</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Webhook / alert example -->
+      <div id="alert-example" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-5 text-white">{t('broker_ctrader.alert_heading')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-5">{t('broker_ctrader.alert_body_intro')}</p>
+        <div class="bg-[#000d1f] border border-[#2B77EE]/30 rounded-xl p-5 overflow-x-auto">
+          <pre class="text-sm text-gray-200 whitespace-pre-wrap">{`{
+  "symbol": "EURUSD",
+  "action": "buy",
+  "volume": 0.10,
+  "order_type": "market",
+  "token": "YOUR_PICKMYTRADE_TOKEN"
+}`}</pre>
+        </div>
+        <p class="text-gray-300 leading-relaxed mt-5">{t('broker_ctrader.alert_body_note')}</p>
+      </div>
+
+      <!-- What you can automate -->
+      <div id="automate" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-5 text-white">{t('broker_ctrader.automate_heading')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('broker_ctrader.automate_body_p1')}</p>
+        <ul class="space-y-3 mb-5">
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_ctrader.automate_item1')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_ctrader.automate_item2')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_ctrader.automate_item3')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_ctrader.automate_item4')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_ctrader.automate_item5')}</span>
+          </li>
+        </ul>
+        <p class="text-gray-300 leading-relaxed">{t('broker_ctrader.automate_outro')}</p>
+      </div>
+
+      <!-- Quick FAQ (matches FAQPage schema 1:1) -->
+      <div data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-white">{t('broker_ctrader.faq_title')}</h2>
+        <div class="space-y-3">
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_ctrader.faq_q3')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_ctrader.faq_a3')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_ctrader.faq_q4')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_ctrader.faq_a4')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_ctrader.faq_q5')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_ctrader.faq_a5')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_ctrader.faq_q6')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_ctrader.faq_a6')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_ctrader.faq_q8')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_ctrader.faq_a8')}</p>
+          </details>
+        </div>
+        <div class="text-center mt-8">
+          <p class="text-gray-400 mb-4">{t('broker_ctrader.faq_more_text')}</p>
+          <a href={localizedPath(locale, 'broker-faq/ctrader-faq/')}
+            class="inline-flex items-center gap-2 px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25">
+            <i class="fa-solid fa-circle-question"></i>
+            {t('broker_ctrader.faq_more_button')}
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Pricing and free trial -->
+      <div id="pricing" class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-10 text-center" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-white">{t('broker_ctrader.pricing_heading')}</h2>
+        <p class="text-gray-300 leading-relaxed max-w-3xl mx-auto mb-6">{t('broker_ctrader.pricing_body')}</p>
+        <a href="https://app.pickmytrade.io/?register=true" rel="noopener"
+          class="inline-flex items-center gap-2 px-8 py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300 electrolize-regular">
+          <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+          {t('broker_ctrader.cta_button')}
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SEO CONTENT SECTION -->
+  <article
+    class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-info-circle text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_ctrader.seo_badge')}</span>
+        </div>
+        <h2
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-[#7FB8F9] to-white bg-clip-text text-transparent">
+          {t('broker_ctrader.seo_title')}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-400 max-w-3xl mx-auto">{t('broker_ctrader.seo_subtitle')}</p>
+      </div>
+      <!-- Supported Platforms Card -->
+      <div
+        class="relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/30 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-10 overflow-hidden"
+        data-aos="fade-up" data-aos-delay="300">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent"></div>
+        <div class="text-center mb-8">
+          <h3 class="text-2xl sm:text-3xl font-bold text-white mb-2">{t('broker_ctrader.platforms_title')}</h3>
+          <p class="text-gray-400">{t('broker_ctrader.platforms_subtitle')}</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bell text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_ctrader.platforms_signal_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_signal_1')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_signal_2')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_signal_3')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_signal_4')}</li>
+            </ul>
+          </div>
+
+          <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_ctrader.platforms_exec_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_exec_1')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_exec_2')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_exec_3')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_exec_4')}</li>
+            </ul>
+          </div>
+
+          <div class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80 sm:col-span-2 lg:col-span-1">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-coins text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_ctrader.platforms_asset_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_asset_1')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_asset_2')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_asset_3')}</li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm"><i class="fa-solid fa-angle-right text-[#2B77EE]"></i>{t('broker_ctrader.platforms_asset_4')}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- INTERNAL LINKING SECTION -->
+  <section class="relative py-12 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] overflow-hidden">
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-10 right-20 w-64 h-64 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10 sm:mb-12" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-link text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_ctrader.links_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_ctrader.links_title')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">{t('broker_ctrader.links_subtitle')}</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8 sm:mb-10">
+        <a href={localizedPath(locale, 'broker/tradingview-to-matchtrader')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="100">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-shuffle text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_ctrader.links_matchtrader_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_ctrader.links_matchtrader_desc')}</p>
+          <div class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_ctrader.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="200">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-lock text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_ctrader.links_tradelocker_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_ctrader.links_tradelocker_desc')}</p>
+          <div class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_ctrader.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="300">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_ctrader.links_rithmic_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_ctrader.links_rithmic_desc')}</p>
+          <div class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_ctrader.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradier')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-dollar-sign text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_ctrader.links_tradier_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_ctrader.links_tradier_desc')}</p>
+          <div class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_ctrader.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+      </div>
+
+      <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+        <a href={localizedPath(locale, 'broker')}
+          class="group inline-flex items-center gap-3 bg-gradient-to-r from-[#122B75]/40 to-[#0F3EC3]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-full px-6 py-3 text-sm sm:text-base text-[#7FB8F9] hover:border-[#2B77EE] hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20">
+          <i class="fa-solid fa-arrow-left transform group-hover:-translate-x-1 transition-transform"></i>
+          <span class="font-semibold">{t('broker_ctrader.links_viewall')}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS SECTION -->
+  <section id="benefits"
+    class="relative py-20 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#001429] via-[#002040] to-[#001429] overflow-hidden">
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-80 h-80 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <div class="text-center mb-16 sm:mb-20" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-star text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_ctrader.benefits_badge')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4">
+          <span class="bg-gradient-to-r from-[#2B77EE] to-[#7FB8F9] bg-clip-text text-transparent electrolize-regular">{t('broker_ctrader.benefits_title')}</span>
+        </h2>
+        <p class="max-w-3xl mx-auto text-gray-400 text-base sm:text-lg leading-relaxed">{t('broker_ctrader.benefits_subtitle')}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full" data-aos="fade-up" data-aos-delay="100">
+          <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-bolt text-2xl text-white"></i>
+            </div>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit1_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">{t('broker_ctrader.benefit1_desc')}</p>
+          <div class="flex flex-wrap justify-center gap-2">
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit1_tag1')}</span>
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit1_tag2')}</span>
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit1_tag3')}</span>
+          </div>
+        </div>
+
+        <div class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full" data-aos="fade-up" data-aos-delay="200">
+          <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-layer-group text-2xl text-white"></i>
+            </div>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit2_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">{t('broker_ctrader.benefit2_desc')}</p>
+          <div class="flex flex-wrap justify-center gap-2">
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit2_tag1')}</span>
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit2_tag2')}</span>
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit2_tag3')}</span>
+          </div>
+        </div>
+
+        <div class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full" data-aos="fade-up" data-aos-delay="300">
+          <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-cloud text-2xl text-white"></i>
+            </div>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit3_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">{t('broker_ctrader.benefit3_desc')}</p>
+          <div class="flex flex-wrap justify-center gap-2">
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit3_tag1')}</span>
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit3_tag2')}</span>
+          </div>
+        </div>
+
+        <div class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full" data-aos="fade-up" data-aos-delay="100">
+          <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-code-slash text-2xl text-white"></i>
+            </div>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit4_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">{t('broker_ctrader.benefit4_desc')}</p>
+          <div class="flex flex-wrap justify-center gap-2">
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit4_tag1')}</span>
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit4_tag2')}</span>
+          </div>
+        </div>
+
+        <div class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full md:col-span-2 lg:col-span-1" data-aos="fade-up" data-aos-delay="200">
+          <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-users text-2xl text-white"></i>
+            </div>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit6_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">{t('broker_ctrader.benefit6_desc')}</p>
+          <div class="flex flex-wrap justify-center gap-2">
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit6_tag1')}</span>
+            <span class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_ctrader.benefit6_tag2')}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="relative py-16 sm:py-24 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-10 left-20 w-64 h-64 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-headset text-[#2B77EE]"></i>
+          <span class="text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider">{t('broker_ctrader.contact_badge')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 electrolize-regular">
+          <span class="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            {t('broker_ctrader.contact_title')}
+          </span>
+        </h2>
+        <p class="text-lg sm:text-xl text-gray-300">
+          {t('broker_ctrader.contact_subtitle')}
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
+        <a href="mailto:support@pickmytrade.com"
+          class="px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] text-white font-semibold rounded-xl hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 electrolize-regular">
+          <i class="fa-solid fa-envelope mr-2"></i> {t('broker_ctrader.contact_email_button')}
+        </a>
+        <a href="https://discord.gg/FkJ7g7498S"
+          class="px-8 py-4 border-2 border-[#2B77EE]/50 text-white font-semibold rounded-xl hover:bg-white/10 hover:border-[#2B77EE] transition-all duration-300 electrolize-regular">
+          <i class="fa-brands fa-discord mr-2"></i> {t('broker_ctrader.contact_discord_button')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+</BaseLayout>

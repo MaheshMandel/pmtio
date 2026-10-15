@@ -1,0 +1,68 @@
+---
+interface Props {
+  accountSizes?: string;
+  profitSplit?: string;
+  profitTarget?: string;
+  platforms?: string;
+  activeTraders?: string;
+  /**
+   * Heading level for the card title. Defaults to h2.
+   *
+   * This card is the first content block after the <h1> on every
+   * /automation/* and /copier/* page. It used to hard-code an <h3>, which put
+   * an h1 → h3 jump at the top of 66 pages — the exact spot where AI search
+   * reads a page's structure. It is a genuine top-level section, so h2 is both
+   * the correct level and the one that removes the skip.
+   */
+  as?: "h2" | "h3";
+  labels: {
+    title: string;
+    accountSizes: string;
+    profitSplit: string;
+    profitTarget: string;
+    platforms: string;
+    activeTraders: string;
+  };
+}
+
+const {
+  accountSizes,
+  profitSplit,
+  profitTarget,
+  platforms,
+  activeTraders,
+  as: Heading = "h2",
+  labels,
+} = Astro.props;
+
+const rows = [
+  { label: labels.accountSizes, value: accountSizes },
+  { label: labels.profitSplit, value: profitSplit },
+  { label: labels.profitTarget, value: profitTarget },
+  { label: labels.platforms, value: platforms },
+  { label: labels.activeTraders, value: activeTraders },
+].filter((row): row is { label: string; value: string } => Boolean(row.value));
+---
+
+<!--
+  Rendered as a real <table> rather than a stack of flex divs. The content was
+  already tabular (label/value pairs of firm specs), and a semantic table is the
+  single most extractable format for AI answer engines — comparison data in
+  divs reads as prose. Only 31 of 212 pages carried a table before this; this
+  card alone adds one to ~71 programmatic pages.
+  Visual output is unchanged.
+-->
+<div class="bg-gradient-to-br from-[#002040] to-[#001429] border border-[#2B77EE]/30 rounded-xl p-6">
+  <Heading class="text-lg font-bold mb-4 text-[#2B77EE]">{labels.title}</Heading>
+  <table class="w-full border-collapse">
+    <caption class="sr-only">{labels.title}</caption>
+    <tbody>
+      {rows.map((row, i) => (
+        <tr class={i < rows.length - 1 ? 'border-b border-white/10' : ''}>
+          <th scope="row" class="text-left font-normal text-gray-400 text-sm py-2 pr-4 align-top">{row.label}</th>
+          <td class="text-right text-white font-semibold text-sm py-2 align-top">{row.value}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

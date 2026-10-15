@@ -1,0 +1,29 @@
+{
+ "twsHelp": "Rithmic-Hilfe",
+ "hubTitle": "Rithmic-Hilfe: Einrichtung, Fehler, Orders und Prop Firms | PickMyTrade",
+ "hubDescription": "Schritt-für-Schritt-Hilfe zu Rithmic: Einrichtung von RTrader Pro, Anmelde- und Verbindungsfehler, Orders, Risikolimits, Prop-Firm-Konten und TradingView-Automatisierung.",
+ "badge": "Rithmic · RTrader Pro und kompatible Plattformen",
+ "heroSubtitle": "Klare Rithmic-Hilfe zu Einrichtung, Verbindungsfehlern, Orders, Risikomanagement, Prop-Firm-Konten und TradingView-Automatisierung.",
+ "searchPlaceholder": "Versuchen Sie einen Anmeldefehler, Apex oder Bracket-Order",
+ "ctaTitle": "TradingView-Alerts mit Rithmic automatisieren",
+ "ctaSubtitle": "Verbinden Sie TradingView mit Ihrem Rithmic-Futures-Konto über PickMyTrade.",
+ "ctaButton": "Zur Rithmic-Integration",
+ "footerNote": "Nur Dokumentation. Live-Trading-Abläufe sind nicht zertifiziert und nicht in der Ausführung getestet.",
+ "financial": "Diese Anleitungen erklären Software und Arbeitsabläufe. Sie dienen der Information und sind keine Finanz-, Anlage-, Steuer- oder Rechtsberatung. Kein Beispiel ist eine Empfehlung, ein Produkt zu kaufen oder zu verkaufen oder eine Handelsstrategie zu verwenden. Der Handel mit Futures ist mit erheblichen Risiken verbunden und kann zu Verlusten führen, einschließlich des gesamten eingesetzten Kapitals. Der Hebel kann Verluste verursachen, die Ihr Anfangskapital übersteigen. Automatisierung kann ausfallen, doppelte Orders senden oder verspätet handeln. Stop-Orders garantieren weder die Ausführung noch einen bestimmten Ausstiegskurs; ihr Verhalten hängt von der Orderart und den geltenden Börsenregeln ab. Prüfen Sie Ihre Orders und Positionen und ziehen Sie für Ihre eigene Situation eine qualifizierte Fachperson hinzu. Papiertrades, Beispiele und vergangene Ergebnisse sagen keine Live-Ergebnisse voraus und versprechen keinen Gewinn.",
+ "information": "Dies ist allgemeine Hilfe auf Grundlage der auf jeder Seite angegebenen Quellen und des Prüfdatums. Bildschirme, Einstellungen, Gebühren, Datenzugang, Servernamen, Fehlertexte, Menüpfade und Produktunterstützung können sich ändern oder je nach App-Version, Konto, Land, Broker, Prop Firm und FCM abweichen. Die Inhalte können Fehler enthalten oder veralten; Richtigkeit, Vollständigkeit und ununterbrochene Verfügbarkeit werden nicht garantiert. Prüfen Sie vor dem Handeln die aktuellen Anweisungen von Rithmic, Broker, Prop Firm und Plattform. Screenshots zeigen, wo sich Bedienelemente befinden; sie belegen nicht, dass ein Ordertest bestanden wurde. Diese Anleitungen ersetzen weder die Broker-Bedingungen noch Risikohinweise. Verweise auf Rithmic, RTrader Pro, CME Group, NinjaTrader, Tradovate, TradingView, Apex, Topstep, TradeDay, Leeloo, Bulenox, Earn2Trade und andere Marken bezeichnen deren Produkte und bedeuten keine Billigung dieser Anleitung.",
+ "groups": {
+  "Setup and installation": "Einrichtung und Installation",
+  "Connection and login": "Verbindung und Anmeldung",
+  "Error messages": "Fehlermeldungen",
+  "Orders and execution": "Orders und Ausführung",
+  "Market data and symbols": "Marktdaten und Symbole",
+  "Risk management": "Risikomanagement",
+  "Multiple accounts": "Mehrere Konten",
+  "Platform integration": "Plattform-Integration",
+  "Prop firms": "Prop Firms",
+  "Copy trading and multi-account": "Copy-Trading und Multi-Account",
+  "TradingView and Rithmic": "TradingView und Rithmic",
+  "Performance and automation": "Leistung und Automatisierung",
+  "FAQs and comparisons": "FAQs und Vergleiche"
+ }
+}

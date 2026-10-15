@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 176.6 174.3">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0064fa;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+
+  <g>
+    <g id="Layer_1">
+      <g>
+        <circle class="cls-1" cx="88.3" cy="87.1" r="74.9"/>
+        <g id="Pepperstone-logo">
+          <g id="Pepperstone">
+            <g id="Graphic">
+              <path id="Path" class="cls-2" d="M98.8,100.6h-14v23.3h-14.3v-51.9h14.3v14.3h14c5.9-.1,10.6-4.9,10.6-10.8s-4.7-10.7-10.6-10.8h0s-46.2,0-46.2,0l5.2-14.3h41c13.9,0,25.2,11.3,25.2,25.2,0,13.9-11.3,25.1-25.2,25.1Z"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

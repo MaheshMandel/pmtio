@@ -1,0 +1,19 @@
+node_modules
+package-lock.json
+
+.claude
+
+.vscode
+dist
+
+.astro
+.superdesign
+
+.wrangler
+GEO-AUDIT-REPORT.md
+# Optional local tooling (not needed for build/deploy)
+scripts/check-i18n-coverage.mjs
+scripts/seo-check.mjs
+scripts/submit-indexnow.mjs
+scripts/gen-gsc-redirects.mjs
+__pycache__/

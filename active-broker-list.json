@@ -1,0 +1,43 @@
+{
+  "tradovate": {
+    "name": "Tradovate",
+    "url": "https://pickmytrade.trade/tradingview-to-tradovate",
+    "target": "_blank"
+  },
+  "rithmic": {
+    "name": "Rithmic",
+    "url": "./broker/tradingview-to-rithmic"
+  },
+  "ironbeam": {
+    "name": "Ironbeam (Beta)",
+    "url": "./broker/tradingview-to-ironbeam"
+  },
+  "ib": {
+    "name": "IB",
+    "url": "./broker/tradingview-to-ib"
+  },
+  "tradestation": {
+    "name": "TradeStation",
+    "url": "./broker/tradingview-to-tradestation"
+  },
+  "tradelocker": {
+    "name": "TradeLocker",
+    "url": "./broker/tradingview-to-tradelocker"
+  },
+  "projectx": {
+    "name": "ProjectX",
+    "url": "./broker/tradingview-to-projectx"
+  },
+  "matchtrader": {
+    "name": "Matchtrader",
+    "url": "./broker/tradingview-to-matchtrader"
+  },
+  "tradier": {
+    "name": "Tradier (Beta)",
+    "url": "./broker/tradingview-to-tradier"
+  },
+  "ctrader": {
+    "name": "cTrader (Beta)",
+    "url": "./broker/tradingview-to-ctrader"
+  }
+}

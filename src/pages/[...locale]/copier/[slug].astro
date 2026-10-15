@@ -1,0 +1,474 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqAccordion from '../../../components/FaqAccordion.astro';
+import FirmSpecCard from '../../../components/FirmSpecCard.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+import propfirmsData from '../../../../config/propfirms-full.json';
+import propfirmsJsonData from '../../../../config/propfirms.json';
+import { hasPropFirmFaqPage } from '../../../data/propFirmFaqSlugs';
+import { firmHasSupportedPlatform, toOrList, hasAutomationCaveat } from '../../../lib/firmSupport';
+
+export function getStaticPaths() {
+  return getLocalePaths().flatMap(({ params, props }) =>
+    propfirmsData.propfirms.map(firm => ({
+      params: { locale: params.locale, slug: `tradingview-to-${firm.slug}-copier` },
+      props: { firm, locale: props.locale },
+    }))
+  );
+}
+
+interface Props {
+  locale: Locale;
+  firm: typeof propfirmsData.propfirms[0];
+}
+
+const { locale, firm } = Astro.props;
+const t = useTranslations(locale);
+const isSupported = firmHasSupportedPlatform(firm.platforms);
+const unsupportedPlatforms = toOrList(firm.platforms, locale);
+
+// Richer per-firm data (incl. active_traders) exists for a subset of firms in
+// config/propfirms.json — also the exact set that has a live propfirms/[slug]
+// page (see propfirms/[slug].astro's getStaticPaths). Presence here is what
+// gates both the active-traders row and the "full review" back-link below,
+// so we never link to a propfirms/[slug] route that doesn't exist.
+const propfirmsJsonMap = new Map(propfirmsJsonData.propfirms.map((f) => [f.slug, f]));
+const enrichedFirm = propfirmsJsonMap.get(firm.slug);
+
+// Only link to /prop-firm-faq/<slug> when that page is actually generated —
+// most of these 27 firms have no FAQ page, and several use a different slug
+// there, so the link previously 404'd for the majority of them.
+const propFirmFaqExists = hasPropFirmFaqPage(
+  firm.slug,
+  propfirmsJsonData.propfirms.map((f) => f.slug),
+);
+
+const metaDescription = isSupported
+  ? t('copier_detail.meta_description', {
+      name: firm.name,
+      profitSplit: firm.profit_split,
+      accountSizes: firm.account_sizes,
+      platforms: firm.platforms,
+    })
+  : t('firm_unsupported.meta_description', { name: firm.name, platforms: unsupportedPlatforms });
+
+const faqItems = isSupported
+  ? [
+      { question: t('copier_detail.faq_q1', { name: firm.name }), answer: t('copier_detail.faq_a1', { name: firm.name }) },
+      { question: t('copier_detail.faq_q2', { name: firm.name }), answer: t('copier_detail.faq_a2', { name: firm.name }) },
+      { question: t('copier_detail.faq_q3', { name: firm.name }), answer: t('copier_detail.faq_a3', { name: firm.name }) },
+      { question: t('copier_detail.faq_q4', { name: firm.name }), answer: t('copier_detail.faq_a4', { name: firm.name }) },
+      { question: t('copier_detail.faq_q5', { name: firm.name }), answer: t('copier_detail.faq_a5', { name: firm.name }) },
+    ]
+  : [{ question: t('firm_unsupported.faq_trial_q', { name: firm.name }), answer: t('firm_unsupported.faq_trial_a', { name: firm.name, platforms: unsupportedPlatforms }) }];
+
+const pageUrl = `https://pickmytrade.io${localizedPath(locale, `copier/tradingview-to-${firm.slug}-copier`)}`;
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "image": "https://pickmytrade.io/assets/logo.png",
+  "name": `PickMyTrade - TradingView to ${firm.name} Copier`,
+  "description": `Automated trade copier connecting TradingView alerts to ${firm.name} for instant order execution`,
+  "url": pageUrl,
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based",
+  "offers": {
+    "@type": "Offer",
+    "price": "50.00",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "priceValidUntil": "2026-12-31",
+    "description": "7-day free trial, no credit card required"
+  },
+  "featureList": [
+    "TradingView Alert Integration",
+    `${firm.name} Connectivity`,
+    "Ultra-Low Latency Execution",
+    "Multi-Account Copy Trading",
+    "Advanced Risk Management",
+    "Stop Loss & Take Profit Automation",
+    "No Coding Required"
+  ]
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://pickmytrade.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Trade Copier",
+      "item": absoluteLocalizedPath(locale, 'copier')
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": `${firm.name} Copier`,
+      "item": pageUrl
+    }
+  ]
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [
+      "h1",
+      "h2",
+      ".faq-question",
+      ".faq-answer",
+      "summary",
+      "details > div",
+      "details > p"
+    ]
+  },
+  "mainEntity": isSupported ? [
+    {
+      "@type": "Question",
+      "name": `What is TradingView to ${firm.name} copy trading?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `TradingView to ${firm.name} copy trading allows you to automatically execute trades on your ${firm.name} account based on TradingView alerts. When a signal fires on TradingView, PickMyTrade instantly copies the trade to your ${firm.name} account with ultra-low latency.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `How fast are trades copied to ${firm.name}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `PickMyTrade executes trades within milliseconds of receiving a TradingView alert. Our ultra-low latency infrastructure ensures your orders reach ${firm.name} as quickly as possible, minimizing slippage and maximizing execution quality.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do I need coding skills to use PickMyTrade with ${firm.name}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `No coding skills are required. PickMyTrade is a no-code solution that connects TradingView to ${firm.name} through a simple webhook setup. You can be up and running in under 5 minutes.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Can I copy trades to multiple ${firm.name} accounts?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes, PickMyTrade supports multi-account copy trading. You can copy trades from a single TradingView strategy to multiple ${firm.name} accounts simultaneously, with individual risk settings for each account.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Is there a free trial for ${firm.name} copy trading?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes, PickMyTrade offers a 7-day free trial with full access to all features including ${firm.name} integration. No credit card is required to start your trial.`
+      }
+    }
+  ] : [
+    {
+      "@type": "Question",
+      "name": `Does PickMyTrade support ${firm.name}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `No. PickMyTrade does not automate ${unsupportedPlatforms} accounts, and ${firm.name} currently runs on ${firm.platforms}. If ${firm.name} adds a platform PickMyTrade connects to, this page will be updated.`
+      }
+    }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={isSupported ? t('copier_detail.page_title', { name: firm.name }) : t('firm_unsupported.page_title_copier', { name: firm.name })}
+  description={metaDescription}
+  keywords={firm.seo.keywords}
+  canonical={pageUrl}
+  structuredData={[schema1, schema2, schema3]}
+>
+<!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-4">
+    <div class="max-w-7xl mx-auto px-4">
+      <ol class="flex items-center gap-2 text-sm text-gray-400">
+        <li><a href={localizedPath(locale)} class="hover:text-blue-400">{t('copier_detail.breadcrumb_home')}</a></li>
+        <li>/</li>
+        <li><a href={localizedPath(locale, 'copier')} class="hover:text-blue-400">{t('hub.copier_breadcrumb')}</a></li>
+        <li>/</li>
+        <li class="text-white font-semibold">{isSupported ? t('copier_detail.breadcrumb_current', { name: firm.name }) : firm.name}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Reciprocal link to this firm's automation page. See the matching block in
+       automation/[slug].astro — the pair shares most of its content, so each
+       page must point at the other to signal which intent it serves. -->
+  <div class="bg-[#001429] px-4 pb-2">
+    <div class="max-w-7xl mx-auto text-sm">
+      <a href={localizedPath(locale, `automation/tradingview-to-${firm.slug}-automation`)} class="text-[#2B77EE] hover:underline">
+        {t('copier_detail.switch_to_automation', { name: firm.name })} <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] py-16 sm:py-24">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-1/4 w-80 h-80 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center gap-2 mb-6 bg-blue-500/20 border border-blue-500/30 rounded-full px-5 py-2" data-aos="fade-down">
+        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+        <span class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{isSupported ? t('copier_detail.hero_badge', { name: firm.name }) : t('firm_unsupported.hero_badge')}</span>
+      </div>
+
+      {isSupported ? (
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" data-aos="fade-up">
+          <span class="text-white">{t('copier_detail.hero_title', { name: firm.name })}</span><br>
+          <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{t('copier_detail.hero_title_accent')}</span>
+        </h1>
+      ) : (
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" data-aos="fade-up">
+          <span class="text-white">{firm.name}</span>
+        </h1>
+      )}
+
+      <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+        {isSupported ? (
+          <>{t('copier_detail.hero_desc_pre')} <strong class="text-white">{t('copier_detail.hero_desc_tradingview_alerts')}</strong> {t('copier_detail.hero_desc_to')} <strong class="text-white">{firm.name}</strong> {t('copier_detail.hero_desc_post')}</>
+        ) : (
+          t('firm_unsupported.cta_subtitle', { platforms: unsupportedPlatforms })
+        )}
+      </p>
+
+      {isSupported && hasAutomationCaveat(firm.slug) && (
+        <div class="max-w-2xl mx-auto mb-8 text-left bg-amber-500/10 border border-amber-500/30 rounded-xl p-5" data-aos="fade-up" data-aos-delay="150">
+          <h2 class="text-white font-bold mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-400" aria-hidden="true"></i>
+            {t('firm_automation_rules_box.heading')}
+          </h2>
+          <p class="text-gray-300 text-sm leading-relaxed mb-3">{t('firm_automation_rules_box.body')}</p>
+          <a href={localizedPath(locale, 'faq/prop-firm-automation')} class="text-amber-400 hover:text-amber-300 text-sm font-semibold">
+            {t('firm_automation_rules_box.link_text')} <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      )}
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10" data-aos="fade-up" data-aos-delay="200">
+        {isSupported ? (
+          <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl font-bold text-lg shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-1">
+            <i class="fa-solid fa-rocket mr-2"></i>{t('copier_detail.hero_cta_trial')}
+          </a>
+        ) : (
+          <a href={localizedPath(locale, 'supported-propfirms')} class="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl font-bold text-lg shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-1">
+            {t('firm_unsupported.cta_button')}
+          </a>
+        )}
+        <a href="https://docs.pickmytrade.io/docs/" class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl font-semibold transition-all">
+          <i class="fa-solid fa-book mr-2"></i>{t('copier_detail.hero_cta_docs')}
+        </a>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-6 text-sm" data-aos="fade-up" data-aos-delay="300">
+        <div class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-400"></i><span>{t('copier_detail.hero_badge_trial')}</span></div>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-credit-card text-blue-400"></i><span>{t('copier_detail.hero_badge_nocard')}</span></div>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-bolt text-yellow-400"></i><span>{t('copier_detail.hero_badge_latency')}</span></div>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-infinity text-purple-400"></i><span>{t('copier_detail.hero_badge_unlimited')}</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!--
+    Front-loaded definition block — see the matching comment in
+    automation/[slug].astro. The hero is a short marketing fragment; this is the
+    first self-contained, citable answer on the page, placed inside the first
+    30% where most AI-search citations originate.
+  -->
+  <section class="pt-10 pb-2 px-4 bg-[#002040]">
+    <div class="max-w-3xl mx-auto space-y-4 text-gray-300 leading-relaxed">
+      {isSupported ? (
+        <>
+          <p>{t('copier_detail.intro_mechanism', { name: firm.name })}</p>
+          <p>{t('copier_detail.intro_specs', {
+            name: firm.name,
+            accountSizes: firm.account_sizes,
+            profitSplit: firm.profit_split,
+            profitTarget: firm.profit_target,
+            platforms: firm.platforms,
+          })}</p>
+        </>
+      ) : (
+        <p>{t('firm_unsupported.meta_description', { name: firm.name, platforms: unsupportedPlatforms })}</p>
+      )}
+    </div>
+  </section>
+
+  <!-- Firm Quick Facts -->
+  <section class="pt-6 pb-12 px-4 bg-[#002040]">
+    <div class="max-w-2xl mx-auto" data-aos="fade-up">
+      <FirmSpecCard
+        accountSizes={firm.account_sizes}
+        profitSplit={firm.profit_split}
+        profitTarget={firm.profit_target}
+        platforms={firm.platforms}
+        labels={{
+          title: t('copier_detail.spec_title', { name: firm.name }),
+          accountSizes: t('copier_detail.spec_account_sizes_label'),
+          profitSplit: t('copier_detail.spec_profit_split_label'),
+          profitTarget: t('copier_detail.spec_profit_target_label'),
+          platforms: t('copier_detail.spec_platforms_label'),
+          activeTraders: t('copier_detail.spec_active_traders_label'),
+        }}
+      />
+      {enrichedFirm && (
+        <div class="text-center mt-4">
+          <a href={localizedPath(locale, `propfirms/${firm.slug}`)} class="text-blue-400 hover:text-blue-300 text-sm font-semibold">
+            {t('copier_detail.back_to_review', { name: firm.name })} <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- How It Works Section (only meaningful once the firm actually connects) -->
+  {isSupported && (
+  <section class="py-20 px-4 bg-gradient-to-b from-[#002040] to-[#001429]" id="how-it-works">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-blue-400 font-semibold uppercase tracking-wider text-sm">{t('copier_detail.how_eyebrow')}</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">{t('copier_detail.how_title', { name: firm.name })}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">{t('copier_detail.how_subtitle')}</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 text-center hover:border-blue-500/50 transition-all" data-aos="fade-up" data-aos-delay="0">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6">1</div>
+          <h3 class="text-xl font-bold mb-3">{t('copier_detail.how_step1_title', { name: firm.name })}</h3>
+          <p class="text-gray-400">{t('copier_detail.how_step1_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 text-center hover:border-blue-500/50 transition-all" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6">2</div>
+          <h3 class="text-xl font-bold mb-3">{t('copier_detail.how_step2_title')}</h3>
+          <p class="text-gray-400">{t('copier_detail.how_step2_desc')}</p>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 text-center hover:border-blue-500/50 transition-all" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6">3</div>
+          <h3 class="text-xl font-bold mb-3">{t('copier_detail.how_step3_title')}</h3>
+          <p class="text-gray-400">{t('copier_detail.how_step3_desc', { name: firm.name })}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  )}
+
+  <!-- Features Section -->
+  {isSupported && (
+  <section class="py-20 px-4 bg-[#001429]" id="features">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-purple-400 font-semibold uppercase tracking-wider text-sm">{t('copier_detail.features_eyebrow')}</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">{t('copier_detail.features_title', { name: firm.name })}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">{t('copier_detail.features_subtitle')}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/30 rounded-2xl p-6" data-aos="fade-up">
+          <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 mb-4"><i class="fa-solid fa-bolt text-xl"></i></div>
+          <h3 class="text-lg font-bold mb-2">{t('copier_detail.feature1_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('copier_detail.feature1_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/30 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="50">
+          <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-4"><i class="fa-solid fa-users text-xl"></i></div>
+          <h3 class="text-lg font-bold mb-2">{t('copier_detail.feature2_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('copier_detail.feature2_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center text-green-400 mb-4"><i class="fa-solid fa-shield-halved text-xl"></i></div>
+          <h3 class="text-lg font-bold mb-2">{t('copier_detail.feature3_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('copier_detail.feature3_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-yellow-500/10 to-transparent border border-yellow-500/30 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="150">
+          <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center text-yellow-400 mb-4"><i class="fa-solid fa-clock text-xl"></i></div>
+          <h3 class="text-lg font-bold mb-2">{t('copier_detail.feature4_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('copier_detail.feature4_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/30 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center text-red-400 mb-4"><i class="fa-solid fa-code text-xl"></i></div>
+          <h3 class="text-lg font-bold mb-2">{t('copier_detail.feature5_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('copier_detail.feature5_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/30 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="250">
+          <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400 mb-4"><i class="fa-solid fa-chart-line text-xl"></i></div>
+          <h3 class="text-lg font-bold mb-2">{t('copier_detail.feature6_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('copier_detail.feature6_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  )}
+
+  <!-- FAQ Section -->
+  <section class="py-20 px-4 bg-gradient-to-b from-[#001429] to-[#002040]" id="faq">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-green-400 font-semibold uppercase tracking-wider text-sm">{t('copier_detail.faq_eyebrow')}</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">{t('copier_detail.faq_title')}</h2>
+        <p class="text-gray-400">{t('copier_detail.faq_subtitle', { name: firm.name })}</p>
+      </div>
+
+      <FaqAccordion items={faqItems} />
+
+      <div class="text-center mt-10" data-aos="fade-up">
+        {propFirmFaqExists && (
+          <a href={localizedPath(locale, `prop-firm-faq/${firm.slug}`)}
+            class="inline-flex items-center gap-2 px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors">
+            <i class="fa-solid fa-circle-question"></i>
+            {t('copier_detail.faq_view_all', { name: firm.name })}
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4 bg-[#002040]">
+    <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">{isSupported ? t('copier_detail.cta_title', { name: firm.name }) : t('firm_unsupported.cta_title', { name: firm.name })}</h2>
+      <p class="text-gray-300 mb-8 max-w-2xl mx-auto">{isSupported ? t('copier_detail.cta_subtitle') : t('firm_unsupported.cta_subtitle', { platforms: unsupportedPlatforms })}</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        {isSupported && (
+          <a href="https://app.pickmytrade.io/?register=true" class="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl font-bold text-lg shadow-lg transition-all hover:-translate-y-1">
+            {t('copier_detail.cta_button')} <i class="fa-solid fa-arrow-right ml-2"></i>
+          </a>
+        )}
+        <a href={localizedPath(locale, 'supported-propfirms')} class="px-10 py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl font-semibold transition-all">
+          {t('copier_detail.cta_view_all')}
+        </a>
+      </div>
+      <!-- Bottom-funnel link to /pricing — see the matching block in
+           automation/[slug].astro for why. -->
+      <p class="mt-6">
+        <a href={localizedPath(locale, 'pricing')} class="text-blue-300 hover:text-white underline underline-offset-4">
+          {t('hub.see_pricing')}
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

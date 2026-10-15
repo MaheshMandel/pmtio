@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "generator_version": "1.0",
+    "last_updated": "2026-06-24",
+    "description": "Broker integration page configuration for /broker/[slug] dynamic route"
+  },
+  "brokers": [
+    {
+      "slug": "tradingview-to-rithmic",
+      "name": "Rithmic",
+      "badgeText": "Rithmic API Compatible",
+      "subtitle": "Ultra-low latency direct API integration for professional futures traders.",
+      "assetPill": "Instant Execution",
+      "assetPillIcon": "fa-bolt",
+      "assetPillColor": "text-yellow-400",
+      "faqSlug": "rithmic-faq",
+      "schemaAlternateName": "Rithmic Futures Trading Bot",
+      "schemaDescription": "Automated trading platform connecting TradingView alerts to Rithmic for futures trading. Ultra-low latency direct API integration for professional traders.",
+      "schemaKeywords": "rithmic automated trading, rithmic trading bot, rithmic api trading, rithmic algorithmic trading, rithmic futures automation",
+      "seo": {
+        "title": "TradingView to Rithmic Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Rithmic in 3 steps. Ultra-low latency direct API. 7-day free trial, no credit card. Setup in under 5 minutes - no coding needed.",
+        "keywords": "TradingView Rithmic automation, Rithmic API integration, automated futures trading, Rithmic trading bot, TradingView webhook Rithmic, NQ ES MNQ automation, PickMyTrade Rithmic, no-code algo trading, Rithmic direct API, ultra-low latency trading"
+      }
+    },
+    {
+      "slug": "tradingview-to-ironbeam",
+      "name": "Ironbeam (Beta)",
+      "badgeText": "Ironbeam Compatible",
+      "subtitle": "Self-clearing direct market access across CME, CBOT, COMEX, NYMEX, ICE and Eurex futures.",
+      "assetPill": "Direct Market Access",
+      "assetPillIcon": "fa-chart-line",
+      "assetPillColor": "text-yellow-400",
+      "faqSlug": "ironbeam-faq",
+      "schemaAlternateName": "Ironbeam Futures Trading Bot",
+      "schemaDescription": "Automated trading platform connecting TradingView alerts to Ironbeam via its REST/WebSocket API for CME, CBOT, COMEX, NYMEX, ICE and Eurex futures trading. Self-clearing direct market access with no coding required.",
+      "schemaKeywords": "ironbeam automated trading, ironbeam trading bot, ironbeam api trading, ironbeam rest api, ironbeam algorithmic trading, ironbeam futures automation",
+      "seo": {
+        "title": "TradingView to Ironbeam | Automate Futures | PickMyTrade",
+        "description": "Automate TradingView alerts to Ironbeam via its REST/WebSocket API. Trade CME, CBOT, COMEX, NYMEX, ICE and Eurex futures automatically. No coding required.",
+        "keywords": "TradingView Ironbeam automation, Ironbeam API integration, automated futures trading, Ironbeam trading bot, TradingView webhook Ironbeam, PickMyTrade Ironbeam, no-code algo trading, CME CBOT COMEX NYMEX ICE Eurex automation"
+      }
+    },
+    {
+      "slug": "tradingview-to-ib",
+      "name": "Interactive Brokers",
+      "badgeText": "IBKR API Compatible",
+      "subtitle": "Trade stocks, options, futures and forex globally with Interactive Brokers automation.",
+      "assetPill": "Stocks & Futures",
+      "assetPillIcon": "fa-globe",
+      "assetPillColor": "text-blue-400",
+      "faqSlug": "ib-faq",
+      "schemaAlternateName": "Interactive Brokers IBKR Trading Bot",
+      "schemaDescription": "Automated trading platform connecting TradingView alerts to Interactive Brokers (IBKR) for stocks, options, futures and forex. Direct API integration for global market access.",
+      "schemaKeywords": "ibkr automated trading, interactive brokers trading bot, ibkr api trading, interactive brokers algorithmic trading, ibkr automation",
+      "seo": {
+        "title": "TradingView to Interactive Brokers | PickMyTrade",
+        "description": "Automate TradingView alerts directly to Interactive Brokers (IBKR). No coding needed. Trade stocks, options, and futures reliably and instantly.",
+        "keywords": "TradingView Interactive Brokers automation, IBKR API integration, automated stock trading, IB trading bot, TradingView webhook IBKR, PickMyTrade IBKR, no-code algo trading, stocks options futures automation"
+      }
+    },
+    {
+      "slug": "tradingview-to-tradestation",
+      "name": "TradeStation",
+      "badgeText": "TradeStation API Compatible",
+      "subtitle": "Automate stocks, options and futures on TradeStation without a single line of code.",
+      "assetPill": "Stocks & Options",
+      "assetPillIcon": "fa-chart-line",
+      "assetPillColor": "text-blue-400",
+      "faqSlug": "tradestation-faq",
+      "schemaAlternateName": "TradeStation Trading Bot",
+      "schemaDescription": "Automated trading system for TradeStation connecting TradingView alerts to TradeStation accounts. Full support for stocks, options, and futures automation.",
+      "schemaKeywords": "tradestation automated trading, tradestation trading bot, tradestation api trading, tradestation algorithmic trading, tradestation automation",
+      "seo": {
+        "title": "TradingView to TradeStation Automation | PickMyTrade",
+        "description": "Connect TradingView alerts to TradeStation using PickMyTrade. Execute stocks, options, and futures orders automatically — no coding or manual input needed.",
+        "keywords": "TradingView TradeStation automation, TradeStation API integration, automated stock trading, TradeStation trading bot, TradingView webhook TradeStation, PickMyTrade TradeStation, no-code algo trading"
+      }
+    },
+    {
+      "slug": "tradingview-to-tradier",
+      "name": "Tradier (Beta)",
+      "badgeText": "Tradier API Compatible",
+      "subtitle": "Execute stock and options trades automatically with Tradier Brokerage API.",
+      "assetPill": "Stocks & Options",
+      "assetPillIcon": "fa-chart-candlestick",
+      "assetPillColor": "text-green-400",
+      "faqSlug": "tradier-faq",
+      "schemaAlternateName": "Tradier Stock Trading Bot",
+      "schemaDescription": "Automated trading system for Tradier Brokerage connecting TradingView alerts to Tradier accounts. Full support for stock and options automation.",
+      "schemaKeywords": "tradier automated trading, tradier trading bot, tradier api trading, tradier algorithmic trading, tradier brokerage automation",
+      "seo": {
+        "title": "TradingView to Tradier | Automate Stock & Options | PickMyTrade",
+        "description": "Automate TradingView alerts directly to Tradier. Trade stocks, options, and ETFs automatically. Real-time execution with Tradier Brokerage.",
+        "keywords": "tradier automated trading, tradier trading bot, tradingview to tradier, tradier api trading, tradier algorithmic trading, tradier brokerage automation, automated stock trading tradier, tradier options bot"
+      }
+    },
+    {
+      "slug": "tradingview-to-projectx",
+      "name": "ProjectX",
+      "badgeText": "ProjectX Compatible",
+      "subtitle": "Perfect for prop firm traders. Sub-100ms execution via ProjectX Gateway API.",
+      "assetPill": "Futures",
+      "assetPillIcon": "fa-rocket",
+      "assetPillColor": "text-purple-400",
+      "faqSlug": "projectx-faq",
+      "schemaAlternateName": "ProjectX Prop Firm Trading Bot",
+      "schemaDescription": "Automated trading platform connecting TradingView alerts to ProjectX for prop firm traders. Sub-100ms execution via ProjectX Gateway API.",
+      "schemaKeywords": "projectx automated trading, topstep projectx, projectx trading bot, projectx api trading, prop firm automation projectx",
+      "seo": {
+        "title": "TradingView to ProjectX Automation | Topstep PickMyTrade",
+        "description": "Automate TradingView alerts to ProjectX & Rithmic in 3 steps. Perfect for Topstep prop firms. 7-day free trial, no credit card. Setup in under 5 minutes.",
+        "keywords": "TradingView ProjectX automation, ProjectX API integration, Topstep automation, prop firm trading bot, TradingView webhook ProjectX, PickMyTrade ProjectX, no-code algo trading, futures prop firm automation"
+      }
+    },
+    {
+      "slug": "tradingview-to-matchtrader",
+      "name": "MatchTrader",
+      "badgeText": "MatchTrader Compatible",
+      "subtitle": "Automate Forex, CFDs and commodities trading with MatchTrader API integration.",
+      "assetPill": "Forex & CFDs",
+      "assetPillIcon": "fa-coins",
+      "assetPillColor": "text-yellow-400",
+      "faqSlug": "matchtrader-faq",
+      "schemaAlternateName": "MatchTrader Forex Trading Bot",
+      "schemaDescription": "Automated trading system connecting TradingView alerts to MatchTrader for Forex, CFDs and commodities trading. No coding required.",
+      "schemaKeywords": "matchtrader automated trading, matchtrader trading bot, matchtrader api trading, matchtrader forex automation, tradingview matchtrader",
+      "seo": {
+        "title": "TradingView to MatchTrader | Automate Forex PickMyTrade",
+        "description": "Automate TradingView alerts directly to MatchTrader with PickMyTrade. Trade Forex, CFDs, and commodities automatically. No coding needed. Real-time execution.",
+        "keywords": "TradingView MatchTrader automation, MatchTrader API integration, automated forex trading, MatchTrader trading bot, TradingView webhook MatchTrader, PickMyTrade MatchTrader"
+      }
+    },
+    {
+      "slug": "tradingview-to-tradelocker",
+      "name": "TradeLocker",
+      "badgeText": "TradeLocker Compatible",
+      "subtitle": "Perfect for forex & CFD traders. Connect TradingView to TradeLocker in 3 steps.",
+      "assetPill": "Forex & CFDs",
+      "assetPillIcon": "fa-lock",
+      "assetPillColor": "text-teal-400",
+      "faqSlug": "tradelocker-faq",
+      "schemaAlternateName": "TradeLocker Forex Trading Bot",
+      "schemaDescription": "Automated trading platform connecting TradingView alerts to TradeLocker for forex and CFD trading. No coding required.",
+      "schemaKeywords": "tradelocker automated trading, tradelocker trading bot, tradelocker api trading, tradelocker forex automation, tradingview tradelocker",
+      "seo": {
+        "title": "TradingView to TradeLocker Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to TradeLocker in 3 steps. Perfect for forex & CFD traders. 7-day free trial, no credit card. Setup in under 5 minutes.",
+        "keywords": "TradingView TradeLocker automation, TradeLocker API integration, automated forex trading, CFD trading automation, CFD trading bot, TradingView webhook TradeLocker, forex pairs automation, PickMyTrade TradeLocker"
+      }
+    },
+    {
+      "slug": "tradingview-to-ctrader",
+      "name": "cTrader (Beta)",
+      "badgeText": "cTrader Open API Compatible",
+      "subtitle": "Automate forex, indices, commodities and crypto CFDs across any cTrader broker.",
+      "assetPill": "Any cTrader Broker",
+      "assetPillIcon": "fa-layer-group",
+      "assetPillColor": "text-orange-400",
+      "faqSlug": "ctrader-faq",
+      "schemaAlternateName": "cTrader Multi-Broker Trading Bot",
+      "schemaDescription": "Automated trading system connecting TradingView alerts to any cTrader broker via the cTrader Open API. Full support for forex, indices, commodities and crypto CFD automation.",
+      "schemaKeywords": "ctrader automated trading, ctrader trading bot, ctrader api trading, ctrader open api, ctrader algorithmic trading, ctrader webhook automation",
+      "seo": {
+        "title": "TradingView to cTrader | Automate Forex & CFDs | PickMyTrade",
+        "description": "Automate TradingView alerts to any cTrader broker via the Open API. Trade forex, indices, commodities and crypto CFDs automatically. No coding required.",
+        "keywords": "TradingView cTrader automation, cTrader API integration, automated forex trading, cTrader trading bot, TradingView webhook cTrader, PickMyTrade cTrader, no-code algo trading, cTrader Open API automation"
+      }
+    },
+    {
+      "slug": "tradingview-to-topstepx",
+      "name": "TopStepX",
+      "badgeText": "TopStepX Compatible",
+      "subtitle": "Automate your funded futures trading on the TopStepX prop firm platform.",
+      "assetPill": "Prop Firm Futures",
+      "assetPillIcon": "fa-trophy",
+      "assetPillColor": "text-yellow-400",
+      "faqSlug": "projectx-faq",
+      "schemaAlternateName": "TopStepX Prop Trading Bot",
+      "schemaDescription": "Automated trading platform for TopStepX prop firm traders. Connect TradingView alerts to TopStepX for funded futures automation.",
+      "schemaKeywords": "topstepx automation, topstepx trading bot, topstepx projectx, topstepx tradingview, prop firm automation topstepx",
+      "seo": {
+        "title": "TradingView to TopStepX Automation - PickMyTrade",
+        "description": "Automate TradingView alerts to TopStepX prop firm with PickMyTrade. $165/mo subscription, 4.6★ rating, Yes (15%) affiliate program. Setup automated.",
+        "keywords": "TopStepX automation, TradingView TopStepX, TopStepX ProjectX, TopStepX PickMyTrade, TopStepX prop firm, automated TopStepX trading, TopStepX futures trading, TopStepX TradingView webhook, TopStepX trading bot"
+      }
+    }
+  ]
+}

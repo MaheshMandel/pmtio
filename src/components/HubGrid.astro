@@ -1,0 +1,42 @@
+---
+// Shared index/hub layout for the programmatic page families (/automation,
+// /copier, /broker). Those three URLs previously returned 404 while 65 detail
+// pages hung off them with no parent page, so the families had no crawlable
+// entry point and their breadcrumbs pointed at dead URLs.
+import { localizedPath } from '../i18n/utils';
+import type { Locale } from '../i18n/config';
+
+export interface HubItem {
+  /** Locale-relative path, e.g. "automation/tradingview-to-topstep-automation". */
+  href: string;
+  name: string;
+  /** Optional one-line descriptor shown under the name. */
+  meta?: string;
+}
+
+interface Props {
+  locale: Locale;
+  items: HubItem[];
+  ctaLabel: string;
+}
+
+const { locale, items, ctaLabel } = Astro.props as Props;
+---
+
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  {items.map((item) => (
+    <a
+      href={localizedPath(locale, item.href)}
+      class="group block bg-[#001a33] border border-white/10 rounded-xl p-5 hover:border-[#2B77EE]/60 transition-colors"
+    >
+      <h3 class="text-white font-semibold text-base group-hover:text-[#2B77EE] transition-colors">
+        {item.name}
+      </h3>
+      {item.meta && <p class="text-gray-400 text-xs mt-1">{item.meta}</p>}
+      <span class="inline-flex items-center gap-2 text-[#2B77EE] text-sm font-medium mt-3">
+        {ctaLabel}
+        <i class="fa-solid fa-arrow-right text-xs"></i>
+      </span>
+    </a>
+  ))}
+</div>

@@ -1,0 +1,786 @@
+﻿---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AnswerBlock from '../../../components/AnswerBlock.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+import type { TranslationKey } from '../../../i18n/utils';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "image": "https://pickmytrade.io/assets/logo.png",
+    "name": "PickMyTrade - TradingView to TopStepX Automation",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "50.00",
+      "priceCurrency": "USD",
+      "priceValidUntil": "2026-12-31",
+      "description": "7-day free trial"
+    },
+    "description": "No-code platform that automates TradingView alerts to TopStepX, Topstep's platform built on ProjectX technology, with stop loss, take profit, position sizing, and multi-account support."
+  };
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://pickmytrade.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Brokers",
+      "item": absoluteLocalizedPath(locale, 'broker')
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "TradingView to TopStepX Automation",
+      "item": absoluteLocalizedPath(locale, 'broker/tradingview-to-topstepx')
+    }
+  ]
+};
+const schema3 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to Connect TradingView to TopStepX in 5 Steps",
+                  "name": "How to Connect TradingView to TopStepX in 5 Steps",
+                  "description": "Connect your TradingView alerts to TopStepX through PickMyTrade to automate your futures trades in minutes. No coding required.",
+                  "image": "https://pickmytrade.io/assets/logo.png",
+                  "timeRequired": "PT5M",
+                  "dependencies": "TradingView account (Pro, Pro+, or Premium for webhooks); TopStepX account with TopstepX API Access; PickMyTrade account",
+                  "articleSection": [
+                    "Get TopstepX API Access — Subscribe to TopstepX API Access in your Topstep account. It is billed by Topstep, separately from your Topstep subscription.",
+                    "Generate your TopstepX API key — Create an API key in your Topstep dashboard.",
+                    "Connect the account in PickMyTrade — Add a ProjectX/TopstepX connection, paste the API key, select your account and set default risk controls.",
+                    "Create the TradingView alert — Paste the PickMyTrade alert message and set the PickMyTrade webhook URL under notifications.",
+                    "Test, then go live — Test on a Trading Combine or demo account on a one-minute chart and confirm the order in the PickMyTrade alert log and your TopstepX account."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I use the TopstepX API on a Live Funded Account?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Topstep allows TopstepX API bots on the Trading Combine and Express Funded Account, but not on a Live Funded Account. Confirm your account stage and Topstep's current policy before connecting PickMyTrade." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run the TopstepX API from a VPS?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Topstep's Terms of Use require all trading activity to originate from your own device and prohibit running automation from a VPS, VPN, or remote server. Violating this can suspend or remove you from the program." }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does TopstepX API Access cost?",
+      "acceptedAnswer": { "@type": "Answer", "text": "TopstepX API Access is $29 per month, or $14.50 per month with Topstep's discount code, billed separately from your Topstep subscription. PickMyTrade is $50 per month or $500 per year, with a 7-day free trial and no card required." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is TopstepX the same as ProjectX?",
+      "acceptedAnswer": { "@type": "Answer", "text": "In practice, yes. ProjectX ended third-party licensing on 28 February 2026 and Topstep took the technology exclusive, rebranding it as TopstepX. PickMyTrade connects to it with a TopstepX API key." }
+    }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('broker_topstepx.page_title')}
+  description={t('broker_topstepx.page_description')}
+  keywords={t('broker_topstepx.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4]}
+>
+<!-- Navigation -->
+  <div id="navbar-container"></div>
+
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_topstepx.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('broker_topstepx.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative pt-32 pb-20 px-4 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute w-96 h-96 bg-[#2B77EE]/20 rounded-full blur-3xl -top-20 -left-20"></div>
+      <div class="absolute w-96 h-96 bg-[#7FB8F9]/10 rounded-full blur-3xl top-40 right-0"></div>
+    </div>
+
+    <div class="relative max-w-6xl mx-auto text-center" data-aos="fade-up">
+      <div class="flex items-center justify-center gap-4 mb-6">
+        <img
+              width="64"
+              height="64" src="/assets/propfirm/TopStepX.png" alt={t('broker_topstepx.logo_alt', { name: 'TopStepX' })} class="w-16 h-16 object-contain rounded-lg" loading="eager" decoding="async">
+        <h1 class="text-4xl md:text-6xl font-bold electrolize-regular">
+          {t('broker_topstepx.hero_title_pre')} <span class="text-[#7FB8F9]">TopStepX</span> {t('broker_topstepx.hero_title_post')}
+        </h1>
+      </div>
+
+      <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+        {t('broker_topstepx.hero_subtitle_1')} <strong class="text-white">{t('broker_topstepx.hero_subtitle_strong')}</strong> {t('broker_topstepx.hero_subtitle_2')}
+        <span class="text-[#7FB8F9]">{t('broker_topstepx.hero_subtitle_nocode')}</span> {t('broker_topstepx.hero_subtitle_3')}
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <div class="bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl px-6 py-3">
+          <div class="text-yellow-400 text-sm mb-1"><i class="fa-solid fa-bolt"></i> {t('broker_topstepx.hero_stat_rating_label')}</div>
+          <div class="text-2xl font-bold text-white">&lt;200ms</div>
+        </div>
+        <div class="bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl px-6 py-3">
+          <div class="text-green-400 text-sm mb-1"><i class="fa-solid fa-dollar-sign"></i> {t('broker_topstepx.hero_stat_fee_label')}</div>
+          <div class="text-2xl font-bold text-white">$29/mo</div>
+        </div>
+        <div class="bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl px-6 py-3">
+          <div class="text-blue-400 text-sm mb-1"><i class="fa-solid fa-handshake"></i> {t('broker_topstepx.hero_stat_affiliate_label')}</div>
+          <div class="text-2xl font-bold text-white">$50/mo</div>
+        </div>
+        <div class="bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl px-6 py-3">
+          <div class="text-purple-400 text-sm mb-1"><i class="fa-solid fa-calendar"></i> {t('broker_topstepx.hero_stat_payout_label')}</div>
+          <div class="text-2xl font-bold text-white">{t('broker_topstepx.hero_stat_payout_value')}</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://app.pickmytrade.io/signup"
+          class="px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-lg text-white font-semibold text-lg hover:shadow-xl hover:shadow-[#2B77EE]/50 transition-all duration-300 transform hover:-translate-y-1">
+          <i class="fa-solid fa-rocket mr-2"></i>{t('broker_topstepx.hero_cta_trial')}
+        </a>
+        <a href="#comparison"
+          class="px-8 py-4 bg-[#122B75]/40 backdrop-blur-sm border-2 border-[#2B77EE]/50 rounded-lg text-white font-semibold text-lg hover:bg-[#122B75]/60 transition-all duration-300">
+          <i class="fa-solid fa-table mr-2"></i>{t('broker_topstepx.hero_cta_compare')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <AnswerBlock
+    locale={locale}
+    answer={t('broker_topstepx.answer_block')}
+    factsHeading={t('broker_topstepx.facts_heading')}
+    asOfLabel={t('broker_topstepx.facts_as_of')}
+    asOfDate="2026-10-01"
+    facts={[
+      { label: t('broker_topstepx.facts_connection_label'), value: t('broker_topstepx.facts_connection_value') },
+      { label: t('broker_topstepx.facts_prereq_label'), value: t('broker_topstepx.facts_prereq_value') },
+      { label: t('broker_topstepx.facts_credentials_label'), value: t('broker_topstepx.facts_credentials_value') },
+      { label: t('broker_topstepx.facts_stages_label'), value: t('broker_topstepx.facts_stages_value') },
+      { label: t('broker_topstepx.facts_speed_label'), value: t('broker_topstepx.facts_speed_value') },
+      { label: t('broker_topstepx.facts_price_label'), value: t('broker_topstepx.facts_price_value') },
+    ]}
+    notSupportedHeading={t('broker_topstepx.not_supported_heading')}
+    notSupported={[t('broker_topstepx.not_supported_1'), t('broker_topstepx.not_supported_2'), t('broker_topstepx.not_supported_3')]}
+    reviewedBy={t('broker_topstepx.reviewed_by')}
+    updatedLabel={t('broker_topstepx.updated_label')}
+  />
+
+  <!-- PickMyTrade Platform Section -->
+  <section class="py-16 px-4 bg-[#001429]/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-8 md:p-12"
+        data-aos="fade-up">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 electrolize-regular">
+            <i class="fa-solid fa-rocket text-[#7FB8F9] mr-3"></i>{t('broker_topstepx.platform_h2')}
+          </h2>
+          <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+            {t('broker_topstepx.platform_subtitle')}
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">{t('broker_topstepx.platform_what_h3')}</h3>
+            <p class="text-gray-300 leading-relaxed mb-4">
+              {t('broker_topstepx.platform_what_p1')}
+            </p>
+            <p class="text-gray-300 leading-relaxed">
+              {t('broker_topstepx.platform_what_p2')}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">{t('broker_topstepx.platform_features_h3')}</h3>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-bolt text-yellow-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.platform_feat1_label')}</strong> {t('broker_topstepx.platform_feat1_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-shield-halved text-green-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.platform_feat2_label')}</strong> {t('broker_topstepx.platform_feat2_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-chart-line text-blue-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.platform_feat3_label')}</strong> {t('broker_topstepx.platform_feat3_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-clock text-purple-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.platform_feat4_label')}</strong> {t('broker_topstepx.platform_feat4_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-headset text-cyan-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.platform_feat5_label')}</strong> {t('broker_topstepx.platform_feat5_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-code-simple text-orange-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.platform_feat6_label')}</strong> {t('broker_topstepx.platform_feat6_text')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6">
+          <div class="grid md:grid-cols-3 gap-6 text-center">
+            <div>
+              <div class="text-3xl font-bold text-[#7FB8F9] mb-2">ProjectX</div>
+              <div class="text-gray-400 text-sm">{t('broker_topstepx.platform_stat2_label')}</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold text-[#7FB8F9] mb-2">99.9%</div>
+              <div class="text-gray-400 text-sm">{t('broker_topstepx.platform_stat3_label')}</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold text-[#7FB8F9] mb-2">$50</div>
+              <div class="text-gray-400 text-sm">{t('broker_topstepx.platform_stat4_label')}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-8">
+          <a href="https://app.pickmytrade.io/signup"
+            class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-lg text-white font-semibold text-lg hover:shadow-xl hover:shadow-[#2B77EE]/50 transition-all duration-300 transform hover:-translate-y-1">
+            <i class="fa-solid fa-rocket"></i>
+            {t('broker_topstepx.platform_cta')}
+          </a>
+          <p class="text-gray-400 text-sm mt-3">{t('broker_topstepx.platform_cta_note')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- About Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-8 md:p-12"
+        data-aos="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6 electrolize-regular">
+          <i class="fa-solid fa-building text-[#7FB8F9] mr-3"></i>{t('broker_topstepx.about_h2')}
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">{t('broker_topstepx.about_overview_h3')}</h3>
+            <p class="text-gray-300 leading-relaxed mb-4">
+              {t('broker_topstepx.about_overview_p1')}
+            </p>
+            <p class="text-gray-300 leading-relaxed">
+              {t('broker_topstepx.about_overview_p2')}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">{t('broker_topstepx.about_features_h3')}</h3>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.about_feat1_label')}</strong> $3000 (6%)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.about_feat2_label')}</strong> $2000 (4%)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.about_feat3_label')}</strong> {t('broker_topstepx.about_feat3_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.about_feat4_label')}</strong> {t('broker_topstepx.about_feat4_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.about_feat5_label')}</strong> {t('broker_topstepx.about_feat5_text')}</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+                <span class="text-gray-300"><strong class="text-white">{t('broker_topstepx.about_feat6_label')}</strong> {t('broker_topstepx.about_feat6_text')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6">
+          <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">
+            <i class="fa-solid fa-robot mr-2"></i>{t('broker_topstepx.about_why_h3')}
+          </h3>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div>
+              <h4 class="font-bold text-white mb-2">{t('broker_topstepx.about_why1_h4')}</h4>
+              <p class="text-gray-400 text-sm">{t('broker_topstepx.about_why1_p')}</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-white mb-2">{t('broker_topstepx.about_why2_h4')}</h4>
+              <p class="text-gray-400 text-sm">{t('broker_topstepx.about_why2_p')}</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-white mb-2">{t('broker_topstepx.about_why3_h4')}</h4>
+              <p class="text-gray-400 text-sm">{t('broker_topstepx.about_why3_p')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section: 5-step setup, alert example, contract mapping -->
+  <section id="setup" class="py-16 px-4 bg-[#001429]/30">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 electrolize-regular" data-aos="fade-up">
+        <i class="fa-solid fa-gears text-[#7FB8F9] mr-3"></i>{t('broker_topstepx.setup_h2')}
+      </h2>
+      <p class="text-gray-300 leading-relaxed mb-8 text-center">{t('broker_topstepx.setup_prereq')}</p>
+
+      <ol class="space-y-4 mb-12">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <li class="flex items-start gap-4 bg-gradient-to-br from-[#122B75]/40 to-[#0F3EC3]/20 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5">
+            <span class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center text-lg font-bold">{n}</span>
+            <div>
+              <h3 class="text-lg font-bold text-white mb-1">{t(`broker_topstepx.setup_step${n}_h3` as TranslationKey)}</h3>
+              <p class="text-gray-300 text-sm leading-relaxed">{t(`broker_topstepx.setup_step${n}_p` as TranslationKey)}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <h2 id="alert-example" class="text-2xl md:text-3xl font-bold mb-4 text-white electrolize-regular">{t('broker_topstepx.alert_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_topstepx.alert_intro')}</p>
+      <div class="bg-[#000d1f] border border-[#2B77EE]/30 rounded-xl p-5 overflow-x-auto mb-4">
+        <pre class="text-sm text-gray-200 whitespace-pre-wrap">{`{
+  "symbol": "MNQ1!",
+  "data": "buy",
+  "quantity": 1,
+  "price": "{{close}}",
+  "tp": 0,
+  "dollar_tp": 10,
+  "sl": 0,
+  "dollar_sl": 5,
+  "token": "your_token_here"
+}`}</pre>
+      </div>
+      <p class="text-gray-400 text-sm leading-relaxed mb-12">{t('broker_topstepx.alert_note')}</p>
+
+      <h2 id="contract-ids" class="text-2xl md:text-3xl font-bold mb-4 text-white electrolize-regular">{t('broker_topstepx.contract_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_topstepx.contract_intro')}</p>
+      <div class="overflow-x-auto rounded-xl border border-[#2B77EE]/40 mb-4">
+        <table class="w-full text-left text-sm sm:text-base">
+          <thead>
+            <tr class="bg-[#122B75]/40 text-[#7FB8F9]">
+              <th class="px-4 py-3">{t('broker_topstepx.contract_th_tv')}</th>
+              <th class="px-4 py-3">{t('broker_topstepx.contract_th_market')}</th>
+              <th class="px-4 py-3">{t('broker_topstepx.contract_th_id')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-white/10"><td class="px-4 py-3 font-mono text-white">MNQ1!</td><td class="px-4 py-3 text-gray-300">{t('broker_topstepx.contract_mnq')}</td><td class="px-4 py-3 font-mono text-gray-300">CON.F.US.MNQ.&lt;month&gt;&lt;yy&gt;</td></tr>
+            <tr class="border-t border-white/10"><td class="px-4 py-3 font-mono text-white">NQ1!</td><td class="px-4 py-3 text-gray-300">{t('broker_topstepx.contract_nq')}</td><td class="px-4 py-3 font-mono text-gray-300">CON.F.US.NQ.&lt;month&gt;&lt;yy&gt;</td></tr>
+            <tr class="border-t border-white/10"><td class="px-4 py-3 font-mono text-white">ES1!</td><td class="px-4 py-3 text-gray-300">{t('broker_topstepx.contract_es')}</td><td class="px-4 py-3 font-mono text-gray-300">CON.F.US.ES.&lt;month&gt;&lt;yy&gt;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      {/* TODO(FE-45): the contract-ID pattern CON.F.US.<root>.<month><yy> is NOT verified against repo sources. Confirm with product/docs before removing the caveat below. */}
+      <p class="text-gray-400 text-sm leading-relaxed">{t('broker_topstepx.contract_note')}</p>
+
+      <div class="text-center mt-12" data-aos="fade-up">
+        <a href="https://app.pickmytrade.io/signup"
+          class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-lg text-white font-semibold text-lg hover:shadow-xl hover:shadow-[#2B77EE]/50 transition-all duration-300">
+          <i class="fa-solid fa-play-circle"></i>
+          {t('broker_topstepx.hiw_cta')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- TopstepX Unique Content Section - SEO Differentiation -->
+  <section class="py-16 px-4 bg-[#001429]/30">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 electrolize-regular" data-aos="fade-up">
+        <i class="fa-solid fa-lightbulb text-[#7FB8F9] mr-3"></i>{t('broker_topstepx.why_h2')}
+      </h2>
+
+      <!-- Best For & Unique Features -->
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-gradient-to-br from-[#122B75]/40 to-[#0F3EC3]/20 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-8" data-aos="fade-right">
+          <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">
+            <i class="fa-solid fa-user-check mr-2"></i>{t('broker_topstepx.why_bestfor_h3')}
+          </h3>
+          <p class="text-gray-300 leading-relaxed mb-6">{t('broker_topstepx.why_bestfor_p')}</p>
+          <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-4">
+            <div class="flex items-center gap-3 mb-2">
+              <i class="fa-solid fa-chart-simple text-[#7FB8F9]"></i>
+              <span class="text-white font-semibold">{t('broker_topstepx.why_bestfor_style_label')}</span>
+            </div>
+            <p class="text-gray-400 text-sm capitalize">{t('broker_topstepx.why_bestfor_style_value')}</p>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#122B75]/40 to-[#0F3EC3]/20 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-8" data-aos="fade-left">
+          <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">
+            <i class="fa-solid fa-gem mr-2"></i>{t('broker_topstepx.why_unique_h3')}
+          </h3>
+          <ul class="space-y-3">
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-star text-yellow-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.why_unique1')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-star text-yellow-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.why_unique2')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-star text-yellow-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.why_unique3')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-star text-yellow-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.why_unique4')}</span>
+              </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Competitor Comparison -->
+      <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-8 mb-12" data-aos="fade-up">
+        <h3 class="text-xl font-bold text-[#7FB8F9] mb-4">
+          <i class="fa-solid fa-scale-balanced mr-2"></i>{t('broker_topstepx.compare_h3')}
+        </h3>
+        <p class="text-gray-300 leading-relaxed">{t('broker_topstepx.compare_p')}</p>
+      </div>
+
+      <!-- Pros & Cons -->
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-gradient-to-br from-[#122B75]/40 to-[#0F3EC3]/20 backdrop-blur-sm border border-green-500/30 rounded-2xl p-8" data-aos="fade-right">
+          <h3 class="text-xl font-bold text-green-400 mb-4">
+            <i class="fa-solid fa-thumbs-up mr-2"></i>{t('broker_topstepx.pros_h3')}
+          </h3>
+          <ul class="space-y-3">
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.pros1')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.pros2')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.pros3')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-check text-green-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.pros4')}</span>
+              </li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#122B75]/40 to-[#0F3EC3]/20 backdrop-blur-sm border border-red-500/30 rounded-2xl p-8" data-aos="fade-left">
+          <h3 class="text-xl font-bold text-red-400 mb-4">
+            <i class="fa-solid fa-thumbs-down mr-2"></i>{t('broker_topstepx.cons_h3')}
+          </h3>
+          <ul class="space-y-3">
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.cons1')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.cons2')}</span>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+                <span class="text-gray-300">{t('broker_topstepx.cons3')}</span>
+              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TopstepX Trading Tips Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 electrolize-regular" data-aos="fade-up">
+        <i class="fa-solid fa-wand-magic-sparkles text-[#7FB8F9] mr-3"></i>{t('broker_topstepx.tips_h2')}
+      </h2>
+
+      <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-8">
+        <div class="space-y-6">
+
+            <div class="flex items-start gap-4" data-aos="fade-up" data-aos-delay="100">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0">
+                1
+              </div>
+              <p class="text-gray-300 leading-relaxed pt-2">{t('broker_topstepx.tip1')}</p>
+            </div>
+
+            <div class="flex items-start gap-4" data-aos="fade-up" data-aos-delay="200">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0">
+                2
+              </div>
+              <p class="text-gray-300 leading-relaxed pt-2">{t('broker_topstepx.tip2')}</p>
+            </div>
+
+            <div class="flex items-start gap-4" data-aos="fade-up" data-aos-delay="300">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0">
+                3
+              </div>
+              <p class="text-gray-300 leading-relaxed pt-2">{t('broker_topstepx.tip3')}</p>
+            </div>
+
+            <div class="flex items-start gap-4" data-aos="fade-up" data-aos-delay="400">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0">
+                4
+              </div>
+              <p class="text-gray-300 leading-relaxed pt-2">{t('broker_topstepx.tip4')}</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TopstepX FAQs Section -->
+  <section class="py-16 px-4 bg-[#001429]/30">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 electrolize-regular" data-aos="fade-up">
+        <i class="fa-solid fa-circle-question text-[#7FB8F9] mr-3"></i>{t('broker_topstepx.faq_h2')}
+      </h2>
+
+      <div class="space-y-6">
+
+            <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+              <h4 class="text-lg font-bold text-white mb-3 flex items-start gap-3">
+                <i class="fa-solid fa-circle-question text-[#7FB8F9] mt-1"></i>
+                {t('broker_topstepx.faq_q1')}
+              </h4>
+              <p class="text-gray-300 leading-relaxed pl-8">{t('broker_topstepx.faq_a1')}</p>
+            </div>
+
+            <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6" data-aos="fade-up" data-aos-delay="200">
+              <h4 class="text-lg font-bold text-white mb-3 flex items-start gap-3">
+                <i class="fa-solid fa-circle-question text-[#7FB8F9] mt-1"></i>
+                {t('broker_topstepx.faq_q2')}
+              </h4>
+              <p class="text-gray-300 leading-relaxed pl-8">{t('broker_topstepx.faq_a2')}</p>
+            </div>
+
+            <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6" data-aos="fade-up" data-aos-delay="300">
+              <h4 class="text-lg font-bold text-white mb-3 flex items-start gap-3">
+                <i class="fa-solid fa-circle-question text-[#7FB8F9] mt-1"></i>
+                {t('broker_topstepx.faq_q3')}
+              </h4>
+              <p class="text-gray-300 leading-relaxed pl-8">{t('broker_topstepx.faq_a3')}</p>
+            </div>
+
+            <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6" data-aos="fade-up" data-aos-delay="400">
+              <h4 class="text-lg font-bold text-white mb-3 flex items-start gap-3">
+                <i class="fa-solid fa-circle-question text-[#7FB8F9] mt-1"></i>
+                {t('broker_topstepx.faq_q4')}
+              </h4>
+              <p class="text-gray-300 leading-relaxed pl-8">{t('broker_topstepx.faq_a4')}</p>
+            </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Prop Firms Comparison Table -->
+  <section id="comparison" class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <span class="text-[#7FB8F9] font-semibold text-sm uppercase tracking-wider">{t('broker_topstepx.comparison_eyebrow')}</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4 electrolize-regular text-white">
+          {t('broker_topstepx.comparison_h2')}
+        </h2>
+        <p class="text-gray-300 max-w-2xl mx-auto">
+          {t('broker_topstepx.comparison_subtitle_1')} <strong class="text-[#7FB8F9]">{t('broker_topstepx.comparison_subtitle_strong')}</strong> {t('broker_topstepx.comparison_subtitle_2')}
+        </p>
+      </div>
+
+      <!-- TopstepX Primary Card -->
+      <div
+        class="relative bg-gradient-to-br from-[#122B75]/50 via-[#0F3EC3]/30 to-[#122B75]/50 backdrop-blur-sm border-2 border-[#2B77EE] rounded-2xl p-6 sm:p-10 mb-8"
+        data-aos="fade-up" data-aos-delay="100">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <img
+              width="64"
+              height="64" src="/assets/propfirm/TopStepX.png" alt={t('broker_topstepx.logo_alt', { name: 'TopStepX' })}
+            class="w-16 h-16 object-contain rounded-lg flex-shrink-0" loading="lazy" decoding="async">
+          <div class="flex-1 text-center sm:text-left">
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">TopStepX</h3>
+            <p class="text-gray-300 leading-relaxed">
+              TopStepX is Topstep's own platform, built on ProjectX technology. TopstepX API Access is billed
+              separately from your Topstep subscription — $29/month, or $14.50/month with Topstep's discount
+              code. Generate a TopstepX API key, add the account in PickMyTrade, and your TradingView alerts
+              automate to your Topstep Trading Combine or Express Funded Account. Topstep sets its own rules
+              for automation and API access, and those rules can change, so always confirm Topstep's current
+              policy before you connect an account. Full setup walkthrough: <a href="https://docs.pickmytrade.io/docs/connect-projectx-to-topstep-api/" target="_blank" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">docs.pickmytrade.io</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Funded Account / VPS rules callout -->
+      <div class="max-w-3xl mx-auto mb-10 text-left bg-amber-500/10 border border-amber-500/30 rounded-xl p-6" data-aos="fade-up" data-aos-delay="120">
+        <h3 class="text-white font-bold mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-amber-400" aria-hidden="true"></i>
+          Before you connect: Live Funded Account and VPS restrictions
+        </h3>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Topstep allows TopstepX API bots on the Trading Combine and Express Funded Account, but not on a
+          Live Funded Account. All trading activity must also originate from your own device — Topstep's
+          Terms of Use prohibit running automation from a VPS, VPN, or remote server, and violating this can
+          suspend or remove you from the program. Confirm your account stage and Topstep's current policy
+          before connecting PickMyTrade.
+        </p>
+      </div>
+
+      <!-- Other Engines Note -->
+      <div class="grid sm:grid-cols-2 gap-6 mb-10" data-aos="fade-up" data-aos-delay="150">
+        <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6">
+          <h4 class="font-bold text-[#7FB8F9] text-lg mb-2"><i class="fa-solid fa-bolt mr-2"></i>Tradovate</h4>
+          <p class="text-gray-400 text-sm leading-relaxed">Many other prop firms run on the Tradovate execution
+            engine rather than ProjectX. PickMyTrade connects to Tradovate accounts too.</p>
+        </div>
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+          class="group bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6 hover:border-[#2B77EE] transition-all duration-300">
+          <h4 class="font-bold text-[#7FB8F9] text-lg mb-2 group-hover:text-white transition-colors"><i
+              class="fa-solid fa-server mr-2"></i>Rithmic</h4>
+          <p class="text-gray-400 text-sm leading-relaxed">Other prop firms run on Rithmic's infrastructure. See
+            our dedicated TradingView to Rithmic automation page.</p>
+        </a>
+      </div>
+
+      <p class="text-center text-gray-500 text-sm max-w-2xl mx-auto mb-10">
+        Copy-trading and automation rules vary by prop firm and change over time, so always confirm your firm's
+        current policy before you go live.
+      </p>
+
+      <div class="text-center">
+        <a href={localizedPath(locale, 'broker/tradingview-to-projectx')}
+          class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl text-white font-semibold text-lg shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300 hover:scale-105">
+          <i class="fa-solid fa-book"></i>
+          <span>Read the Full ProjectX &amp; TopstepX Automation Guide</span>
+          <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        <p class="text-gray-400 text-sm mt-3">
+          <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">View all supported prop firms</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="py-16 px-4 bg-[#001429]/30">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-10 electrolize-regular">
+        <i class="fa-solid fa-circle-question text-[#2B77EE] mr-2"></i>Frequently Asked Questions
+      </h2>
+      <div class="space-y-3">
+        <details class="group bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5">
+          <summary class="cursor-pointer list-none flex items-center justify-between font-semibold text-white">
+            Can I use the TopstepX API on a Live Funded Account?
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] transition-transform group-open:rotate-180"></i>
+          </summary>
+          <p class="text-gray-300 text-sm leading-relaxed mt-3">Topstep allows TopstepX API bots on the Trading Combine and Express Funded Account, but not on a Live Funded Account. Confirm your account stage and Topstep's current policy before connecting PickMyTrade.</p>
+        </details>
+        <details class="group bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5">
+          <summary class="cursor-pointer list-none flex items-center justify-between font-semibold text-white">
+            Can I run the TopstepX API from a VPS?
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] transition-transform group-open:rotate-180"></i>
+          </summary>
+          <p class="text-gray-300 text-sm leading-relaxed mt-3">No. Topstep's Terms of Use require all trading activity to originate from your own device and prohibit running automation from a VPS, VPN, or remote server. Violating this can suspend or remove you from the program.</p>
+        </details>
+        <details class="group bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5">
+          <summary class="cursor-pointer list-none flex items-center justify-between font-semibold text-white">
+            How much does TopstepX API Access cost?
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] transition-transform group-open:rotate-180"></i>
+          </summary>
+          <p class="text-gray-300 text-sm leading-relaxed mt-3">TopstepX API Access is $29 per month, or $14.50 per month with Topstep's discount code, billed separately from your Topstep subscription. PickMyTrade is $50 per month or $500 per year, with a 7-day free trial and no card required.</p>
+        </details>
+        <details class="group bg-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5">
+          <summary class="cursor-pointer list-none flex items-center justify-between font-semibold text-white">
+            Is TopstepX the same as ProjectX?
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] transition-transform group-open:rotate-180"></i>
+          </summary>
+          <p class="text-gray-300 text-sm leading-relaxed mt-3">In practice, yes. ProjectX ended third-party licensing on 28 February 2026 and Topstep took the technology exclusive, rebranding it as TopstepX. PickMyTrade connects to it with a TopstepX API key.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="bg-gradient-to-br from-[#122B75]/60 via-[#0F3EC3]/30 to-[#122B75]/60 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-12"
+        data-aos="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 electrolize-regular">
+          {t('broker_topstepx.cta_h2')}
+        </h2>
+        <p class="text-xl text-gray-300 mb-8">
+          {t('broker_topstepx.cta_p')}
+        </p>
+        <a href="https://app.pickmytrade.io/signup"
+          class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-lg text-white font-semibold text-lg hover:shadow-xl hover:shadow-[#2B77EE]/50 transition-all duration-300 transform hover:-translate-y-1">
+          <i class="fa-solid fa-rocket"></i>
+          {t('broker_topstepx.cta_button')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+</BaseLayout>

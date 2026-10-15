@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "generator_version": "1.0",
+    "last_updated": "2026-07-09",
+    "description": "Upcoming broker wait-list configuration for /upcoming/brokers listing and /upcoming/[broker] dynamic route"
+  },
+  "brokers": [
+    { "slug": "ally-invest", "name": "Ally Invest", "logo": "/assets/upcoming/ally-invest.svg", "category": "stocks", "subtitle": "Full-service online brokerage for stocks, options, and forex trading." },
+    { "slug": "amp-global", "name": "AMP Global", "logo": "/assets/upcoming/amp-global.svg", "category": "futures", "subtitle": "Deep-discount futures broker with access to Rithmic, CQG, and other top-tier platforms." },
+    { "slug": "autoshares", "name": "AutoShares", "logo": "/assets/upcoming/autoshares.svg", "category": "futures", "subtitle": "Trade copying and multi-account execution platform built for futures traders." },
+    { "slug": "capital-com", "name": "Capital.com", "logo": "/assets/upcoming/capital-com.svg", "category": "forex", "subtitle": "CFD trading platform covering forex, indices, commodities, and shares." },
+    { "slug": "cobra-trading", "name": "Cobra Trading", "logo": "/assets/upcoming/cobra-trading.svg", "category": "stocks", "subtitle": "Active trader brokerage built for speed, with direct-access equity routing." },
+    { "slug": "etoro", "name": "eToro", "logo": "/assets/upcoming/etoro.svg", "category": "forex", "subtitle": "Social trading platform for stocks and CFDs with copy-trading features." },
+    { "slug": "fidelity", "name": "Fidelity", "logo": "/assets/upcoming/fidelity.svg", "category": "stocks", "subtitle": "Full-service brokerage offering stocks, options, and retirement accounts." },
+    { "slug": "firstrade", "name": "Firstrade", "logo": "/assets/upcoming/firstrade.svg", "category": "stocks", "subtitle": "Commission-free brokerage for stocks, ETFs, options, and mutual funds." },
+    { "slug": "forex-com", "name": "FOREX.com", "logo": "/assets/upcoming/forex-com.svg", "category": "forex", "subtitle": "Global forex and CFD broker with deep liquidity and tight spreads." },
+    { "slug": "fxcm", "name": "FXCM", "logo": "/assets/upcoming/fxcm.svg", "category": "forex", "subtitle": "Established forex and CFD broker offering access to global currency markets." },
+    { "slug": "lightspeed", "name": "Lightspeed", "logo": "/assets/upcoming/lightspeed.svg", "category": "stocks", "subtitle": "Direct-access trading platform built for active and professional traders." },
+    { "slug": "lime", "name": "Lime", "logo": "/assets/upcoming/lime.svg", "category": "stocks", "subtitle": "Institutional-grade brokerage with direct market access for active traders." },
+    { "slug": "magnifi", "name": "Magnifi", "logo": "/assets/upcoming/magnifi.svg", "category": "ai", "subtitle": "AI-powered investing platform for building and managing smart portfolios." },
+    { "slug": "merrill-edge", "name": "Merrill Edge", "logo": "/assets/upcoming/merrill-edge.svg", "category": "stocks", "subtitle": "Bank of America's brokerage platform for stocks, options, and retirement." },
+    { "slug": "moomoo", "name": "Moomoo", "logo": "/assets/upcoming/moomoo.svg", "category": "stocks", "subtitle": "Commission-free trading app for stocks, options, and futures with real-time data." },
+    { "slug": "oanda", "name": "OANDA", "logo": "/assets/upcoming/oanda.svg", "category": "forex", "subtitle": "Established forex and CFD broker known for transparent pricing and execution." },
+    { "slug": "optimus-futures", "name": "Optimus Futures", "logo": "/assets/upcoming/optimus-futures.svg", "category": "futures", "subtitle": "Futures brokerage offering access to top trading platforms and low margins." },
+    { "slug": "pepperstone", "name": "Pepperstone", "logo": "/assets/upcoming/pepperstone.svg", "category": "forex", "subtitle": "Award-winning forex and CFD broker known for fast execution and low spreads." },
+    { "slug": "qtrade", "name": "Qtrade", "logo": "/assets/upcoming/qtrade.svg", "category": "stocks", "subtitle": "Canadian online brokerage offering self-directed investing and trading." },
+    { "slug": "schwab", "name": "Schwab", "logo": "/assets/upcoming/schwab.svg", "category": "stocks", "subtitle": "Full-service brokerage offering stocks, options, futures, and retirement accounts." },
+    { "slug": "stonex", "name": "StoneX", "logo": "/assets/upcoming/stonex.svg", "category": "futures", "subtitle": "Global financial services firm offering futures, forex, and commodities access." },
+    { "slug": "td-direct-investing", "name": "TD Direct Investing", "logo": "/assets/upcoming/td-direct-investing.svg", "category": "stocks", "subtitle": "Canadian self-directed investing platform from TD Bank Group." },
+    { "slug": "trade-the-pool", "name": "Trade The Pool", "logo": "/assets/upcoming/trade-the-pool.svg", "category": "propfirm", "subtitle": "Funded futures trading program for evaluating and scaling trading accounts." },
+    { "slug": "tradezero", "name": "TradeZero", "logo": "/assets/upcoming/tradezero.svg", "category": "stocks", "subtitle": "Commission-free trading platform popular with active day traders." },
+    { "slug": "wealthsimple", "name": "Wealthsimple", "logo": "/assets/upcoming/wealthsimple.svg", "category": "stocks", "subtitle": "Canadian investing platform offering commission-free stock and ETF trading." },
+    { "slug": "zacks-trade", "name": "Zacks Trade", "logo": "/assets/upcoming/zacks-trade.svg", "category": "stocks", "subtitle": "Full-featured brokerage offering stocks, options, and global market access." }
+  ],
+  "categories": {
+    "stocks": { "label": "Stocks & Options", "icon": "fa-chart-line", "color": "text-blue-400" },
+    "futures": { "label": "Futures", "icon": "fa-bolt", "color": "text-yellow-400" },
+    "forex": { "label": "Forex & CFDs", "icon": "fa-coins", "color": "text-green-400" },
+    "propfirm": { "label": "Prop Firm Futures", "icon": "fa-trophy", "color": "text-purple-400" },
+    "ai": { "label": "AI Investing", "icon": "fa-robot", "color": "text-purple-400" }
+  }
+}

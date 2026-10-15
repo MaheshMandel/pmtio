@@ -1,0 +1,501 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getLocalePaths } from "../../../i18n/utils";
+import type { Locale } from "../../../i18n/config";
+import Localize from "../../../components/Localize.astro";
+import { makeTr, localizeLd } from "../../../i18n/compare-i18n.mjs";
+import "../../../styles/compare-editorial.css";
+import CompareSpy from "../../../components/CompareSpy.astro";
+
+// Compare pages are translated (de/es/fr/it): text is swapped in by <Localize> from src/i18n/compare/<locale>.json.
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const tr = makeTr(locale);
+const title = tr("Best Trade Copier for Prop Firms and Futures (2026 Guide)");
+const description = tr("Which trade copier fits your setup? Compare TradeSyncer, Tradecopia, Replikanto, Copygram, CrossTrade and TradersPost on price, platform and honest fit.");
+const lastUpdated = "2026-09-23";
+
+const faqsEn = [
+  {
+    "question": "What is the difference between a trade copier and multi-account automation?",
+    "answer": "A copier watches a leader account and mirrors the orders that appear on it, whoever or whatever placed them. Multi-account automation takes one incoming signal, usually a TradingView alert, and creates orders directly on each account you nominate. A tool can do one, the other, or both, and most do only one. Decide which you need before comparing prices."
+  },
+  {
+    "question": "Which trade copier is cheapest?",
+    "answer": "It depends entirely on how your accounts are held. For five accounts under one broker login, TradeSyncer at $49, CrossTrade Pro at $49, Tradecopia at $49.99 and PickMyTrade at $50 are within a dollar of each other. For accounts spread across five separate logins, Tradecopia's flat price is the cheapest on this page and PickMyTrade is the most expensive. Prices checked 22 September 2026."
+  },
+  {
+    "question": "Can a trade copier break my prop firm rules?",
+    "answer": "Yes. Copying identical trades across evaluation and funded accounts is restricted or banned at some firms, and no tool on this page enforces your firm's rulebook for you. Risk settings in any of these products are settings you configure, not guarantees. Ask your firm in writing which tools and which account types are allowed before you connect anything."
+  },
+  {
+    "question": "Which copier works with NinjaTrader?",
+    "answer": "Replikanto and CrossTrade both work natively with NinjaTrader 8, and TradeSyncer and Tradecopia both list NinjaTrader among their platforms. PickMyTrade has no NinjaTrader 8 add-on; NinjaTrader accounts that log in through Tradovate work with our Tradovate integration, which covers some but not all NinjaTrader setups."
+  },
+  {
+    "question": "Do all of these accept TradingView alerts?",
+    "answer": "No, and this is where buyers most often get caught. TradeSyncer documents no webhook input at all. Replikanto accepts none. Tradecopia accepts them only on its hosted plans, and those alerts place entries without attached exits. Copygram gates webhooks out of its cheapest tier and caps how many you get. CrossTrade, TradersPost and PickMyTrade take TradingView alerts as a core function."
+  },
+  {
+    "question": "Does PickMyTrade publish this guide?",
+    "answer": "Yes. PickMyTrade wrote and published this page, and PickMyTrade is one of the seven tools on it. Every competitor figure comes from that company's own published pages on 22 September 2026, with the link in the table so you can check it. There are no affiliate links and no rankings here. If a figure is wrong, tell us and we will correct it and date the change."
+  }
+];
+const faqs = faqsEn.map((f) => ({ question: tr(f.question), answer: tr(f.answer) }));
+
+const ld = [
+  { "@context": "https://schema.org", ...{
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "PickMyTrade",
+      "item": "https://pickmytrade.io/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://pickmytrade.io/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Best Trade Copier for Prop Firms and Futures",
+      "item": "https://pickmytrade.io/compare/best-trade-copier/"
+    }
+  ]
+} },
+  { "@context": "https://schema.org", ...{
+  "@type": "WebPage",
+  "@id": "https://pickmytrade.io/compare/best-trade-copier/#webpage",
+  "url": "https://pickmytrade.io/compare/best-trade-copier/",
+  "name": "Best Trade Copier for Prop Firms and Futures",
+  "datePublished": "2026-09-23",
+  "dateModified": "2026-09-23",
+  "publisher": {
+    "@id": "https://pickmytrade.io/#organization"
+  }
+} },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "https://pickmytrade.io/compare/best-trade-copier/#faq",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  },
+];
+const ldLocalized = localizeLd(ld, locale, tr);
+
+// ---- Page content. Wording is unchanged from the previous version of this page; only the layout moved. ----
+const sections = [
+  { id: "short-answer", label: "Short answer" },
+  { id: "three-questions-that-decide-it", label: "Questions" },
+  { id: "the-shortlist-and-what-each-is-for", label: "The shortlist" },
+  { id: "side-by-side", label: "Side by side" },
+  { id: "how-these-tools-price-the-same-job", label: "Pricing" },
+  { id: "when-you-may-not-need-any-of-these", label: "When you may not need" },
+  { id: "frequently-asked-questions", label: "FAQ" },
+  { id: "sources", label: "Sources" },
+];
+
+const standards = [
+  "Published by PickMyTrade, which sells one of these tools",
+  "Competitor facts from each vendor's own pages, checked 22 September 2026",
+  "No rankings, no scores, no affiliate links",
+  "We say where a competitor is the better buy",
+];
+
+const questions = [
+  {
+    n: "01",
+    title: "What you are copying",
+    body: `A copier watches a leader account and mirrors the orders that appear on it. Alert automation is the opposite: an alert arrives and the tool creates orders on the accounts you nominate, each at its own size. TradeSyncer, Replikanto and Tradecopia do the first job. TradersPost does the second. PickMyTrade does the second and also copies from a Tradovate leader.`,
+  },
+  {
+    n: "02",
+    title: "Where your accounts live",
+    body: `This eliminates most of the shortlist in one step. NinjaTrader accounts point to Replikanto or CrossTrade. Accounts across Rithmic, Tradovate and ProjectX point to TradeSyncer or Tradecopia. Stock or options accounts rule out every futures-only tool here. Check the platform your firm issues, not the firm's name.`,
+  },
+  {
+    n: "03",
+    title: "How many accounts, and under how many logins",
+    body: `Every vendor meters this differently: TradeSyncer per broker login, Tradecopia one flat price for any number of followers, Replikanto once per machine, Copygram per account slot, PickMyTrade per broker login with unlimited accounts under one broker login. Count your logins first, because the same five accounts can cost <span class="pr">$49</span> or <span class="pr">$250</span> depending on how they are held.`,
+  },
+];
+
+const featured = {
+  name: "PickMyTrade",
+  tag: "Alerts + copier",
+  tagline: "Alerts to many accounts, plus Tradovate copying, in one plan",
+  best: `a TradingView strategy driving several accounts under one broker login, on futures, stocks, options or forex.`,
+  plans: `One plan at <span class="pr">$50</span> a month or <span class="pr">$500</span> a year covers every feature, with unlimited accounts under one broker login; a second login needs its own subscription. Per-account daily and weekly profit and loss limits, trading-time windows, and exits, brackets, trailing and breakeven attached to the alert are all included.`,
+  limits: `The copier runs from a Tradovate admin account to Tradovate followers only, so it cannot lead on one platform and follow on another. No journal, no NinjaTrader 8 add-on, no Telegram source, no published public API. Interactive Brokers needs TWS or IB Gateway running.`,
+  links: [
+    { href: "https://docs.pickmytrade.trade/docs/place-trades-in-multiple-accounts/", label: "Multi-account routing", ext: true },
+    { href: "https://docs.pickmytrade.trade/docs/trading-risk-settings/", label: "Risk settings", ext: true },
+    { href: "https://docs.pickmytrade.trade/docs/tradingview-to-tradovate-trade-copier/", label: "Copier guide", ext: true },
+    { href: "/pricing/", label: "See pricing", ext: false },
+  ],
+};
+
+const tools = [
+  {
+    name: "TradeSyncer",
+    tag: "Copier",
+    tagline: "Copying across the widest set of futures platforms",
+    best: `a trader who places orders by hand and wants them mirrored across several futures platforms, with a journal.`,
+    plans: `Basic <span class="pr">$49</span> a month (<span class="pr">$34</span> billed yearly) covers 2 connections at 10 accounts each; Pro <span class="pr">$99</span> (<span class="pr">$69</span>) covers 4 at 20 each; Flex <span class="pr">$149</span> (<span class="pr">$104</span>) covers unlimited connections with 120 accounts. A connection is one broker login.`,
+    limits: `Its documentation describes no webhook input, so it copies orders someone else places, and daily loss and profit limits apply to Tradovate accounts only. Its published limitations say trailing stop orders and automatic breakeven are not available. The trial takes a card and converts automatically.`,
+    href: "https://tradesyncer.com/pricing/",
+  },
+  {
+    name: "Tradecopia",
+    tag: "Copier",
+    tagline: "Flat pricing for large follower fleets",
+    best: `prop desks running many followers across several firms who want one price whatever the count.`,
+    plans: `Pro (desktop) is <span class="pr">$49.99</span> a month or <span class="pr">$34.99</span> yearly (<span class="pr">$419.92</span> a year); Pro+ Lite <span class="pr">$79.99</span> (<span class="pr">$59.99</span>) adds managed hosting; Pro+ <span class="pr">$149.99</span> (<span class="pr">$119.99</span>) adds a dedicated server. Unlimited followers on every plan, futures only.`,
+    limits: `Pro is a desktop app and your machine must stay on. TradingView alerts start at <span class="pr">$79.99</span>, place entries with no exits attached, and need the exact contract named and updated by hand each quarter. Purchases are final.`,
+    href: "https://tradecopia.com/pricing",
+  },
+  {
+    name: "Replikanto",
+    tag: "Copier",
+    tagline: "A NinjaTrader copier you buy once",
+    best: `a NinjaTrader trader who would rather own the software than rent it, copying discretionary trades, NinjaScript strategies or ATM-managed exits.`,
+    plans: `Licences are one-time and tied to a machine: <span class="pr">$249</span> for a year or <span class="pr">$299</span> lifetime on one, <span class="pr">$299</span> or <span class="pr">$399</span> on two, extra machines <span class="pr">$50</span> or <span class="pr">$100</span>. Support and updates renew at <span class="pr">$39</span> a year.`,
+    limits: `It cannot execute a TradingView alert, and it needs Windows with NinjaTrader running. No daily or weekly loss limits, no trading-hour windows. The 14-day no-reason refund is genuine.`,
+    href: "https://flowbots.ninja/product/replikanto/",
+  },
+  {
+    name: "Copygram",
+    tag: "Telegram signals",
+    tagline: "Copying Telegram signal channels",
+    best: `traders who follow Telegram signal channels and want them turned into orders. Nothing else here does that.`,
+    plans: `Starter is <span class="pr">$29</span> a month (<span class="pr">$12.50</span> yearly) for 2 accounts and no TradingView webhook; Pro <span class="pr">$49</span> (<span class="pr">$20.50</span>) for 3 accounts and 2 webhooks; Advanced <span class="pr">$79</span> (<span class="pr">$33</span>) for 5 accounts and 3 webhooks. Above five, the price is not published.`,
+    limits: `For futures it is Tradovate only, its own FAQ says there is no free trial, and refunds run to first-time subscribers within 7 days who can show the product is not working. We found no loss-limit setting on its site or in its app.`,
+    href: "https://copygram.app/",
+  },
+  {
+    name: "CrossTrade",
+    tag: "Alerts + copier",
+    tagline: "NinjaTrader 8 and Tradovate, with a journal",
+    best: `traders working inside NinjaTrader 8 who want alert routing, copying and a journal on one bill.`,
+    plans: `Standard is <span class="pr">$29</span> a month or <span class="pr">$279</span> a year, Pro <span class="pr">$49</span> or <span class="pr">$469,</span> Elite <span class="pr">$99</span> or <span class="pr">$949</span>. The copier and the Account Manager risk controls start on Pro, so Standard is not the plan to compare. Every plan is single-machine, and a VPS is a separate <span class="pr">$99</span> to <span class="pr">$199</span>.`,
+    limits: `No ProjectX, no stocks or options, no forex or CFDs. If your funded accounts are issued on ProjectX, it cannot serve them at any price.`,
+    href: "https://crosstrade.io/pricing",
+  },
+  {
+    name: "TradersPost",
+    tag: "Alert automation",
+    tagline: "Broad alert automation, but not a copier",
+    best: `one alert reaching stocks, options including index options, crypto venues and futures across a long broker list.`,
+    plans: `Starter is <span class="pr">$49</span> a month (<span class="pr">$499.80</span> a year) for 1 live account and 1 asset class, Basic <span class="pr">$99</span> (<span class="pr">$1,009.80</span>) for 2 and 2, Pro <span class="pr">$199</span> (<span class="pr">$2,029.80</span>) for 3 and 3, Premium <span class="pr">$299</span> (<span class="pr">$3,049.80</span>) for 6 accounts and every class. Extra live accounts are <span class="pr">$10</span> a month.`,
+    limits: `It is here because people search for it here, not because it copies — its own blog states that it does not offer direct trade copying that listens for broker-level trades. We found no daily or weekly loss limit, and there is no Rithmic, TradeLocker or Match-Trader connection.`,
+    href: "https://traderspost.io/pricing",
+  },
+];
+
+const tableCaption = `Each vendor's own published information, checked 22 September 2026. Entry price is the cheapest plan that does the job in the "what it does" column, not the cheapest plan on the vendor's page.`;
+const tableRows = [
+  { tool: "PickMyTrade", href: "", does: "Alerts to many accounts; Tradovate leader-to-follower copying", platforms: "Tradovate, Rithmic, ProjectX, Interactive Brokers, TradeStation, Tradier, TradeLocker, Match-Trader", metered: "Per broker login, unlimited accounts under one broker login", price: `<span class="pr">$50</span>/mo, <span class="pr">$500</span>/yr`, trial: "7 days, no card" },
+  { tool: "TradeSyncer", href: "https://tradesyncer.com/pricing/", does: "Copies trades placed on a leader account", platforms: "NinjaTrader, Rithmic, Tradovate, ProjectX, Sierra Chart, Quantower, ATAS", metered: "Per connection (one broker login), capped accounts per connection", price: `<span class="pr">$49</span>/mo, <span class="pr">$34</span>/mo yearly`, trial: "7 days, card required" },
+  { tool: "Tradecopia", href: "https://tradecopia.com/pricing", does: "Copies a leader account; entry-only alerts on hosted plans", platforms: "Tradovate, NinjaTrader, Rithmic, TopstepX", metered: "Flat per subscription, unlimited followers", price: `<span class="pr">$49.99</span>/mo desktop, <span class="pr">$79.99</span>/mo hosted`, trial: "7 days on two plans, card required" },
+  { tool: "Replikanto", href: "https://flowbots.ninja/product/replikanto/", does: "Copies anything NinjaTrader can see", platforms: "NinjaTrader, and whatever it connects to", metered: "One-time, per machine", price: `<span class="pr">$249</span> for a year, <span class="pr">$299</span> lifetime`, trial: "7 days, card requirement not stated" },
+  { tool: "Copygram", href: "https://copygram.app/", does: "Turns Telegram signals, or a master account, into orders", platforms: "MetaTrader platforms, TradeLocker, DxTrade, Match-Trader, Tradovate", metered: "Per account slot and per webhook slot", price: `<span class="pr">$49</span>/mo for the tier that accepts TradingView`, trial: "None" },
+  { tool: "CrossTrade", href: "https://crosstrade.io/pricing", does: "Alert routing, copying and a journal", platforms: "Tradovate, NinjaTrader 8, Rithmic through NinjaTrader", metered: "Flat tiers, single machine", price: `<span class="pr">$49</span>/mo for the tier with the copier`, trial: "7 days, no card" },
+  { tool: "TradersPost", href: "https://traderspost.io/pricing", does: "Alert automation across many brokers, no broker-level copier", platforms: "Tradovate, ProjectX, Interactive Brokers, TradeStation, Tradier, equity and crypto venues", metered: "Per live account and per asset class", price: `<span class="pr">$49</span>/mo for 1 account, 1 asset class`, trial: "7 days, manual-submit only" },
+];
+
+const pricingIntro = `One configuration, priced everywhere: five funded futures accounts, a leader you trade by hand, daily loss limits on each.`;
+const pricingPoints = [
+  { lead: "All five under one broker login.", body: `TradeSyncer Basic <span class="pr">$49</span>. Tradecopia desktop <span class="pr">$49.99</span>, machine staying on. CrossTrade Pro <span class="pr">$49</span>. PickMyTrade <span class="pr">$50</span> if the accounts are Tradovate. Four tools within a dollar, so decide on platform and on what else is included.` },
+  { lead: "The same five accounts under five separate logins.", body: `TradeSyncer moves to Flex at <span class="pr">$149</span>. Tradecopia stays flat at <span class="pr">$49.99</span>. PickMyTrade needs a subscription per login, so five logins is <span class="pr">$250</span> a month. That is a real and large loss for us, and the configuration where Tradecopia's flat price is the best value here.` },
+  { lead: "Now drive the leader from a TradingView strategy instead of by hand.", body: `TradeSyncer cannot, and needs a second product beside it. Tradecopia needs the <span class="pr">$79.99</span> plan and still places entries with no exits. CrossTrade Pro does it at <span class="pr">$49</span> on its two platforms. PickMyTrade does it at <span class="pr">$50</span> with exits, brackets and trailing on the same alert. TradersPost does the alert side at <span class="pr">$49</span> and does not copy at all.` },
+];
+const pricingOutro = `Two costs sit outside every subscription here. ProjectX and TopstepX accounts need an API subscription from the firm, which every third-party tool requires and none of them sell. TradingView webhooks need a paid TradingView plan, equally for all. Tradovate connects to us by OAuth, with no API purchase.`;
+
+const notNeeded = [
+  `Before you pay anyone, make two checks. First, ask whether the platform your accounts already live on offers copying between accounts under the same login. If it does, and all your accounts are there, you may be about to buy something you have.`,
+  `Second, ask your prop firm in writing whether a third-party copier is allowed on your account type, and whether copying between an evaluation and a funded account is allowed. Firms differ and they change their rules. We publish no list of which firms allow what, because it would be stale within weeks and you would be trusting our page instead of your firm's answer.`,
+  `And if you trade one account, a copier does nothing for you.`,
+];
+
+const sourceLinks = [
+  { label: "TradeSyncer pricing", href: "https://tradesyncer.com/pricing/" },
+  { label: "Tradecopia pricing", href: "https://tradecopia.com/pricing" },
+  { label: "Replikanto licences", href: "https://flowbots.ninja/product/replikanto/" },
+  { label: "Copygram plans", href: "https://copygram.app/" },
+  { label: "CrossTrade pricing", href: "https://crosstrade.io/pricing" },
+  { label: "TradersPost pricing", href: "https://traderspost.io/pricing" },
+];
+---
+<BaseLayout locale={locale} title={title} description={description} structuredData={ldLocalized}>
+
+  <Localize locale={locale}>
+<div class="ed">
+    <!-- Hero -->
+    <header class="hero">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a><span aria-hidden="true">›</span><a href="/compare/">Compare</a><span aria-hidden="true">›</span><span aria-current="page">Best Trade Copier</span>
+        </nav>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Comparison guide · 2026</p>
+            <h1>Best Trade Copier for Prop Firms and Futures</h1>
+            <p class="lede">A practical, no-nonsense comparison of the most popular trade copiers for prop firms, futures, forex and stocks. See what each tool does, how it works, pricing, and which one fits your use case.</p>
+            <p class="meta">
+              <span>Last reviewed: <time datetime={lastUpdated}>September 23, 2026</time></span>
+              <span class="dot" aria-hidden="true"></span>
+              <span>No rankings. No scores. Just facts.</span>
+            </p>
+            <div class="actions">
+              <a class="btn btn-primary" href="#the-shortlist-and-what-each-is-for">See the shortlist</a>
+              <a class="btn btn-quiet" href="#side-by-side">Skip to the comparison table <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+          <figure class="hero-visual">
+            <svg viewBox="0 0 480 400" role="img" aria-labelledby="hv-title hv-desc">
+              <title id="hv-title">Two different jobs</title>
+              <desc id="hv-desc">A copier mirrors orders from a leader account to follower accounts. Alert automation sends one alert to several accounts.</desc>
+              <defs>
+                <marker id="arw" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4f86d6" /></marker>
+              </defs>
+              <rect x="0.5" y="0.5" width="479" height="399" rx="12" class="v-panel" />
+              <text x="32" y="38" class="v-cap">1 · COPYING</text><rect x="32" y="88" width="132" height="48" rx="6" class="v-node v-node-a" /><text x="98" y="116" text-anchor="middle" class="v-txt">Leader account</text><g class="v-lines"><path d="M164 112 H240 V70 H316" marker-end="url(#arw)" /><path d="M164 112 H316" marker-end="url(#arw)" /><path d="M164 112 H240 V154 H316" marker-end="url(#arw)" /></g><rect x="320" y="55" width="128" height="30" rx="6" class="v-node" /><text x="384" y="74" text-anchor="middle" class="v-txt">Follower 1</text><rect x="320" y="97" width="128" height="30" rx="6" class="v-node" /><text x="384" y="116" text-anchor="middle" class="v-txt">Follower 2</text><rect x="320" y="139" width="128" height="30" rx="6" class="v-node" /><text x="384" y="158" text-anchor="middle" class="v-txt">Follower 3</text><line x1="32" y1="190" x2="448" y2="190" class="v-rule" /><text x="32" y="222" class="v-cap">2 · ALERT AUTOMATION</text><rect x="32" y="272" width="132" height="48" rx="6" class="v-node v-node-a" /><text x="98" y="300" text-anchor="middle" class="v-txt">TradingView alert</text><g class="v-lines"><path d="M164 296 H240 V254 H316" marker-end="url(#arw)" /><path d="M164 296 H316" marker-end="url(#arw)" /><path d="M164 296 H240 V338 H316" marker-end="url(#arw)" /></g><rect x="320" y="239" width="128" height="30" rx="6" class="v-node" /><text x="384" y="258" text-anchor="middle" class="v-txt">Account A</text><rect x="320" y="281" width="128" height="30" rx="6" class="v-node" /><text x="384" y="300" text-anchor="middle" class="v-txt">Account B</text><rect x="320" y="323" width="128" height="30" rx="6" class="v-node" /><text x="384" y="342" text-anchor="middle" class="v-txt">Account C</text><text x="32" y="384" class="v-note">A copier mirrors a leader. Automation routes one alert.</text>
+              </svg>
+          </figure>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sticky section navigation -->
+    <nav class="secnav" aria-label="On this page">
+      <div class="wrap secnav-inner">
+        <ul>
+          {sections.map((s) => (
+            <li><a href={`#${s.id}`} data-target={s.id}>{s.label}</a></li>
+          ))}
+        </ul>
+        <a class="btn btn-primary btn-sm" href="https://app.pickmytrade.trade/?register=true">Start free trial</a>
+      </div>
+    </nav>
+
+    <!-- Short answer -->
+    <section id="short-answer" class="sec band">
+      <div class="wrap">
+        <p class="eyebrow">Summary</p>
+        <h2>The short answer</h2>
+        <div class="answer">
+          <span class="answer-icon" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>
+          <p>Most people searching for a trade copier need one of two products. If you place trades by hand and want them mirrored to other accounts, you need a copier. If you want a TradingView strategy to open the same position on several accounts, you need multi-account alert automation, which most copiers do not do. Work out which before you compare a price.</p>
+        </div>
+        <ul class="standards">
+          {standards.map((t) => (
+            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>{t}</span></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Three questions -->
+    <section id="three-questions-that-decide-it" class="sec">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Before you compare</p>
+          <h2>Three questions that decide it</h2>
+          <p class="sub">Answer these three questions to quickly narrow down which type of trade copier you actually need.</p>
+        </div>
+        <div class="q-grid">
+          {questions.map((q) => (
+            <article class="q-card">
+              <span class="q-num">{q.n}</span>
+              <h3>{q.title}</h3>
+              <p set:html={q.body} />
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Shortlist -->
+    <section id="the-shortlist-and-what-each-is-for" class="sec band">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">The shortlist</p>
+          <h2>The shortlist, and what each is for</h2>
+          <p class="sub">A quick overview of the most popular trade copiers in 2026: who each is best for, what it costs, and where it falls short.</p>
+        </div>
+
+        <article class="feature">
+          <header class="feature-head">
+            <div>
+              <h3>{featured.name}</h3>
+              <p class="tagline">{featured.tagline}</p>
+            </div>
+            <div class="tags"><span class="tag">{featured.tag}</span><span class="tag tag-own">Our product</span></div>
+          </header>
+          <div class="feature-cols">
+            <div><h4>Best for</h4><p set:html={featured.best} /></div>
+            <div><h4>Plans</h4><p set:html={featured.plans} /></div>
+            <div><h4>Main limitations</h4><p set:html={featured.limits} /></div>
+          </div>
+          <footer class="feature-foot">
+            {featured.links.map((l) => (
+              <a href={l.href} {...(l.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{l.label} <span aria-hidden="true">→</span></a>
+            ))}
+          </footer>
+        </article>
+
+        <div class="t-grid">
+          {tools.map((t) => (
+            <article class="t-card">
+              <header>
+                <div class="t-top"><h3>{t.name}</h3><span class="tag">{t.tag}</span></div>
+                <p class="tagline">{t.tagline}</p>
+              </header>
+              <dl>
+                <div class="row"><dt>Best for</dt><dd set:html={t.best} /></div>
+                <div class="row"><dt>Plans</dt><dd set:html={t.plans} /></div>
+                <div class="row"><dt>Main limitations</dt><dd set:html={t.limits} /></div>
+                <div><dt>Risk disclosure</dt><dd>Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. The content on this page is for educational and informational purposes only and does not constitute financial, investment, or trading advice. Only trade with capital you can afford to lose.</dd></div>
+          </dl>
+              <a class="t-link" href={t.href} target="_blank" rel="noopener noreferrer">View vendor pricing <span aria-hidden="true">→</span></a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Side by side -->
+    <section id="side-by-side" class="sec">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Side by side</p>
+          <h2>Feature comparison</h2>
+          <p class="sub">A detailed comparison of the most popular trade copiers for prop firms, futures and more.</p>
+        </div>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Feature comparison table">
+          <table>
+            <caption>{tableCaption}</caption>
+            <thead>
+              <tr>
+                <th scope="col">Tool</th>
+                <th scope="col">What it does</th>
+                <th scope="col">Platforms</th>
+                <th scope="col">How it is metered</th>
+                <th scope="col">Entry price</th>
+                <th scope="col">Trial</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableRows.map((r) => (
+                <tr class={r.href ? "" : "is-own"}>
+                  <th scope="row">{r.href ? <a href={r.href} target="_blank" rel="noopener noreferrer">{r.tool}</a> : r.tool}</th>
+                  <td>{r.does}</td>
+                  <td>{r.platforms}</td>
+                  <td>{r.metered}</td>
+                  <td set:html={r.price} />
+                  <td>{r.trial}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="how-these-tools-price-the-same-job" class="sec band">
+      <div class="wrap">
+        <div class="measure">
+          <p class="eyebrow">Pricing</p>
+          <h2>How these tools price the same job</h2>
+          <p class="prose">{pricingIntro}</p>
+          <ul class="checks">
+            {pricingPoints.map((p) => (
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i><p><strong>{p.lead}</strong> <span set:html={p.body} /></p></li>
+            ))}
+          </ul>
+          <p class="prose">{pricingOutro}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- When you may not need any of these -->
+    <section id="when-you-may-not-need-any-of-these" class="sec">
+      <div class="wrap">
+        <div class="measure">
+          <p class="eyebrow">Honest take</p>
+          <h2>When you may not need any of these</h2>
+          {notNeeded.map((p) => <p class="prose">{p}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="frequently-asked-questions" class="sec band">
+      <div class="wrap">
+        <div class="faq-wrap">
+          <p class="eyebrow">FAQ</p>
+          <h2>Frequently asked questions</h2>
+          <div class="faq">
+            {faqs.map((f) => (
+              <details>
+                <summary><span>{f.question}</span><i aria-hidden="true"></i></summary>
+                <div class="ans"><p>{f.answer}</p></div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sources -->
+    <section id="sources" class="sec sec-quiet" aria-label="Sources">
+      <div class="wrap">
+        <div class="measure">
+          <p class="eyebrow">Sources</p>
+          <h2 class="h-sm">Sources and disclosures</h2>
+          <dl class="src">
+            <div><dt>Last updated</dt><dd><time datetime={lastUpdated}>September 23, 2026</time>. Competitor figures read 22 September 2026.</dd></div>
+            <div>
+              <dt>Pricing sources</dt>
+              <dd>
+                {sourceLinks.map((s, i) => (<Fragment>{i > 0 && " · "}<a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a></Fragment>))}
+              </dd>
+            </div>
+            <div><dt>Methodology</dt><dd>Every competitor figure comes from that vendor's own pages. Our own figures come from our <a href="https://pickmytrade.trade/pages/pricing/">pricing</a>, <a href="/broker/">broker</a> and <a href="https://docs.pickmytrade.trade/docs/faqs/" target="_blank" rel="noopener noreferrer">documentation</a> pages. Prices change; check each vendor's site before you buy.</dd></div>
+            <div><dt>Disclosure</dt><dd>Written and published by PickMyTrade, which sells one of the tools compared. No rankings, no scores, no affiliate links. Head-to-head comparisons are on our <a href="https://pickmytrade.trade/compare/">compare hub</a>.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-sec">
+      <div class="wrap">
+        <div class="cta">
+          <div>
+            <h2 class="h-sm">Ready to get started?</h2>
+            <p>If the TradingView route is the one you need, run your own alert on a 7-day free trial. No credit card.</p>
+          </div>
+          <div class="cta-actions">
+            <a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start 7-day free trial <span aria-hidden="true">→</span></a>
+            <a class="btn btn-quiet" href="https://docs.pickmytrade.trade/docs/faqs/" target="_blank" rel="noopener noreferrer">View documentation <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Localize>
+<CompareSpy />
+</BaseLayout>
+
+

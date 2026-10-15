@@ -1,0 +1,773 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Trading VPS (TradoxVPS)",
+        "item": absoluteLocalizedPath(locale, 'tradoxvps')
+      }
+    ]
+  };
+
+// NOTE: TradoxVPS's current annual plan price could not be verified (their
+// pricing page did not expose it, and no "PickMyTrade" discount code was
+// found live on tradoxvps.com — only an unrelated "WELCOME" code). Per the
+// content guardrail against inventing/staling pricing figures in structured
+// data, this Product schema intentionally omits "offers"/price. Add it back
+// once the current TradoxVPS annual price and partner-code discount are
+// confirmed directly with TradoxVPS.
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "TradoxVPS Trading VPS",
+  "description": "Chicago-based, CME-proximal low-latency Windows trading VPS built for futures and TradingView automation, running on AMD Ryzen 9950X CPUs with DDR5 RAM and NVMe SSD storage. Offered in partnership with PickMyTrade.",
+  "brand": { "@type": "Brand", "name": "TradoxVPS" },
+  "category": "Trading VPS Hosting",
+  "url": absoluteLocalizedPath(locale, 'tradoxvps')
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a trading VPS and do I need one?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A trading VPS is an always-on Windows computer in a professional data center that you log into remotely to run your trading platforms, TradingView in a browser, or custom scripts. It keeps working 24/7 even when your home PC is off or your internet drops. You need one if you rely on desktop platforms or scripts that must stay online, or you want a stable environment separate from your home setup. If you only automate TradingView alerts to your broker through PickMyTrade, that runs in the cloud already, so a VPS is optional." }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the best VPS for futures trading?",
+      "acceptedAnswer": { "@type": "Answer", "text": "For US futures, the best VPS is usually one in a Chicago data center close to the CME, with strong uptime, a modern CPU, DDR5 RAM, NVMe SSD storage, and enough resources to run your platforms smoothly. TradoxVPS is built to this spec on AMD Ryzen 9950X hardware in Chicago. The right plan depends on how many charts, platforms and strategies you run at once." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a VPS to run TradingView automation with PickMyTrade?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade runs in the cloud and executes your trades from its own servers 24/7, even when your computer is off, so you do not need a VPS for the automation itself. A VPS like TradoxVPS is useful if you also want to keep TradingView open in a browser around the clock, run non-cloud scripts, or host a broker desktop app, but it is optional, not required." }
+    },
+    {
+      "@type": "Question",
+      "name": "Which VPS location is best for Tradovate and Rithmic (Chicago/CME proximity)?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A Chicago data center is the usual choice, because it sits close to the CME futures matching engine and keeps network latency low for the platforms you host on the server. TradoxVPS is Chicago-based and CME-proximal for this reason. Remember that PickMyTrade's own automation is cloud-hosted, so for pure webhook trading the VPS location mainly matters for tools you run on the VPS yourself." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can a VPS keep my strategy running 24/7 when my computer is off?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Because a VPS lives in a data center with redundant power and internet, anything you run on it, such as a browser with TradingView, a broker platform or a custom script, keeps running 24/7 whether or not your home PC is on. If your automation runs through PickMyTrade instead, it already executes in the cloud around the clock without a VPS." }
+    }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('tradoxvps.page_title')}
+  description={t('tradoxvps.page_description')}
+  keywords={t('tradoxvps.page_keywords')}
+  structuredData={[schema1, schema2, schema3]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('tradoxvps.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('tradoxvps.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-52 pb-16 px-4">
+    <div class="max-w-6xl mx-auto text-center">
+      <div class="mb-6">
+        <span class="bg-orange-500/20 text-orange-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide">
+          {t('tradoxvps.badge_partner')}
+        </span>
+      </div>
+      <div class="mb-8">
+        <div class="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500/10 to-orange-400/5 border border-orange-500/30 rounded-2xl px-8 py-4">
+          <i class="fa-solid fa-server text-3xl text-orange-400"></i>
+          <span class="text-3xl md:text-4xl font-bold tracking-wide text-white electrolize-regular">TradoxVPS</span>
+        </div>
+      </div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+        {t('tradoxvps.hero_title_a')}<br /><span class="gradient-text">{t('tradoxvps.hero_title_highlight')}</span>
+      </h1>
+      <p class="text-xl text-gray-300 mb-6 max-w-3xl mx-auto">
+        {t('tradoxvps.hero_subtitle')}
+      </p>
+
+      <!-- Hardware highlight strip -->
+      <div class="flex flex-wrap justify-center gap-3 mb-10">
+        <div class="hardware-badge px-4 py-2 rounded-full text-sm font-semibold text-orange-300">
+          <i class="fa-solid fa-microchip mr-2"></i>{t('tradoxvps.hw_badge_cpu')}
+        </div>
+        <div class="hardware-badge px-4 py-2 rounded-full text-sm font-semibold text-orange-300">
+          <i class="fa-solid fa-memory mr-2"></i>{t('tradoxvps.hw_badge_ram')}
+        </div>
+        <div class="hardware-badge px-4 py-2 rounded-full text-sm font-semibold text-orange-300">
+          <i class="fa-solid fa-hard-drive mr-2"></i>{t('tradoxvps.hw_badge_ssd')}
+        </div>
+        <div class="hardware-badge px-4 py-2 rounded-full text-sm font-semibold text-orange-300">
+          <i class="fa-solid fa-location-dot mr-2"></i>{t('tradoxvps.hw_badge_location')}
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+        <a href="https://tradoxvps.com" target="_blank" rel="noopener noreferrer"
+          class="px-8 py-4 bg-gradient-to-r from-[#2B77EE] to-[#4B94FF] rounded-xl font-bold text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all text-lg">
+          <i class="fa-solid fa-server mr-2"></i> {t('tradoxvps.hero_cta_primary')}
+        </a>
+        <a href="https://app.pickmytrade.io/?register=true"
+          class="px-8 py-4 border-2 border-[#2B77EE] rounded-xl font-bold text-white hover:bg-[#2B77EE]/10 transition-all text-lg">
+          {t('tradoxvps.hero_cta_secondary')}
+        </a>
+      </div>
+
+      <!-- Discount code callout -->
+      <div class="mt-4">
+        <p class="text-sm text-gray-400 mb-3">{t('tradoxvps.discount_pre')} <span class="text-green-400 font-bold">{t('tradoxvps.discount_off')}</span>:</p>
+        <div class="code-box relative inline-block pr-24">
+          PickMyTrade
+          <button class="copy-btn" onclick="copyCode()">
+            <i class="fa-solid fa-copy"></i> {t('tradoxvps.copy_button')}
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">{t('tradoxvps.discount_apply')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What is a trading VPS (answer-first) -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center">{t('tradoxvps.s31_h2')}</h2>
+      <div class="space-y-4 text-gray-300 text-lg leading-relaxed">
+        <p>{t('tradoxvps.s31_p1')}</p>
+        <p>{t('tradoxvps.s31_p2')}</p>
+        <p>{t('tradoxvps.s31_p3')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What to look for in the best VPS for trading -->
+  <section class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center">{t('tradoxvps.s32_h2')}</h2>
+      <p class="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">{t('tradoxvps.s32_intro')}</p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s32_item1_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.s32_item1_desc')}</p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s32_item2_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.s32_item2_desc')}</p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s32_item3_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.s32_item3_desc')}</p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s32_item4_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.s32_item4_desc')}</p>
+        </div>
+        <div class="feature-card rounded-xl p-6 md:col-span-2">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s32_item5_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.s32_item5_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why TradoxVPS Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          {t('tradoxvps.why_title_a')} <span class="gradient-text">Futures and TradingView Automation</span>
+        </h2>
+        <p class="text-gray-300 text-lg max-w-3xl mx-auto">
+          {t('tradoxvps.why_subtitle')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-location-dot text-2xl text-orange-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('tradoxvps.feature_chicago_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.feature_chicago_desc')}</p>
+        </div>
+
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-bolt text-2xl text-blue-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('tradoxvps.feature_latency_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.feature_latency_desc')}</p>
+        </div>
+
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-shield-halved text-2xl text-green-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('tradoxvps.feature_stability_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.feature_stability_desc')}</p>
+        </div>
+
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-microchip text-2xl text-purple-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('tradoxvps.feature_hardware_title')}</h3>
+          <p class="text-gray-400">{t('tradoxvps.feature_hardware_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hardware Specs Section -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          {t('tradoxvps.hardware_title_a')} <span class="gradient-text-orange">{t('tradoxvps.hardware_title_highlight')}</span> {t('tradoxvps.hardware_title_b')}
+        </h2>
+        <p class="text-gray-300 text-lg max-w-3xl mx-auto">
+          {t('tradoxvps.hardware_subtitle')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12">
+        <div class="bg-gradient-to-br from-orange-900/20 to-orange-800/10 border border-orange-500/30 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-microchip text-3xl text-orange-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('tradoxvps.spec_cpu_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.spec_cpu_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-memory text-3xl text-blue-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('tradoxvps.spec_ram_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.spec_ram_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-green-900/20 to-green-800/10 border border-green-500/30 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-hard-drive text-3xl text-green-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('tradoxvps.spec_ssd_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.spec_ssd_desc')}</p>
+        </div>
+      </div>
+
+      <!-- IBKR Advantages -->
+      <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-2xl p-8 max-w-4xl mx-auto">
+        <h3 class="text-2xl font-bold mb-6 text-center">{t('tradoxvps.advantages_title_a')} <span class="gradient-text">{t('tradoxvps.advantages_title_highlight')}</span></h3>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa-solid fa-signal text-sm text-blue-400"></i>
+            </div>
+            <div>
+              <h4 class="font-bold mb-1">{t('tradoxvps.advantage_connectivity_title')}</h4>
+              <p class="text-gray-400 text-sm">{t('tradoxvps.advantage_connectivity_desc')}</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa-solid fa-gears text-sm text-purple-400"></i>
+            </div>
+            <div>
+              <h4 class="font-bold mb-1">{t('tradoxvps.advantage_optimized_title')}</h4>
+              <p class="text-gray-400 text-sm">{t('tradoxvps.advantage_optimized_desc')}</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa-solid fa-chart-line text-sm text-green-400"></i>
+            </div>
+            <div>
+              <h4 class="font-bold mb-1">{t('tradoxvps.advantage_peak_title')}</h4>
+              <p class="text-gray-400 text-sm">{t('tradoxvps.advantage_peak_desc')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trading VPS use cases -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">{t('tradoxvps.s33_h2')}</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s33_card1_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.s33_card1_desc')}</p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s33_card2_title')}</h3>
+          <p class="text-gray-400 text-sm">
+            {t('tradoxvps.s33_card2_desc')}
+            <a href="https://pickmytrade.trade/tradingview-to-tradovate/" class="text-blue-400 hover:text-blue-300 font-semibold">{t('tradoxvps.outbound_tv_tradovate')}</a>.
+          </p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s33_card3_title')}</h3>
+          <p class="text-gray-400 text-sm">
+            {t('tradoxvps.s33_card3_desc')}
+            <a href="https://pickmytrade.io/broker/tradingview-to-rithmic/" class="text-blue-400 hover:text-blue-300 font-semibold">{t('tradoxvps.outbound_tv_rithmic')}</a>.
+          </p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s33_card4_title')}</h3>
+          <p class="text-gray-400 text-sm">
+            {t('tradoxvps.s33_card4_desc')}
+            <a href="https://pickmytrade.trade/tradingview-automation/" class="text-blue-400 hover:text-blue-300 font-semibold">{t('tradoxvps.outbound_tv_automation')}</a>.
+          </p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s33_card5_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.s33_card5_desc')}</p>
+        </div>
+        <div class="feature-card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2 text-white">{t('tradoxvps.s33_card6_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.s33_card6_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TradoxVPS: plans, specs and setup -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center">{t('tradoxvps.s34_h2')}</h2>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">{t('tradoxvps.s34_p1')}</p>
+      <p class="text-gray-300 text-lg mb-4 font-semibold">{t('tradoxvps.s34_steps_intro')}</p>
+      <ol class="space-y-3 text-gray-300 list-decimal list-inside mb-6">
+        <li>{t('tradoxvps.s34_step1')}</li>
+        <li>{t('tradoxvps.s34_step2')}</li>
+        <li>{t('tradoxvps.s34_step3')}</li>
+        <li>{t('tradoxvps.s34_step4')}</li>
+        <li>{t('tradoxvps.s34_step5')}</li>
+      </ol>
+      <p class="text-gray-400 text-sm border-t border-white/10 pt-6">{t('tradoxvps.s34_pricing_note')}</p>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="py-20 px-4 relative overflow-hidden">
+    <!-- Background decorative elements -->
+    <div class="absolute top-0 left-0 w-full h-full opacity-10">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-orange-500 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-16">
+        <div class="inline-block mb-4">
+          <span class="bg-gradient-to-r from-blue-500/20 to-orange-500/20 border border-blue-500/30 text-blue-400 px-6 py-2 rounded-full text-sm font-semibold uppercase tracking-wide">
+            {t('tradoxvps.process_badge')}
+          </span>
+        </div>
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">
+          {t('tradoxvps.howitworks_title_a')} <span class="gradient-text">TradoxVPS</span>
+        </h2>
+        <p class="text-gray-300 text-xl max-w-2xl mx-auto">{t('tradoxvps.howitworks_subtitle')}</p>
+      </div>
+
+      <!-- Timeline connector for desktop -->
+      <div class="hidden lg:block absolute left-1/2 transform -translate-x-1/2 top-72 bottom-32 w-1 bg-gradient-to-b from-blue-500 via-orange-500 to-green-500 opacity-30"></div>
+
+      <div class="space-y-8 lg:space-y-16">
+        <!-- Step 1 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 lg:text-right">
+            <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 border border-blue-500/40 rounded-2xl p-8 hover:border-blue-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-blue-500/50">1</div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('tradoxvps.step1_title')}</h3>
+              <p class="text-gray-300 mb-4">{t('tradoxvps.step1_desc')}</p>
+              <a href="https://tradoxvps.com" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+                <i class="fa-solid fa-external-link-alt"></i>
+                tradoxvps.com
+              </a>
+            </div>
+          </div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-blue-500/50 ring-4 ring-blue-500/20">1</div>
+          </div>
+          <div class="flex-1 hidden lg:block"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 hidden lg:block"></div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-orange-500/50 ring-4 ring-orange-500/20">2</div>
+          </div>
+          <div class="flex-1">
+            <div class="bg-gradient-to-br from-orange-900/40 to-orange-800/20 border border-orange-500/40 rounded-2xl p-8 hover:border-orange-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-orange-500/50">2</div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('tradoxvps.step2_title')}</h3>
+              <p class="text-gray-300 mb-4">{t('tradoxvps.step2_desc_a')} <span class="text-green-400 font-bold">PickMyTrade</span> {t('tradoxvps.step2_desc_b')} <span class="text-green-400 font-bold">{t('tradoxvps.discount_off')}</span> {t('tradoxvps.step2_desc_c')}</p>
+              <div class="code-box relative inline-block pr-24">
+                PickMyTrade
+                <button class="copy-btn" onclick="copyCode()">
+                  <i class="fa-solid fa-copy"></i> {t('tradoxvps.copy_button')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 lg:text-right">
+            <div class="bg-gradient-to-br from-indigo-900/40 to-indigo-800/20 border border-indigo-500/40 rounded-2xl p-8 hover:border-indigo-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-indigo-500/50">3</div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('tradoxvps.step3_title')}</h3>
+              <p class="text-gray-300">{t('tradoxvps.step3_desc')}</p>
+            </div>
+          </div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-indigo-500/50 ring-4 ring-indigo-500/20">3</div>
+          </div>
+          <div class="flex-1 hidden lg:block"></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 hidden lg:block"></div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-green-500/50 ring-4 ring-green-500/20">4</div>
+          </div>
+          <div class="flex-1">
+            <div class="bg-gradient-to-br from-green-900/40 to-green-800/20 border border-green-500/40 rounded-2xl p-8 hover:border-green-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-green-500/50">4</div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('tradoxvps.step4_title')}</h3>
+              <p class="text-gray-300">{t('tradoxvps.step4_desc')}</p>
+              <div class="mt-4 inline-flex items-center gap-2 bg-green-500/20 border border-green-500/40 px-4 py-2 rounded-lg text-green-300 font-semibold">
+                <i class="fa-solid fa-rocket"></i>
+                {t('tradoxvps.step4_badge')}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="text-center mt-16">
+        <a href="https://tradoxvps.com" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-[#2B77EE] to-[#4B94FF] rounded-2xl font-bold text-white text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all hover:scale-105">
+          <i class="fa-solid fa-server text-xl"></i>
+          {t('tradoxvps.howitworks_cta')}
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recommended For Section -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          <span class="gradient-text">{t('tradoxvps.recommended_title')}</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-chart-line text-4xl text-blue-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('tradoxvps.rec_1_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.rec_1_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-building-columns text-4xl text-orange-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('tradoxvps.rec_2_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.rec_2_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-robot text-4xl text-green-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('tradoxvps.rec_3_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.rec_3_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-fire text-4xl text-red-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('tradoxvps.rec_4_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('tradoxvps.rec_4_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Support Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          {t('tradoxvps.support_title_a')} <span class="gradient-text">{t('tradoxvps.support_title_highlight')}</span>
+        </h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">{t('tradoxvps.support_note')}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gradient-to-br from-orange-900/20 to-orange-800/10 border border-orange-500/30 rounded-xl p-8">
+          <div class="text-center mb-6">
+            <div class="inline-flex items-center gap-2 mb-4">
+              <i class="fa-solid fa-server text-2xl text-orange-400"></i>
+              <h3 class="text-2xl font-bold">TradoxVPS</h3>
+            </div>
+          </div>
+          <ul class="space-y-3 text-gray-300">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_tradox_1')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_tradox_2')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_tradox_3')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_tradox_4')}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-purple-900/20 to-purple-800/10 border border-purple-500/30 rounded-xl p-8">
+          <div class="text-center mb-6">
+            <img src="assets/logo.webp" alt={t('tradoxvps.logo_alt_pickmytrade')} class="h-12 mx-auto mb-2" width="1563" height="1563" loading="eager" decoding="async">
+            <h3 class="text-2xl font-bold">PickMyTrade</h3>
+          </div>
+          <ul class="space-y-3 text-gray-300">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_pmt_1')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_pmt_2')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_pmt_3')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('tradoxvps.support_pmt_4')}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Do you need a VPS to run PickMyTrade? (honest framing) -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center">{t('tradoxvps.s35_h2')}</h2>
+      <div class="space-y-4 text-gray-300 text-lg leading-relaxed">
+        <p>{t('tradoxvps.s35_p1')}</p>
+        <p>{t('tradoxvps.s35_p2')}</p>
+        <ul class="space-y-2 list-disc list-inside">
+          <li>{t('tradoxvps.s35_case1')}</li>
+          <li>{t('tradoxvps.s35_case2')}</li>
+          <li>{t('tradoxvps.s35_case3')}</li>
+          <li>{t('tradoxvps.s35_case4')}</li>
+        </ul>
+        <p>{t('tradoxvps.s35_p3a')} <a href="https://pickmytrade.trade/tradingview-automation/" class="text-blue-400 hover:text-blue-300 font-semibold">{t('tradoxvps.outbound_tv_automation')}</a> {t('tradoxvps.s35_p3b')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trading VPS comparison / context -->
+  <section class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center">{t('tradoxvps.s36_h2')}</h2>
+      <p class="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-8">{t('tradoxvps.s36_intro')}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full bg-[#001429] rounded-xl overflow-hidden">
+          <thead class="bg-gradient-to-r from-blue-600/20 to-orange-600/20">
+            <tr>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">{t('tradoxvps.s36_col_option')}</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">{t('tradoxvps.s36_col_location')}</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">{t('tradoxvps.s36_col_hardware')}</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">{t('tradoxvps.s36_col_best_for')}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/10">
+            <tr class="hover:bg-white/5">
+              <td class="px-6 py-4 font-semibold text-white">{t('tradoxvps.s36_row1_option')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row1_location')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row1_hardware')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row1_best_for')}</td>
+            </tr>
+            <tr class="hover:bg-white/5">
+              <td class="px-6 py-4 font-semibold text-white">
+                <a href={localizedPath(locale, 'quantvps')} class="text-blue-400 hover:text-blue-300">{t('tradoxvps.s36_row2_option')}</a>
+              </td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row2_location')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row2_hardware')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row2_best_for')}</td>
+            </tr>
+            <tr class="hover:bg-white/5">
+              <td class="px-6 py-4 font-semibold text-white">{t('tradoxvps.s36_row3_option')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row3_location')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row3_hardware')}</td>
+              <td class="px-6 py-4 text-gray-400">{t('tradoxvps.s36_row3_best_for')}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-gray-400 text-sm mt-6 text-center">{t('tradoxvps.s36_outro')}</p>
+    </div>
+  </section>
+
+  <!-- Trading VPS FAQ -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">{t('tradoxvps.s37_h2')}</h2>
+      <div class="faq-content space-y-4">
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('tradoxvps.s37_q1')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('tradoxvps.s37_a1')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('tradoxvps.s37_q2')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('tradoxvps.s37_a2')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('tradoxvps.s37_q3')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('tradoxvps.s37_a3')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('tradoxvps.s37_q4')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('tradoxvps.s37_a4')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('tradoxvps.s37_q5')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('tradoxvps.s37_a5')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4 bg-gradient-to-r from-blue-900/30 to-orange-900/20">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">
+        {t('tradoxvps.cta_title_a')} <span class="gradient-text">TradoxVPS</span> {t('tradoxvps.cta_title_b')}
+      </h2>
+      <p class="text-xl text-gray-300 mb-8">
+        {t('tradoxvps.cta_subtitle')}
+      </p>
+
+      <div class="bg-black/40 border border-blue-500/30 rounded-xl p-8 mb-8">
+        <div class="grid md:grid-cols-2 gap-6 text-left">
+          <div>
+            <p class="text-gray-400 mb-2">{t('tradoxvps.cta_discount_label')}</p>
+            <div class="code-box w-full text-center pr-24 relative">
+              PickMyTrade
+              <button class="copy-btn" onclick="copyCode()">
+                <i class="fa-solid fa-copy"></i> {t('tradoxvps.copy_button')}
+              </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">{t('tradoxvps.cta_discount_note')}</p>
+          </div>
+          <div>
+            <p class="text-gray-400 mb-2">{t('tradoxvps.cta_partner_label')}</p>
+            <a href="https://tradoxvps.com" target="_blank" rel="noopener noreferrer"
+              class="block bg-[#1e293b] border border-[#334155] rounded-lg p-4 text-blue-400 hover:text-blue-300 transition-colors break-all">
+              <i class="fa-solid fa-external-link-alt mr-2"></i>tradoxvps.com
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://tradoxvps.com" target="_blank" rel="noopener noreferrer"
+          class="px-8 py-4 bg-gradient-to-r from-[#2B77EE] to-[#4B94FF] rounded-xl font-bold text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all text-lg">
+          <i class="fa-solid fa-server mr-2"></i> {t('tradoxvps.hero_cta_primary')}
+        </a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')}
+          class="px-8 py-4 border-2 border-[#2B77EE] rounded-xl font-bold text-white hover:bg-[#2B77EE]/10 transition-all text-lg">
+          {t('tradoxvps.cta_learn')}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,1243 @@
+# =============================================================================
+# Cloudflare Pages _redirects — pickmytrade.io (Astro migration 2026)
+# =============================================================================
+
+# External subdomains
+# Old /blog/<slug> posts that no longer exist on the WordPress blog — the generic
+# /blog/* rule below would forward them to a 404, so send them to the blog home.
+/blog/pine-script-basics              https://blog.pickmytrade.io/   301
+/blog/pine-script-basics/             https://blog.pickmytrade.io/   301
+/blog/tradingview-broker-automation   https://blog.pickmytrade.io/   301
+/blog/tradingview-broker-automation/  https://blog.pickmytrade.io/   301
+/blog           https://blog.pickmytrade.io         301
+/blog/*         https://blog.pickmytrade.io/:splat  301
+/docs           https://docs.pickmytrade.io         301
+/docs/*         https://docs.pickmytrade.io/:splat  301
+
+# App shortcuts
+/signup         https://app.pickmytrade.io/signup   301
+/settings       https://app.pickmytrade.io          301
+/login          https://app.pickmytrade.io          301
+
+# Legacy sitemap URL still registered in GSC — Astro's sitemap integration
+# only emits sitemap-index.xml + sitemap-0.xml, so plain /sitemap.xml 404s.
+/sitemap.xml    /sitemap-index.xml                  301
+
+# === Old /en/* URLs → new unprefixed English URLs ===
+# English now lives at the root (no /en/ prefix). 301s preserve SEO ranking
+# signals for the /en/* URLs Google already indexed.
+# /en (bare, no trailing slash) is a separate literal path from /en/* in
+# Cloudflare's matcher — without this rule it 404s instead of redirecting,
+# which is how the orphaned /en homepage stayed indexed after the migration.
+/en                  /                301
+/en/                 /                301
+/en/*                /:splat/          301
+
+# .html extension drops → clean URL equivalents
+/about.html                         /about/                              301
+/pricing.html                       /pricing/                            301
+/general-faq.html                   /general-faq/                        301
+/tradingview-automation.html        /tradingview-automation/             301
+/supported-propfirms.html           /supported-propfirms/                301
+/quantvps.html                      /quantvps/                           301
+/tradoxvps.html                     /tradoxvps/                          301
+/404.html                           /                                   301
+
+# Old /pages/ routes
+/pages/rithmicautomation            https://docs.pickmytrade.io/docs    301
+/pages/configureAlerts              https://docs.pickmytrade.io/docs    301
+/pages/videoTutorials               https://docs.pickmytrade.io/docs    301
+/pages/commonErrorsAndResoloution   https://docs.pickmytrade.io/docs    301
+/pages/placeTradeMultipleAccount    https://docs.pickmytrade.io/docs    301
+/pages/alert                        https://docs.pickmytrade.io/docs    301
+/pages/automation                   https://app.pickmytrade.io          301
+/pages/faqs                         /general-faq/                        301
+/pages/privacy                      /legal/privacy/                      301
+/pages/termsAndConditions           /legal/terms/                        301
+/pages/contactUs                    /page/contact/                       301
+/pages/afiliateProgram              /page/affiliate-program/             301
+/pages/tradingview-to-ib            /broker/tradingview-to-ib/           301
+/pages/tradingview-to-rithmic       /broker/tradingview-to-rithmic/      301
+/pages/tradingview-to-tradestation  /broker/tradingview-to-tradestation/ 301
+/pages/tradingview-to-tradelocker   /broker/tradingview-to-tradelocker/  301
+/pages/tradingview-to-projectx      /broker/tradingview-to-projectx/     301
+
+# Old /page/ routes
+/page/faqs              /general-faq/                        301
+/page/afiliateProgram   /page/affiliate-program/             301
+/page/automation        https://app.pickmytrade.io          301
+/page/settings          https://app.pickmytrade.io          301
+/page/alert             https://docs.pickmytrade.io/docs    301
+/page/videoTutorials    https://docs.pickmytrade.io/docs    301
+/page/configureAlerts   https://docs.pickmytrade.io/docs    301
+
+# Legal pages — old slug
+/legal/termsAndConditions   /legal/terms/    301
+
+# Page paths — old slug
+/page/contactUs             /page/contact/   301
+
+# Assets — old slug
+/assets/forex-and-cfd       /assets/forex/   301
+
+# Legacy pre-Astro static site — .html URLs still surfacing in GSC crawl
+# (site was crawled/indexed for months before the migration; these were
+# never added above so Google keeps re-crawling dead .html paths)
+/broker/tradingview-to-ib.html              /broker/tradingview-to-ib/              301
+/broker/tradingview-to-matchtrader.html     /broker/tradingview-to-matchtrader/     301
+/broker/tradingview-to-tradelocker.html     /broker/tradingview-to-tradelocker/     301
+/broker/tradingview-to-tradestation.html    /broker/tradingview-to-tradestation/    301
+/broker/tradingview-to-topstepx.html        /broker/tradingview-to-topstepx/        301
+/broker/tradingview-to-projectx.html        /broker/tradingview-to-projectx/        301
+/upcoming/tradingview-to-tastytrade.html    /upcoming/tradingview-to-tastytrade/    301
+/propfirms/topstep.html                     /propfirms/topstep/                     301
+/propfirms/bulenox.html                     /supported-propfirms/                   301
+/propfirms/bulenox                          /supported-propfirms/                   301
+/propfirms/apex-trader-funding.html         /propfirms/apex-trader-funding/         301
+/compare/index.html                         /compare/                               301
+/compare/pickmytrade-vs-cornix.html         /compare/pickmytrade-vs-cornix/         301
+# ─── Comparison pages rebuild (2026-09-24) ───
+# Compare pages are translated (de/es/fr/it): locale URLs serve the translated page. Only pages that moved to .trade redirect, to its translated page
+# Comparisons now owned by pickmytrade.trade (all locales 301 to the English .trade page)
+/compare/pickmytrade-vs-traderspost/ https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/ 301
+/compare/pickmytrade-vs-traderspost https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/ 301
+/de/compare/pickmytrade-vs-traderspost/ https://pickmytrade.trade/de/compare/pickmytrade-vs-traderspost/ 301
+/de/compare/pickmytrade-vs-traderspost https://pickmytrade.trade/de/compare/pickmytrade-vs-traderspost/ 301
+/es/compare/pickmytrade-vs-traderspost/ https://pickmytrade.trade/es/compare/pickmytrade-vs-traderspost/ 301
+/es/compare/pickmytrade-vs-traderspost https://pickmytrade.trade/es/compare/pickmytrade-vs-traderspost/ 301
+/fr/compare/pickmytrade-vs-traderspost/ https://pickmytrade.trade/fr/compare/pickmytrade-vs-traderspost/ 301
+/fr/compare/pickmytrade-vs-traderspost https://pickmytrade.trade/fr/compare/pickmytrade-vs-traderspost/ 301
+/it/compare/pickmytrade-vs-traderspost/ https://pickmytrade.trade/it/compare/pickmytrade-vs-traderspost/ 301
+/it/compare/pickmytrade-vs-traderspost https://pickmytrade.trade/it/compare/pickmytrade-vs-traderspost/ 301
+/compare/pickmytrade-vs-copygram/ https://pickmytrade.trade/compare/pickmytrade-vs-copygram/ 301
+/compare/pickmytrade-vs-copygram https://pickmytrade.trade/compare/pickmytrade-vs-copygram/ 301
+/de/compare/pickmytrade-vs-copygram/ https://pickmytrade.trade/de/compare/pickmytrade-vs-copygram/ 301
+/de/compare/pickmytrade-vs-copygram https://pickmytrade.trade/de/compare/pickmytrade-vs-copygram/ 301
+/es/compare/pickmytrade-vs-copygram/ https://pickmytrade.trade/es/compare/pickmytrade-vs-copygram/ 301
+/es/compare/pickmytrade-vs-copygram https://pickmytrade.trade/es/compare/pickmytrade-vs-copygram/ 301
+/fr/compare/pickmytrade-vs-copygram/ https://pickmytrade.trade/fr/compare/pickmytrade-vs-copygram/ 301
+/fr/compare/pickmytrade-vs-copygram https://pickmytrade.trade/fr/compare/pickmytrade-vs-copygram/ 301
+/it/compare/pickmytrade-vs-copygram/ https://pickmytrade.trade/it/compare/pickmytrade-vs-copygram/ 301
+/it/compare/pickmytrade-vs-copygram https://pickmytrade.trade/it/compare/pickmytrade-vs-copygram/ 301
+/compare/pickmytrade-vs-pineconnector/ https://pickmytrade.trade/compare/pickmytrade-vs-pineconnector/ 301
+/compare/pickmytrade-vs-pineconnector https://pickmytrade.trade/compare/pickmytrade-vs-pineconnector/ 301
+/de/compare/pickmytrade-vs-pineconnector/ https://pickmytrade.trade/de/compare/pickmytrade-vs-pineconnector/ 301
+/de/compare/pickmytrade-vs-pineconnector https://pickmytrade.trade/de/compare/pickmytrade-vs-pineconnector/ 301
+/es/compare/pickmytrade-vs-pineconnector/ https://pickmytrade.trade/es/compare/pickmytrade-vs-pineconnector/ 301
+/es/compare/pickmytrade-vs-pineconnector https://pickmytrade.trade/es/compare/pickmytrade-vs-pineconnector/ 301
+/fr/compare/pickmytrade-vs-pineconnector/ https://pickmytrade.trade/fr/compare/pickmytrade-vs-pineconnector/ 301
+/fr/compare/pickmytrade-vs-pineconnector https://pickmytrade.trade/fr/compare/pickmytrade-vs-pineconnector/ 301
+/it/compare/pickmytrade-vs-pineconnector/ https://pickmytrade.trade/it/compare/pickmytrade-vs-pineconnector/ 301
+/it/compare/pickmytrade-vs-pineconnector https://pickmytrade.trade/it/compare/pickmytrade-vs-pineconnector/ 301
+/assets/stocks.html                         /assets/stocks/                         301
+/assets/forex.html                          /assets/forex/                          301
+/assets/options.html                        /assets/options/                        301
+/legal/disclaimer.html                      /legal/disclaimer/                      301
+/legal/termsAndConditions.html              /legal/terms/                           301
+/page/contactUs.html                        /page/contact/                          301
+/page/afiliateProgram.html                  /page/affiliate-program/                301
+
+# Ironbeam shipped — moved from the /upcoming wait-list to a full /broker
+# integration page. Redirect the old wait-list URL (and its legacy .html
+# variant) straight to the new page for every locale.
+/upcoming/tradingview-to-ironbeam.html      /broker/tradingview-to-ironbeam/         301
+/upcoming/tradingview-to-ironbeam           /broker/tradingview-to-ironbeam/         301
+/de/upcoming/tradingview-to-ironbeam        /de/broker/tradingview-to-ironbeam/      301
+/es/upcoming/tradingview-to-ironbeam        /es/broker/tradingview-to-ironbeam/      301
+/fr/upcoming/tradingview-to-ironbeam        /fr/broker/tradingview-to-ironbeam/      301
+/it/upcoming/tradingview-to-ironbeam        /it/broker/tradingview-to-ironbeam/      301
+
+# Removed brokers — Binance and Bybit support was dropped. Their broker and
+# broker-FAQ pages are gone, so point the indexed URLs at the nearest live
+# equivalent (TradeLocker is the remaining crypto-capable platform) rather
+# than letting Google keep re-crawling 404s. The /en/* rule above already
+# covers the English-prefixed variants; the other locales need their own.
+/broker/tradingview-to-binance          /broker/tradingview-to-tradelocker/      301
+/broker/tradingview-to-bybit            /broker/tradingview-to-tradelocker/      301
+/broker/tradingview-to-binance.html     /broker/tradingview-to-tradelocker/      301
+/broker/tradingview-to-bybit.html       /broker/tradingview-to-tradelocker/      301
+/de/broker/tradingview-to-binance       /de/broker/tradingview-to-tradelocker/   301
+/de/broker/tradingview-to-bybit         /de/broker/tradingview-to-tradelocker/   301
+/es/broker/tradingview-to-binance       /es/broker/tradingview-to-tradelocker/   301
+/es/broker/tradingview-to-bybit         /es/broker/tradingview-to-tradelocker/   301
+/fr/broker/tradingview-to-binance       /fr/broker/tradingview-to-tradelocker/   301
+/fr/broker/tradingview-to-bybit         /fr/broker/tradingview-to-tradelocker/   301
+/it/broker/tradingview-to-binance       /it/broker/tradingview-to-tradelocker/   301
+/it/broker/tradingview-to-bybit         /it/broker/tradingview-to-tradelocker/   301
+/broker-faq/binance-faq                 /broker-faq/                             301
+/broker-faq/bybit-faq                   /broker-faq/                             301
+/de/broker-faq/binance-faq              /de/broker-faq/                          301
+/de/broker-faq/bybit-faq                /de/broker-faq/                          301
+/es/broker-faq/binance-faq              /es/broker-faq/                          301
+/es/broker-faq/bybit-faq                /es/broker-faq/                          301
+/fr/broker-faq/binance-faq              /fr/broker-faq/                          301
+/fr/broker-faq/bybit-faq                /fr/broker-faq/                          301
+/it/broker-faq/binance-faq              /it/broker-faq/                          301
+/it/broker-faq/bybit-faq                /it/broker-faq/                          301
+
+# Retired asset class — the /assets/crypto landing page was removed along with
+# the crypto nav entry. Point the indexed URLs (and the legacy .html variant)
+# at the TradeLocker broker page, which is the nearest live content for anyone
+# arriving from a crypto-automation query. The /en/* rule above covers the
+# English-prefixed variants; the other locales need their own.
+/assets/crypto                          /broker/tradingview-to-tradelocker/      301
+/assets/crypto.html                     /broker/tradingview-to-tradelocker/      301
+/de/assets/crypto                       /de/broker/tradingview-to-tradelocker/   301
+/es/assets/crypto                       /es/broker/tradingview-to-tradelocker/   301
+/fr/assets/crypto                       /fr/broker/tradingview-to-tradelocker/   301
+/it/assets/crypto                       /it/broker/tradingview-to-tradelocker/   301
+
+# Retired wait-list pages — the 17 crypto exchanges (BingX, Bitfinex, Bitget,
+# BitMart, BitMEX, Bitstamp, Blockchain.com, Coinbase Pro, Gate, Gemini, HTX,
+# Huobi, KuCoin, MEXC, OKX, Phemex, WooX) were dropped from the upcoming-broker
+# wait list along with the Crypto category, so their /upcoming/<slug> pages no
+# longer build. Send the indexed URLs to the wait-list index instead of 404s.
+# The /en/* rule above already covers the English-prefixed variants.
+/upcoming/bingx                         /upcoming/brokers/                      301
+/upcoming/bitfinex                      /upcoming/brokers/                      301
+/upcoming/bitget                        /upcoming/brokers/                      301
+/upcoming/bitmart                       /upcoming/brokers/                      301
+/upcoming/bitmex                        /upcoming/brokers/                      301
+/upcoming/bitstamp                      /upcoming/brokers/                      301
+/upcoming/blockchain-com                /upcoming/brokers/                      301
+/upcoming/coinbase-pro                  /upcoming/brokers/                      301
+/upcoming/gate                          /upcoming/brokers/                      301
+/upcoming/gemini                        /upcoming/brokers/                      301
+/upcoming/htx                           /upcoming/brokers/                      301
+/upcoming/huobi                         /upcoming/brokers/                      301
+/upcoming/kucoin                        /upcoming/brokers/                      301
+/upcoming/mexc                          /upcoming/brokers/                      301
+/upcoming/okx                           /upcoming/brokers/                      301
+/upcoming/phemex                        /upcoming/brokers/                      301
+/upcoming/woox                          /upcoming/brokers/                      301
+/de/upcoming/bingx                      /de/upcoming/brokers/                   301
+/de/upcoming/bitfinex                   /de/upcoming/brokers/                   301
+/de/upcoming/bitget                     /de/upcoming/brokers/                   301
+/de/upcoming/bitmart                    /de/upcoming/brokers/                   301
+/de/upcoming/bitmex                     /de/upcoming/brokers/                   301
+/de/upcoming/bitstamp                   /de/upcoming/brokers/                   301
+/de/upcoming/blockchain-com             /de/upcoming/brokers/                   301
+/de/upcoming/coinbase-pro               /de/upcoming/brokers/                   301
+/de/upcoming/gate                       /de/upcoming/brokers/                   301
+/de/upcoming/gemini                     /de/upcoming/brokers/                   301
+/de/upcoming/htx                        /de/upcoming/brokers/                   301
+/de/upcoming/huobi                      /de/upcoming/brokers/                   301
+/de/upcoming/kucoin                     /de/upcoming/brokers/                   301
+/de/upcoming/mexc                       /de/upcoming/brokers/                   301
+/de/upcoming/okx                        /de/upcoming/brokers/                   301
+/de/upcoming/phemex                     /de/upcoming/brokers/                   301
+/de/upcoming/woox                       /de/upcoming/brokers/                   301
+/es/upcoming/bingx                      /es/upcoming/brokers/                   301
+/es/upcoming/bitfinex                   /es/upcoming/brokers/                   301
+/es/upcoming/bitget                     /es/upcoming/brokers/                   301
+/es/upcoming/bitmart                    /es/upcoming/brokers/                   301
+/es/upcoming/bitmex                     /es/upcoming/brokers/                   301
+/es/upcoming/bitstamp                   /es/upcoming/brokers/                   301
+/es/upcoming/blockchain-com             /es/upcoming/brokers/                   301
+/es/upcoming/coinbase-pro               /es/upcoming/brokers/                   301
+/es/upcoming/gate                       /es/upcoming/brokers/                   301
+/es/upcoming/gemini                     /es/upcoming/brokers/                   301
+/es/upcoming/htx                        /es/upcoming/brokers/                   301
+/es/upcoming/huobi                      /es/upcoming/brokers/                   301
+/es/upcoming/kucoin                     /es/upcoming/brokers/                   301
+/es/upcoming/mexc                       /es/upcoming/brokers/                   301
+/es/upcoming/okx                        /es/upcoming/brokers/                   301
+/es/upcoming/phemex                     /es/upcoming/brokers/                   301
+/es/upcoming/woox                       /es/upcoming/brokers/                   301
+/fr/upcoming/bingx                      /fr/upcoming/brokers/                   301
+/fr/upcoming/bitfinex                   /fr/upcoming/brokers/                   301
+/fr/upcoming/bitget                     /fr/upcoming/brokers/                   301
+/fr/upcoming/bitmart                    /fr/upcoming/brokers/                   301
+/fr/upcoming/bitmex                     /fr/upcoming/brokers/                   301
+/fr/upcoming/bitstamp                   /fr/upcoming/brokers/                   301
+/fr/upcoming/blockchain-com             /fr/upcoming/brokers/                   301
+/fr/upcoming/coinbase-pro               /fr/upcoming/brokers/                   301
+/fr/upcoming/gate                       /fr/upcoming/brokers/                   301
+/fr/upcoming/gemini                     /fr/upcoming/brokers/                   301
+/fr/upcoming/htx                        /fr/upcoming/brokers/                   301
+/fr/upcoming/huobi                      /fr/upcoming/brokers/                   301
+/fr/upcoming/kucoin                     /fr/upcoming/brokers/                   301
+/fr/upcoming/mexc                       /fr/upcoming/brokers/                   301
+/fr/upcoming/okx                        /fr/upcoming/brokers/                   301
+/fr/upcoming/phemex                     /fr/upcoming/brokers/                   301
+/fr/upcoming/woox                       /fr/upcoming/brokers/                   301
+/it/upcoming/bingx                      /it/upcoming/brokers/                   301
+/it/upcoming/bitfinex                   /it/upcoming/brokers/                   301
+/it/upcoming/bitget                     /it/upcoming/brokers/                   301
+/it/upcoming/bitmart                    /it/upcoming/brokers/                   301
+/it/upcoming/bitmex                     /it/upcoming/brokers/                   301
+/it/upcoming/bitstamp                   /it/upcoming/brokers/                   301
+/it/upcoming/blockchain-com             /it/upcoming/brokers/                   301
+/it/upcoming/coinbase-pro               /it/upcoming/brokers/                   301
+/it/upcoming/gate                       /it/upcoming/brokers/                   301
+/it/upcoming/gemini                     /it/upcoming/brokers/                   301
+/it/upcoming/htx                        /it/upcoming/brokers/                   301
+/it/upcoming/huobi                      /it/upcoming/brokers/                   301
+/it/upcoming/kucoin                     /it/upcoming/brokers/                   301
+/it/upcoming/mexc                       /it/upcoming/brokers/                   301
+/it/upcoming/okx                        /it/upcoming/brokers/                   301
+/it/upcoming/phemex                     /it/upcoming/brokers/                   301
+/it/upcoming/woox                       /it/upcoming/brokers/                   301
+
+# Retired: Kraken broker FAQ (all locales). Kraken is a crypto exchange and
+# PickMyTrade no longer covers crypto, so the page and its hub card are gone.
+# Point the indexed URLs at the broker-FAQ hub rather than at a 404.
+/broker-faq/kraken-faq                  /broker-faq/                             301
+/de/broker-faq/kraken-faq               /de/broker-faq/                          301
+/es/broker-faq/kraken-faq               /es/broker-faq/                          301
+/fr/broker-faq/kraken-faq               /fr/broker-faq/                          301
+/it/broker-faq/kraken-faq               /it/broker-faq/                          301
+
+# [Ticket #43 superseded this rule — removed 2026-09-18] trailingSlash is now
+# "always" (astro.config.mjs), and i18n/utils.ts localizedPath() always emits
+# a trailing slash, matching BaseLayout's canonical tag, hreflang alternates,
+# JSON-LD, every internal <a href>, and the sitemap. The rule that used to
+# live here (`/*/  /:splat  301`) stripped the trailing slash on every
+# request — i.e. it 301-redirected every page's own canonical URL to a
+# DIFFERENT URL than the one it declares itself to be. That is a live
+# redirect/canonical-mismatch bug: the canonical URL never returns 200 with
+# its own content, so Google can neither trust nor index it. No replacement
+# rule is needed — Cloudflare Pages' static asset handler already serves
+# dir/index.html for both /path and /path/ with a 200, and by default
+# auto-redirects the non-slash form to the slash form, which now agrees with
+# every signal above (the same zero-hand-written-rule mechanism
+# pickmytrade.trade already relies on).
+
+# Prop firm FAQ — old -faq suffix URLs → new clean slugs
+/prop-firm-faq/apex-trader-funding-faq      /prop-firm-faq/apex-trader-funding/     301
+/prop-firm-faq/bulenox                      /prop-firm-faq/                         301
+/prop-firm-faq/topstep-faq                  /prop-firm-faq/topstep/                 301
+/prop-firm-faq/fundednext-faq               /prop-firm-faq/fundednext/              301
+/prop-firm-faq/myfundedfx-faq               /prop-firm-faq/myfundedfx/              301
+/prop-firm-faq/ftmo-faq                     /prop-firm-faq/ftmo/                    301
+/prop-firm-faq/fundingpips-faq              /prop-firm-faq/fundingpips/             301
+/prop-firm-faq/the5ers-faq                  /prop-firm-faq/the5ers/                 301
+/prop-firm-faq/e8-markets-faq               /prop-firm-faq/e8-markets/              301
+/prop-firm-faq/alpha-capital-group-faq      /prop-firm-faq/alpha-capital-group/     301
+/prop-firm-faq/aqua-funded-faq              /prop-firm-faq/aqua-funded/             301
+/prop-firm-faq/audacity-capital-faq         /prop-firm-faq/audacity-capital/        301
+/prop-firm-faq/blueguardian-faq             /prop-firm-faq/blueguardian/            301
+/prop-firm-faq/blufx-faq                    /prop-firm-faq/blufx/                   301
+/prop-firm-faq/brightfunded-faq             /prop-firm-faq/brightfunded/            301
+/prop-firm-faq/city-traders-imperium-faq    /prop-firm-faq/city-traders-imperium/   301
+/prop-firm-faq/for-traders-faq              /prop-firm-faq/for-traders/             301
+/prop-firm-faq/funded-trading-plus-faq      /prop-firm-faq/funded-trading-plus/     301
+/prop-firm-faq/funder-pro-faq               /prop-firm-faq/funder-pro/              301
+/prop-firm-faq/fxify-faq                    /prop-firm-faq/fxify/                   301
+/prop-firm-faq/goat-funded-trader-faq       /prop-firm-faq/goat-funded-trader/      301
+/prop-firm-faq/lark-funding-faq             /prop-firm-faq/lark-funding/            301
+/prop-firm-faq/leeloo-trading-faq           /prop-firm-faq/leeloo-trading/          301
+/prop-firm-faq/lux-trading-firm-faq         /prop-firm-faq/lux-trading-firm/        301
+/prop-firm-faq/maven-trading-faq            /prop-firm-faq/maven-trading/           301
+/prop-firm-faq/oneup-trader-faq             /prop-firm-faq/oneup-trader/            301
+/prop-firm-faq/smart-prop-trader-faq        /prop-firm-faq/smart-prop-trader/       301
+/prop-firm-faq/the-funded-trader-faq        /prop-firm-faq/the-funded-trader/       301
+/prop-firm-faq/the-trading-pit-faq          /prop-firm-faq/the-trading-pit/         301
+
+# Retired: /broker-faq/tradingview-faq (all locales)
+# TradingView is the signal source, not a destination broker, so the generic
+# per-broker FAQ template produced self-referential questions ("Can I automate
+# my TradingView strategy to TradingView?") and crypto-exchange questions about
+# cold storage and withdrawal fees on a charting platform. TradingView Q&A is
+# covered properly by the /faq/tradingview-webhooks spoke.
+/broker-faq/tradingview-faq         /faq/tradingview-webhooks/     301
+/de/broker-faq/tradingview-faq      /de/faq/tradingview-webhooks/  301
+/es/broker-faq/tradingview-faq      /es/faq/tradingview-webhooks/  301
+/fr/broker-faq/tradingview-faq      /fr/faq/tradingview-webhooks/  301
+/it/broker-faq/tradingview-faq      /it/faq/tradingview-webhooks/  301
+
+# =============================================================================
+# GSC cleanup (2026-09-21) — 404 + "Crawled, not indexed" exports. Generated by
+# scripts/gen-gsc-redirects.mjs; every source below had no rule before.
+# =============================================================================
+
+# Root-level legacy FAQ URLs → current FAQ pages
+/matchtrader-faq /broker-faq/matchtrader-faq/ 301
+/matchtrader-faq/ /broker-faq/matchtrader-faq/ 301
+/ib-faq /broker-faq/ib-faq/ 301
+/ib-faq/ /broker-faq/ib-faq/ 301
+/tradelocker-faq /broker-faq/tradelocker-faq/ 301
+/tradelocker-faq/ /broker-faq/tradelocker-faq/ 301
+/tradier-faq /broker-faq/tradier-faq/ 301
+/tradier-faq/ /broker-faq/tradier-faq/ 301
+/projectx-faq /broker-faq/projectx-faq/ 301
+/projectx-faq/ /broker-faq/projectx-faq/ 301
+/ctrader-faq /broker-faq/ctrader-faq/ 301
+/ctrader-faq/ /broker-faq/ctrader-faq/ 301
+/binance-faq /broker-faq/ 301
+/binance-faq/ /broker-faq/ 301
+/topstep-faq /prop-firm-faq/topstep/ 301
+/topstep-faq/ /prop-firm-faq/topstep/ 301
+/ftmo-faq /prop-firm-faq/ftmo/ 301
+/ftmo-faq/ /prop-firm-faq/ftmo/ 301
+/e8-markets-faq /prop-firm-faq/e8-markets/ 301
+/e8-markets-faq/ /prop-firm-faq/e8-markets/ 301
+/fundingpips-faq /prop-firm-faq/fundingpips/ 301
+/fundingpips-faq/ /prop-firm-faq/fundingpips/ 301
+/fundednext-faq /prop-firm-faq/fundednext/ 301
+/fundednext-faq/ /prop-firm-faq/fundednext/ 301
+/fxify-faq /prop-firm-faq/fxify/ 301
+/fxify-faq/ /prop-firm-faq/fxify/ 301
+/myfundedfx-faq /prop-firm-faq/myfundedfx/ 301
+/myfundedfx-faq/ /prop-firm-faq/myfundedfx/ 301
+/the5ers-faq /prop-firm-faq/the5ers/ 301
+/the5ers-faq/ /prop-firm-faq/the5ers/ 301
+/the-funded-trader-faq /prop-firm-faq/the-funded-trader/ 301
+/the-funded-trader-faq/ /prop-firm-faq/the-funded-trader/ 301
+/the-trading-pit-faq /prop-firm-faq/the-trading-pit/ 301
+/the-trading-pit-faq/ /prop-firm-faq/the-trading-pit/ 301
+
+# /prop-firm-faq legacy .html and -faq variants
+/prop-firm-faq/alpha-capital-group.html /prop-firm-faq/alpha-capital-group/ 301
+/prop-firm-faq/alpha-capital-group-faq.html /prop-firm-faq/alpha-capital-group/ 301
+/prop-firm-faq/alpha-capital-group-faq/ /prop-firm-faq/alpha-capital-group/ 301
+/prop-firm-faq/apex-trader-funding.html /prop-firm-faq/apex-trader-funding/ 301
+/prop-firm-faq/apex-trader-funding-faq.html /prop-firm-faq/apex-trader-funding/ 301
+/prop-firm-faq/apex-trader-funding-faq/ /prop-firm-faq/apex-trader-funding/ 301
+/prop-firm-faq/aqua-funded.html /prop-firm-faq/aqua-funded/ 301
+/prop-firm-faq/aqua-funded-faq.html /prop-firm-faq/aqua-funded/ 301
+/prop-firm-faq/aqua-funded-faq/ /prop-firm-faq/aqua-funded/ 301
+/prop-firm-faq/audacity-capital.html /prop-firm-faq/audacity-capital/ 301
+/prop-firm-faq/audacity-capital-faq.html /prop-firm-faq/audacity-capital/ 301
+/prop-firm-faq/audacity-capital-faq/ /prop-firm-faq/audacity-capital/ 301
+/prop-firm-faq/blueguardian.html /prop-firm-faq/blueguardian/ 301
+/prop-firm-faq/blueguardian-faq.html /prop-firm-faq/blueguardian/ 301
+/prop-firm-faq/blueguardian-faq/ /prop-firm-faq/blueguardian/ 301
+/prop-firm-faq/blufx.html /prop-firm-faq/blufx/ 301
+/prop-firm-faq/blufx-faq.html /prop-firm-faq/blufx/ 301
+/prop-firm-faq/blufx-faq/ /prop-firm-faq/blufx/ 301
+/prop-firm-faq/brightfunded.html /prop-firm-faq/brightfunded/ 301
+/prop-firm-faq/brightfunded-faq.html /prop-firm-faq/brightfunded/ 301
+/prop-firm-faq/brightfunded-faq/ /prop-firm-faq/brightfunded/ 301
+/prop-firm-faq/city-traders-imperium.html /prop-firm-faq/city-traders-imperium/ 301
+/prop-firm-faq/city-traders-imperium-faq.html /prop-firm-faq/city-traders-imperium/ 301
+/prop-firm-faq/city-traders-imperium-faq/ /prop-firm-faq/city-traders-imperium/ 301
+/prop-firm-faq/e8-markets.html /prop-firm-faq/e8-markets/ 301
+/prop-firm-faq/e8-markets-faq.html /prop-firm-faq/e8-markets/ 301
+/prop-firm-faq/e8-markets-faq/ /prop-firm-faq/e8-markets/ 301
+/prop-firm-faq/for-traders.html /prop-firm-faq/for-traders/ 301
+/prop-firm-faq/for-traders-faq.html /prop-firm-faq/for-traders/ 301
+/prop-firm-faq/for-traders-faq/ /prop-firm-faq/for-traders/ 301
+/prop-firm-faq/ftmo.html /prop-firm-faq/ftmo/ 301
+/prop-firm-faq/ftmo-faq.html /prop-firm-faq/ftmo/ 301
+/prop-firm-faq/ftmo-faq/ /prop-firm-faq/ftmo/ 301
+/prop-firm-faq/fundednext.html /prop-firm-faq/fundednext/ 301
+/prop-firm-faq/fundednext-faq.html /prop-firm-faq/fundednext/ 301
+/prop-firm-faq/fundednext-faq/ /prop-firm-faq/fundednext/ 301
+/prop-firm-faq/funded-trading-plus.html /prop-firm-faq/funded-trading-plus/ 301
+/prop-firm-faq/funded-trading-plus-faq.html /prop-firm-faq/funded-trading-plus/ 301
+/prop-firm-faq/funded-trading-plus-faq/ /prop-firm-faq/funded-trading-plus/ 301
+/prop-firm-faq/funder-pro.html /prop-firm-faq/funder-pro/ 301
+/prop-firm-faq/funder-pro-faq.html /prop-firm-faq/funder-pro/ 301
+/prop-firm-faq/funder-pro-faq/ /prop-firm-faq/funder-pro/ 301
+/prop-firm-faq/fundingpips.html /prop-firm-faq/fundingpips/ 301
+/prop-firm-faq/fundingpips-faq.html /prop-firm-faq/fundingpips/ 301
+/prop-firm-faq/fundingpips-faq/ /prop-firm-faq/fundingpips/ 301
+/prop-firm-faq/fxify.html /prop-firm-faq/fxify/ 301
+/prop-firm-faq/fxify-faq.html /prop-firm-faq/fxify/ 301
+/prop-firm-faq/fxify-faq/ /prop-firm-faq/fxify/ 301
+/prop-firm-faq/goat-funded-trader.html /prop-firm-faq/goat-funded-trader/ 301
+/prop-firm-faq/goat-funded-trader-faq.html /prop-firm-faq/goat-funded-trader/ 301
+/prop-firm-faq/goat-funded-trader-faq/ /prop-firm-faq/goat-funded-trader/ 301
+/prop-firm-faq/lark-funding.html /prop-firm-faq/lark-funding/ 301
+/prop-firm-faq/lark-funding-faq.html /prop-firm-faq/lark-funding/ 301
+/prop-firm-faq/lark-funding-faq/ /prop-firm-faq/lark-funding/ 301
+/prop-firm-faq/leeloo-trading.html /prop-firm-faq/leeloo-trading/ 301
+/prop-firm-faq/leeloo-trading-faq.html /prop-firm-faq/leeloo-trading/ 301
+/prop-firm-faq/leeloo-trading-faq/ /prop-firm-faq/leeloo-trading/ 301
+/prop-firm-faq/lux-trading-firm.html /prop-firm-faq/lux-trading-firm/ 301
+/prop-firm-faq/lux-trading-firm-faq.html /prop-firm-faq/lux-trading-firm/ 301
+/prop-firm-faq/lux-trading-firm-faq/ /prop-firm-faq/lux-trading-firm/ 301
+/prop-firm-faq/maven-trading.html /prop-firm-faq/maven-trading/ 301
+/prop-firm-faq/maven-trading-faq.html /prop-firm-faq/maven-trading/ 301
+/prop-firm-faq/maven-trading-faq/ /prop-firm-faq/maven-trading/ 301
+/prop-firm-faq/myfundedfx.html /prop-firm-faq/myfundedfx/ 301
+/prop-firm-faq/myfundedfx-faq.html /prop-firm-faq/myfundedfx/ 301
+/prop-firm-faq/myfundedfx-faq/ /prop-firm-faq/myfundedfx/ 301
+/prop-firm-faq/oneup-trader.html /prop-firm-faq/oneup-trader/ 301
+/prop-firm-faq/oneup-trader-faq.html /prop-firm-faq/oneup-trader/ 301
+/prop-firm-faq/oneup-trader-faq/ /prop-firm-faq/oneup-trader/ 301
+/prop-firm-faq/smart-prop-trader.html /prop-firm-faq/smart-prop-trader/ 301
+/prop-firm-faq/smart-prop-trader-faq.html /prop-firm-faq/smart-prop-trader/ 301
+/prop-firm-faq/smart-prop-trader-faq/ /prop-firm-faq/smart-prop-trader/ 301
+/prop-firm-faq/take-profit-trader.html /prop-firm-faq/take-profit-trader/ 301
+/prop-firm-faq/take-profit-trader-faq.html /prop-firm-faq/take-profit-trader/ 301
+/prop-firm-faq/take-profit-trader-faq /prop-firm-faq/take-profit-trader/ 301
+/prop-firm-faq/take-profit-trader-faq/ /prop-firm-faq/take-profit-trader/ 301
+/prop-firm-faq/the5ers.html /prop-firm-faq/the5ers/ 301
+/prop-firm-faq/the5ers-faq.html /prop-firm-faq/the5ers/ 301
+/prop-firm-faq/the5ers-faq/ /prop-firm-faq/the5ers/ 301
+/prop-firm-faq/the-funded-trader.html /prop-firm-faq/the-funded-trader/ 301
+/prop-firm-faq/the-funded-trader-faq.html /prop-firm-faq/the-funded-trader/ 301
+/prop-firm-faq/the-funded-trader-faq/ /prop-firm-faq/the-funded-trader/ 301
+/prop-firm-faq/the-trading-pit.html /prop-firm-faq/the-trading-pit/ 301
+/prop-firm-faq/the-trading-pit-faq.html /prop-firm-faq/the-trading-pit/ 301
+/prop-firm-faq/the-trading-pit-faq/ /prop-firm-faq/the-trading-pit/ 301
+/prop-firm-faq/topstep.html /prop-firm-faq/topstep/ 301
+/prop-firm-faq/topstep-faq.html /prop-firm-faq/topstep/ 301
+/prop-firm-faq/topstep-faq/ /prop-firm-faq/topstep/ 301
+/prop-firm-faq/tradeify.html /prop-firm-faq/tradeify/ 301
+/prop-firm-faq/tradeify-faq.html /prop-firm-faq/tradeify/ 301
+/prop-firm-faq/tradeify-faq /prop-firm-faq/tradeify/ 301
+/prop-firm-faq/tradeify-faq/ /prop-firm-faq/tradeify/ 301
+/prop-firm-faq/prop-firm-faq.html /prop-firm-faq/ 301
+/prop-firm-faq/myfundedfutures-faq.html /prop-firm-faq/ 301
+
+# /prop-firm-faq slugs that never had (or no longer have) a page
+/prop-firm-faq/alpha-capital /prop-firm-faq/alpha-capital-group/ 301
+/prop-firm-faq/alpha-capital/ /prop-firm-faq/alpha-capital-group/ 301
+/de/prop-firm-faq/alpha-capital /de/prop-firm-faq/alpha-capital-group/ 301
+/de/prop-firm-faq/alpha-capital/ /de/prop-firm-faq/alpha-capital-group/ 301
+/es/prop-firm-faq/alpha-capital /es/prop-firm-faq/alpha-capital-group/ 301
+/es/prop-firm-faq/alpha-capital/ /es/prop-firm-faq/alpha-capital-group/ 301
+/fr/prop-firm-faq/alpha-capital /fr/prop-firm-faq/alpha-capital-group/ 301
+/fr/prop-firm-faq/alpha-capital/ /fr/prop-firm-faq/alpha-capital-group/ 301
+/it/prop-firm-faq/alpha-capital /it/prop-firm-faq/alpha-capital-group/ 301
+/it/prop-firm-faq/alpha-capital/ /it/prop-firm-faq/alpha-capital-group/ 301
+/prop-firm-faq/maven /prop-firm-faq/maven-trading/ 301
+/prop-firm-faq/maven/ /prop-firm-faq/maven-trading/ 301
+/de/prop-firm-faq/maven /de/prop-firm-faq/maven-trading/ 301
+/de/prop-firm-faq/maven/ /de/prop-firm-faq/maven-trading/ 301
+/es/prop-firm-faq/maven /es/prop-firm-faq/maven-trading/ 301
+/es/prop-firm-faq/maven/ /es/prop-firm-faq/maven-trading/ 301
+/fr/prop-firm-faq/maven /fr/prop-firm-faq/maven-trading/ 301
+/fr/prop-firm-faq/maven/ /fr/prop-firm-faq/maven-trading/ 301
+/it/prop-firm-faq/maven /it/prop-firm-faq/maven-trading/ 301
+/it/prop-firm-faq/maven/ /it/prop-firm-faq/maven-trading/ 301
+/prop-firm-faq/alphaticks /prop-firm-faq/ 301
+/prop-firm-faq/alphaticks/ /prop-firm-faq/ 301
+/de/prop-firm-faq/alphaticks /de/prop-firm-faq/ 301
+/de/prop-firm-faq/alphaticks/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/alphaticks /es/prop-firm-faq/ 301
+/es/prop-firm-faq/alphaticks/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/alphaticks /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/alphaticks/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/alphaticks /it/prop-firm-faq/ 301
+/it/prop-firm-faq/alphaticks/ /it/prop-firm-faq/ 301
+/prop-firm-faq/funding-futures /prop-firm-faq/ 301
+/prop-firm-faq/funding-futures/ /prop-firm-faq/ 301
+/de/prop-firm-faq/funding-futures /de/prop-firm-faq/ 301
+/de/prop-firm-faq/funding-futures/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/funding-futures /es/prop-firm-faq/ 301
+/es/prop-firm-faq/funding-futures/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/funding-futures /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/funding-futures/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/funding-futures /it/prop-firm-faq/ 301
+/it/prop-firm-faq/funding-futures/ /it/prop-firm-faq/ 301
+/prop-firm-faq/fxify-futures /prop-firm-faq/ 301
+/prop-firm-faq/fxify-futures/ /prop-firm-faq/ 301
+/de/prop-firm-faq/fxify-futures /de/prop-firm-faq/ 301
+/de/prop-firm-faq/fxify-futures/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/fxify-futures /es/prop-firm-faq/ 301
+/es/prop-firm-faq/fxify-futures/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/fxify-futures /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/fxify-futures/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/fxify-futures /it/prop-firm-faq/ 301
+/it/prop-firm-faq/fxify-futures/ /it/prop-firm-faq/ 301
+/prop-firm-faq/holaprime /prop-firm-faq/ 301
+/prop-firm-faq/holaprime/ /prop-firm-faq/ 301
+/de/prop-firm-faq/holaprime /de/prop-firm-faq/ 301
+/de/prop-firm-faq/holaprime/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/holaprime /es/prop-firm-faq/ 301
+/es/prop-firm-faq/holaprime/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/holaprime /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/holaprime/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/holaprime /it/prop-firm-faq/ 301
+/it/prop-firm-faq/holaprime/ /it/prop-firm-faq/ 301
+/prop-firm-faq/aquafutures /prop-firm-faq/ 301
+/prop-firm-faq/aquafutures/ /prop-firm-faq/ 301
+/de/prop-firm-faq/aquafutures /de/prop-firm-faq/ 301
+/de/prop-firm-faq/aquafutures/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/aquafutures /es/prop-firm-faq/ 301
+/es/prop-firm-faq/aquafutures/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/aquafutures /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/aquafutures/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/aquafutures /it/prop-firm-faq/ 301
+/it/prop-firm-faq/aquafutures/ /it/prop-firm-faq/ 301
+/prop-firm-faq/blusky-trading /prop-firm-faq/ 301
+/prop-firm-faq/blusky-trading/ /prop-firm-faq/ 301
+/de/prop-firm-faq/blusky-trading /de/prop-firm-faq/ 301
+/de/prop-firm-faq/blusky-trading/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/blusky-trading /es/prop-firm-faq/ 301
+/es/prop-firm-faq/blusky-trading/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/blusky-trading /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/blusky-trading/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/blusky-trading /it/prop-firm-faq/ 301
+/it/prop-firm-faq/blusky-trading/ /it/prop-firm-faq/ 301
+/prop-firm-faq/futures-elite /prop-firm-faq/ 301
+/prop-firm-faq/futures-elite/ /prop-firm-faq/ 301
+/de/prop-firm-faq/futures-elite /de/prop-firm-faq/ 301
+/de/prop-firm-faq/futures-elite/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/futures-elite /es/prop-firm-faq/ 301
+/es/prop-firm-faq/futures-elite/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/futures-elite /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/futures-elite/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/futures-elite /it/prop-firm-faq/ 301
+/it/prop-firm-faq/futures-elite/ /it/prop-firm-faq/ 301
+/prop-firm-faq/phidias /prop-firm-faq/ 301
+/prop-firm-faq/phidias/ /prop-firm-faq/ 301
+/de/prop-firm-faq/phidias /de/prop-firm-faq/ 301
+/de/prop-firm-faq/phidias/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/phidias /es/prop-firm-faq/ 301
+/es/prop-firm-faq/phidias/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/phidias /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/phidias/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/phidias /it/prop-firm-faq/ 301
+/it/prop-firm-faq/phidias/ /it/prop-firm-faq/ 301
+/prop-firm-faq/qt-funded /prop-firm-faq/ 301
+/prop-firm-faq/qt-funded/ /prop-firm-faq/ 301
+/de/prop-firm-faq/qt-funded /de/prop-firm-faq/ 301
+/de/prop-firm-faq/qt-funded/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/qt-funded /es/prop-firm-faq/ 301
+/es/prop-firm-faq/qt-funded/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/qt-funded /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/qt-funded/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/qt-funded /it/prop-firm-faq/ 301
+/it/prop-firm-faq/qt-funded/ /it/prop-firm-faq/ 301
+/prop-firm-faq/the-futures-desk /prop-firm-faq/ 301
+/prop-firm-faq/the-futures-desk/ /prop-firm-faq/ 301
+/de/prop-firm-faq/the-futures-desk /de/prop-firm-faq/ 301
+/de/prop-firm-faq/the-futures-desk/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/the-futures-desk /es/prop-firm-faq/ 301
+/es/prop-firm-faq/the-futures-desk/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/the-futures-desk /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/the-futures-desk/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/the-futures-desk /it/prop-firm-faq/ 301
+/it/prop-firm-faq/the-futures-desk/ /it/prop-firm-faq/ 301
+/prop-firm-faq/top-one-futures /prop-firm-faq/ 301
+/prop-firm-faq/top-one-futures/ /prop-firm-faq/ 301
+/de/prop-firm-faq/top-one-futures /de/prop-firm-faq/ 301
+/de/prop-firm-faq/top-one-futures/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/top-one-futures /es/prop-firm-faq/ 301
+/es/prop-firm-faq/top-one-futures/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/top-one-futures /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/top-one-futures/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/top-one-futures /it/prop-firm-faq/ 301
+/it/prop-firm-faq/top-one-futures/ /it/prop-firm-faq/ 301
+/prop-firm-faq/top-one-trader /prop-firm-faq/ 301
+/prop-firm-faq/top-one-trader/ /prop-firm-faq/ 301
+/de/prop-firm-faq/top-one-trader /de/prop-firm-faq/ 301
+/de/prop-firm-faq/top-one-trader/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/top-one-trader /es/prop-firm-faq/ 301
+/es/prop-firm-faq/top-one-trader/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/top-one-trader /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/top-one-trader/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/top-one-trader /it/prop-firm-faq/ 301
+/it/prop-firm-faq/top-one-trader/ /it/prop-firm-faq/ 301
+/prop-firm-faq/bulenox/ /prop-firm-faq/ 301
+/de/prop-firm-faq/bulenox /de/prop-firm-faq/ 301
+/de/prop-firm-faq/bulenox/ /de/prop-firm-faq/ 301
+/es/prop-firm-faq/bulenox /es/prop-firm-faq/ 301
+/es/prop-firm-faq/bulenox/ /es/prop-firm-faq/ 301
+/fr/prop-firm-faq/bulenox /fr/prop-firm-faq/ 301
+/fr/prop-firm-faq/bulenox/ /fr/prop-firm-faq/ 301
+/it/prop-firm-faq/bulenox /it/prop-firm-faq/ 301
+/it/prop-firm-faq/bulenox/ /it/prop-firm-faq/ 301
+
+# Bulenox — no longer supported; send to the supported prop firm list
+/propfirms/bulenox/ /supported-propfirms/ 301
+/de/propfirms/bulenox /de/supported-propfirms/ 301
+/de/propfirms/bulenox/ /de/supported-propfirms/ 301
+/es/propfirms/bulenox /es/supported-propfirms/ 301
+/es/propfirms/bulenox/ /es/supported-propfirms/ 301
+/fr/propfirms/bulenox /fr/supported-propfirms/ 301
+/fr/propfirms/bulenox/ /fr/supported-propfirms/ 301
+/it/propfirms/bulenox /it/supported-propfirms/ 301
+/it/propfirms/bulenox/ /it/supported-propfirms/ 301
+/copier/tradingview-to-bulenox-copier /supported-propfirms/ 301
+/copier/tradingview-to-bulenox-copier/ /supported-propfirms/ 301
+/de/copier/tradingview-to-bulenox-copier /de/supported-propfirms/ 301
+/de/copier/tradingview-to-bulenox-copier/ /de/supported-propfirms/ 301
+/es/copier/tradingview-to-bulenox-copier /es/supported-propfirms/ 301
+/es/copier/tradingview-to-bulenox-copier/ /es/supported-propfirms/ 301
+/fr/copier/tradingview-to-bulenox-copier /fr/supported-propfirms/ 301
+/fr/copier/tradingview-to-bulenox-copier/ /fr/supported-propfirms/ 301
+/it/copier/tradingview-to-bulenox-copier /it/supported-propfirms/ 301
+/it/copier/tradingview-to-bulenox-copier/ /it/supported-propfirms/ 301
+/automation/tradingview-to-bulenox-automation /supported-propfirms/ 301
+/automation/tradingview-to-bulenox-automation/ /supported-propfirms/ 301
+/de/automation/tradingview-to-bulenox-automation /de/supported-propfirms/ 301
+/de/automation/tradingview-to-bulenox-automation/ /de/supported-propfirms/ 301
+/es/automation/tradingview-to-bulenox-automation /es/supported-propfirms/ 301
+/es/automation/tradingview-to-bulenox-automation/ /es/supported-propfirms/ 301
+/fr/automation/tradingview-to-bulenox-automation /fr/supported-propfirms/ 301
+/fr/automation/tradingview-to-bulenox-automation/ /fr/supported-propfirms/ 301
+/it/automation/tradingview-to-bulenox-automation /it/supported-propfirms/ 301
+/it/automation/tradingview-to-bulenox-automation/ /it/supported-propfirms/ 301
+/propfirms/fundednext.html /propfirms/fundednext/ 301
+/propfirms /supported-propfirms/ 301
+/propfirms/ /supported-propfirms/ 301
+/de/propfirms /de/supported-propfirms/ 301
+/de/propfirms/ /de/supported-propfirms/ 301
+/es/propfirms /es/supported-propfirms/ 301
+/es/propfirms/ /es/supported-propfirms/ 301
+/fr/propfirms /fr/supported-propfirms/ 301
+/fr/propfirms/ /fr/supported-propfirms/ 301
+/it/propfirms /it/supported-propfirms/ 301
+/it/propfirms/ /it/supported-propfirms/ 301
+
+# Doubled /compare/compare/ path and renamed comparison slugs
+/compare/compare/pickmytrade-vs-3commas /compare/pickmytrade-vs-3commas/ 301
+/compare/compare/pickmytrade-vs-3commas/ /compare/pickmytrade-vs-3commas/ 301
+/compare/compare/pickmytrade-vs-copygram https://pickmytrade.trade/compare/pickmytrade-vs-copygram/ 301
+/compare/compare/pickmytrade-vs-copygram/ https://pickmytrade.trade/compare/pickmytrade-vs-copygram/ 301
+/compare/compare/pickmytrade-vs-cornix /compare/pickmytrade-vs-cornix/ 301
+/compare/compare/pickmytrade-vs-cornix/ /compare/pickmytrade-vs-cornix/ 301
+/compare/compare/pickmytrade-vs-wundertrading /compare/pickmytrade-vs-wundertrading/ 301
+/compare/compare/pickmytrade-vs-wundertrading/ /compare/pickmytrade-vs-wundertrading/ 301
+/compare/pickmytrade-vs-tradersposts https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/ 301
+/compare/pickmytrade-vs-tradersposts/ https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/ 301
+/de/compare/pickmytrade-vs-tradersposts https://pickmytrade.trade/de/compare/pickmytrade-vs-traderspost/ 301
+/de/compare/pickmytrade-vs-tradersposts/ https://pickmytrade.trade/de/compare/pickmytrade-vs-traderspost/ 301
+/es/compare/pickmytrade-vs-tradersposts https://pickmytrade.trade/es/compare/pickmytrade-vs-traderspost/ 301
+/es/compare/pickmytrade-vs-tradersposts/ https://pickmytrade.trade/es/compare/pickmytrade-vs-traderspost/ 301
+/fr/compare/pickmytrade-vs-tradersposts https://pickmytrade.trade/fr/compare/pickmytrade-vs-traderspost/ 301
+/fr/compare/pickmytrade-vs-tradersposts/ https://pickmytrade.trade/fr/compare/pickmytrade-vs-traderspost/ 301
+/it/compare/pickmytrade-vs-tradersposts https://pickmytrade.trade/it/compare/pickmytrade-vs-traderspost/ 301
+/it/compare/pickmytrade-vs-tradersposts/ https://pickmytrade.trade/it/compare/pickmytrade-vs-traderspost/ 301
+
+# Broker URLs nested under tradingview-to-ib, retired brokers, .html variants
+/broker/tradingview-to-ib/tradingview-to-rithmic /broker/tradingview-to-rithmic/ 301
+/broker/tradingview-to-ib/tradingview-to-rithmic/ /broker/tradingview-to-rithmic/ 301
+/de/broker/tradingview-to-ib/tradingview-to-rithmic /de/broker/tradingview-to-rithmic/ 301
+/de/broker/tradingview-to-ib/tradingview-to-rithmic/ /de/broker/tradingview-to-rithmic/ 301
+/es/broker/tradingview-to-ib/tradingview-to-rithmic /es/broker/tradingview-to-rithmic/ 301
+/es/broker/tradingview-to-ib/tradingview-to-rithmic/ /es/broker/tradingview-to-rithmic/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-rithmic /fr/broker/tradingview-to-rithmic/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-rithmic/ /fr/broker/tradingview-to-rithmic/ 301
+/it/broker/tradingview-to-ib/tradingview-to-rithmic /it/broker/tradingview-to-rithmic/ 301
+/it/broker/tradingview-to-ib/tradingview-to-rithmic/ /it/broker/tradingview-to-rithmic/ 301
+/broker/tradingview-to-ib/tradingview-to-projectx /broker/tradingview-to-projectx/ 301
+/broker/tradingview-to-ib/tradingview-to-projectx/ /broker/tradingview-to-projectx/ 301
+/de/broker/tradingview-to-ib/tradingview-to-projectx /de/broker/tradingview-to-projectx/ 301
+/de/broker/tradingview-to-ib/tradingview-to-projectx/ /de/broker/tradingview-to-projectx/ 301
+/es/broker/tradingview-to-ib/tradingview-to-projectx /es/broker/tradingview-to-projectx/ 301
+/es/broker/tradingview-to-ib/tradingview-to-projectx/ /es/broker/tradingview-to-projectx/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-projectx /fr/broker/tradingview-to-projectx/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-projectx/ /fr/broker/tradingview-to-projectx/ 301
+/it/broker/tradingview-to-ib/tradingview-to-projectx /it/broker/tradingview-to-projectx/ 301
+/it/broker/tradingview-to-ib/tradingview-to-projectx/ /it/broker/tradingview-to-projectx/ 301
+/broker/tradingview-to-ib/tradingview-to-tradelocker /broker/tradingview-to-tradelocker/ 301
+/broker/tradingview-to-ib/tradingview-to-tradelocker/ /broker/tradingview-to-tradelocker/ 301
+/de/broker/tradingview-to-ib/tradingview-to-tradelocker /de/broker/tradingview-to-tradelocker/ 301
+/de/broker/tradingview-to-ib/tradingview-to-tradelocker/ /de/broker/tradingview-to-tradelocker/ 301
+/es/broker/tradingview-to-ib/tradingview-to-tradelocker /es/broker/tradingview-to-tradelocker/ 301
+/es/broker/tradingview-to-ib/tradingview-to-tradelocker/ /es/broker/tradingview-to-tradelocker/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-tradelocker /fr/broker/tradingview-to-tradelocker/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-tradelocker/ /fr/broker/tradingview-to-tradelocker/ 301
+/it/broker/tradingview-to-ib/tradingview-to-tradelocker /it/broker/tradingview-to-tradelocker/ 301
+/it/broker/tradingview-to-ib/tradingview-to-tradelocker/ /it/broker/tradingview-to-tradelocker/ 301
+/broker/tradingview-to-ib/tradingview-to-tradestation /broker/tradingview-to-tradestation/ 301
+/broker/tradingview-to-ib/tradingview-to-tradestation/ /broker/tradingview-to-tradestation/ 301
+/de/broker/tradingview-to-ib/tradingview-to-tradestation /de/broker/tradingview-to-tradestation/ 301
+/de/broker/tradingview-to-ib/tradingview-to-tradestation/ /de/broker/tradingview-to-tradestation/ 301
+/es/broker/tradingview-to-ib/tradingview-to-tradestation /es/broker/tradingview-to-tradestation/ 301
+/es/broker/tradingview-to-ib/tradingview-to-tradestation/ /es/broker/tradingview-to-tradestation/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-tradestation /fr/broker/tradingview-to-tradestation/ 301
+/fr/broker/tradingview-to-ib/tradingview-to-tradestation/ /fr/broker/tradingview-to-tradestation/ 301
+/it/broker/tradingview-to-ib/tradingview-to-tradestation /it/broker/tradingview-to-tradestation/ 301
+/it/broker/tradingview-to-ib/tradingview-to-tradestation/ /it/broker/tradingview-to-tradestation/ 301
+/broker/tradingview-to-ib/ib_faq /broker-faq/ib-faq/ 301
+/broker/tradingview-to-ib/ib_faq/ /broker-faq/ib-faq/ 301
+/de/broker/tradingview-to-ib/ib_faq /de/broker-faq/ib-faq/ 301
+/de/broker/tradingview-to-ib/ib_faq/ /de/broker-faq/ib-faq/ 301
+/es/broker/tradingview-to-ib/ib_faq /es/broker-faq/ib-faq/ 301
+/es/broker/tradingview-to-ib/ib_faq/ /es/broker-faq/ib-faq/ 301
+/fr/broker/tradingview-to-ib/ib_faq /fr/broker-faq/ib-faq/ 301
+/fr/broker/tradingview-to-ib/ib_faq/ /fr/broker-faq/ib-faq/ 301
+/it/broker/tradingview-to-ib/ib_faq /it/broker-faq/ib-faq/ 301
+/it/broker/tradingview-to-ib/ib_faq/ /it/broker-faq/ib-faq/ 301
+/broker/tradingview-to-tradovate /broker/ 301
+/broker/tradingview-to-tradovate/ /broker/ 301
+/de/broker/tradingview-to-tradovate /de/broker/ 301
+/de/broker/tradingview-to-tradovate/ /de/broker/ 301
+/es/broker/tradingview-to-tradovate /es/broker/ 301
+/es/broker/tradingview-to-tradovate/ /es/broker/ 301
+/fr/broker/tradingview-to-tradovate /fr/broker/ 301
+/fr/broker/tradingview-to-tradovate/ /fr/broker/ 301
+/it/broker/tradingview-to-tradovate /it/broker/ 301
+/it/broker/tradingview-to-tradovate/ /it/broker/ 301
+/broker/tradingview-to-day-traders /broker/ 301
+/broker/tradingview-to-day-traders/ /broker/ 301
+/broker/tradingview-to-rithmic.html /broker/tradingview-to-rithmic/ 301
+/broker/tradingview-to-tickticktrader.html /broker/ 301
+/broker-faq/binance-faq/bybit-faq.html /broker-faq/ 301
+/broker-faq/binance-faq/ctrader-faq.html /broker-faq/ 301
+/broker-faq/bybit-faq/binance-faq.html /broker-faq/ 301
+
+# Section index URLs that have no page
+/assets /assets/forex/ 301
+/assets/ /assets/forex/ 301
+/legal / 301
+/legal/ / 301
+/de/legal /de/ 301
+/de/legal/ /de/ 301
+/es/legal /es/ 301
+/es/legal/ /es/ 301
+/fr/legal /fr/ 301
+/fr/legal/ /fr/ 301
+/it/legal /it/ 301
+/it/legal/ /it/ 301
+/futures /futures-trade-copier/ 301
+/futures/ /futures-trade-copier/ 301
+/upcoming /upcoming/brokers/ 301
+/upcoming/ /upcoming/brokers/ 301
+/de/upcoming /de/upcoming/brokers/ 301
+/de/upcoming/ /de/upcoming/brokers/ 301
+/es/upcoming /es/upcoming/brokers/ 301
+/es/upcoming/ /es/upcoming/brokers/ 301
+/fr/upcoming /fr/upcoming/brokers/ 301
+/fr/upcoming/ /fr/upcoming/brokers/ 301
+/it/upcoming /it/upcoming/brokers/ 301
+/it/upcoming/ /it/upcoming/brokers/ 301
+/on / 301
+/on/ / 301
+/signup/ https://app.pickmytrade.io/signup 301
+/legal/privacy.html /legal/privacy/ 301
+/de/page/contactUs /de/page/contact/ 301
+/de/page/contactUs/ /de/page/contact/ 301
+/es/page/contactUs /es/page/contact/ 301
+/es/page/contactUs/ /es/page/contact/ 301
+/fr/page/contactUs /fr/page/contact/ 301
+/fr/page/contactUs/ /fr/page/contact/ 301
+/it/page/contactUs /it/page/contact/ 301
+/it/page/contactUs/ /it/page/contact/ 301
+
+# Internal component fragments that should never be crawled
+/components/navbar / 301
+/components/navbar/ / 301
+/components/navbar.html / 301
+
+# Trailing-slash twins of every rule above that has none (Cloudflare matches literally)
+/blog/ https://blog.pickmytrade.io 301
+/docs/ https://docs.pickmytrade.io 301
+/settings/ https://app.pickmytrade.io 301
+/login/ https://app.pickmytrade.io 301
+/pages/rithmicautomation/ https://docs.pickmytrade.io/docs 301
+/pages/configureAlerts/ https://docs.pickmytrade.io/docs 301
+/pages/videoTutorials/ https://docs.pickmytrade.io/docs 301
+/pages/commonErrorsAndResoloution/ https://docs.pickmytrade.io/docs 301
+/pages/placeTradeMultipleAccount/ https://docs.pickmytrade.io/docs 301
+/pages/alert/ https://docs.pickmytrade.io/docs 301
+/pages/automation/ https://app.pickmytrade.io 301
+/pages/faqs/ /general-faq/ 301
+/pages/privacy/ /legal/privacy/ 301
+/pages/termsAndConditions/ /legal/terms/ 301
+/pages/contactUs/ /page/contact/ 301
+/pages/afiliateProgram/ /page/affiliate-program/ 301
+/pages/tradingview-to-ib/ /broker/tradingview-to-ib/ 301
+/pages/tradingview-to-rithmic/ /broker/tradingview-to-rithmic/ 301
+/pages/tradingview-to-tradestation/ /broker/tradingview-to-tradestation/ 301
+/pages/tradingview-to-tradelocker/ /broker/tradingview-to-tradelocker/ 301
+/pages/tradingview-to-projectx/ /broker/tradingview-to-projectx/ 301
+/page/faqs/ /general-faq/ 301
+/page/afiliateProgram/ /page/affiliate-program/ 301
+/page/automation/ https://app.pickmytrade.io 301
+/page/settings/ https://app.pickmytrade.io 301
+/page/alert/ https://docs.pickmytrade.io/docs 301
+/page/videoTutorials/ https://docs.pickmytrade.io/docs 301
+/page/configureAlerts/ https://docs.pickmytrade.io/docs 301
+/legal/termsAndConditions/ /legal/terms/ 301
+/page/contactUs/ /page/contact/ 301
+/assets/forex-and-cfd/ /assets/forex/ 301
+/upcoming/tradingview-to-ironbeam/ /broker/tradingview-to-ironbeam/ 301
+/de/upcoming/tradingview-to-ironbeam/ /de/broker/tradingview-to-ironbeam/ 301
+/es/upcoming/tradingview-to-ironbeam/ /es/broker/tradingview-to-ironbeam/ 301
+/fr/upcoming/tradingview-to-ironbeam/ /fr/broker/tradingview-to-ironbeam/ 301
+/it/upcoming/tradingview-to-ironbeam/ /it/broker/tradingview-to-ironbeam/ 301
+/broker/tradingview-to-binance/ /broker/tradingview-to-tradelocker/ 301
+/broker/tradingview-to-bybit/ /broker/tradingview-to-tradelocker/ 301
+/de/broker/tradingview-to-binance/ /de/broker/tradingview-to-tradelocker/ 301
+/de/broker/tradingview-to-bybit/ /de/broker/tradingview-to-tradelocker/ 301
+/es/broker/tradingview-to-binance/ /es/broker/tradingview-to-tradelocker/ 301
+/es/broker/tradingview-to-bybit/ /es/broker/tradingview-to-tradelocker/ 301
+/fr/broker/tradingview-to-binance/ /fr/broker/tradingview-to-tradelocker/ 301
+/fr/broker/tradingview-to-bybit/ /fr/broker/tradingview-to-tradelocker/ 301
+/it/broker/tradingview-to-binance/ /it/broker/tradingview-to-tradelocker/ 301
+/it/broker/tradingview-to-bybit/ /it/broker/tradingview-to-tradelocker/ 301
+/broker-faq/binance-faq/ /broker-faq/ 301
+/broker-faq/bybit-faq/ /broker-faq/ 301
+/de/broker-faq/binance-faq/ /de/broker-faq/ 301
+/de/broker-faq/bybit-faq/ /de/broker-faq/ 301
+/es/broker-faq/binance-faq/ /es/broker-faq/ 301
+/es/broker-faq/bybit-faq/ /es/broker-faq/ 301
+/fr/broker-faq/binance-faq/ /fr/broker-faq/ 301
+/fr/broker-faq/bybit-faq/ /fr/broker-faq/ 301
+/it/broker-faq/binance-faq/ /it/broker-faq/ 301
+/it/broker-faq/bybit-faq/ /it/broker-faq/ 301
+/assets/crypto/ /broker/tradingview-to-tradelocker/ 301
+/de/assets/crypto/ /de/broker/tradingview-to-tradelocker/ 301
+/es/assets/crypto/ /es/broker/tradingview-to-tradelocker/ 301
+/fr/assets/crypto/ /fr/broker/tradingview-to-tradelocker/ 301
+/it/assets/crypto/ /it/broker/tradingview-to-tradelocker/ 301
+/upcoming/bingx/ /upcoming/brokers/ 301
+/upcoming/bitfinex/ /upcoming/brokers/ 301
+/upcoming/bitget/ /upcoming/brokers/ 301
+/upcoming/bitmart/ /upcoming/brokers/ 301
+/upcoming/bitmex/ /upcoming/brokers/ 301
+/upcoming/bitstamp/ /upcoming/brokers/ 301
+/upcoming/blockchain-com/ /upcoming/brokers/ 301
+/upcoming/coinbase-pro/ /upcoming/brokers/ 301
+/upcoming/gate/ /upcoming/brokers/ 301
+/upcoming/gemini/ /upcoming/brokers/ 301
+/upcoming/htx/ /upcoming/brokers/ 301
+/upcoming/huobi/ /upcoming/brokers/ 301
+/upcoming/kucoin/ /upcoming/brokers/ 301
+/upcoming/mexc/ /upcoming/brokers/ 301
+/upcoming/okx/ /upcoming/brokers/ 301
+/upcoming/phemex/ /upcoming/brokers/ 301
+/upcoming/woox/ /upcoming/brokers/ 301
+/de/upcoming/bingx/ /de/upcoming/brokers/ 301
+/de/upcoming/bitfinex/ /de/upcoming/brokers/ 301
+/de/upcoming/bitget/ /de/upcoming/brokers/ 301
+/de/upcoming/bitmart/ /de/upcoming/brokers/ 301
+/de/upcoming/bitmex/ /de/upcoming/brokers/ 301
+/de/upcoming/bitstamp/ /de/upcoming/brokers/ 301
+/de/upcoming/blockchain-com/ /de/upcoming/brokers/ 301
+/de/upcoming/coinbase-pro/ /de/upcoming/brokers/ 301
+/de/upcoming/gate/ /de/upcoming/brokers/ 301
+/de/upcoming/gemini/ /de/upcoming/brokers/ 301
+/de/upcoming/htx/ /de/upcoming/brokers/ 301
+/de/upcoming/huobi/ /de/upcoming/brokers/ 301
+/de/upcoming/kucoin/ /de/upcoming/brokers/ 301
+/de/upcoming/mexc/ /de/upcoming/brokers/ 301
+/de/upcoming/okx/ /de/upcoming/brokers/ 301
+/de/upcoming/phemex/ /de/upcoming/brokers/ 301
+/de/upcoming/woox/ /de/upcoming/brokers/ 301
+/es/upcoming/bingx/ /es/upcoming/brokers/ 301
+/es/upcoming/bitfinex/ /es/upcoming/brokers/ 301
+/es/upcoming/bitget/ /es/upcoming/brokers/ 301
+/es/upcoming/bitmart/ /es/upcoming/brokers/ 301
+/es/upcoming/bitmex/ /es/upcoming/brokers/ 301
+/es/upcoming/bitstamp/ /es/upcoming/brokers/ 301
+/es/upcoming/blockchain-com/ /es/upcoming/brokers/ 301
+/es/upcoming/coinbase-pro/ /es/upcoming/brokers/ 301
+/es/upcoming/gate/ /es/upcoming/brokers/ 301
+/es/upcoming/gemini/ /es/upcoming/brokers/ 301
+/es/upcoming/htx/ /es/upcoming/brokers/ 301
+/es/upcoming/huobi/ /es/upcoming/brokers/ 301
+/es/upcoming/kucoin/ /es/upcoming/brokers/ 301
+/es/upcoming/mexc/ /es/upcoming/brokers/ 301
+/es/upcoming/okx/ /es/upcoming/brokers/ 301
+/es/upcoming/phemex/ /es/upcoming/brokers/ 301
+/es/upcoming/woox/ /es/upcoming/brokers/ 301
+/fr/upcoming/bingx/ /fr/upcoming/brokers/ 301
+/fr/upcoming/bitfinex/ /fr/upcoming/brokers/ 301
+/fr/upcoming/bitget/ /fr/upcoming/brokers/ 301
+/fr/upcoming/bitmart/ /fr/upcoming/brokers/ 301
+/fr/upcoming/bitmex/ /fr/upcoming/brokers/ 301
+/fr/upcoming/bitstamp/ /fr/upcoming/brokers/ 301
+/fr/upcoming/blockchain-com/ /fr/upcoming/brokers/ 301
+/fr/upcoming/coinbase-pro/ /fr/upcoming/brokers/ 301
+/fr/upcoming/gate/ /fr/upcoming/brokers/ 301
+/fr/upcoming/gemini/ /fr/upcoming/brokers/ 301
+/fr/upcoming/htx/ /fr/upcoming/brokers/ 301
+/fr/upcoming/huobi/ /fr/upcoming/brokers/ 301
+/fr/upcoming/kucoin/ /fr/upcoming/brokers/ 301
+/fr/upcoming/mexc/ /fr/upcoming/brokers/ 301
+/fr/upcoming/okx/ /fr/upcoming/brokers/ 301
+/fr/upcoming/phemex/ /fr/upcoming/brokers/ 301
+/fr/upcoming/woox/ /fr/upcoming/brokers/ 301
+/it/upcoming/bingx/ /it/upcoming/brokers/ 301
+/it/upcoming/bitfinex/ /it/upcoming/brokers/ 301
+/it/upcoming/bitget/ /it/upcoming/brokers/ 301
+/it/upcoming/bitmart/ /it/upcoming/brokers/ 301
+/it/upcoming/bitmex/ /it/upcoming/brokers/ 301
+/it/upcoming/bitstamp/ /it/upcoming/brokers/ 301
+/it/upcoming/blockchain-com/ /it/upcoming/brokers/ 301
+/it/upcoming/coinbase-pro/ /it/upcoming/brokers/ 301
+/it/upcoming/gate/ /it/upcoming/brokers/ 301
+/it/upcoming/gemini/ /it/upcoming/brokers/ 301
+/it/upcoming/htx/ /it/upcoming/brokers/ 301
+/it/upcoming/huobi/ /it/upcoming/brokers/ 301
+/it/upcoming/kucoin/ /it/upcoming/brokers/ 301
+/it/upcoming/mexc/ /it/upcoming/brokers/ 301
+/it/upcoming/okx/ /it/upcoming/brokers/ 301
+/it/upcoming/phemex/ /it/upcoming/brokers/ 301
+/it/upcoming/woox/ /it/upcoming/brokers/ 301
+/broker-faq/kraken-faq/ /broker-faq/ 301
+/de/broker-faq/kraken-faq/ /de/broker-faq/ 301
+/es/broker-faq/kraken-faq/ /es/broker-faq/ 301
+/fr/broker-faq/kraken-faq/ /fr/broker-faq/ 301
+/it/broker-faq/kraken-faq/ /it/broker-faq/ 301
+/broker-faq/tradingview-faq/ /faq/tradingview-webhooks/ 301
+/de/broker-faq/tradingview-faq/ /de/faq/tradingview-webhooks/ 301
+/es/broker-faq/tradingview-faq/ /es/faq/tradingview-webhooks/ 301
+/fr/broker-faq/tradingview-faq/ /fr/faq/tradingview-webhooks/ 301
+/it/broker-faq/tradingview-faq/ /it/faq/tradingview-webhooks/ 301
+/broker/tradingview-to-tradeify/ /propfirms/tradeify/ 301
+/de/broker/tradingview-to-tradeify/ /de/propfirms/tradeify/ 301
+/es/broker/tradingview-to-tradeify/ /es/propfirms/tradeify/ 301
+/fr/broker/tradingview-to-tradeify/ /fr/propfirms/tradeify/ 301
+/it/broker/tradingview-to-tradeify/ /it/propfirms/tradeify/ 301
+
+# --- Confirmed GSC 404s (FE-12) --------------------------------------------
+# From the 2026-09-28 GSC "Not found (404)" export for pickmytrade.io.
+
+# Crypto exchange wait-list pages: config/upcoming-brokers.json has never listed
+# any crypto exchange (consistent with PMT not supporting crypto) -- these never
+# existed under the current site, or were removed pre-migration. Send to the
+# real upcoming-brokers hub instead of a dead end.
+/upcoming/bitget  /upcoming/brokers/  301
+/upcoming/bitmex  /upcoming/brokers/  301
+/upcoming/kucoin  /upcoming/brokers/  301
+/upcoming/blockchain-com  /upcoming/brokers/  301
+/upcoming/bitfinex  /upcoming/brokers/  301
+/upcoming/huobi  /upcoming/brokers/  301
+/upcoming/okx  /upcoming/brokers/  301
+/upcoming/woox  /upcoming/brokers/  301
+/upcoming/coinbase-pro  /upcoming/brokers/  301
+/upcoming/mexc  /upcoming/brokers/  301
+/upcoming/bitmart  /upcoming/brokers/  301
+/upcoming/gate  /upcoming/brokers/  301
+/upcoming/htx  /upcoming/brokers/  301
+/upcoming/bitstamp  /upcoming/brokers/  301
+/upcoming/bingx  /upcoming/brokers/  301
+/upcoming/phemex  /upcoming/brokers/  301
+/upcoming/  /upcoming/brokers/  301
+/de/upcoming/bitget  /de/upcoming/brokers/  301
+/de/upcoming/bitmex  /de/upcoming/brokers/  301
+/de/upcoming/kucoin  /de/upcoming/brokers/  301
+/de/upcoming/blockchain-com  /de/upcoming/brokers/  301
+/de/upcoming/bitfinex  /de/upcoming/brokers/  301
+/de/upcoming/huobi  /de/upcoming/brokers/  301
+/de/upcoming/okx  /de/upcoming/brokers/  301
+/de/upcoming/woox  /de/upcoming/brokers/  301
+/de/upcoming/coinbase-pro  /de/upcoming/brokers/  301
+/de/upcoming/mexc  /de/upcoming/brokers/  301
+/de/upcoming/bitmart  /de/upcoming/brokers/  301
+/de/upcoming/gate  /de/upcoming/brokers/  301
+/de/upcoming/htx  /de/upcoming/brokers/  301
+/de/upcoming/bitstamp  /de/upcoming/brokers/  301
+/de/upcoming/bingx  /de/upcoming/brokers/  301
+/de/upcoming/phemex  /de/upcoming/brokers/  301
+/de/upcoming/  /de/upcoming/brokers/  301
+/es/upcoming/bitget  /es/upcoming/brokers/  301
+/es/upcoming/bitmex  /es/upcoming/brokers/  301
+/es/upcoming/kucoin  /es/upcoming/brokers/  301
+/es/upcoming/blockchain-com  /es/upcoming/brokers/  301
+/es/upcoming/bitfinex  /es/upcoming/brokers/  301
+/es/upcoming/huobi  /es/upcoming/brokers/  301
+/es/upcoming/okx  /es/upcoming/brokers/  301
+/es/upcoming/woox  /es/upcoming/brokers/  301
+/es/upcoming/coinbase-pro  /es/upcoming/brokers/  301
+/es/upcoming/mexc  /es/upcoming/brokers/  301
+/es/upcoming/bitmart  /es/upcoming/brokers/  301
+/es/upcoming/gate  /es/upcoming/brokers/  301
+/es/upcoming/htx  /es/upcoming/brokers/  301
+/es/upcoming/bitstamp  /es/upcoming/brokers/  301
+/es/upcoming/bingx  /es/upcoming/brokers/  301
+/es/upcoming/phemex  /es/upcoming/brokers/  301
+/es/upcoming/  /es/upcoming/brokers/  301
+/fr/upcoming/bitget  /fr/upcoming/brokers/  301
+/fr/upcoming/bitmex  /fr/upcoming/brokers/  301
+/fr/upcoming/kucoin  /fr/upcoming/brokers/  301
+/fr/upcoming/blockchain-com  /fr/upcoming/brokers/  301
+/fr/upcoming/bitfinex  /fr/upcoming/brokers/  301
+/fr/upcoming/huobi  /fr/upcoming/brokers/  301
+/fr/upcoming/okx  /fr/upcoming/brokers/  301
+/fr/upcoming/woox  /fr/upcoming/brokers/  301
+/fr/upcoming/coinbase-pro  /fr/upcoming/brokers/  301
+/fr/upcoming/mexc  /fr/upcoming/brokers/  301
+/fr/upcoming/bitmart  /fr/upcoming/brokers/  301
+/fr/upcoming/gate  /fr/upcoming/brokers/  301
+/fr/upcoming/htx  /fr/upcoming/brokers/  301
+/fr/upcoming/bitstamp  /fr/upcoming/brokers/  301
+/fr/upcoming/bingx  /fr/upcoming/brokers/  301
+/fr/upcoming/phemex  /fr/upcoming/brokers/  301
+/fr/upcoming/  /fr/upcoming/brokers/  301
+/it/upcoming/bitget  /it/upcoming/brokers/  301
+/it/upcoming/bitmex  /it/upcoming/brokers/  301
+/it/upcoming/kucoin  /it/upcoming/brokers/  301
+/it/upcoming/blockchain-com  /it/upcoming/brokers/  301
+/it/upcoming/bitfinex  /it/upcoming/brokers/  301
+/it/upcoming/huobi  /it/upcoming/brokers/  301
+/it/upcoming/okx  /it/upcoming/brokers/  301
+/it/upcoming/woox  /it/upcoming/brokers/  301
+/it/upcoming/coinbase-pro  /it/upcoming/brokers/  301
+/it/upcoming/mexc  /it/upcoming/brokers/  301
+/it/upcoming/bitmart  /it/upcoming/brokers/  301
+/it/upcoming/gate  /it/upcoming/brokers/  301
+/it/upcoming/htx  /it/upcoming/brokers/  301
+/it/upcoming/bitstamp  /it/upcoming/brokers/  301
+/it/upcoming/bingx  /it/upcoming/brokers/  301
+/it/upcoming/phemex  /it/upcoming/brokers/  301
+/it/upcoming/  /it/upcoming/brokers/  301
+
+# Crypto broker pages (Binance, Bybit, Kraken): same reasoning, send to the
+# relevant hub since no crypto broker integration exists.
+/broker/tradingview-to-binance/  /broker/  301
+/broker/tradingview-to-bybit/  /broker/  301
+/broker-faq/kraken-faq  /broker-faq/  301
+/broker-faq/binance-faq  /broker-faq/  301
+/broker-faq/bybit-faq/  /broker-faq/  301
+/de/broker/tradingview-to-binance/  /de/broker/  301
+/de/broker/tradingview-to-bybit/  /de/broker/  301
+/de/broker-faq/kraken-faq  /de/broker-faq/  301
+/de/broker-faq/binance-faq  /de/broker-faq/  301
+/de/broker-faq/bybit-faq/  /de/broker-faq/  301
+/es/broker/tradingview-to-binance/  /es/broker/  301
+/es/broker/tradingview-to-bybit/  /es/broker/  301
+/es/broker-faq/kraken-faq  /es/broker-faq/  301
+/es/broker-faq/binance-faq  /es/broker-faq/  301
+/es/broker-faq/bybit-faq/  /es/broker-faq/  301
+/fr/broker/tradingview-to-binance/  /fr/broker/  301
+/fr/broker/tradingview-to-bybit/  /fr/broker/  301
+/fr/broker-faq/kraken-faq  /fr/broker-faq/  301
+/fr/broker-faq/binance-faq  /fr/broker-faq/  301
+/fr/broker-faq/bybit-faq/  /fr/broker-faq/  301
+/it/broker/tradingview-to-binance/  /it/broker/  301
+/it/broker/tradingview-to-bybit/  /it/broker/  301
+/it/broker-faq/kraken-faq  /it/broker-faq/  301
+/it/broker-faq/binance-faq  /it/broker-faq/  301
+/it/broker-faq/bybit-faq/  /it/broker-faq/  301
+/binance-faq  /broker-faq/  301
+
+# Relative-link artifacts: an old link resolved against the wrong parent
+# directory, nesting one real page's slug under another's path.
+/broker/tradingview-to-ib/ib_faq  /broker-faq/ib-faq/  301
+/broker/tradingview-to-ib/tradingview-to-rithmic  /broker/tradingview-to-rithmic/  301
+/broker/tradingview-to-ib/tradingview-to-projectx  /broker/tradingview-to-projectx/  301
+/broker/tradingview-to-ib/tradingview-to-tradelocker  /broker/tradingview-to-tradelocker/  301
+/broker/tradingview-to-ib/tradingview-to-tradestation  /broker/tradingview-to-tradestation/  301
+/broker-faq/binance-faq/ctrader-faq.html  /broker-faq/ctrader-faq/  301
+/broker-faq/binance-faq/bybit-faq.html  /broker-faq/  301
+/broker-faq/binance-faq/kraken-faq.html  /broker-faq/  301
+/broker-faq/bybit-faq/binance-faq.html  /broker-faq/  301
+
+# Legacy bare "X-faq" slugs missing their /broker-faq/ or /prop-firm-faq/ prefix.
+/matchtrader-faq  /broker-faq/matchtrader-faq/  301
+/ctrader-faq  /broker-faq/ctrader-faq/  301
+/tradelocker-faq  /broker-faq/tradelocker-faq/  301
+/projectx-faq  /broker-faq/projectx-faq/  301
+/ib-faq  /broker-faq/ib-faq/  301
+/tradier-faq  /broker-faq/tradier-faq/  301
+
+# Legacy "X-faq"/.html suffixed prop-firm-faq URLs -- the real route is the bare
+# firm slug with no -faq/.html suffix.
+/prop-firm-faq/fundingpips-faq  /prop-firm-faq/fundingpips/  301
+/prop-firm-faq/fundingpips-faq.html  /prop-firm-faq/fundingpips/  301
+/prop-firm-faq/myfundedfx-faq  /prop-firm-faq/myfundedfx/  301
+/prop-firm-faq/myfundedfx-faq.html  /prop-firm-faq/myfundedfx/  301
+/prop-firm-faq/ftmo-faq  /prop-firm-faq/ftmo/  301
+/prop-firm-faq/ftmo-faq.html  /prop-firm-faq/ftmo/  301
+/prop-firm-faq/e8-markets-faq  /prop-firm-faq/e8-markets/  301
+/prop-firm-faq/e8-markets-faq.html  /prop-firm-faq/e8-markets/  301
+/prop-firm-faq/topstep-faq  /prop-firm-faq/topstep/  301
+/prop-firm-faq/topstep-faq.html  /prop-firm-faq/topstep/  301
+/prop-firm-faq/the5ers-faq  /prop-firm-faq/the5ers/  301
+/prop-firm-faq/the5ers-faq.html  /prop-firm-faq/the5ers/  301
+/prop-firm-faq/the-funded-trader-faq  /prop-firm-faq/the-funded-trader/  301
+/prop-firm-faq/the-funded-trader-faq.html  /prop-firm-faq/the-funded-trader/  301
+/prop-firm-faq/the-trading-pit-faq  /prop-firm-faq/the-trading-pit/  301
+/prop-firm-faq/the-trading-pit-faq.html  /prop-firm-faq/the-trading-pit/  301
+/prop-firm-faq/fxify-faq  /prop-firm-faq/fxify/  301
+/prop-firm-faq/fxify-faq.html  /prop-firm-faq/fxify/  301
+/prop-firm-faq/fundednext-faq  /prop-firm-faq/fundednext/  301
+/prop-firm-faq/fundednext-faq.html  /prop-firm-faq/fundednext/  301
+/prop-firm-faq/audacity-capital-faq  /prop-firm-faq/audacity-capital/  301
+/prop-firm-faq/audacity-capital-faq.html  /prop-firm-faq/audacity-capital/  301
+/prop-firm-faq/blueguardian-faq  /prop-firm-faq/blueguardian/  301
+/prop-firm-faq/blueguardian-faq.html  /prop-firm-faq/blueguardian/  301
+/prop-firm-faq/oneup-trader-faq  /prop-firm-faq/oneup-trader/  301
+/prop-firm-faq/oneup-trader-faq.html  /prop-firm-faq/oneup-trader/  301
+/prop-firm-faq/lux-trading-firm-faq  /prop-firm-faq/lux-trading-firm/  301
+/prop-firm-faq/lux-trading-firm-faq.html  /prop-firm-faq/lux-trading-firm/  301
+/prop-firm-faq/funder-pro-faq  /prop-firm-faq/funder-pro/  301
+/prop-firm-faq/funder-pro-faq.html  /prop-firm-faq/funder-pro/  301
+/prop-firm-faq/myfundedfutures-faq  /prop-firm-faq/  301
+/prop-firm-faq/myfundedfutures-faq.html  /prop-firm-faq/  301
+/prop-firm-faq/tradeify-faq  /prop-firm-faq/tradeify/  301
+/prop-firm-faq/tradeify-faq.html  /prop-firm-faq/tradeify/  301
+/prop-firm-faq/apex-trader-funding  /prop-firm-faq/apex-trader-funding/  301
+/prop-firm-faq/apex-trader-funding.html  /prop-firm-faq/apex-trader-funding/  301
+/prop-firm-faq/fundednext  /prop-firm-faq/fundednext/  301
+/prop-firm-faq/fundednext.html  /prop-firm-faq/fundednext/  301
+/prop-firm-faq/prop-firm-faq.html  /prop-firm-faq/  301
+
+# Firm slug actually differs from what the old URL used.
+/prop-firm-faq/maven  /prop-firm-faq/maven-trading/  301
+/de/prop-firm-faq/maven  /de/prop-firm-faq/maven-trading/  301
+/prop-firm-faq/fxify-futures  /prop-firm-faq/fxify/  301
+/de/prop-firm-faq/fxify-futures  /de/prop-firm-faq/fxify/  301
+
+# No dedicated prop-firm-faq page exists for these firms today -- send to the hub
+# rather than a dead end.
+/prop-firm-faq/futures-elite  /prop-firm-faq/  301
+/fr/prop-firm-faq/futures-elite  /prop-firm-faq/  301
+/it/prop-firm-faq/futures-elite  /prop-firm-faq/  301
+/de/prop-firm-faq/holaprime  /prop-firm-faq/  301
+/en/prop-firm-faq/holaprime  /prop-firm-faq/  301
+/de/prop-firm-faq/alphaticks  /prop-firm-faq/  301
+/fr/prop-firm-faq/aquafutures  /prop-firm-faq/  301
+/es/prop-firm-faq/qt-funded  /prop-firm-faq/  301
+/prop-firm-faq/the-futures-desk  /prop-firm-faq/  301
+/fr/prop-firm-faq/the-futures-desk  /prop-firm-faq/  301
+/prop-firm-faq/funding-futures  /prop-firm-faq/  301
+/en/prop-firm-faq/funding-futures  /prop-firm-faq/  301
+/prop-firm-faq/phidias  /prop-firm-faq/  301
+/it/prop-firm-faq/blusky-trading  /prop-firm-faq/  301
+/prop-firm-faq/top-one-trader  /prop-firm-faq/  301
+/it/prop-firm-faq/top-one-trader  /prop-firm-faq/  301
+/prop-firm-faq/tickticktrader  /prop-firm-faq/  301
+/broker/tradingview-to-tickticktrader.html  /prop-firm-faq/  301
+
+# Bulenox isn't a supported firm on pickmytrade.io at all -- it's a Tradovate-only
+# firm covered on pickmytrade.trade. Cross-domain redirect rather than a dead end.
+/propfirms/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/prop-firm-faq/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/automation/tradingview-to-bulenox-automation  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/copier/tradingview-to-bulenox-copier  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/en/propfirms/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/en/prop-firm-faq/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/en/automation/tradingview-to-bulenox-automation  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/en/copier/tradingview-to-bulenox-copier  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/de/propfirms/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/de/prop-firm-faq/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/de/automation/tradingview-to-bulenox-automation  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/de/copier/tradingview-to-bulenox-copier  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/es/propfirms/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/es/prop-firm-faq/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/es/automation/tradingview-to-bulenox-automation  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/es/copier/tradingview-to-bulenox-copier  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/fr/propfirms/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/fr/prop-firm-faq/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/fr/automation/tradingview-to-bulenox-automation  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/fr/copier/tradingview-to-bulenox-copier  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/it/propfirms/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/it/prop-firm-faq/bulenox  https://pickmytrade.trade/prop-firm-faq/bulenox-faq/  301
+/it/automation/tradingview-to-bulenox-automation  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+/it/copier/tradingview-to-bulenox-copier  https://pickmytrade.trade/copier/tradovate-to-bulenox-copier/  301
+
+# Tradovate coverage on pickmytrade.io lives under the copier/automation guides,
+# not a dedicated broker page -- the closest actual Tradovate landing page is on
+# pickmytrade.trade.
+/broker/tradingview-to-tradovate  https://pickmytrade.trade/tradingview-to-tradovate/  301
+/de/broker/tradingview-to-tradovate  https://pickmytrade.trade/tradingview-to-tradovate/  301
+/es/broker/tradingview-to-tradovate  https://pickmytrade.trade/tradingview-to-tradovate/  301
+/fr/broker/tradingview-to-tradovate  https://pickmytrade.trade/tradingview-to-tradovate/  301
+/it/broker/tradingview-to-tradovate  https://pickmytrade.trade/tradingview-to-tradovate/  301
+
+# Misc fixes
+/broker/tradingview-to-day-traders  /use-cases/day-traders/  301
+/broker/tradingview-to-rithmic.html  /broker/tradingview-to-rithmic/  301
+/propfirms/fundednext.html  /propfirms/fundednext/  301
+/legal/privacy.html  /legal/privacy/  301
+/legal/  /legal/privacy/  301
+/propfirms  /supported-propfirms/  301
+/es/propfirms  /es/supported-propfirms/  301
+/it/propfirms  /it/supported-propfirms/  301
+/en/propfirms  /supported-propfirms/  301
+/assets  /  301
+/en/assets/crypto/  /  301
+/es/assets/crypto/  /es/  301
+/fr/assets/crypto/  /fr/  301
+/es/page/contactUs  /es/page/contact/  301
+/fr/page/contactUs  /fr/page/contact/  301
+/compare/compare/pickmytrade-vs-copygram  https://pickmytrade.trade/compare/pickmytrade-vs-copygram/  301
+/compare/compare/pickmytrade-vs-cornix  /compare/pickmytrade-vs-cornix/  301
+/compare/compare/pickmytrade-vs-3commas  /compare/pickmytrade-vs-3commas/  301
+/compare/compare/pickmytrade-vs-wundertrading  /compare/pickmytrade-vs-wundertrading/  301
+/compare/pickmytrade-vs-tradersposts  https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/  301
+/on  /  301
+/signup  https://app.pickmytrade.io/?register=true  301

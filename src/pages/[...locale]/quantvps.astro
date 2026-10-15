@@ -1,0 +1,567 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://pickmytrade.io"
+    }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('quantvps.page_title')}
+  description={t('quantvps.page_description')}
+  keywords={t('quantvps.page_keywords')}
+  structuredData={[schema1]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('quantvps.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('quantvps.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-52 pb-16 px-4">
+    <div class="max-w-6xl mx-auto text-center">
+      <div class="mb-6">
+        <span class="bg-blue-500/20 text-blue-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide">
+          {t('quantvps.badge_partner')}
+        </span>
+      </div>
+      <div class="mb-8">
+        <img src="assets/quantvps-logo-white.webp" alt={t('quantvps.logo_alt_quantvps')} class="h-16 md:h-20 w-auto aspect-[750/186] object-contain mx-auto" width="750" height="186" loading="eager" decoding="async">
+      </div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+        {t('quantvps.hero_title_a')} <span class="gradient-text">QuantVPS</span> {t('quantvps.hero_title_b')}<br />{t('quantvps.hero_title_c')}
+      </h1>
+      <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+        {t('quantvps.hero_subtitle')}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+        <a href="https://go.quantvps.com/pickmytrade" target="_blank" rel="noopener noreferrer"
+          class="px-8 py-4 bg-gradient-to-r from-[#2B77EE] to-[#4B94FF] rounded-xl font-bold text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all text-lg">
+          <i class="fa-solid fa-server mr-2"></i> {t('quantvps.hero_cta_primary')}
+        </a>
+        <a href="https://app.pickmytrade.io/?register=true"
+          class="px-8 py-4 border-2 border-[#2B77EE] rounded-xl font-bold text-white hover:bg-[#2B77EE]/10 transition-all text-lg">
+          {t('quantvps.hero_cta_secondary')}
+        </a>
+      </div>
+      <!-- <div class="mt-8">
+        <p class="text-sm text-gray-400 mb-3">Use Referral Code:</p>
+        <div class="code-box relative inline-block">
+          PICKMYTRADE
+          <button class="copy-btn" onclick="copyCode()">
+            <i class="fa-solid fa-copy"></i> Copy
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">Applied automatically via partner link</p>
+      </div> -->
+    </div>
+  </section>
+
+  <!-- Why QuantVPS Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          {t('quantvps.why_title_a')} <span class="gradient-text">Interactive Brokers</span>
+        </h2>
+        <p class="text-gray-300 text-lg max-w-3xl mx-auto">
+          {t('quantvps.why_subtitle')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-clock text-2xl text-blue-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('quantvps.feature_uptime_title')}</h3>
+          <p class="text-gray-400">{t('quantvps.feature_uptime_desc')}</p>
+        </div>
+
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-bolt text-2xl text-green-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('quantvps.feature_stable_title')}</h3>
+          <p class="text-gray-400">{t('quantvps.feature_stable_desc')}</p>
+        </div>
+
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-network-wired text-2xl text-purple-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('quantvps.feature_latency_title')}</h3>
+          <p class="text-gray-400">{t('quantvps.feature_latency_desc')}</p>
+        </div>
+
+        <div class="feature-card rounded-xl p-6">
+          <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-shield-halved text-2xl text-orange-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('quantvps.feature_independent_title')}</h3>
+          <p class="text-gray-400">{t('quantvps.feature_independent_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's Included Section -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          {t('quantvps.included_title_a')} <span class="gradient-text">{t('quantvps.included_title_highlight')}</span>
+        </h2>
+        <p class="text-gray-300 text-lg">
+          {t('quantvps.included_subtitle_pre')}<strong>PICKMYTRADE</strong>{t('quantvps.included_subtitle_post')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="flex items-start gap-4">
+            <i class="fa-solid fa-check-circle text-2xl text-green-400 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold mb-2">{t('quantvps.included_1_title')}</h3>
+              <p class="text-gray-400">{t('quantvps.included_1_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="flex items-start gap-4">
+            <i class="fa-solid fa-check-circle text-2xl text-green-400 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold mb-2">{t('quantvps.included_2_title')}</h3>
+              <p class="text-gray-400">{t('quantvps.included_2_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="flex items-start gap-4">
+            <i class="fa-solid fa-check-circle text-2xl text-green-400 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold mb-2">{t('quantvps.included_3_title')}</h3>
+              <p class="text-gray-400">{t('quantvps.included_3_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="flex items-start gap-4">
+            <i class="fa-solid fa-check-circle text-2xl text-green-400 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold mb-2">{t('quantvps.included_4_title')}</h3>
+              <p class="text-gray-400">{t('quantvps.included_4_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="flex items-start gap-4">
+            <i class="fa-solid fa-check-circle text-2xl text-green-400 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold mb-2">{t('quantvps.included_5_title')}</h3>
+              <p class="text-gray-400">{t('quantvps.included_5_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="flex items-start gap-4">
+            <i class="fa-solid fa-check-circle text-2xl text-green-400 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold mb-2">{t('quantvps.included_6_title')}</h3>
+              <p class="text-gray-400">{t('quantvps.included_6_desc')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="py-20 px-4 relative overflow-hidden">
+    <!-- Background decorative elements -->
+    <div class="absolute top-0 left-0 w-full h-full opacity-10">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-16">
+        <div class="inline-block mb-4">
+          <span
+            class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-400 px-6 py-2 rounded-full text-sm font-semibold uppercase tracking-wide">
+            {t('quantvps.process_badge')}
+          </span>
+        </div>
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">
+          {t('quantvps.howitworks_title_a')} <span class="gradient-text">{t('quantvps.howitworks_title_highlight')}</span> {t('quantvps.howitworks_title_b')}
+        </h2>
+        <p class="text-gray-300 text-xl max-w-2xl mx-auto">{t('quantvps.howitworks_subtitle')}</p>
+      </div>
+
+      <!-- Timeline connector for desktop -->
+      <div
+        class="hidden lg:block absolute left-1/2 transform -translate-x-1/2 top-72 bottom-32 w-1 bg-gradient-to-b from-blue-500 via-purple-500 to-green-500 opacity-30">
+      </div>
+
+      <div class="space-y-8 lg:space-y-16">
+        <!-- Step 1 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 lg:text-right">
+            <div
+              class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 border border-blue-500/40 rounded-2xl p-8 hover:border-blue-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br z-10 from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-blue-500/50">
+                  1
+                </div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('quantvps.step1_title')}</h3>
+              <p class="text-gray-300 mb-4">{t('quantvps.step1_desc')}
+              </p>
+              <a href="https://go.quantvps.com/pickmytrade" target="_blank"
+                class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+                <i class="fa-solid fa-external-link-alt"></i>
+                go.quantvps.com/pickmytrade
+              </a>
+            </div>
+          </div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-blue-500/50 ring-4 ring-blue-500/20">
+              1
+            </div>
+          </div>
+          <div class="flex-1 hidden lg:block"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 hidden lg:block"></div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-purple-500/50 ring-4 ring-purple-500/20">
+              2
+            </div>
+          </div>
+          <div class="flex-1">
+            <div
+              class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 border border-purple-500/40 rounded-2xl p-8 hover:border-purple-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4 z-10">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-purple-500/50">
+                  2
+                </div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('quantvps.step2_title')}
+              </h3>
+              <p class="text-gray-300">{t('quantvps.step2_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 lg:text-right">
+            <div
+              class="bg-gradient-to-br from-indigo-900/40 to-indigo-800/20 border border-indigo-500/40 rounded-2xl p-8 hover:border-indigo-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-indigo-500/50">
+                  3
+                </div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('quantvps.step3_title')}</h3>
+              <p class="text-gray-300">{t('quantvps.step3_desc_a')} <span class="text-green-400 font-bold">PICKMYTRADE</span> {t('quantvps.step3_desc_b')}</p>
+            </div>
+          </div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-indigo-500/50 ring-4 ring-indigo-500/20">
+              3
+            </div>
+          </div>
+          <div class="flex-1 hidden lg:block"></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 hidden lg:block"></div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-cyan-500/50 ring-4 ring-cyan-500/20">
+              4
+            </div>
+          </div>
+          <div class="flex-1">
+            <div
+              class="bg-gradient-to-br from-cyan-900/40 to-cyan-800/20 border border-cyan-500/40 rounded-2xl p-8 hover:border-cyan-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-cyan-500/50">
+                  4
+                </div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('quantvps.step4_title')}</h3>
+              <p class="text-gray-300">{t('quantvps.step4_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center">
+          <div class="flex-1 lg:text-right">
+            <div
+              class="bg-gradient-to-br from-green-900/40 to-green-800/20 border border-green-500/40 rounded-2xl p-8 hover:border-green-400/60 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 backdrop-blur-sm">
+              <div class="inline-block lg:hidden mb-4">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-green-500/50">
+                  5
+                </div>
+              </div>
+              <h3 class="text-2xl font-bold mb-3 text-white">{t('quantvps.step5_title')}</h3>
+              <p class="text-gray-300">{t('quantvps.step5_desc')}</p>
+              <div
+                class="mt-4 inline-flex items-center gap-2 bg-green-500/20 border border-green-500/40 px-4 py-2 rounded-lg text-green-300 font-semibold">
+                <i class="fa-solid fa-rocket"></i>
+                {t('quantvps.step5_badge')}
+              </div>
+            </div>
+          </div>
+          <div class="hidden lg:block flex-shrink-0 relative z-20">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-2xl shadow-green-500/50 ring-4 ring-green-500/20">
+              5
+            </div>
+          </div>
+          <div class="flex-1 hidden lg:block"></div>
+        </div>
+      </div>
+
+
+
+      <!-- CTA Button -->
+      <div class="text-center mt-16">
+        <a href="https://go.quantvps.com/pickmytrade" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-[#2B77EE] to-[#4B94FF] rounded-2xl font-bold text-white text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all hover:scale-105">
+          <i class="fa-solid fa-server text-xl"></i>
+          {t('quantvps.howitworks_cta')}
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recommended For Section -->
+  <section class="py-16 px-4 bg-black/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          <span class="gradient-text">{t('quantvps.recommended_title')}</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-chart-line text-4xl text-blue-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('quantvps.rec_1_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('quantvps.rec_1_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-robot text-4xl text-green-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('quantvps.rec_2_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('quantvps.rec_2_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-gears text-4xl text-purple-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('quantvps.rec_3_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('quantvps.rec_3_desc')}</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#001429] to-[#002040] border border-blue-500/30 rounded-xl p-6 text-center">
+          <i class="fa-solid fa-clock text-4xl text-orange-400 mb-4"></i>
+          <h3 class="text-lg font-bold mb-2">{t('quantvps.rec_4_title')}</h3>
+          <p class="text-gray-400 text-sm">{t('quantvps.rec_4_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Support Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          {t('quantvps.support_title_a')} <span class="gradient-text">{t('quantvps.support_title_highlight')}</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-8">
+          <div class="text-center mb-4">
+            <img src="assets/quantvps-logo-white.webp" alt={t('quantvps.logo_alt_quantvps')} class="h-12 w-auto aspect-[750/186] object-contain mx-auto mb-4" width="750" height="186" loading="lazy" decoding="async">
+            <h3 class="text-2xl font-bold mb-2">QuantVPS</h3>
+          </div>
+          <ul class="space-y-3 text-gray-300">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_quantvps_1')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_quantvps_2')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_quantvps_3')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_quantvps_4')}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-purple-900/20 to-purple-800/10 border border-purple-500/30 rounded-xl p-8">
+          <div class="text-center mb-4">
+            <img src="assets/logo.webp" alt={t('quantvps.logo_alt_pickmytrade')} class="h-12 w-12 aspect-square object-contain mx-auto mb-4" width="1563" height="1563" loading="lazy" decoding="async">
+            <h3 class="text-2xl font-bold mb-2">PickMyTrade</h3>
+          </div>
+          <ul class="space-y-3 text-gray-300">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_pmt_1')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_pmt_2')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_pmt_3')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-green-400 mt-1"></i>
+              <span>{t('quantvps.support_pmt_4')}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QuantVPS Pricing Models -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="inline-block mb-4">
+          <span class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-400 px-6 py-2 rounded-full text-sm font-semibold uppercase tracking-wide">
+            {t('quantvps.pricing_badge')}
+          </span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          <span class="gradient-text">QuantVPS</span> {t('quantvps.pricing_title')}
+        </h2>
+        <p class="text-gray-300 text-lg max-w-3xl mx-auto">
+          {t('quantvps.pricing_subtitle')}
+        </p>
+      </div>
+
+      <div class="flex justify-center">
+        <img src="/assets/QuadVpsPricingCards.svg" alt={t('quantvps.pricing_img_alt')} class="w-full max-w-5xl aspect-[1212/1020] object-contain rounded-xl shadow-2xl" width="1212" height="1020" loading="lazy" decoding="async">
+      </div>
+
+      <div class="text-center mt-8">
+        <p class="text-gray-400 text-sm mb-4">
+          <i class="fa-solid fa-info-circle mr-2"></i>
+          {t('quantvps.pricing_note_a')} <span class="text-green-400 font-bold">PICKMYTRADE</span> {t('quantvps.pricing_note_b')}
+        </p>
+        <a href="https://go.quantvps.com/pickmytrade" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#2B77EE] to-[#4B94FF] rounded-xl font-bold text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all">
+          <i class="fa-solid fa-external-link-alt"></i>
+          {t('quantvps.pricing_cta')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4 bg-gradient-to-r from-blue-900/30 to-purple-900/30">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">
+        {t('quantvps.cta_title_a')} <span class="gradient-text">{t('quantvps.cta_title_highlight')}</span>
+      </h2>
+      <p class="text-xl text-gray-300 mb-8">
+        {t('quantvps.cta_subtitle')}
+      </p>
+
+      <div class="bg-black/40 border border-blue-500/30 rounded-xl p-8 mb-8">
+        <div class="grid md:grid-cols-2 gap-6 text-left">
+          <div>
+            <p class="text-gray-400 mb-2">{t('quantvps.cta_referral_label')}</p>
+            <div class="code-box w-full text-center">
+              PICKMYTRADE
+              <button class="copy-btn" onclick="copyCode()">
+                <i class="fa-solid fa-copy"></i> {t('quantvps.copy_button')}
+              </button>
+            </div>
+          </div>
+          <div>
+            <p class="text-gray-400 mb-2">{t('quantvps.cta_partner_label')}</p>
+            <a href="https://go.quantvps.com/pickmytrade" target="_blank" rel="noopener noreferrer"
+              class="block bg-[#1e293b] border border-[#334155] rounded-lg p-4 text-blue-400 hover:text-blue-300 transition-colors break-all">
+              <i class="fa-solid fa-external-link-alt mr-2"></i>go.quantvps.com/pickmytrade
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://go.quantvps.com/pickmytrade" target="_blank" rel="noopener noreferrer"
+          class="px-8 py-4 bg-gradient-to-r from-[#2B77EE] to-[#4B94FF] rounded-xl font-bold text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all text-lg">
+          <i class="fa-solid fa-server mr-2"></i> {t('quantvps.hero_cta_primary')}
+        </a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')}
+          class="px-8 py-4 border-2 border-[#2B77EE] rounded-xl font-bold text-white hover:bg-[#2B77EE]/10 transition-all text-lg">
+          {t('quantvps.cta_learn')}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

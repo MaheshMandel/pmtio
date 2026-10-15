@@ -1,0 +1,148 @@
+#!/usr/bin/env node
+/**
+ * Derives per-route publication / modification dates from git history and writes
+ * them to src/data/contentDates.json.
+ *
+ * Why this exists
+ * ───────────────
+ * Freshness is a first-class ranking and AI-citation signal (Google AI Mode in
+ * particular weights it heavily), but before this script the build emitted
+ * `datePublished`/`dateModified` on 11 of 212 English pages and the sitemap
+ * carried zero <lastmod> entries. Every freshness heuristic had to guess.
+ *
+ * Hand-maintaining a date map is the usual answer and it always rots — someone
+ * edits copy and forgets to bump the date, so the map lies. Git already knows
+ * when each route's source last changed, so that is the source of truth here.
+ *
+ * For each page template we take:
+ *   published = date of its FIRST commit
+ *   modified  = latest commit date across the template AND the config/ + src/data
+ *               files it imports (most programmatic copy lives in those JSONs,
+ *               so a data-only edit must still move the date)
+ *
+ * The locale dictionaries are deliberately NOT counted: src/i18n/locales/en.json
+ * is touched by nearly every change, so including it would collapse all 60 routes
+ * onto one identical date and destroy the per-section granularity that makes the
+ * signal worth emitting at all.
+ *
+ * The generated JSON is committed. `npm run build` regenerates it first, but when
+ * git is unavailable (some CI images clone without history) the committed copy is
+ * used unchanged rather than failing the build or emitting today's date for
+ * everything — a build-time date on unchanged content is exactly the "lastmod
+ * lies" pattern Google discounts.
+ */
+
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PAGES = path.join(ROOT, 'src', 'pages', '[...locale]');
+const OUT = path.join(ROOT, 'src', 'data', 'contentDates.json');
+
+function git(args) {
+  return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim();
+}
+
+/** ISO date (YYYY-MM-DD) of the first and last commit touching `file`. */
+function commitDates(file) {
+  const rel = path.relative(ROOT, file).replace(/\\/g, '/');
+  const log = git(['log', '--follow', '--format=%cs', '--', rel]);
+  if (!log) return null;
+  const dates = log.split('\n').filter(Boolean);
+  return { first: dates[dates.length - 1], last: dates[0] };
+}
+
+/** config/*.json and src/data/* files a template imports (locale JSON excluded). */
+function dataDependencies(file) {
+  const src = fs.readFileSync(file, 'utf8');
+  const deps = new Set();
+  for (const m of src.matchAll(/from\s+['"]([^'"]+)['"]/g)) {
+    const spec = m[1];
+    if (!spec.startsWith('.')) continue;
+    if (!/\/(config|data)\//.test(spec) && !spec.includes('config/')) continue;
+    if (spec.includes('/locales/')) continue;
+    const resolved = path.resolve(path.dirname(file), spec);
+    for (const candidate of [resolved, `${resolved}.ts`, `${resolved}.json`]) {
+      if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+        deps.add(candidate);
+        break;
+      }
+    }
+  }
+  return [...deps];
+}
+
+/**
+ * Page file → the route key it owns.
+ * A dynamic segment ([slug], [broker]) becomes a `prefix/` key that matches every
+ * page in that family; everything else is an exact route.
+ */
+function routeKey(file) {
+  const rel = path.relative(PAGES, file).replace(/\\/g, '/').replace(/\.astro$/, '');
+  const segments = rel.split('/');
+  const last = segments[segments.length - 1];
+
+  if (/^\[.+\]$/.test(last)) return `${segments.slice(0, -1).join('/')}/`;
+  if (last === 'index') return segments.slice(0, -1).join('/');
+  return segments.join('/');
+}
+
+function walk(dir, out = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(p, out);
+    else if (entry.name.endsWith('.astro')) out.push(p);
+  }
+  return out;
+}
+
+function main() {
+  try {
+    git(['rev-parse', '--git-dir']);
+  } catch {
+    console.warn('[content-dates] no git repository — keeping the committed contentDates.json');
+    return;
+  }
+
+  const routes = {};
+  let skipped = 0;
+
+  for (const file of walk(PAGES)) {
+    const own = commitDates(file);
+    if (!own) {
+      // Never committed yet (a brand-new page in a dirty tree). Emitting a date
+      // we cannot substantiate is worse than emitting none, so it is left out
+      // and simply inherits the site-wide default at render time.
+      skipped++;
+      continue;
+    }
+
+    let modified = own.last;
+    for (const dep of dataDependencies(file)) {
+      const depDates = commitDates(dep);
+      if (depDates && depDates.last > modified) modified = depDates.last;
+    }
+
+    routes[routeKey(file)] = { published: own.first, modified };
+  }
+
+  const payload = {
+    _comment:
+      'GENERATED by scripts/generate-content-dates.mjs from git history — do not edit by hand. Regenerated by `npm run build`.',
+    default: Object.values(routes).reduce(
+      (max, r) => (r.modified > max ? r.modified : max),
+      '1970-01-01',
+    ),
+    routes: Object.fromEntries(Object.entries(routes).sort(([a], [b]) => a.localeCompare(b))),
+  };
+
+  fs.writeFileSync(OUT, `${JSON.stringify(payload, null, 2)}\n`);
+  console.log(
+    `[content-dates] wrote ${Object.keys(routes).length} routes to src/data/contentDates.json` +
+      (skipped ? ` (${skipped} uncommitted page(s) skipped)` : ''),
+  );
+}
+
+main();

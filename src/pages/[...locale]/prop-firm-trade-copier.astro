@@ -1,0 +1,544 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../i18n/utils';
+import type { TranslationKey } from '../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const pageUrl = absoluteLocalizedPath(locale, 'prop-firm-trade-copier');
+
+// Per-firm copier leaves confirmed to exist in the repo (config/propfirms-full.json,
+// consumed by /copier/[slug].astro). Firms without a confirmed leaf point at
+// /supported-propfirms instead, per the spec's dev note 4.
+const confirmedFirms = [
+  { key: 'apex', slug: 'apex-trader-funding' },
+  { key: 'topstep', slug: 'topstep' },
+  { key: 'tpt', slug: 'take-profit-trader' },
+  { key: 'fundednext', slug: 'fundednext' },
+  { key: 'tradeify', slug: 'tradeify' },
+];
+
+const unconfirmedFirms = ['alpha', 'myff', 'tradeday'];
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${pageUrl}#page`,
+  "name": "Prop Firm Trade Copier for Futures Traders",
+  "description": "A futures-native, broker-agnostic prop firm trade copier that copies one TradingView alert across the funded prop firm accounts you own, with per-account sizing, cloud execution and no VPS.",
+  "url": pageUrl,
+  "inLanguage": LOCALE_BCP47[locale],
+  "isPartOf": { "@type": "WebSite", "name": "PickMyTrade", "url": "https://pickmytrade.io" },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Prop firms supported by the PickMyTrade trade copier",
+    "itemListOrder": "https://schema.org/ItemListUnordered",
+    "numberOfItems": confirmedFirms.length,
+    "itemListElement": confirmedFirms.map((firm, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": `${t(`prop_firm_trade_copier.firm_${firm.key}_title` as TranslationKey)} trade copier`,
+      "url": absoluteLocalizedPath(locale, `copier/tradingview-to-${firm.slug}-copier`),
+    })),
+  },
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "image": "https://pickmytrade.io/logo.png",
+  "name": "PickMyTrade - Prop Firm Trade Copier",
+  "description": "A prop firm trade copier that copies one TradingView alert or one manual trade across multiple funded prop firm accounts you own, with per-account position sizing, under 200ms order processing on our side (total fill time varies with your broker, network, and TradingView alert speed) and cloud hosting that needs no VPS. Works across futures rails including Tradovate, Rithmic, ProjectX, Interactive Brokers and TradeStation.",
+  "url": pageUrl,
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based, Windows, Mac, Linux",
+  "offers": {
+    "@type": "Offer",
+    "price": "50.00",
+    "priceCurrency": "USD",
+    "priceValidUntil": "2026-12-31",
+    "availability": "https://schema.org/InStock",
+    "description": "$50 per month or $500 per year. 7-day free trial, no credit card required.",
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/logo.png" },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@pickmytrade.com",
+      "contactType": "Customer Support",
+      "availableLanguage": "English",
+    },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade",
+    ],
+  },
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": ["h1", "h2", ".faq-question", ".faq-answer", "summary", "details > div", "details > p"],
+  },
+  "mainEntity": [
+    { "@type": "Question", "name": "Do prop firms allow trade copiers, and is copy trading allowed on prop firms?", "acceptedAnswer": { "@type": "Answer", "text": "Internal copy trading means routing your own TradingView alerts or manual trades across funded accounts that you own, and its rules vary by prop firm and change over time. That is exactly what PickMyTrade does. What firms prohibit is external copy trading: subscribing to a third-party signal seller or letting someone else manage your funded account. Rules differ by firm, so confirm your firm's current policy before you go live." } },
+    { "@type": "Question", "name": "Which prop firms allow copy trading?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade supports copying across funded accounts at many major futures firms, including Apex Trader Funding, Topstep, Alpha Futures, Take Profit Trader, FundedNext Futures, MyFundedFutures, TradeDay and Tradeify. Because copy-trading and consistency rules vary firm to firm, open the per-firm page for your firm to see its specific policy rather than relying on a blanket claim." } },
+    { "@type": "Question", "name": "Can I copy trades across multiple prop firm accounts at once?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. One TradingView alert or one manual trade can execute across every connected account at the same time, with matching entries, exits, stop-loss and take-profit. You can also give each account its own size using a per-account multiplier, so a small evaluation and a larger funded account can take the same signal at different contract counts." } },
+    { "@type": "Question", "name": "Is using a trade copier against prop firm rules?", "acceptedAnswer": { "@type": "Answer", "text": "It depends on the type of copying. Internal copying, mirroring your own strategy across accounts you own, is what PickMyTrade is built for, and its rules vary by prop firm and change over time. External copying, meaning selling or subscribing to signals or managing someone else's account, is against the rules at most firms. PickMyTrade never sells signals and never manages your account for you." } },
+    { "@type": "Question", "name": "Does copying trades break the consistency rule?", "acceptedAnswer": { "@type": "Answer", "text": "Copying itself does not break a consistency rule, but how you size and time trades can. Consistency rules cap how much of your profit can come from a single day or account, and they vary by firm. Because you control each account's multiplier and can stagger sizing, you can copy while staying inside a firm's consistency limits. Always read your firm's current consistency policy before scaling up." } },
+    { "@type": "Question", "name": "Do I need a VPS to run a prop firm trade copier?", "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade runs entirely in the cloud, so there is no VPS to rent and no desktop app to keep open. Your trades copy 24/7 even when your computer is switched off. That is a core difference from older download-and-run copiers that need a Windows machine or a paid VPS to stay online." } },
+    { "@type": "Question", "name": "How fast is the copy execution, and what about latency and slippage?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade processes your order in under 200ms on our side, and fans out to all connected accounts within seconds. Your total fill time, latency and slippage still depend on your broker, prop firm, network and how quickly TradingView sends the alert, and fast markets can move price between accounts, as with any copier. We describe the cloud execution factually rather than promising a guaranteed end-to-end speed or zero slippage." } },
+    { "@type": "Question", "name": "How much does a prop firm trade copier cost, and is there a free trial?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade is $50 per month or $500 per year, and every account starts with a 7-day free trial that needs no credit card. One subscription copies to unlimited accounts under a single broker login, with no per-account or per-trade fees. If you use multiple broker logins, each login needs its own subscription." } },
+    { "@type": "Question", "name": "What is a stealth mode trade copier, and is copying detectable by the firm?", "acceptedAnswer": { "@type": "Answer", "text": "Stealth mode usually refers to varying entries or sizing slightly between accounts so fills are not identical. PickMyTrade places real broker orders and does not spoof, mask or hide your activity from the firm. The compliant use is scaling your own funded accounts, not disguising a third-party signal. Assume your firm can see your trading, and only copy in ways your firm's rules allow." } },
+    { "@type": "Question", "name": "Which brokers and prop firms does PickMyTrade support for copying?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade copies through futures rails including Tradovate, Rithmic, ProjectX (which powers TopstepX), Interactive Brokers and TradeStation. On top of those rails it supports many prop firms such as Apex, Topstep, Alpha Futures, Take Profit Trader, FundedNext Futures, MyFundedFutures, TradeDay and Tradeify. Open the per-firm page for the exact rail and rules that apply to your firm." } },
+    { "@type": "Question", "name": "Can I copy trades from TradingView across different prop firms at the same time?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Cross-firm copying is supported as long as each account is one you own and your firms allow copying. A single TradingView alert can reach accounts at more than one firm at once, each with its own size. Since each firm sets its own copy-trading and consistency rules, confirm that every firm in your setup permits it before you run one signal across all of them." } },
+  ],
+};
+
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+    { "@type": "ListItem", "position": 2, "name": "Prop Firms", "item": absoluteLocalizedPath(locale, 'supported-propfirms') },
+    { "@type": "ListItem", "position": 3, "name": "Prop Firm Trade Copier", "item": pageUrl },
+  ],
+};
+
+const schema5 = {
+  "@context": "https://schema.org",
+  // TechArticle, not HowTo — Google retired HowTo rich results in Sept 2023,
+  // so the markup carried no SERP value. Mirrors the homepage pattern.
+  "@type": "TechArticle",
+  "headline": "How to set up a prop firm trade copier with PickMyTrade",
+  "name": "How to set up a prop firm trade copier with PickMyTrade",
+  "description": "Copy one TradingView alert across multiple funded prop firm accounts you own by connecting your accounts to PickMyTrade and pasting a webhook alert. No coding and no VPS required.",
+  "image": "https://pickmytrade.io/logo.png",
+  "timeRequired": "PT10M",
+  "proficiencyLevel": "Beginner",
+  "dependencies": "PickMyTrade account; Your funded or evaluation prop firm accounts; TradingView Pro, Pro+ or Premium (for webhook alerts)",
+  "articleSection": [
+    "Connect your prop firm accounts — Create a PickMyTrade account and connect each funded or evaluation account you want to copy to, on any supported rail such as Tradovate, Rithmic or ProjectX.",
+    "Set the source and per-account sizing — Choose one account as the source of trades, then set a quantity multiplier for each account so every account trades a size that respects its own drawdown.",
+    "Generate the alert and webhook URL — In PickMyTrade, generate the alert message and webhook URL for your buy and sell signals. There is nothing to code.",
+    "Paste them into a TradingView alert — Create an alert in TradingView, delete the default text, paste the PickMyTrade message, and set the webhook URL in the alert's notifications tab.",
+    "Test and go live — Fire a test alert, confirm the fills in your PickMyTrade alert log and in each account, then enable the alert. One signal now copies across every connected prop firm account.",
+  ],
+  "mainEntityOfPage": `${pageUrl}#setup`,
+  "author": { "@id": "https://pickmytrade.io/#organization" },
+  "publisher": { "@id": "https://pickmytrade.io/#organization" },
+};
+
+const faqItems = [
+  { question: t('prop_firm_trade_copier.faq_q1'), answer: t('prop_firm_trade_copier.faq_a1') },
+  { question: t('prop_firm_trade_copier.faq_q2'), answer: t('prop_firm_trade_copier.faq_a2') },
+  { question: t('prop_firm_trade_copier.faq_q3'), answer: t('prop_firm_trade_copier.faq_a3') },
+  { question: t('prop_firm_trade_copier.faq_q4'), answer: t('prop_firm_trade_copier.faq_a4') },
+  { question: t('prop_firm_trade_copier.faq_q5'), answer: t('prop_firm_trade_copier.faq_a5') },
+  { question: t('prop_firm_trade_copier.faq_q6'), answer: t('prop_firm_trade_copier.faq_a6') },
+  { question: t('prop_firm_trade_copier.faq_q7'), answer: t('prop_firm_trade_copier.faq_a7') },
+  { question: t('prop_firm_trade_copier.faq_q8'), answer: t('prop_firm_trade_copier.faq_a8') },
+  { question: t('prop_firm_trade_copier.faq_q9'), answer: t('prop_firm_trade_copier.faq_a9') },
+  { question: t('prop_firm_trade_copier.faq_q10'), answer: t('prop_firm_trade_copier.faq_a10') },
+  { question: t('prop_firm_trade_copier.faq_q11'), answer: t('prop_firm_trade_copier.faq_a11') },
+];
+---
+<BaseLayout
+  locale={locale}
+  title={t('prop_firm_trade_copier.page_title')}
+  description={t('prop_firm_trade_copier.page_description')}
+  keywords={t('prop_firm_trade_copier.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4, schema5]}
+>
+  <!-- BREADCRUMB -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('prop_firm_trade_copier.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, 'supported-propfirms')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('prop_firm_trade_copier.breadcrumb_propfirms')}</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-[#7FB8F9] font-semibold" itemprop="name">{t('prop_firm_trade_copier.breadcrumb_current')}</span>
+          <meta itemprop="position" content="3" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- (1) HERO -->
+  <section class="relative py-14 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 right-16 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-10 w-56 h-56 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-5 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-shield-halved text-[#2B77EE]"></i>
+        <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('prop_firm_trade_copier.hero_badge')}</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white leading-tight">{t('prop_firm_trade_copier.hero_title')}</h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl mx-auto">{t('prop_firm_trade_copier.hero_subtitle')}</p>
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('prop_firm_trade_copier.hero_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="#setup" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('prop_firm_trade_copier.hero_cta_secondary')}
+        </a>
+      </div>
+      <p class="mt-3 text-xs text-gray-400">{t('prop_firm_trade_copier.hero_note')}</p>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm">
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-users text-[#2B77EE]"></i> {t('prop_firm_trade_copier.trust_traders')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-gauge-high text-[#2B77EE]"></i> {t('prop_firm_trade_copier.trust_latency')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-chart-line text-[#2B77EE]"></i> {t('prop_firm_trade_copier.trust_trades')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-cloud text-[#2B77EE]"></i> {t('prop_firm_trade_copier.trust_cloud')}</span>
+      </div>
+      <!-- [IMG PLACEHOLDER] Hero graphic: one TradingView alert fanning out to Apex / Topstep / Tradeify account tiles. alt="One TradingView signal copying across multiple prop firm futures accounts with PickMyTrade" -->
+      <div class="mt-8 max-w-3xl mx-auto rounded-xl border border-dashed border-[#2B77EE]/40 bg-white/[0.03] p-8 text-xs text-gray-500">
+        <i class="fa-solid fa-image mr-2"></i>Product screenshot placeholder — one TradingView signal fanning out to multiple prop firm accounts
+      </div>
+    </div>
+  </section>
+
+  <!-- (2) WHAT IS A PROP FIRM TRADE COPIER -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('prop_firm_trade_copier.s2_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s2_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s2_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('prop_firm_trade_copier.s2_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (3) HOW PICKMYTRADE COPIES -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="max-w-4xl mx-auto" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('prop_firm_trade_copier.s3_h2')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s3_p1')}</p>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s3_p2')}</p>
+        <p class="text-gray-300 leading-relaxed">{t('prop_firm_trade_copier.s3_p3')}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-bolt text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-2">{t('prop_firm_trade_copier.s3_card1_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('prop_firm_trade_copier.s3_card1_desc')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-hand-pointer text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-2">{t('prop_firm_trade_copier.s3_card2_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('prop_firm_trade_copier.s3_card2_desc')}</p>
+        </div>
+      </div>
+      <!-- [IMG PLACEHOLDER] Copier dashboard screenshot: one source account, several follower accounts with multipliers. alt="PickMyTrade copier dashboard mirroring one source account to several funded prop firm accounts with per-account multipliers" -->
+      <div class="mt-6 rounded-xl border border-dashed border-[#2B77EE]/40 bg-white/[0.03] p-6 text-xs text-gray-500 text-center">
+        <i class="fa-solid fa-image mr-2"></i>Product screenshot placeholder — copier dashboard with source and follower accounts
+      </div>
+    </div>
+  </section>
+
+  <!-- (4) SUPPORTED PROP FIRMS + RAILS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-5">
+      <div class="max-w-3xl mx-auto text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('prop_firm_trade_copier.s4_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('prop_firm_trade_copier.s4_intro')}</p>
+      </div>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-aos="fade-up">
+        {confirmedFirms.map((firm) => (
+          <li>
+            <a href={localizedPath(locale, `copier/tradingview-to-${firm.slug}-copier`)} class="block h-full bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:border-[#2B77EE] hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300">
+              <div class="flex items-center justify-between mb-1">
+                <h3 class="font-bold text-white text-base">{t(`prop_firm_trade_copier.firm_${firm.key}_title` as TranslationKey)}</h3>
+                <i class="fa-solid fa-arrow-right text-[#7FB8F9] text-xs"></i>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t(`prop_firm_trade_copier.firm_${firm.key}_desc` as TranslationKey)}</p>
+            </a>
+          </li>
+        ))}
+        {unconfirmedFirms.map((key) => (
+          <li>
+            <a href={localizedPath(locale, 'supported-propfirms')} class="block h-full bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:border-[#2B77EE] hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300">
+              <div class="flex items-center justify-between mb-1">
+                <h3 class="font-bold text-white text-base">{t(`prop_firm_trade_copier.firm_${key}_title` as TranslationKey)}</h3>
+                <i class="fa-solid fa-arrow-right text-[#7FB8F9] text-xs"></i>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t(`prop_firm_trade_copier.firm_${key}_desc` as TranslationKey)}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="text-center mt-6 text-sm">
+        <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.s4_see_all')}</a>{t('prop_firm_trade_copier.s4_or')}
+        <a href={localizedPath(locale, 'prop-firm-faq')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.s4_faq_hub_link')}</a> {t('prop_firm_trade_copier.s4_faq_hub_suffix')}
+      </p>
+
+      <div class="max-w-4xl mx-auto mt-12" data-aos="fade-up">
+        <h3 class="text-xl sm:text-2xl font-bold text-white mb-4">{t('prop_firm_trade_copier.s4_rails_h3')}</h3>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s4_rails_p1')}</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <a href="https://pickmytrade.trade" target="_blank" rel="noopener" class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('prop_firm_trade_copier.rail_tradovate')}</a>
+          <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('prop_firm_trade_copier.rail_rithmic')}</a>
+          <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('prop_firm_trade_copier.rail_projectx')}</a>
+          <a href={localizedPath(locale, 'broker/tradingview-to-ib')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('prop_firm_trade_copier.rail_ib')}</a>
+          <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('prop_firm_trade_copier.rail_tradestation')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (5) CLOUD-BASED, NO VPS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('prop_firm_trade_copier.s5_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s5_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s5_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('prop_firm_trade_copier.s5_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (6) COMPLIANCE -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('prop_firm_trade_copier.s6_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s6_intro')}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        <div class="bg-[#0f3a24]/30 border border-green-500/40 rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-circle-check text-green-400"></i><h3 class="font-bold text-white text-base">{t('prop_firm_trade_copier.s6_internal_title')}</h3></div>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('prop_firm_trade_copier.s6_internal_desc')}</p>
+        </div>
+        <div class="bg-[#3a0f0f]/30 border border-red-500/40 rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-circle-xmark text-red-400"></i><h3 class="font-bold text-white text-base">{t('prop_firm_trade_copier.s6_external_title')}</h3></div>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('prop_firm_trade_copier.s6_external_desc')}</p>
+        </div>
+      </div>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s6_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s6_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">
+        {t('prop_firm_trade_copier.s6_p3_pre')}
+        <a href={localizedPath(locale, 'copier/tradingview-to-apex-trader-funding-copier')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.s6_p3_link1')}</a>
+        {t('prop_firm_trade_copier.s6_p3_mid1')}
+        <a href={localizedPath(locale, 'prop-firm-faq')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.s6_p3_link2')}</a>
+        {t('prop_firm_trade_copier.s6_p3_mid2')}
+        <a href={localizedPath(locale, 'faq/prop-firm-automation')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.s6_p3_link3')}</a>
+        {t('prop_firm_trade_copier.s6_p3_post')}
+      </p>
+    </div>
+  </section>
+
+  <!-- (7) MULTI-ACCOUNT SCALING -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('prop_firm_trade_copier.s7_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s7_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s7_p2')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('prop_firm_trade_copier.s7_p3')}</p>
+      <p class="text-gray-300 leading-relaxed">
+        {t('prop_firm_trade_copier.s7_p4_pre')}
+        <a href={localizedPath(locale, 'use-cases/prop-firm-traders')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.s7_p4_link')}</a>{t('prop_firm_trade_copier.s7_p4_post')}
+      </p>
+    </div>
+  </section>
+
+  <!-- (8) PRICING -->
+  <section id="pricing" class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] scroll-mt-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('prop_firm_trade_copier.s8_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-8 max-w-2xl mx-auto">{t('prop_firm_trade_copier.s8_intro')}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-7">
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('prop_firm_trade_copier.s8_monthly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('prop_firm_trade_copier.s8_monthly_price')}<span class="text-base font-normal text-gray-400">{t('prop_firm_trade_copier.s8_monthly_period')}</span></p>
+          <p class="text-sm text-gray-400">{t('prop_firm_trade_copier.s8_monthly_desc')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#0F3EC3]/30 via-[#2B77EE]/20 to-[#0F3EC3]/30 border border-[#2B77EE] rounded-xl p-7 relative">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F3EC3] text-white text-xs font-semibold px-3 py-1 rounded-full">{t('prop_firm_trade_copier.s8_yearly_badge')}</span>
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('prop_firm_trade_copier.s8_yearly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('prop_firm_trade_copier.s8_yearly_price')}<span class="text-base font-normal text-gray-400">{t('prop_firm_trade_copier.s8_yearly_period')}</span></p>
+          <p class="text-sm text-gray-400">{t('prop_firm_trade_copier.s8_yearly_desc')}</p>
+        </div>
+      </div>
+      <div class="mt-8">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('prop_firm_trade_copier.s8_cta')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <p class="mt-3 text-xs text-gray-400">
+          {t('prop_firm_trade_copier.s8_note_pre')}
+          <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.s8_note_link')}</a>{t('prop_firm_trade_copier.s8_note_post')}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (9) COMPARISON -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="max-w-3xl mx-auto text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('prop_firm_trade_copier.s9_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('prop_firm_trade_copier.s9_intro')}</p>
+      </div>
+      <div class="overflow-x-auto" data-aos="fade-up">
+        <table class="w-full text-left text-sm border-collapse min-w-[640px]">
+          <thead>
+            <tr class="text-[#7FB8F9]">
+              <th class="py-3 px-4 font-semibold border-b border-[#2B77EE]/30">{t('prop_firm_trade_copier.compare_col_feature')}</th>
+              <th class="py-3 px-4 font-semibold border-b border-[#2B77EE]/30">{t('prop_firm_trade_copier.compare_col_pmt')}</th>
+              <th class="py-3 px-4 font-semibold border-b border-[#2B77EE]/30">{t('prop_firm_trade_copier.compare_col_desktop')}</th>
+              <th class="py-3 px-4 font-semibold border-b border-[#2B77EE]/30">{t('prop_firm_trade_copier.compare_col_forex')}</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300">
+            {[1, 2, 3, 4, 5, 6].map((row) => (
+              <tr>
+                <td class="py-3 px-4 border-b border-white/10">{t(`prop_firm_trade_copier.compare_row${row}_feature` as TranslationKey)}</td>
+                <td class="py-3 px-4 border-b border-white/10">{t(`prop_firm_trade_copier.compare_row${row}_pmt` as TranslationKey)}</td>
+                <td class="py-3 px-4 border-b border-white/10">{t(`prop_firm_trade_copier.compare_row${row}_desktop` as TranslationKey)}</td>
+                <td class="py-3 px-4 border-b border-white/10">{t(`prop_firm_trade_copier.compare_row${row}_forex` as TranslationKey)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-gray-400 text-sm mt-5 max-w-3xl mx-auto text-center">{t('prop_firm_trade_copier.s9_outro')}</p>
+    </div>
+  </section>
+
+  <!-- (10) HOW TO SET UP -->
+  <section id="setup" class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] scroll-mt-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('prop_firm_trade_copier.s10_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('prop_firm_trade_copier.s10_intro')}</p>
+      </div>
+      <ol class="space-y-4">
+        {[1, 2, 3, 4, 5].map((step) => (
+          <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay={step * 50}>
+            <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">{step}</span>
+            <div>
+              <h3 class="font-bold text-white text-base mb-1">{t(`prop_firm_trade_copier.step${step}_title` as TranslationKey)}</h3>
+              <p class="text-sm text-gray-300 leading-relaxed">{t(`prop_firm_trade_copier.step${step}_desc` as TranslationKey)}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <!-- [IMG PLACEHOLDER] product screenshot beside each setup step -->
+      <div class="mt-6 rounded-xl border border-dashed border-[#2B77EE]/40 bg-white/[0.03] p-6 text-xs text-gray-500 text-center">
+        <i class="fa-solid fa-image mr-2"></i>Product screenshot placeholders — connecting accounts, setting multipliers, generating the webhook alert
+      </div>
+    </div>
+  </section>
+
+  <!-- (11) WHY TRADERS CHOOSE PICKMYTRADE -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('prop_firm_trade_copier.s11_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">{t('prop_firm_trade_copier.s11_intro')}</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5" data-aos="fade-up">
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('prop_firm_trade_copier.stat1_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('prop_firm_trade_copier.stat1_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('prop_firm_trade_copier.stat2_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('prop_firm_trade_copier.stat2_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('prop_firm_trade_copier.stat3_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('prop_firm_trade_copier.stat3_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('prop_firm_trade_copier.stat4_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('prop_firm_trade_copier.stat4_label')}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (12) FAQ -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('prop_firm_trade_copier.s12_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('prop_firm_trade_copier.s12_intro')}</p>
+      </div>
+      <div data-aos="fade-up">
+        <FaqAccordion items={faqItems} />
+      </div>
+    </div>
+  </section>
+
+  <!-- (13) FINAL CTA + LINK MESH -->
+  <section class="relative py-16 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 right-24 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">{t('prop_firm_trade_copier.s13_h2')}</h2>
+      <p class="text-gray-300 mb-8 max-w-2xl mx-auto">{t('prop_firm_trade_copier.s13_p')}</p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('prop_firm_trade_copier.s13_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href={localizedPath(locale, 'supported-propfirms')} class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('prop_firm_trade_copier.s13_cta_secondary')}
+        </a>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-white/10">
+        <p class="text-xs uppercase tracking-widest text-gray-400 mb-4 electrolize-regular">{t('prop_firm_trade_copier.mesh_label')}</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+          <a href={localizedPath(locale, 'trade-copier')} class="text-[#7FB8F9] hover:text-white transition">{t('prop_firm_trade_copier.mesh_trade_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'futures-trade-copier')} class="text-[#7FB8F9] hover:text-white transition">{t('prop_firm_trade_copier.mesh_futures_trade_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#7FB8F9] hover:text-white transition">{t('prop_firm_trade_copier.mesh_supported_propfirms')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'prop-firm-faq')} class="text-[#7FB8F9] hover:text-white transition">{t('prop_firm_trade_copier.mesh_prop_firm_faq')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'faq/prop-firm-automation')} class="text-[#7FB8F9] hover:text-white transition">{t('prop_firm_trade_copier.mesh_automation_policy')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white transition">{t('prop_firm_trade_copier.mesh_pricing')}</a>
+        </div>
+        <p class="mt-4 text-xs text-gray-500">
+          {t('prop_firm_trade_copier.mesh_perfirm_intro')}
+          <a href={localizedPath(locale, 'copier/tradingview-to-apex-trader-funding-copier')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.mesh_apex')}</a>,
+          <a href={localizedPath(locale, 'copier/tradingview-to-topstep-copier')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.mesh_topstep')}</a>,
+          <a href={localizedPath(locale, 'copier/tradingview-to-tradeify-copier')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.mesh_tradeify')}</a>,
+          <a href={localizedPath(locale, 'copier/tradingview-to-take-profit-trader-copier')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.mesh_tpt')}</a>,
+          <a href={localizedPath(locale, 'copier/tradingview-to-fundednext-copier')} class="text-[#7FB8F9] hover:text-white underline">{t('prop_firm_trade_copier.mesh_fundednext')}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

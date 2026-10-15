@@ -1,0 +1,415 @@
+{
+  "meta": {
+    "generator_version": "2.0",
+    "last_updated": "2026-06-24",
+    "description": "Full configuration for all 27 prop firm automation pages",
+    "total_firms": 27
+  },
+  "propfirms": [
+    {
+      "name": "Alpha Capital",
+      "slug": "alpha-capital",
+      "tagline": "Automate your TradingView alerts to Alpha Capital in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "orange",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Alpha Capital Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Alpha Capital with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView Alpha Capital automation, Alpha Capital webhook trading, automate alerts Alpha Capital, TradingView alerts to Alpha Capital, Alpha Capital automated trading, prop firm automation, PickMyTrade Alpha Capital, no-code algo trading Alpha Capital, Alpha Capital signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "AlphaTicks",
+      "slug": "alphaticks",
+      "tagline": "Automate your TradingView alerts to AlphaTicks in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "orange",
+      "account_sizes": "$10K - $150K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to AlphaTicks Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to AlphaTicks with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView AlphaTicks automation, AlphaTicks webhook trading, automate alerts AlphaTicks, TradingView alerts to AlphaTicks, AlphaTicks automated trading, prop firm automation, PickMyTrade AlphaTicks, no-code algo trading AlphaTicks, AlphaTicks signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Apex Trader Funding",
+      "slug": "apex-trader-funding",
+      "tagline": "Automate your TradingView alerts to Apex Trader Funding in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "orange",
+      "account_sizes": "$25K - $150K (Apex 4.0)",
+      "profit_split": "Up to 90%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic, Tradovate",
+      "seo": {
+        "title": "TradingView to Apex Trader Funding Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Apex Trader Funding with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account.",
+        "keywords": "TradingView Apex Trader Funding automation, Apex Trader Funding webhook trading, automate alerts Apex Trader Funding, TradingView alerts to Apex Trader Funding, Apex Trader Funding automated trading, prop firm automation, PickMyTrade Apex Trader Funding, no-code algo trading Apex Trader Funding, Apex Trader Funding signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "AquaFutures",
+      "slug": "aquafutures",
+      "tagline": "Automate your TradingView alerts to AquaFutures in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "blue",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to AquaFutures Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to AquaFutures with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView AquaFutures automation, AquaFutures webhook trading, automate alerts AquaFutures, TradingView alerts to AquaFutures, AquaFutures automated trading, prop firm automation, PickMyTrade AquaFutures, no-code algo trading AquaFutures, AquaFutures signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Blue Guardian Futures",
+      "slug": "blue-guardian-futures",
+      "tagline": "Automate your TradingView alerts to Blue Guardian Futures in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "blue",
+      "account_sizes": "$10K - $200K",
+      "profit_split": "Up to 85%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Blue Guardian Futures Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Blue Guardian Futures with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account.",
+        "keywords": "TradingView Blue Guardian Futures automation, Blue Guardian Futures webhook trading, automate alerts Blue Guardian Futures, TradingView alerts to Blue Guardian Futures, Blue Guardian Futures automated trading, prop firm automation, PickMyTrade Blue Guardian Futures, no-code algo trading Blue Guardian Futures, Blue Guardian Futures signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "BluSky Trading",
+      "slug": "blusky-trading",
+      "tagline": "Automate your TradingView alerts to BluSky Trading in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "blue",
+      "account_sizes": "$25K - $150K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to BluSky Trading Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to BluSky Trading with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView BluSky Trading automation, BluSky Trading webhook trading, automate alerts BluSky Trading, TradingView alerts to BluSky Trading, BluSky Trading automated trading, prop firm automation, PickMyTrade BluSky Trading, no-code algo trading BluSky Trading, BluSky Trading signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Day Traders",
+      "slug": "day-traders",
+      "tagline": "Automate your TradingView alerts to Day Traders in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "green",
+      "account_sizes": "$25K - $150K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Day Traders Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Day Traders with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView Day Traders automation, Day Traders webhook trading, automate alerts Day Traders, TradingView alerts to Day Traders, Day Traders automated trading, prop firm automation, PickMyTrade Day Traders, no-code algo trading Day Traders, Day Traders signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "E8 Markets",
+      "slug": "e8-markets",
+      "tagline": "PickMyTrade does not automate MT4, MT5 or DXTrade accounts, so E8 Markets is not currently supported. If E8 Markets adds a platform PickMyTrade connects to (Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader or Ironbeam), automation becomes possible then.",
+      "color": "orange",
+      "account_sizes": "$25K - $400K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "MT4, MT5, DXTrade",
+      "seo": {
+        "title": "E8 Markets + PickMyTrade: Not Currently Supported",
+        "description": "PickMyTrade does not automate MT4, MT5 or DXTrade accounts, so E8 Markets is not currently supported. See PickMyTrade's full list of supported prop firms and brokers instead.",
+        "keywords": "TradingView E8 Markets automation, E8 Markets webhook trading, automate alerts E8 Markets, TradingView alerts to E8 Markets, E8 Markets automated trading, prop firm automation, PickMyTrade E8 Markets, no-code algo trading E8 Markets, E8 Markets signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "FundedNext",
+      "slug": "fundednext",
+      "tagline": "PickMyTrade does not automate MT4 or MT5 accounts, so FundedNext is not currently supported. If FundedNext adds a platform PickMyTrade connects to (Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader or Ironbeam), automation becomes possible then.",
+      "color": "orange",
+      "account_sizes": "$6K - $300K",
+      "profit_split": "Up to 90%",
+      "profit_target": "8-15%",
+      "platforms": "MT4, MT5",
+      "seo": {
+        "title": "FundedNext + PickMyTrade: Not Currently Supported",
+        "description": "PickMyTrade does not automate MT4 or MT5 accounts, so FundedNext is not currently supported. See PickMyTrade's full list of supported prop firms and brokers instead.",
+        "keywords": "TradingView FundedNext automation, FundedNext webhook trading, automate alerts FundedNext, TradingView alerts to FundedNext, FundedNext automated trading, prop firm automation, PickMyTrade FundedNext, no-code algo trading FundedNext, FundedNext signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Funding Futures",
+      "slug": "funding-futures",
+      "tagline": "Automate your TradingView alerts to Funding Futures in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "green",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 85%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Funding Futures Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Funding Futures with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView Funding Futures automation, Funding Futures webhook trading, automate alerts Funding Futures, TradingView alerts to Funding Futures, Funding Futures automated trading, prop firm automation, PickMyTrade Funding Futures, no-code algo trading Funding Futures, Funding Futures signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "FundingPips",
+      "slug": "fundingpips",
+      "tagline": "PickMyTrade does not automate MT4 or MT5 accounts, so FundingPips is not currently supported. If FundingPips adds a platform PickMyTrade connects to (Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader or Ironbeam), automation becomes possible then.",
+      "color": "orange",
+      "account_sizes": "$6K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "MT4, MT5",
+      "seo": {
+        "title": "FundingPips + PickMyTrade: Not Currently Supported",
+        "description": "PickMyTrade does not automate MT4 or MT5 accounts, so FundingPips is not currently supported. See PickMyTrade's full list of supported prop firms and brokers instead.",
+        "keywords": "TradingView FundingPips automation, FundingPips webhook trading, automate alerts FundingPips, TradingView alerts to FundingPips, FundingPips automated trading, prop firm automation, PickMyTrade FundingPips, no-code algo trading FundingPips, FundingPips signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Futures Elite",
+      "slug": "futures-elite",
+      "tagline": "Automate your TradingView alerts to Futures Elite in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "purple",
+      "account_sizes": "$25K - $250K",
+      "profit_split": "Up to 90%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Futures Elite Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Futures Elite with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView Futures Elite automation, Futures Elite webhook trading, automate alerts Futures Elite, TradingView alerts to Futures Elite, Futures Elite automated trading, prop firm automation, PickMyTrade Futures Elite, no-code algo trading Futures Elite, Futures Elite signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Fxify Futures",
+      "slug": "fxify-futures",
+      "tagline": "PickMyTrade does not automate MT4 or MT5 accounts, so Fxify Futures is not currently supported. If Fxify Futures adds a platform PickMyTrade connects to (Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader or Ironbeam), automation becomes possible then.",
+      "color": "blue",
+      "account_sizes": "$10K - $400K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "MT4, MT5",
+      "seo": {
+        "title": "Fxify Futures + PickMyTrade: Not Currently Supported",
+        "description": "PickMyTrade does not automate MT4 or MT5 accounts, so Fxify Futures is not currently supported. See PickMyTrade's full list of supported prop firms and brokers instead.",
+        "keywords": "TradingView Fxify Futures automation, Fxify Futures webhook trading, automate alerts Fxify Futures, TradingView alerts to Fxify Futures, Fxify Futures automated trading, prop firm automation, PickMyTrade Fxify Futures, no-code algo trading Fxify Futures, Fxify Futures signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Goat Funded Trader",
+      "slug": "goat-funded-trader",
+      "tagline": "Automate your TradingView alerts to Goat Funded Trader in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "green",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 85%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Goat Funded Trader Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Goat Funded Trader with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account.",
+        "keywords": "TradingView Goat Funded Trader automation, Goat Funded Trader webhook trading, automate alerts Goat Funded Trader, TradingView alerts to Goat Funded Trader, Goat Funded Trader automated trading, prop firm automation, PickMyTrade Goat Funded Trader, no-code algo trading Goat Funded Trader, Goat Funded Trader signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Holaprime",
+      "slug": "holaprime",
+      "tagline": "PickMyTrade does not automate MT4 or MT5 accounts, so Holaprime is not currently supported. If Holaprime adds a platform PickMyTrade connects to (Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader or Ironbeam), automation becomes possible then.",
+      "color": "orange",
+      "account_sizes": "$5K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "MT4, MT5",
+      "seo": {
+        "title": "Holaprime + PickMyTrade: Not Currently Supported",
+        "description": "PickMyTrade does not automate MT4 or MT5 accounts, so Holaprime is not currently supported. See PickMyTrade's full list of supported prop firms and brokers instead.",
+        "keywords": "TradingView Holaprime automation, Holaprime webhook trading, automate alerts Holaprime, TradingView alerts to Holaprime, Holaprime automated trading, prop firm automation, PickMyTrade Holaprime, no-code algo trading Holaprime, Holaprime signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Lucid Trading",
+      "slug": "lucid-trading",
+      "tagline": "Automatically copy your TradingView alerts to your Lucid Trading account through Tradovate or Rithmic. No coding required. PickMyTrade processes orders in under 200ms on our side.",
+      "color": "cyan",
+      "account_sizes": "$25K - $150K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Tradovate, Rithmic",
+      "seo": {
+        "title": "Copy Trade Lucid Accounts from TradingView | PickMyTrade",
+        "description": "Connect Lucid Trading to TradingView and auto-copy trades to one or many LucidFlex and LucidBlack accounts. No code, works via Tradovate or Rithmic. 7-day free trial.",
+        "keywords": "lucid trading copy trading, how to connect lucid trading to tradingview, how to copy trade lucid accounts on tradingview, connect lucid to tradingview, can you trade lucid on tradingview, does lucid allow automated trading, does lucid trading allow bots, lucid trading api, copy trade lucid accounts, lucid trading tradingview, TradingView Lucid Trading automation, PickMyTrade Lucid Trading, prop firm webhook"
+      }
+    },
+    {
+      "name": "Maven Trading",
+      "slug": "maven",
+      "tagline": "Automate your TradingView alerts to Maven Trading in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "purple",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Maven Trading Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Maven Trading with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView Maven Trading automation, Maven Trading webhook trading, automate alerts Maven Trading, TradingView alerts to Maven Trading, Maven Trading automated trading, prop firm automation, PickMyTrade Maven Trading, no-code algo trading Maven Trading, Maven Trading signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Phidias",
+      "slug": "phidias",
+      "tagline": "Automate your TradingView alerts to Phidias in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "blue",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Phidias Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Phidias with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support. 7-day.",
+        "keywords": "TradingView Phidias automation, Phidias webhook trading, automate alerts Phidias, TradingView alerts to Phidias, Phidias automated trading, prop firm automation, PickMyTrade Phidias, no-code algo trading Phidias, Phidias signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "QT Funded",
+      "slug": "qt-funded",
+      "tagline": "Automate your TradingView alerts to QT Funded in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "orange",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 85%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to QT Funded Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to QT Funded with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support. 7-day.",
+        "keywords": "TradingView QT Funded automation, QT Funded webhook trading, automate alerts QT Funded, TradingView alerts to QT Funded, QT Funded automated trading, prop firm automation, PickMyTrade QT Funded, no-code algo trading QT Funded, QT Funded signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Take Profit Trader",
+      "slug": "take-profit-trader",
+      "tagline": "Connect TradingView to Take Profit Trader accounts. Automate evaluation and funded account trading with advanced risk management.",
+      "color": "green",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 90%",
+      "profit_target": "6-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Take Profit Trader Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Take Profit Trader with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account.",
+        "keywords": "TradingView Take Profit Trader automation, Take Profit Trader webhook trading, automate alerts Take Profit Trader, TradingView alerts to Take Profit Trader, Take Profit Trader automated trading, prop firm automation, PickMyTrade Take Profit Trader, no-code algo trading Take Profit Trader, Take Profit Trader signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "The Futures Desk",
+      "slug": "the-futures-desk",
+      "tagline": "Automate your TradingView alerts to The Futures Desk in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "blue",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to The Futures Desk Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to The Futures Desk with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account.",
+        "keywords": "TradingView The Futures Desk automation, The Futures Desk webhook trading, automate alerts The Futures Desk, TradingView alerts to The Futures Desk, The Futures Desk automated trading, prop firm automation, PickMyTrade The Futures Desk, no-code algo trading The Futures Desk, The Futures Desk signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "TickTickTrader",
+      "slug": "tickticktrader",
+      "tagline": "Automate your TradingView alerts to TickTickTrader in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "orange",
+      "account_sizes": "$25K - $300K",
+      "profit_split": "Up to 90%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic, TopstepX",
+      "seo": {
+        "title": "TradingView to TickTickTrader Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to TickTickTrader with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView TickTickTrader automation, TickTickTrader webhook trading, automate alerts TickTickTrader, TradingView alerts to TickTickTrader, TickTickTrader automated trading, prop firm automation, PickMyTrade TickTickTrader, no-code algo trading TickTickTrader, TickTickTrader signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Top One Futures",
+      "slug": "top-one-futures",
+      "tagline": "Automate your TradingView alerts to Top One Futures in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "gold",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 85%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Top One Futures Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Top One Futures with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView Top One Futures automation, Top One Futures webhook trading, automate alerts Top One Futures, TradingView alerts to Top One Futures, Top One Futures automated trading, prop firm automation, PickMyTrade Top One Futures, no-code algo trading Top One Futures, Top One Futures signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Top One Trader",
+      "slug": "top-one-trader",
+      "tagline": "Automate your TradingView alerts to Top One Trader in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "gold",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 85%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Top One Trader Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Top One Trader with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView Top One Trader automation, Top One Trader webhook trading, automate alerts Top One Trader, TradingView alerts to Top One Trader, Top One Trader automated trading, prop firm automation, PickMyTrade Top One Trader, no-code algo trading Top One Trader, Top One Trader signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Topstep",
+      "slug": "topstep",
+      "tagline": "Execute TradingView strategies on Topstep accounts automatically. Perfect for futures traders looking to pass evaluation and earn a funded account.",
+      "color": "blue",
+      "account_sizes": "$50K - $150K",
+      "profit_split": "Up to 90%",
+      "profit_target": "$3K - $9K",
+      "platforms": "TopstepX, Rithmic",
+      "seo": {
+        "title": "TradingView to Topstep Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Topstep with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support. 7-day.",
+        "keywords": "TradingView Topstep automation, Topstep webhook trading, automate alerts Topstep, TradingView alerts to Topstep, Topstep automated trading, prop firm automation, PickMyTrade Topstep, no-code algo trading Topstep, Topstep signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "Tradeify",
+      "slug": "tradeify",
+      "tagline": "Automate your TradingView alerts to Tradeify in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "green",
+      "account_sizes": "$25K - $250K",
+      "profit_split": "Up to 90%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to Tradeify Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to Tradeify with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support. 7-day.",
+        "keywords": "TradingView Tradeify automation, Tradeify webhook trading, automate alerts Tradeify, TradingView alerts to Tradeify, Tradeify automated trading, prop firm automation, PickMyTrade Tradeify, no-code algo trading Tradeify, Tradeify signal automation, futures automation, prop firm webhook"
+      }
+    },
+    {
+      "name": "TX3 Funding",
+      "slug": "tx3-funding",
+      "tagline": "Automate your TradingView alerts to TX3 Funding in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "color": "orange",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "TradingView to TX3 Funding Automation | PickMyTrade",
+        "description": "Automate TradingView alerts to TX3 Funding with PickMyTrade. Ultra-low latency webhook execution, advanced risk management, and multi-account support.",
+        "keywords": "TradingView TX3 Funding automation, TX3 Funding webhook trading, automate alerts TX3 Funding, TradingView alerts to TX3 Funding, TX3 Funding automated trading, prop firm automation, PickMyTrade TX3 Funding, no-code algo trading TX3 Funding, TX3 Funding signal automation, futures automation, prop firm webhook"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2580 @@
+﻿---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getLocalePaths,
+  localizedPath,
+  useTranslations,
+  type TranslationKey,
+} from '../../i18n/utils';
+import { LOCALES, LOCALE_BCP47, type Locale } from '../../i18n/config';
+import { SALE_END } from '../../data/sale';
+import pricingConfig from '../../../pricing-config.json';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+// Single source of truth for pricing shown anywhere on this page — the sale
+// banner, the pricing cards and the JSON-LD Offer all derive from the same
+// pricing-config.json + SALE_END, so the page can't disagree with itself on
+// price the way it did before (banner showing the sale price while the
+// comparison table and structured data still quoted the pre-sale figure).
+const saleActive =
+  pricingConfig.sale?.active !== false && Date.now() < new Date(SALE_END).getTime();
+const monthlyPlan = Object.values(pricingConfig.plans).find(
+  (p: any) => p.enabled && p.period === 'month',
+) as { price: number; originalPrice: number | null } | undefined;
+const quarterlyPlan = Object.values(pricingConfig.plans).find(
+  (p: any) => p.enabled && p.period === '3 Months',
+) as { price: number; originalPrice: number | null } | undefined;
+const annualPlan = Object.values(pricingConfig.plans).find(
+  (p: any) => p.enabled && p.period === 'year',
+) as { price: number; originalPrice: number | null } | undefined;
+const currentPrice = (plan: { price: number; originalPrice: number | null } | undefined, fallback: number) =>
+  plan == null ? fallback : saleActive && plan.originalPrice != null ? plan.price : (plan.originalPrice ?? plan.price);
+const monthlyDisplayPrice = currentPrice(monthlyPlan, 50);
+const quarterlyDisplayPrice = currentPrice(quarterlyPlan, 135);
+const annualDisplayPrice = currentPrice(annualPlan, 500);
+
+// Computed, not hardcoded, so this can never overstate (or go stale on) the
+// live discount — reads the same pricing-config.json the banner/cards use.
+const annualPercentOff =
+  saleActive && annualPlan?.originalPrice
+    ? Math.round((1 - annualPlan.price / annualPlan.originalPrice) * 100)
+    : 0;
+const saleDescriptionSuffix =
+  annualPercentOff > 0 ? ` Save ${annualPercentOff}% on the annual plan for a limited time.` : '';
+
+const schema1 = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': 'https://pickmytrade.io/#software',
+  image: 'https://pickmytrade.io/assets/logo.png',
+  name: 'PickMyTrade',
+  applicationCategory: 'FinanceApplication',
+  applicationSubCategory: 'Trading Automation',
+  operatingSystem: 'Web',
+  softwareVersion: '2026.4',
+  description:
+    `Send TradingView alerts to Rithmic, Interactive Brokers, TradeStation, TradeLocker and other supported brokers with no code. From $50 a month.${saleDescriptionSuffix}`,
+  url: 'https://pickmytrade.io/',
+  downloadUrl: 'https://app.pickmytrade.io/?register=true',
+  inLanguage: LOCALE_BCP47[locale],
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'USD',
+    lowPrice: monthlyDisplayPrice.toFixed(2),
+    highPrice: annualDisplayPrice.toFixed(2),
+    offerCount: '3',
+    availability: 'https://schema.org/InStock',
+    url: 'https://app.pickmytrade.io/?register=true',
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Monthly',
+        price: monthlyDisplayPrice.toFixed(2),
+        priceCurrency: 'USD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: monthlyDisplayPrice.toFixed(2),
+          priceCurrency: 'USD',
+          billingDuration: 'P1M',
+          billingIncrement: 1,
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://app.pickmytrade.io/?register=true',
+      },
+      {
+        '@type': 'Offer',
+        name: 'Quarterly',
+        price: quarterlyDisplayPrice.toFixed(2),
+        priceCurrency: 'USD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: quarterlyDisplayPrice.toFixed(2),
+          priceCurrency: 'USD',
+          billingDuration: 'P3M',
+          billingIncrement: 1,
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://app.pickmytrade.io/?register=true',
+      },
+      {
+        '@type': 'Offer',
+        name: 'Annual',
+        price: annualDisplayPrice.toFixed(2),
+        priceCurrency: 'USD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: annualDisplayPrice.toFixed(2),
+          priceCurrency: 'USD',
+          billingDuration: 'P1Y',
+          billingIncrement: 1,
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://app.pickmytrade.io/?register=true',
+      },
+    ],
+  },
+  publisher: {
+    '@id': 'https://pickmytrade.io/#organization',
+  },
+  featureList: [
+    'Unlimited TradingView alerts',
+    'Sub-second execution',
+    'Multi-account trading',
+    '24/7 Live support',
+    'Risk management tools',
+    'Cross-symbol mapping',
+  ],
+};
+
+const schema2 = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://pickmytrade.io/#organization',
+  name: 'PickMyTrade',
+  legalName: 'PickMyTrade Pvt. Ltd.',
+  url: 'https://pickmytrade.io/',
+  logo: { '@type': 'ImageObject', url: 'https://pickmytrade.io/assets/logo.png' },
+  image: 'https://pickmytrade.io/assets/logo.png',
+  email: 'support@pickmytrade.com',
+  foundingDate: '2023', // only the year is verified
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: 'IN',
+  },
+  sameAs: [
+    // Third-party profiles only: no own domains, blogs, docs or Discord invite (FE-31).
+    'https://x.com/pickmytrade',
+    'https://www.instagram.com/pickmytrade',
+    'https://www.youtube.com/@PickMyTrade',
+    'https://www.linkedin.com/company/pickmytrade',
+    'https://sourceforge.net/software/product/PickMyTrade/',
+    'https://www.trustpilot.com/review/pickmytrade.trade',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'Customer Support',
+    email: 'support@pickmytrade.com',
+    availableLanguage: ['English'],
+    areaServed: 'Worldwide',
+  },
+  description:
+    'PickMyTrade is a cloud-based trading automation platform that connects TradingView alerts to 10+ brokers and 27+ prop trading firms for automated trade execution with sub-second speed.',
+};
+
+const schema3 = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://pickmytrade.io/#website',
+  name: 'PickMyTrade',
+  url: 'https://pickmytrade.io/',
+  inLanguage: LOCALE_BCP47[locale],
+  description:
+    'Cloud-based trading automation platform connecting TradingView alerts to Rithmic, Interactive Brokers, TradeStation and more.',
+  publisher: {
+    '@id': 'https://pickmytrade.io/#organization',
+  },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://blog.pickmytrade.io/?s={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const schema4 = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': 'https://pickmytrade.io/#service',
+  name: 'TradingView Trade Automation',
+  serviceType: 'Trading Automation',
+  provider: {
+    '@id': 'https://pickmytrade.io/#organization',
+  },
+  areaServed: 'Worldwide',
+  audience: {
+    '@type': 'Audience',
+    audienceType:
+      'Retail traders, prop firm traders, day traders, systematic traders',
+  },
+  description:
+    'PickMyTrade converts TradingView alert webhooks into live broker orders in under 200ms across 10+ brokers and 27+ prop trading firms.',
+  offers: {
+    '@id': 'https://pickmytrade.io/#software',
+  },
+  termsOfService: 'https://pickmytrade.io/legal/terms/',
+  url: 'https://pickmytrade.io/',
+};
+
+const faqText = (...parts: string[]) => parts.join(' ').replace(/\s+/g, ' ').trim();
+const faqAnswer4 = faqText(
+  t('home.faq_a4_intro'),
+  `Rithmic ${t('home.faq_a4_li1')}`,
+  t('home.faq_a4_li2'),
+  t('home.faq_a4_li3'),
+  t('home.faq_a4_li4'),
+  `ProjectX ${t('home.faq_a4_li5')}`,
+  `Tradovate ${t('home.faq_a4_li6')}`,
+);
+const faqAnswer6 = faqText(
+  t('home.faq_a6_intro'),
+  `${t('home.faq_a6_li1_label')} ${t('home.faq_a6_li1_text')}`,
+  `${t('home.faq_a6_li2_label')} ${t('home.faq_a6_li2_text')}`,
+  `${t('home.faq_a6_li3_label')} ${t('home.faq_a6_li3_text')}`,
+  `${t('home.faq_a6_li4_label')} ${t('home.faq_a6_li4_text')}`,
+  `${t('home.faq_a6_li5_label')} ${t('home.faq_a6_li5_text')}`,
+  `${t('home.faq_a6_li6_label')} ${t('home.faq_a6_li6_text')}`,
+);
+const faqAnswer7 = faqText(
+  t('home.faq_a7_intro'),
+  `${t('home.faq_a7_li1_label')} ${t('home.faq_a7_li1_text')}`,
+  `${t('home.faq_a7_li2_label')} ${t('home.faq_a7_li2_text')}`,
+  `${t('home.faq_a7_li3_label')} ${t('home.faq_a7_li3_text')}`,
+  `${t('home.faq_a7_li5_label')} ${t('home.faq_a7_li5_text')}`,
+  `${t('home.faq_a7_li6_label')} ${t('home.faq_a7_li6_text')}`,
+);
+
+// Built from the same t() keys the visible FAQ accordion renders, so the schema
+// cannot drift from the page (IO-M3).
+const faqEntry = (q: TranslationKey, a: string) => ({
+  '@type': 'Question',
+  name: t(q),
+  acceptedAnswer: { '@type': 'Answer', text: a },
+});
+const schema5 = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': 'https://pickmytrade.io/#faq',
+  inLanguage: LOCALE_BCP47[locale],
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.faq-question', '.faq-answer'],
+  },
+  mainEntity: [
+    faqEntry('home.faq_q1', t('home.faq_a1')),
+    faqEntry('home.faq_q2', t('home.faq_a2')),
+    faqEntry('home.faq_q3', t('home.faq_a3')),
+    faqEntry('home.faq_q4', faqAnswer4),
+    faqEntry('home.faq_q5', t('home.faq_a5')),
+    faqEntry('home.faq_q6', faqAnswer6),
+    faqEntry('home.faq_q7', faqAnswer7),
+    faqEntry('home.faq_q8', t('home.faq_a8')),
+  ],
+};
+
+const schema6 = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': 'https://pickmytrade.io/#breadcrumb',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://pickmytrade.io/',
+    },
+  ],
+};
+
+const schema7 = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  '@id': 'https://pickmytrade.io/#guide',
+  headline: 'How to Automate TradingView Alerts to Your Broker in 4 Steps',
+  name: 'How to Automate TradingView Alerts to Your Broker in 4 Steps',
+  description:
+    'Set up automated trade execution from TradingView alerts to Rithmic, Interactive Brokers, TradeStation, and 10+ other brokers in under 2 minutes — no coding required.',
+  inLanguage: LOCALE_BCP47[locale],
+  datePublished: '2024-01-01',
+  dateModified: '2026-05-13',
+  proficiencyLevel: 'Beginner',
+  dependencies:
+    'TradingView account; Supported broker or prop firm account (Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Tradovate, or others)',
+  image: 'https://pickmytrade.io/assets/logo.png',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['h2', '.step-text'],
+  },
+  articleSection: [
+    "Step 1: Create Free Account — Sign up for a free PickMyTrade account at app.pickmytrade.io. We'll send a verification email — verify and log in. No credit card required.",
+    'Step 2: Connect Broker or Prop Firm — From the PickMyTrade dashboard, connect your demo, prop firm, or live account. Supports 10+ brokers (Rithmic, IBKR, TradeStation, TradeLocker, ProjectX, Tradovate) and 27+ prop firms.',
+    'Step 3: Generate Your Alert — Click "Generate Alert" in the dashboard. PickMyTrade automatically creates the TradingView alert payload based on your indicator or strategy and assigns the broker-specific webhook URL.',
+    'Step 4: Launch Auto Execution — Paste the generated alert into TradingView and activate it. When the alert fires, PickMyTrade routes the order to your broker in under 200ms with risk management and multi-account routing applied.',
+  ],
+  author: {
+    '@id': 'https://pickmytrade.io/#organization',
+  },
+  publisher: {
+    '@id': 'https://pickmytrade.io/#organization',
+  },
+  mainEntityOfPage: 'https://pickmytrade.io/',
+};
+
+const schema8 = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': 'https://pickmytrade.io/#brokers',
+  name: 'Brokers Supported by PickMyTrade',
+  numberOfItems: 10,
+  itemListOrder: 'https://schema.org/ItemListUnordered',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Rithmic',
+      url: 'https://pickmytrade.io/broker/tradingview-to-rithmic/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Interactive Brokers',
+      url: 'https://pickmytrade.io/broker/tradingview-to-ib/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'TradeStation',
+      url: 'https://pickmytrade.io/broker/tradingview-to-tradestation/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 4,
+      name: 'TradeLocker',
+      url: 'https://pickmytrade.io/broker/tradingview-to-tradelocker/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 5,
+      name: 'ProjectX',
+      url: 'https://pickmytrade.io/broker/tradingview-to-projectx/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 6,
+      name: 'Tradovate',
+      url: 'https://pickmytrade.trade',
+    },
+    {
+      '@type': 'ListItem',
+      position: 7,
+      name: 'Match-Trader',
+      url: 'https://pickmytrade.io/broker/tradingview-to-matchtrader/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 8,
+      name: 'Tradier (Beta)',
+      url: 'https://pickmytrade.io/broker/tradingview-to-tradier/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 9,
+      name: 'cTrader (Beta)',
+      url: 'https://pickmytrade.io/broker/tradingview-to-ctrader/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 10,
+      name: 'Ironbeam (Beta)',
+      url: 'https://pickmytrade.io/broker/tradingview-to-ironbeam/',
+    },
+  ],
+};
+
+const schema10 = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'TradingView to Rithmic Automation',
+    description:
+      'Step-by-step guide to automate your trades from TradingView to Rithmic using PickMyTrade.',
+    thumbnailUrl: 'https://img.youtube.com/vi/K8YgYMYWoo0/maxresdefault.jpg',
+    uploadDate: '2024-12-16T02:05:23-08:00',
+    duration: 'PT7M',
+    contentUrl: 'https://www.youtube.com/watch?v=K8YgYMYWoo0',
+    embedUrl: 'https://www.youtube.com/embed/K8YgYMYWoo0',
+    publisher: {
+      '@id': 'https://pickmytrade.io/#organization',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'TradingView to Interactive Brokers Automation',
+    description:
+      'Step-by-step guide to automate your trades from TradingView to Interactive Brokers using PickMyTrade.',
+    thumbnailUrl: 'https://img.youtube.com/vi/7P7tEw0zSIQ/maxresdefault.jpg',
+    uploadDate: '2025-05-07T05:27:26-07:00',
+    duration: 'PT2M16S',
+    contentUrl: 'https://www.youtube.com/watch?v=7P7tEw0zSIQ',
+    embedUrl: 'https://www.youtube.com/embed/7P7tEw0zSIQ',
+    publisher: {
+      '@id': 'https://pickmytrade.io/#organization',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'TradingView to TradeStation Automation',
+    description:
+      'Step-by-step guide to automate your trades from TradingView to TradeStation using PickMyTrade.',
+    thumbnailUrl: 'https://img.youtube.com/vi/T_G4Gi8HAwo/maxresdefault.jpg',
+    uploadDate: '2025-06-05T02:40:41-07:00',
+    duration: 'PT16M5S',
+    contentUrl: 'https://www.youtube.com/watch?v=T_G4Gi8HAwo',
+    embedUrl: 'https://www.youtube.com/embed/T_G4Gi8HAwo',
+    publisher: {
+      '@id': 'https://pickmytrade.io/#organization',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'TradingView to TradeLocker Automation',
+    description:
+      'Step-by-step guide to automate your trades from TradingView to TradeLocker using PickMyTrade.',
+    thumbnailUrl: 'https://img.youtube.com/vi/ou6JhG2dvxk/maxresdefault.jpg',
+    uploadDate: '2025-05-28T22:35:23-07:00',
+    duration: 'PT7M27S',
+    contentUrl: 'https://www.youtube.com/watch?v=ou6JhG2dvxk',
+    embedUrl: 'https://www.youtube.com/embed/ou6JhG2dvxk',
+    publisher: {
+      '@id': 'https://pickmytrade.io/#organization',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'TradingView to ProjectX Automation',
+    description:
+      'Step-by-step guide to automate your trades from TradingView to ProjectX using PickMyTrade.',
+    thumbnailUrl: 'https://img.youtube.com/vi/sNnIl9-roww/maxresdefault.jpg',
+    uploadDate: '2025-06-20T04:24:15-07:00',
+    duration: 'PT10M21S',
+    contentUrl: 'https://www.youtube.com/watch?v=sNnIl9-roww',
+    embedUrl: 'https://www.youtube.com/embed/sNnIl9-roww',
+    publisher: {
+      '@id': 'https://pickmytrade.io/#organization',
+    },
+  },
+];
+
+---
+
+<BaseLayout
+  locale={locale}
+  title={t('home.page_title')}
+  description={t('home.page_description')}
+  keywords={t('home.page_keywords')}
+  structuredData={[
+    schema1,
+    schema2,
+    schema3,
+    schema4,
+    schema5,
+    schema6,
+    schema7,
+    schema8,
+    schema10,
+  ]}>
+  <div class='bg-[#001429] text-white'>
+    <section
+      itemscope
+      itemtype='https://schema.org/Service'>
+      <div
+        class='py-12 px-5 flex flex-col justify-center items-center text-center'>
+        <div
+          class='w-full lg:w-2/3 pt-32 flex flex-col justify-center items-center'>
+          <p
+            class='mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide'>
+            {t('home.hero_badge')}
+          </p>
+          <h1
+            class='text-4xl sm:text-6xl font-bold text-center text-[#2B77EE] mb-4 tracking-tight'
+            itemprop='name'>
+            {t('home.hero_title')}
+          </h1>
+          <div class='flex flex-wrap justify-center gap-2 mt-5 max-w-4xl'>
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              Rithmic</a
+            >
+            <a
+              href='https://pickmytrade.trade/tradingview-to-tradovate/'
+              target='_blank'
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              Tradovate</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-ib')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              IBKR</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-tradestation')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              TradeStation</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-tradelocker')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              TradeLocker</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-projectx')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              ProjectX</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-matchtrader')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              Matchtrader</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-tradier')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              Tradier (Beta)</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-ctrader')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              cTrader (Beta)</a
+            >
+            <a
+              href={localizedPath(locale, 'broker/tradingview-to-ironbeam')}
+              class='mb-3 text-[#082072] electrolize-regular bg-[#D4EBFE] px-4 py-1 rounded-full font-bold uppercase text-sm tracking-wide'>
+              Ironbeam (Beta)</a
+            >
+          </div>
+
+          <div
+            class='w-full flex flex-col justify-center items-center lg:w-[80%] text-center'>
+            <p
+              class='max-w-4xl text-lg md:text-xl mb-6'
+              itemprop='description'>
+              {t('home.hero_description')}
+            </p>
+            <div class='flex flex-col justify-center items-center text-white'>
+              <div class='flex flex-col md:flex-row gap-4 mt-5'>
+                <a
+                  href='https://app.pickmytrade.io/?register=true'
+                  class='px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]'
+                  itemprop='url'>
+                  {t('home.hero_cta_signup')}
+                </a>
+
+                <a
+                  href='https://app.pickmytrade.io'
+                  class='px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]'>
+                  {t('home.hero_cta_login')}
+                </a>
+              </div>
+              <div
+                class='flex flex-wrap justify-center mt-5 gap-3 sm:gap-4 md:gap-6 text-sm sm:text-base'>
+                <div
+                  class='flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all'>
+                  <i
+                    class='fa-solid fa-check-circle text-green-400'
+                    aria-hidden='true'
+                  ></i>
+                  <span class='text-gray-300'>{t('home.hero_badge_trial')}</span
+                  >
+                </div>
+                <div
+                  class='flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all'>
+                  <i
+                    class='fa-solid fa-credit-card text-blue-400'
+                    aria-hidden='true'
+                  ></i>
+                  <span class='text-gray-300'
+                    >{t('home.hero_badge_nocard')}</span
+                  >
+                </div>
+                <div
+                  class='flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all'>
+                  <i
+                    class='fa-solid fa-infinity text-purple-400'
+                    aria-hidden='true'
+                  ></i>
+                  <span class='text-gray-300'
+                    >{t('home.hero_badge_unlimited')}</span
+                  >
+                </div>
+                <div
+                  class='flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all'>
+                  <i
+                    class='fa-solid fa-bolt text-yellow-400'
+                    aria-hidden='true'
+                  ></i>
+                  <span class='text-gray-300'
+                    >{t('home.hero_badge_instant')}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About PickMyTrade - AI-Citable Definitional Passage -->
+    <section
+      class='bg-gradient-to-b from-[#001429] to-[#001a33] py-16'
+      aria-label='About PickMyTrade'>
+      <div class='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
+        <h2
+          class='text-3xl md:text-4xl font-bold text-white mb-6 tracking-tight'>
+          {t('home.about_title')}
+        </h2>
+        <p class='text-lg text-gray-300 leading-relaxed'>
+          {t('home.about_desc')}
+        </p>
+      </div>
+    </section>
+
+    <div class='bg-gradient-to-b from-[#001429] to-[#002040]'>
+      <section
+        id='howitworks'
+        class='w-full py-16 md:py-24 lg:py-32 mx-auto'>
+        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <!-- Header -->
+          <div class='text-center mb-16'>
+            <span
+              class='inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold mb-4 border border-blue-500/30'>
+              {t('home.steps_badge')}
+            </span>
+            <h2
+              class='text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight'>
+              {t('home.steps_title')}
+            </h2>
+            <p class='text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed'>
+              {t('home.steps_subtitle_pre')}
+              <span class='text-blue-400 font-semibold'
+                >{t('home.steps_subtitle_h1')}</span
+              >
+              {t('home.steps_subtitle_mid1')}
+              <span class='text-purple-500 font-semibold'
+                >{t('home.steps_subtitle_h2')}</span
+              >,
+              <span class='text-purple-500 font-semibold'
+                >{t('home.steps_subtitle_h3')}</span
+              >.
+              {t('home.steps_subtitle_mid2')}
+              <span class='font-bold text-white'
+                >{t('home.steps_subtitle_h4')}</span
+              >
+              {t('home.steps_subtitle_post')}
+            </p>
+          </div>
+
+          <!-- Steps Grid -->
+          <div class='relative'>
+            <!-- Connection Line (Desktop) -->
+            <div
+              class='hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 opacity-30'
+              style='width: calc(100% - 4rem); margin-left: 4rem;'>
+            </div>
+
+            <div
+              class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative'>
+              <!-- Step 1 -->
+              <div
+                class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+                <!-- Step Number Badge -->
+                <div
+                  class='absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform duration-300'>
+                  <span class='text-white font-bold text-xl'>1</span>
+                </div>
+
+                <div class='mt-6'>
+                  <div
+                    class='w-16 h-16 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                    <i class='fa-solid fa-user-plus text-3xl text-blue-400'></i>
+                  </div>
+
+                  <h3
+                    class='text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                    {t('home.step1_title')}
+                  </h3>
+                  <p class='text-gray-300 leading-relaxed mb-6'>
+                    {t('home.step1_desc_pre')}
+                    <span class='text-blue-400 font-medium'
+                      >{t('home.step1_desc_signup')}</span
+                    >
+                    {t('home.step1_desc_post')}
+                  </p>
+
+                  <a
+                    href='https://app.pickmytrade.io/?register=true'
+                    class='inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/btn'>
+                    <span>{t('home.step1_button')}</span>
+                    <i
+                      class='fa-solid fa-arrow-right group-hover/btn:translate-x-1 transition-transform'
+                    ></i>
+                  </a>
+                </div>
+              </div>
+              <!-- Step 2 -->
+              <div
+                class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+                <div
+                  class='absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform duration-300'>
+                  <span class='text-white font-bold text-xl'>2</span>
+                </div>
+
+                <div class='mt-6'>
+                  <div
+                    class='w-16 h-16 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                    <i class='fa-solid fa-link text-3xl text-blue-400'></i>
+                  </div>
+
+                  <h3
+                    class='text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                    {t('home.step2_title')}
+                  </h3>
+                  <p class='text-gray-300 leading-relaxed mb-6'>
+                    {t('home.step2_desc_pre')}
+                    <span class='text-blue-400 font-medium'
+                      >Tradovate, Rithmic, IBKR, TradeStation, TradeLocker or
+                      ProjectX</span
+                    >{t('home.step2_desc_post')}
+                  </p>
+
+                  <a
+                    href='https://app.pickmytrade.io/?register=true'
+                    class='inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/btn'>
+                    <span>{t('home.step2_button')}</span>
+                    <i
+                      class='fa-solid fa-arrow-right group-hover/btn:translate-x-1 transition-transform'
+                    ></i>
+                  </a>
+                </div>
+              </div>
+              <!-- Step 3 -->
+              <div
+                class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+                <div
+                  class='absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform duration-300'>
+                  <span class='text-white font-bold text-xl'>3</span>
+                </div>
+
+                <div class='mt-6'>
+                  <div
+                    class='w-16 h-16 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                    <i class='fa-solid fa-bell text-3xl text-blue-400'></i>
+                  </div>
+
+                  <h3
+                    class='text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                    {t('home.step3_title')}
+                  </h3>
+                  <p class='text-gray-300 leading-relaxed mb-6'>
+                    {t('home.step3_desc_pre')}
+                    <span class='text-blue-400 font-medium'
+                      >{t('home.step3_desc_q')}</span
+                    >{t('home.step3_desc_mid')}
+                    <span class='font-medium'>{t('home.step3_desc_h')}</span>.
+                  </p>
+
+                  <a
+                    href='https://app.pickmytrade.io/?register=true'
+                    class='inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/btn'>
+                    <span>{t('home.step3_button')}</span>
+                    <i
+                      class='fa-solid fa-arrow-right group-hover/btn:translate-x-1 transition-transform'
+                    ></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div
+                class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+                <div
+                  class='absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform duration-300'>
+                  <span class='text-white font-bold text-xl'>4</span>
+                </div>
+
+                <div class='mt-6'>
+                  <div
+                    class='w-16 h-16 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                    <i class='fa-solid fa-rocket text-3xl text-blue-400'></i>
+                  </div>
+
+                  <h3
+                    class='text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                    {t('home.step4_title')}
+                  </h3>
+                  <p class='text-gray-300 leading-relaxed mb-6'>
+                    {t('home.step4_desc_pre')}
+                    <span class='text-blue-400 font-medium'>TradingView</span>
+                    {t('home.step4_desc_post')}
+                  </p>
+
+                  <a
+                    href='https://www.tradingview.com/'
+                    target='_blank'
+                    class='inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/btn'>
+                    <span>{t('home.step4_button')}</span>
+                    <i
+                      class='fa-solid fa-arrow-right group-hover/btn:translate-x-1 transition-transform'
+                    ></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id='integrations'
+        class='w-full py-12 md:py-24 lg:py-32 mx-auto'>
+        <div class='flex flex-col items-center justify-center gap-4'>
+          <div class='space-y-4 text-center pb-6'>
+            <h2
+              class='text-3xl font-bold text-white tracking-tighter md:text-5xl/tight'>
+              {t('home.integrations_title_line1')}
+              <br />{t('home.integrations_title_line2')}
+            </h2>
+          </div>
+          <div
+            class='grid grid-cols-1 sm:grid-cols-3 gap-x-6 flex-wrap mx-5 w-[80%] justify-center items-center'>
+            <!-- Rithmic -->
+            <div class='flex flex-col items-start space-y-4 pt-6 px-4 sm:px-0'>
+              <div class='relative mx-auto w-full rounded-lg lg:max-w-xl group'>
+                <a
+                  href='https://youtu.be/T49zIaRUyN4'
+                  target='_blank'
+                  class='relative block w-full bg-white rounded-lg overflow-hidden'>
+                  <img
+                    alt={t('home.alt_video_rithmic')}
+                    class='mx-auto object-fit'
+                    src='/assets/howTo/toRithmic.png'
+                    loading='lazy'
+                    decoding='async'
+                    width='400'
+                    height='225'
+                  />
+                  <div
+                    class='absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none'>
+                    <svg
+                      class='h-20 w-20 text-[#0084d1] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out'
+                      fill='currentColor'
+                      viewBox='0 0 84 84'>
+                      <circle
+                        opacity='0.9'
+                        cx='42'
+                        cy='42'
+                        r='42'
+                        fill='white'
+                      ></circle>
+                      <path
+                        d='M55.5039 40.3359L37.1094 28.0729C35.7803 27.1869 34 28.1396 34 29.737V54.263C34 55.8604 35.7803 56.8131 37.1094 55.9271L55.5038 43.6641C56.6913 42.8725 56.6913 41.1275 55.5039 40.3359Z'>
+                      </path>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Ib -->
+            <div class='flex flex-col items-start space-y-4 pt-6 px-4 sm:px-0'>
+              <div class='relative mx-auto w-full rounded-lg lg:max-w-xl group'>
+                <a
+                  href='https://youtu.be/7P7tEw0zSIQ'
+                  target='_blank'
+                  class='relative block w-full bg-white rounded-lg overflow-hidden'>
+                  <img
+                    alt={t('home.alt_video_ib')}
+                    class='mx-auto object-fit'
+                    src='/assets/howTo/toIb.png'
+                    loading='lazy'
+                    decoding='async'
+                    width='400'
+                    height='225'
+                  />
+                  <div
+                    class='absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none'>
+                    <svg
+                      class='h-20 w-20 text-[#0084d1] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out'
+                      fill='currentColor'
+                      viewBox='0 0 84 84'>
+                      <circle
+                        opacity='0.9'
+                        cx='42'
+                        cy='42'
+                        r='42'
+                        fill='white'
+                      ></circle>
+                      <path
+                        d='M55.5039 40.3359L37.1094 28.0729C35.7803 27.1869 34 28.1396 34 29.737V54.263C34 55.8604 35.7803 56.8131 37.1094 55.9271L55.5038 43.6641C56.6913 42.8725 56.6913 41.1275 55.5039 40.3359Z'>
+                      </path>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Tradestation -->
+            <div class='flex flex-col items-start space-y-4 pt-6 px-4 sm:px-0'>
+              <div class='relative mx-auto w-full rounded-lg lg:max-w-xl group'>
+                <a
+                  href='https://youtu.be/cWKHC5lJ-Ak'
+                  target='_blank'
+                  class='relative block w-full bg-white rounded-lg overflow-hidden'>
+                  <img
+                    alt={t('home.alt_video_tradestation')}
+                    class='mx-auto object-fit'
+                    src='/assets/howTo/toTradestation.png'
+                    loading='lazy'
+                    decoding='async'
+                    width='400'
+                    height='225'
+                  />
+                  <div
+                    class='absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none'>
+                    <svg
+                      class='h-20 w-20 text-[#0084d1] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out'
+                      fill='currentColor'
+                      viewBox='0 0 84 84'>
+                      <circle
+                        opacity='0.9'
+                        cx='42'
+                        cy='42'
+                        r='42'
+                        fill='white'
+                      ></circle>
+                      <path
+                        d='M55.5039 40.3359L37.1094 28.0729C35.7803 27.1869 34 28.1396 34 29.737V54.263C34 55.8604 35.7803 56.8131 37.1094 55.9271L55.5038 43.6641C56.6913 42.8725 56.6913 41.1275 55.5039 40.3359Z'>
+                      </path>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Tradelocker -->
+            <div class='flex flex-col items-start space-y-4 pt-6 px-4 sm:px-0'>
+              <div class='relative mx-auto w-full rounded-lg lg:max-w-xl group'>
+                <a
+                  href='https://youtu.be/_04w1vdKuDw'
+                  target='_blank'
+                  class='relative block w-full bg-white rounded-lg overflow-hidden'>
+                  <img
+                    alt={t('home.alt_video_tradelocker')}
+                    class='mx-auto object-fit'
+                    src='/assets/howTo/toTradelocker.png'
+                    loading='lazy'
+                    decoding='async'
+                    width='400'
+                    height='225'
+                  />
+                  <div
+                    class='absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none'>
+                    <svg
+                      class='h-20 w-20 text-[#0084d1] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out'
+                      fill='currentColor'
+                      viewBox='0 0 84 84'>
+                      <circle
+                        opacity='0.9'
+                        cx='42'
+                        cy='42'
+                        r='42'
+                        fill='white'
+                      ></circle>
+                      <path
+                        d='M55.5039 40.3359L37.1094 28.0729C35.7803 27.1869 34 28.1396 34 29.737V54.263C34 55.8604 35.7803 56.8131 37.1094 55.9271L55.5038 43.6641C56.6913 42.8725 56.6913 41.1275 55.5039 40.3359Z'>
+                      </path>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- ProjectX -->
+            <div class='flex flex-col items-start space-y-4 pt-6 px-4 sm:px-0'>
+              <div class='relative mx-auto w-full rounded-lg lg:max-w-xl group'>
+                <a
+                  href='https://youtu.be/Yd7N4lHzgdc'
+                  target='_blank'
+                  class='relative block w-full bg-white rounded-lg overflow-hidden'>
+                  <img
+                    alt={t('home.alt_video_projectx')}
+                    class='mx-auto object-fit'
+                    src='/assets/howTo/toProjectX.png'
+                    loading='lazy'
+                    decoding='async'
+                    width='400'
+                    height='225'
+                  />
+                  <div
+                    class='absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none'>
+                    <svg
+                      class='h-20 w-20 text-[#0084d1] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out'
+                      fill='currentColor'
+                      viewBox='0 0 84 84'>
+                      <circle
+                        opacity='0.9'
+                        cx='42'
+                        cy='42'
+                        r='42'
+                        fill='white'
+                      ></circle>
+                      <path
+                        d='M55.5039 40.3359L37.1094 28.0729C35.7803 27.1869 34 28.1396 34 29.737V54.263C34 55.8604 35.7803 56.8131 37.1094 55.9271L55.5038 43.6641C56.6913 42.8725 56.6913 41.1275 55.5039 40.3359Z'>
+                      </path>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Matchtrader -->
+            <div class='flex flex-col items-start space-y-4 pt-6 px-4 sm:px-0'>
+              <div class='relative mx-auto w-full rounded-lg lg:max-w-xl group'>
+                <a
+                  href='https://youtu.be/VsRNQYCsQCo'
+                  target='_blank'
+                  class='relative block w-full bg-white rounded-lg overflow-hidden'>
+                  <img
+                    alt={t('home.alt_video_matchtrader')}
+                    class='mx-auto object-fit'
+                    src='/assets/howTo/toMatchtrader.png'
+                    loading='lazy'
+                    decoding='async'
+                    width='400'
+                    height='225'
+                  />
+                  <div
+                    class='absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none'>
+                    <svg
+                      class='h-20 w-20 text-[#0084d1] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out'
+                      fill='currentColor'
+                      viewBox='0 0 84 84'>
+                      <circle
+                        opacity='0.9'
+                        cx='42'
+                        cy='42'
+                        r='42'
+                        fill='white'
+                      ></circle>
+                      <path
+                        d='M55.5039 40.3359L37.1094 28.0729C35.7803 27.1869 34 28.1396 34 29.737V54.263C34 55.8604 35.7803 56.8131 37.1094 55.9271L55.5038 43.6641C56.6913 42.8725 56.6913 41.1275 55.5039 40.3359Z'>
+                      </path>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TradingView Automation Highlight Section -->
+      <section
+        class='relative py-24 px-4 overflow-hidden bg-gradient-to-b from-[#001429] to-[#002040]'>
+        <!-- Background Effects -->
+        <div class='absolute inset-0'>
+          <div
+            class='absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl'>
+          </div>
+          <div
+            class='absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl'>
+          </div>
+        </div>
+
+        <div class='max-w-6xl mx-auto relative z-10'>
+          <div
+            class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-3xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 overflow-hidden'>
+            <!-- Gradient Line -->
+            <div
+              class='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500'>
+            </div>
+
+            <div class='p-12 md:p-16'>
+              <div class='grid md:grid-cols-2 gap-12 items-center'>
+                <!-- Left Content -->
+                <div>
+                  <div
+                    class='inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold mb-6 border border-blue-500/30'>
+                    {t('home.guide_badge')}
+                  </div>
+                  <h2
+                    class='text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight'>
+                    {t('home.guide_title')}
+                  </h2>
+                  <p class='text-xl text-gray-300 mb-8 leading-relaxed'>
+                    {t('home.guide_desc')}
+                  </p>
+
+                  <!-- Features List -->
+                  <ul class='space-y-4 mb-8'>
+                    <li class='flex items-start gap-3'>
+                      <div
+                        class='w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1'>
+                        <i class='fa-solid fa-check text-blue-400 text-sm'></i>
+                      </div>
+                      <span class='text-gray-300'
+                        >{t('home.guide_feature1')}</span
+                      >
+                    </li>
+                    <li class='flex items-start gap-3'>
+                      <div
+                        class='w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1'>
+                        <i class='fa-solid fa-check text-blue-400 text-sm'></i>
+                      </div>
+                      <span class='text-gray-300'
+                        >{t('home.guide_feature2')}</span
+                      >
+                    </li>
+                    <li class='flex items-start gap-3'>
+                      <div
+                        class='w-6 h-6 bg-blue-500/20 rounded-full flex items-center flex-shrink-0 mt-1'>
+                        <i class='fa-solid fa-check text-blue-400 text-sm'></i>
+                      </div>
+                      <span class='text-gray-300'
+                        >{t('home.guide_feature3')}</span
+                      >
+                    </li>
+                  </ul>
+
+                  <a
+                    href={localizedPath(locale, 'tradingview-automation')}
+                    class='inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/50 group/btn'>
+                    <span>{t('home.guide_button')}</span>
+                    <i
+                      class='fa-solid fa-arrow-right group-hover/btn:translate-x-1 transition-transform'
+                    ></i>
+                  </a>
+                </div>
+
+                <!-- Right Visual -->
+                <div class='relative'>
+                  <div
+                    class='relative bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl p-8 border border-blue-500/20'>
+                    <!-- Icon Grid -->
+                    <div class='grid grid-cols-2 gap-6'>
+                      <div
+                        class='bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-blue-500/50 transition-all duration-300'>
+                        <div
+                          class='w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-lg flex items-center justify-center mb-4'>
+                          <i
+                            class='fa-solid fa-chart-line text-2xl text-blue-400'
+                          ></i>
+                        </div>
+                        <h3 class='font-bold text-white mb-2'>
+                          {t('home.guide_card1_title')}
+                        </h3>
+                        <p class='text-sm text-gray-400'>
+                          {t('home.guide_card1_desc')}
+                        </p>
+                      </div>
+
+                      <div
+                        class='bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-blue-500/50 transition-all duration-300'>
+                        <div
+                          class='w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-lg flex items-center justify-center mb-4'>
+                          <i
+                            class='fa-solid fa-shield-halved text-2xl text-blue-400'
+                          ></i>
+                        </div>
+                        <h3 class='font-bold text-white mb-2'>
+                          {t('home.guide_card2_title')}
+                        </h3>
+                        <p class='text-sm text-gray-400'>
+                          {t('home.guide_card2_desc')}
+                        </p>
+                      </div>
+
+                      <div
+                        class='bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-blue-500/50 transition-all duration-300'>
+                        <div
+                          class='w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-lg flex items-center justify-center mb-4'>
+                          <i class='fa-solid fa-link text-2xl text-blue-400'
+                          ></i>
+                        </div>
+                        <h3 class='font-bold text-white mb-2'>
+                          {t('home.guide_card3_title')}
+                        </h3>
+                        <p class='text-sm text-gray-400'>
+                          {t('home.guide_card3_desc')}
+                        </p>
+                      </div>
+
+                      <div
+                        class='bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-blue-500/50 transition-all duration-300'>
+                        <div
+                          class='w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-lg flex items-center justify-center mb-4'>
+                          <i class='fa-solid fa-rocket text-2xl text-blue-400'
+                          ></i>
+                        </div>
+                        <h3 class='font-bold text-white mb-2'>
+                          {t('home.guide_card4_title')}
+                        </h3>
+                        <p class='text-sm text-gray-400'>
+                          {t('home.guide_card4_desc')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id='features'
+        class='bg-gradient-to-b from-[#001429] to-[#002040] text-white py-20'>
+        <div class='max-w-8xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <!-- Header -->
+          <div class='text-center mb-16'>
+            <span
+              class='inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold mb-4 border border-blue-500/30'>
+              {t('home.features_badge')}
+            </span>
+            <h2 class='text-4xl md:text-5xl font-bold mb-4'>
+              {t('home.features_title')}
+            </h2>
+            <p class='text-gray-300 text-lg max-w-3xl mx-auto'>
+              {t('home.features_subtitle')}
+            </p>
+          </div>
+
+          <!-- Features Grid -->
+          <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+            <!-- Feature 1 -->
+            <div
+              class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+              <div
+                class='w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300'>
+                <i class='fa-solid fa-clock text-3xl text-blue-400'></i>
+              </div>
+              <h3
+                class='text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                {t('home.feature1_title')}
+              </h3>
+              <p class='text-gray-300 leading-relaxed'>
+                {t('home.feature1_desc')}
+              </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div
+              class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+              <div
+                class='w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300'>
+                <i class='fa-solid fa-infinity text-3xl text-blue-400'></i>
+              </div>
+              <h3
+                class='text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                {t('home.feature2_title')}
+              </h3>
+              <p class='text-gray-300 leading-relaxed'>
+                {t('home.feature2_desc')}
+              </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div
+              class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+              <div
+                class='w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300'>
+                <i class='fa-solid fa-shield-halved text-3xl text-blue-400'></i>
+              </div>
+              <h3
+                class='text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                {t('home.feature3_title')}
+              </h3>
+              <p class='text-gray-300 leading-relaxed'>
+                {t('home.feature3_desc')}
+              </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div
+              class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+              <div
+                class='w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300'>
+                <i class='fa-solid fa-chart-gantt text-3xl text-blue-400'></i>
+              </div>
+              <h3
+                class='text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                {t('home.feature4_title')}
+              </h3>
+              <p class='text-gray-300 leading-relaxed mb-4'>
+                {t('home.feature4_desc')}
+              </p>
+              <a
+                href='https://docs.pickmytrade.io/risk-management-settings/'
+                target='_blank'
+                class='inline-flex items-center gap-2 text-blue-400 font-medium hover:text-blue-300 transition-colors'>
+                {t('home.feature_learn_more')}
+                <i class='fa-solid fa-arrow-right text-sm'></i>
+              </a>
+            </div>
+
+            <!-- Feature 5 -->
+            <div
+              class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+              <div
+                class='w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300'>
+                <i class='fa-solid fa-dollar-sign text-3xl text-blue-400'></i>
+              </div>
+              <h3
+                class='text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                {t('home.feature5_title')}
+              </h3>
+              <p class='text-gray-300 leading-relaxed mb-4'>
+                {t('home.feature5_desc')}
+              </p>
+              <a
+                href='https://docs.pickmytrade.io/docs/settings-in-pickmytrade/'
+                target='_blank'
+                class='inline-flex items-center gap-2 text-blue-400 font-medium hover:text-blue-300 transition-colors'>
+                {t('home.feature_learn_more')}
+                <i class='fa-solid fa-arrow-right text-sm'></i>
+              </a>
+            </div>
+
+            <!-- Feature 6 -->
+            <div
+              class='group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2'>
+              <div
+                class='w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300'>
+                <i class='fa-solid fa-users text-3xl text-blue-400'></i>
+              </div>
+              <h3
+                class='text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors duration-300'>
+                {t('home.feature6_title')}
+              </h3>
+              <p class='text-gray-300 leading-relaxed mb-4'>
+                {t('home.feature6_desc')}
+              </p>
+              <a
+                href='https://docs.pickmytrade.io/automate-trades-on-multiple-accounts/'
+                target='_blank'
+                class='inline-flex items-center gap-2 text-blue-400 font-medium hover:text-blue-300 transition-colors'>
+                {t('home.feature_learn_more')}
+                <i class='fa-solid fa-arrow-right text-sm'></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TrendSpider Section -->
+      <!-- <section id="trendspider" class="bg-gradient-to-b from-[#002040] to-[#001429] text-white py-16 md:py-24">
+                          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="grid md:grid-cols-2 gap-12 items-center">
+                              <div>
+                                <span
+                                  class="inline-block px-4 py-2 bg-purple-600/20 text-purple-400 rounded-full text-sm font-semibold mb-4 border border-purple-500/30">
+                                  NEW INTEGRATION
+                                </span>
+                                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                                  TrendSpider to Broker <span class="text-[#2B77EE]">Automation</span>
+                                </h2>
+                                <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                                  Automate your TrendSpider alerts directly to your broker. Execute trades from AI-powered technical analysis,
+                                  dynamic alerts, multi-factor conditions, and automated candlestick pattern detection.
+                                </p>
+                                <ul class="space-y-4 mb-8">
+                                  <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fa-solid fa-check-circle text-green-400"></i>
+                                    <span>Dynamic Alerts (trendlines, moving averages, S/R levels)</span>
+                                  </li>
+                                  <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fa-solid fa-check-circle text-green-400"></i>
+                                    <span>Multi-Factor Alerts (combine multiple indicators)</span>
+                                  </li>
+                                  <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fa-solid fa-check-circle text-green-400"></i>
+                                    <span>AI-Powered Pattern Detection</span>
+                                  </li>
+                                  <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fa-solid fa-check-circle text-green-400"></i>
+                                    <span>Cloud-based 24/7 Alert Monitoring</span>
+                                  </li>
+                                </ul>
+                                <a href={localizedPath(locale, 'trendspider')}
+                                  class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] text-white font-semibold rounded-xl hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300">
+                                  Learn More About TrendSpider
+                                  <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                              </div>
+                              <div class="relative">
+                                <div
+                                  class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50">
+                                  <div class="flex items-center gap-4 mb-6">
+                                    <div
+                                      class="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl flex items-center justify-center">
+                                      <i class="fa-solid fa-brain text-2xl text-purple-400"></i>
+                                    </div>
+                                    <div>
+                                      <h3 class="text-xl font-bold text-white">TrendSpider</h3>
+                                      <p class="text-gray-400 text-sm">AI-Powered Technical Analysis</p>
+                                    </div>
+                                  </div>
+                                  <div class="space-y-4">
+                                    <div class="flex items-center justify-between bg-gray-800/50 rounded-lg p-4">
+                                      <span class="text-gray-300">Alert Type</span>
+                                      <span class="text-purple-400 font-medium">Dynamic Trendline</span>
+                                    </div>
+                                    <div class="flex items-center justify-between bg-gray-800/50 rounded-lg p-4">
+                                      <span class="text-gray-300">Condition</span>
+                                      <span class="text-blue-400 font-medium">Price Breakout + RSI > 70</span>
+                                    </div>
+                                    <div class="flex items-center justify-between bg-gray-800/50 rounded-lg p-4">
+                                      <span class="text-gray-300">Execution</span>
+                                      <span class="text-green-400 font-medium">Auto → Broker</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section> -->
+
+      <section
+        class='w-full py-12 md:py-24 lg:py-28 mx-auto bg-gradient-to-b from-[#002040] to-[#001429]'>
+        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <!-- Header -->
+          <div class='space-y-4 text-center mb-16'>
+            <span
+              class='inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold mb-4 border border-blue-500/30'>
+              {t('home.compare_badge')}
+            </span>
+            <h2
+              class='text-4xl text-white mb-4 font-bold tracking-tighter md:text-6xl/tight'>
+              {t('home.compare_title')}
+            </h2>
+            <p class='text-xl text-gray-300 max-w-2xl mx-auto'>
+              {t('home.compare_subtitle')}
+            </p>
+          </div>
+
+          <!-- Desktop Comparison Table -->
+          <div class='hidden lg:block overflow-x-auto'>
+            <div
+              class='bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50'>
+              <table class='w-full'>
+                <thead>
+                  <tr class='border-b border-gray-700'>
+                    <th
+                      class='text-left px-6 py-6 text-gray-400 font-semibold text-lg'
+                      >{t('home.compare_th_features')}</th
+                    >
+                    <th class='px-6 py-6'>
+                      <div class='flex flex-col items-center gap-3'>
+                        <div class='flex items-center gap-2'>
+                          <img
+              width="40"
+              height="32"
+                            src='/assets/logo.webp'
+                            alt={t('home.alt_logo_pickmytrade')}
+                            class='w-10 h-8'
+                            loading='lazy'
+                            decoding='async'
+                          />
+                          <span class='text-white font-bold text-lg'
+                            >PickMyTrade</span
+                          >
+                        </div>
+                        <span
+                          class='px-3 py-1 bg-blue-600/20 text-blue-400 rounded-full text-xs font-semibold border border-blue-500/30'>
+                          {t('home.compare_best_value')}
+                        </span>
+                      </div>
+                    </th>
+                    <th class='px-6 py-6'>
+                      <img
+              width="112"
+              height="32"
+                        src='/assets/traderpost.svg'
+                        alt={t('home.alt_logo_traderspost')}
+                        class='w-28 h-8 mx-auto bg-white px-3'
+                        loading='lazy'
+                        decoding='async'
+                      />
+                    </th>
+                    <th class='px-6 py-6'>
+                      <img
+                        src='/assets/signalstack/signalstack-logo-light.svg'
+                        alt={t('home.alt_logo_signalstack')}
+                        class='h-8 mx-auto'
+                        width='235'
+                        height='40'
+                        loading='lazy'
+                        decoding='async'
+                      />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Pricing Row -->
+                  <tr
+                    class='border-b border-gray-700/50 hover:bg-gray-800/30 transition-colors'>
+                    <td class='px-6 py-5 text-white font-medium'>
+                      <div class='flex items-center gap-3'>
+                        <i class='fas fa-dollar-sign text-blue-400'></i>
+                        <span>{t('home.compare_row_pricing')}</span>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='flex flex-col items-center gap-2'>
+                        <!-- <i class="fas fa-check-circle text-2xl text-blue-400"></i> -->
+                        <div class='text-white font-bold'>
+                          {`$${monthlyDisplayPrice}/mo`}
+                        </div>
+                        <div class='text-gray-400 text-sm'>
+                          {`$${annualDisplayPrice}/yr`}
+                        </div>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='flex flex-col items-center gap-2'>
+                        <!-- <i class="fas fa-times-circle text-2xl text-red-400"></i> -->
+                        <div class='text-red-400 font-semibold'>
+                          {t('home.compare_tp_price_mo')}
+                        </div>
+                        <div class='text-red-300 text-sm'>
+                          {t('home.compare_tp_price_yr')}
+                        </div>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='flex flex-col items-center gap-2'>
+                        <!-- <i class="fas fa-times-circle text-2xl text-red-400"></i> -->
+                        <div class='text-red-400 font-semibold'>
+                          {t('home.compare_ss_price_mo')}
+                        </div>
+                        <div class='text-red-300 text-sm'>
+                          {t('home.compare_ss_price_yr')}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Unlimited Alerts Row -->
+                  <tr
+                    class='border-b border-gray-700/50 hover:bg-gray-800/30 transition-colors'>
+                    <td class='px-6 py-5 text-white font-medium'>
+                      <div class='flex items-center gap-3'>
+                        <i class='fas fa-bell text-blue-400'></i>
+                        <span>{t('home.compare_row_alerts')}</span>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <i class='fas fa-check-circle text-3xl text-blue-400'></i>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <i class='fas fa-times-circle text-3xl text-red-400'></i>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='flex flex-col items-center text-red-400'>
+                        <i class='fas fa-times-circle text-3xl'></i>
+                        <p class='text-xs mt-2'>
+                          {t('home.compare_ss_signals')}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Unlimited Tickers Row -->
+                  <tr
+                    class='border-b border-gray-700/50 hover:bg-gray-800/30 transition-colors'>
+                    <td class='px-6 py-5 text-white font-medium'>
+                      <div class='flex items-center gap-3'>
+                        <i class='fas fa-chart-line text-blue-400'></i>
+                        <span>{t('home.compare_row_tickers')}</span>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <i class='fas fa-check-circle text-3xl text-blue-400'></i>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='text-red-400 text-sm font-semibold'>
+                        {t('home.compare_tp_tickers')}
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <i class='fas fa-check-circle text-3xl text-blue-400'></i>
+                    </td>
+                  </tr>
+
+                  <!-- Futures & Options Trading Row -->
+                  <tr
+                    class='border-b border-gray-700/50 hover:bg-gray-800/30 transition-colors'>
+                    <td class='px-6 py-5 text-white font-medium'>
+                      <div class='flex items-center gap-3'>
+                        <i class='fas fa-rocket text-blue-400'></i>
+                        <span>{t('home.compare_row_futures')}</span>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <i class='fas fa-check-circle text-3xl text-blue-400'></i>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='text-red-400 text-sm font-semibold'>
+                        {t('home.compare_tp_futures')}
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <i class='fas fa-check-circle text-3xl text-blue-400'></i>
+                    </td>
+                  </tr>
+
+                  <!-- 24/7 Support Row -->
+                  <tr class='hover:bg-gray-800/30 transition-colors'>
+                    <td class='px-6 py-5 text-white font-medium'>
+                      <div class='flex items-center gap-3'>
+                        <i class='fas fa-headset text-blue-400'></i>
+                        <span>{t('home.compare_row_support')}</span>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='flex flex-col items-center gap-2'>
+                        <div class='text-blue-400 text-sm font-semibold'>
+                          {t('home.compare_row_support')}
+                        </div>
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='text-red-400 text-sm font-semibold'>
+                        {t('home.compare_tp_support')}
+                      </div>
+                    </td>
+                    <td class='px-6 py-5 text-center'>
+                      <div class='flex flex-col items-center gap-2'>
+                        <div class='text-blue-400 text-sm font-semibold'>
+                          {t('home.compare_row_support')}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Mobile/Tablet Comparison Cards -->
+          <div class='lg:hidden space-y-6'>
+            <!-- PickMyTrade vs TradersPost -->
+            <div
+              class='bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 overflow-hidden'>
+              <!-- Header -->
+              <div
+                class='grid grid-cols-3 gap-0 bg-gray-800/50 border-b border-gray-700'>
+                <div></div>
+                <div class='p-4 border-r border-gray-700'>
+                  <div class='flex flex-col items-center gap-2'>
+                    <img
+              width="40"
+              height="32"
+                      src='/assets/logo.webp'
+                      alt={t('home.alt_logo_pickmytrade')}
+                      class='w-10 h-8'
+                      loading='lazy'
+                      decoding='async'
+                    />
+                    <span class='text-white font-bold text-sm'>PickMyTrade</span
+                    >
+                    <span
+                      class='px-2 py-1 bg-blue-600/20 text-blue-400 rounded-full text-xs font-semibold border border-blue-500/30'>
+                      {t('home.compare_best_value')}
+                    </span>
+                  </div>
+                </div>
+                <div class='p-4'>
+                  <div class='flex justify-center items-center h-full'>
+                    <img
+              width="96"
+              height="32"
+                      src='/assets/traderpost.svg'
+                      alt={t('home.alt_logo_traderspost')}
+                      class='w-24 h-8 bg-white px-3'
+                      loading='lazy'
+                      decoding='async'
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comparison Rows -->
+              <div class='divide-y divide-gray-700/50'>
+                <!-- Pricing -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_pricing')}</span
+                    >
+                  </div>
+                  <div class='p-3 border-r border-gray-700'>
+                    <div class='flex flex-col items-center gap-1'>
+                      <!-- <i class="fas fa-check-circle text-blue-400"></i> -->
+                      <span class='text-white font-bold text-sm'
+                        >{`$${monthlyDisplayPrice}/mo`}</span
+                      >
+                      <span class='text-gray-400 text-xs'
+                        >{`$${annualDisplayPrice}/yr`}</span
+                      >
+                    </div>
+                  </div>
+                  <div class='p-3'>
+                    <div class='flex flex-col items-center gap-1'>
+                      <i class='fas fa-times-circle text-red-400'></i>
+                      <span class='text-red-400 font-semibold text-sm'
+                        >{t('home.compare_tp_price_mo_short')}</span
+                      >
+                      <span class='text-red-300 text-xs'
+                        >{t('home.compare_tp_price_yr_short')}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Unlimited Alerts -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_alerts')}</span
+                    >
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                  <div class='p-3 flex items-center justify-center'>
+                    <i class='fas fa-times-circle text-xl text-red-400'></i>
+                  </div>
+                </div>
+
+                <!-- Unlimited Tickers -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_tickers')}</span
+                    >
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                  <div class='p-3 flex items-center justify-center'>
+                    <span class='text-red-400 text-xs text-center font-semibold'
+                      >{t('home.compare_tp_tickers_short')}</span
+                    >
+                  </div>
+                </div>
+
+                <!-- Futures & Options -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_futures')}</span
+                    >
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                  <div class='p-3 flex items-center justify-center'>
+                    <span class='text-red-400 text-xs text-center font-semibold'
+                      >{t('home.compare_tp_futures')}</span
+                    >
+                  </div>
+                </div>
+
+                <!-- 24/7 Support -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_support_short')}</span
+                    >
+                  </div>
+                  <div class='p-3 border-r border-gray-700'>
+                    <div class='flex flex-col items-center gap-1'>
+                      <!-- <i class="fas fa-check-circle text-blue-400"></i> -->
+                      <span class='text-blue-400 text-xs font-semibold'
+                        >{t('home.compare_support_live')}</span
+                      >
+                    </div>
+                  </div>
+                  <div class='p-3 flex items-center justify-center'>
+                    <span class='text-red-400 text-xs text-center font-semibold'
+                      >{t('home.compare_tp_support_short')}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PickMyTrade vs SignalStack -->
+            <div
+              class='bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 overflow-hidden'>
+              <!-- Header -->
+              <div
+                class='grid grid-cols-3 gap-0 bg-gray-800/50 border-b border-gray-700'>
+                <div></div>
+                <div class='p-4 border-r border-gray-700'>
+                  <div class='flex flex-col items-center gap-2'>
+                    <img
+              width="40"
+              height="32"
+                      src='/assets/logo.webp'
+                      alt={t('home.alt_logo_pickmytrade')}
+                      class='w-10 h-8'
+                      loading='lazy'
+                      decoding='async'
+                    />
+                    <span class='text-white font-bold text-sm'>PickMyTrade</span
+                    >
+                    <span
+                      class='px-2 py-1 bg-blue-600/20 text-blue-400 rounded-full text-xs font-semibold border border-blue-500/30'>
+                      {t('home.compare_best_value')}
+                    </span>
+                  </div>
+                </div>
+                <div class='p-4'>
+                  <div class='flex justify-center items-center h-full'>
+                    <img
+                      src='/assets/signalstack/signalstack-logo-light.svg'
+                      alt={t('home.alt_logo_signalstack')}
+                      class='h-8'
+                      width='235'
+                      height='40'
+                      loading='lazy'
+                      decoding='async'
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comparison Rows -->
+              <div class='divide-y divide-gray-700/50'>
+                <!-- Pricing -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_pricing')}</span
+                    >
+                  </div>
+                  <div class='p-3 border-r border-gray-700'>
+                    <div class='flex flex-col items-center gap-1'>
+                      <!-- <i class="fas fa-check-circle text-blue-400"></i> -->
+                      <span class='text-white font-bold text-sm'
+                        >{`$${monthlyDisplayPrice}/mo`}</span
+                      >
+                      <span class='text-gray-400 text-xs'
+                        >{`$${annualDisplayPrice}/yr`}</span
+                      >
+                    </div>
+                  </div>
+                  <div class='p-3'>
+                    <div class='flex flex-col items-center gap-1'>
+                      <i class='fas fa-times-circle text-red-400'></i>
+                      <span class='text-red-400 font-semibold text-sm'
+                        >{t('home.compare_ss_price_mo_short')}</span
+                      >
+                      <span class='text-red-300 text-xs'
+                        >{t('home.compare_ss_price_yr_short')}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Unlimited Alerts -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_alerts')}</span
+                    >
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                  <div class='p-3 flex items-center justify-center text-center'>
+                    <div class='flex flex-col items-center text-red-400'>
+                      <i class='fas fa-times-circle text-3xl'></i>
+                      <p class='text-xs mt-2'>{t('home.compare_ss_signals')}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Unlimited Tickers -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_tickers')}</span
+                    >
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                </div>
+
+                <!-- Futures & Options -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_futures')}</span
+                    >
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                  <div
+                    class='p-3 border-r border-gray-700 flex items-center justify-center'>
+                    <i class='fas fa-check-circle text-xl text-blue-400'></i>
+                  </div>
+                </div>
+
+                <!-- 24/7 Support -->
+                <div class='grid grid-cols-3 gap-0'>
+                  <div
+                    class='p-3 bg-gray-800/30 border-r border-gray-700 flex items-center justify-center'>
+                    <span class='text-white font-medium text-sm'
+                      >{t('home.compare_row_support_short')}</span
+                    >
+                  </div>
+                  <div class='p-3 border-r border-gray-700'>
+                    <div class='flex flex-col items-center gap-1'>
+                      <!-- <i class="fas fa-check-circle text-blue-400"></i> -->
+                      <span class='text-blue-400 text-xs font-semibold'
+                        >{t('home.compare_support_live')}</span
+                      >
+                    </div>
+                  </div>
+                  <div class='p-3 border-r border-gray-700'>
+                    <div class='flex flex-col items-center gap-1'>
+                      <!-- <i class="fas fa-check-circle text-blue-400"></i> -->
+                      <span class='text-blue-400 text-xs font-semibold'
+                        >{t('home.compare_support_live')}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id='pricing'
+        class='w-full py-12 md:py-24 lg:py-28 px-5 sm:px-0 mx-auto'>
+        <div class='space-y-4 text-center mb-16'>
+          <div class='inline-block px-4 py-2 bg-[#0084d1]/20 rounded-full mb-4'>
+            <span class='text-[#0084d1] font-semibold text-sm'
+              >{t('home.pricing_badge')}</span
+            >
+          </div>
+          <h2
+            class='text-4xl text-white mb-4 font-bold tracking-tighter md:text-6xl/tight'>
+            {t('home.pricing_title')}
+          </h2>
+          <p class='text-white/80 text-lg max-w-2xl mx-auto'>
+            {t('home.pricing_subtitle')}
+          </p>
+          <div class='flex justify-center items-center gap-2 pt-4'>
+            <i class='fas fa-check-circle text-green-400'></i>
+            <span class='text-white/70 text-sm'>{t('home.pricing_trust')}</span>
+          </div>
+        </div>
+
+        <!-- Pricing cards are dynamically generated from pricing-config.json -->
+        <div
+          id='pricing-cards-container'
+          class='flex gap-8 justify-center mx-auto flex-wrap max-w-8xl'>
+          <!-- Cards will be rendered by JavaScript -->
+        </div>
+
+        <!-- Trust Indicators Section -->
+        <div class='mt-16 max-w-5xl mx-auto'>
+          <div class='grid md:grid-cols-2 gap-6 px-4'>
+            <!-- Money Back Guarantee -->
+            <!-- <div
+            class="flex flex-col items-center text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-[#0084d1]/50 transition-all">
+            <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
+              <i class="fas fa-shield-alt text-green-400 text-2xl"></i>
+            </div>
+            <h3 class="text-white font-bold text-lg mb-2">5-Day Money Back</h3>
+            <p class="text-white/70 text-sm">Not satisfied? Get a full refund within 5 days, no questions asked.</p>
+          </div> -->
+
+            <!-- Secure Payment -->
+            <div
+              class='flex flex-col items-center text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-[#0084d1]/50 transition-all'>
+              <div
+                class='w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mb-4'>
+                <i class='fas fa-lock text-blue-400 text-2xl'></i>
+              </div>
+              <h3 class='text-white font-bold text-lg mb-2'>
+                {t('home.pricing_secure_title')}
+              </h3>
+              <p class='text-white/70 text-sm'>
+                {t('home.pricing_secure_desc')}
+              </p>
+            </div>
+
+            <!-- 24/7 Support -->
+            <div
+              class='flex flex-col items-center text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-[#0084d1]/50 transition-all'>
+              <div
+                class='w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mb-4'>
+                <i class='fas fa-headset text-purple-400 text-2xl'></i>
+              </div>
+              <h3 class='text-white font-bold text-lg mb-2'>
+                {t('home.pricing_support_title')}
+              </h3>
+              <p class='text-white/70 text-sm'>
+                {t('home.pricing_support_desc')}
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ Link -->
+          <div class='text-center mt-12'>
+            <p class='text-white/70 text-sm mb-4'>{t('home.pricing_faq_q')}</p>
+            <a
+              href='https://docs.pickmytrade.io/docs/'
+              class='inline-flex items-center gap-2 text-[#0084d1] hover:text-[#0055FE] font-semibold transition-colors'>
+              <i class='fas fa-question-circle'></i>
+              {t('home.pricing_faq_link')}
+              <i class='fas fa-arrow-right text-sm'></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- <div class="w-full relative overflow-hidden mt-5">
+        <div
+          class="confetti-banner w-full bg-gradient-to-r from-transparent via-violet-500 to-transparent py-4 px-8 flex items-center justify-center rounded-lg shadow-lg">
+          <div class="text-center z-10 flex flex-row items-center">
+            <p class="text-white text-lg md:text-lg font-extrabold drop-shadow-lg">
+              🎇 Independence Day Deal: Save up to 33% on PickMyTrade – Ends Today!
+            </p>
+          </div>
+        </div>
+      </div> -->
+      </section>
+
+      <section class='w-full'>
+        <div class='container mx-auto'>
+          <div class='lg:pt-10 lg:pb-10 sm:pt-8 sm:pb-8 pt-14 pb-4'>
+            <div class='container'>
+              <div
+                class='mx-auto max-w-3xl lg:max-w-none flex flex-col lg:flex-row justify-center items-center'>
+                <div class='text-center mr-2 mb-4 lg:mb-0'>
+                  <h2
+                    class='text-3xl mb-5 sm:mb-0 font-bold tracking-tight text-white sm:text-4xl'>
+                    {t('home.stats_title')}
+                  </h2>
+                </div>
+                <dl class='grid grid-cols-1 gap-2 sm:grid-cols-2'>
+                  <div class='flex flex-col gap-1 p-8 bg-white rounded-lg'>
+                    <dt
+                      class='text-base text-center font-semibold leading-6 text-gray-500'>
+                      {t('home.stats_users_label')}
+                    </dt>
+                    <dd
+                      class='order-first text-center sm:text-6xl text-5xl font-bold tracking-tight text-gray-500'>
+                      {t('home.stats_users_value')}
+                    </dd>
+                  </div>
+                  <div class='flex flex-col gap-1 p-8 bg-white rounded-lg'>
+                    <dt
+                      class='text-base text-center font-semibold leading-6 text-gray-500'>
+                      {t('home.stats_transactions_label')}
+                    </dt>
+                    <dd
+                      class='order-first text-center sm:text-6xl text-5xl font-bold tracking-tight text-gray-500'>
+                      {t('home.stats_transactions_value')}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section with Schema Markup -->
+      <section
+        id='faq'
+        class='py-20 bg-gray-800/50'
+        itemscope
+        itemtype='https://schema.org/FAQPage'>
+        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div class='md:flex md:flex-row'>
+            <div class='text-center mb-5 md:text-left md:mb-3 md:w-[40%]'>
+              <h2 class='faq-title'>
+                {t('home.faq_title1')}
+                <span class='text-blue-400'>{t('home.faq_title2')}</span><br />
+                {t('home.faq_title3')}
+              </h2>
+              <p class='faq-subtitle'>
+                {t('home.faq_subtitle')}
+              </p>
+              <div
+                class='flex flex-wrap gap-3 mt-6 justify-center md:justify-start'>
+                <!-- Primary: Broker FAQ Hub -->
+                <a
+                  href={localizedPath(locale, 'broker-faq')}
+                  class='group inline-flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-[#2B77EE] to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5'>
+                  <i
+                    class='fas fa-building-columns text-sm'
+                    aria-hidden='true'
+                  ></i>
+                  <span>{t('home.faq_btn_broker')}</span>
+                  <span
+                    class='text-[11px] font-medium text-blue-50 bg-white/15 px-2 py-0.5 rounded-full border border-white/10'
+                    >{t('home.faq_btn_broker_badge')}</span
+                  >
+                  <i
+                    class='fas fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1'
+                    aria-hidden='true'
+                  ></i>
+                </a>
+
+                <!-- Secondary: General FAQ -->
+                <a
+                  href={localizedPath(locale, 'general-faq')}
+                  class='group inline-flex items-center gap-3 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#2B77EE]/60 text-white font-medium rounded-lg transition-all duration-300 hover:-translate-y-0.5'>
+                  <i
+                    class='fas fa-circle-question text-sm text-[#2B77EE]'
+                    aria-hidden='true'
+                  ></i>
+                  <span>{t('home.faq_btn_trade')}</span>
+                  <i
+                    class='fas fa-arrow-right text-xs text-gray-400 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white'
+                    aria-hidden='true'
+                  ></i>
+                </a>
+
+                <!-- Tertiary: Documentation (external) -->
+                <a
+                  href='https://docs.pickmytrade.io/docs/'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  class='group inline-flex items-center gap-3 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#2B77EE]/60 text-white font-medium rounded-lg transition-all duration-300 hover:-translate-y-0.5'>
+                  <i
+                    class='fas fa-book-open text-sm text-[#2B77EE]'
+                    aria-hidden='true'
+                  ></i>
+                  <span>{t('home.faq_btn_docs')}</span>
+                  <i
+                    class='fas fa-arrow-up-right-from-square text-[10px] text-gray-400 group-hover:text-white transition-colors'
+                    aria-hidden='true'
+                  ></i>
+                </a>
+              </div>
+            </div>
+
+            <div class='faq-content space-y-4'>
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q1')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <p itemprop='text'>
+                    {t('home.faq_a1')}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q2')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <p itemprop='text'>
+                    {t('home.faq_a2')}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q3')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <p itemprop='text'>
+                    {t('home.faq_a3')}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q4')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <div itemprop='text'>
+                    <p class='mb-2'>{t('home.faq_a4_intro')}</p>
+                    <ul class='list-disc'>
+                      <li><strong>Rithmic</strong> {t('home.faq_a4_li1')}</li>
+                      <li>
+                        <strong>Interactive Brokers</strong>
+                        {t('home.faq_a4_li2')}
+                      </li>
+                      <li>
+                        <strong>TradeStation</strong>
+                        {t('home.faq_a4_li3')}
+                      </li>
+                      <li>
+                        <strong>TradeLocker</strong>
+                        {t('home.faq_a4_li4')}
+                      </li>
+                      <li><strong>ProjectX</strong> {t('home.faq_a4_li5')}</li>
+                      <li><strong>Tradovate</strong> {t('home.faq_a4_li6')}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q5')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <p itemprop='text'>
+                    {t('home.faq_a5')}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q6')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <div itemprop='text'>
+                    <p class='mb-2'>{t('home.faq_a6_intro')}</p>
+                    <ul class='list-disc'>
+                      <li>
+                        <strong>{t('home.faq_a6_li1_label')}</strong>
+                        {t('home.faq_a6_li1_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a6_li2_label')}</strong>
+                        {t('home.faq_a6_li2_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a6_li3_label')}</strong>
+                        {t('home.faq_a6_li3_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a6_li4_label')}</strong>
+                        {t('home.faq_a6_li4_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a6_li5_label')}</strong>
+                        {t('home.faq_a6_li5_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a6_li6_label')}</strong>
+                        {t('home.faq_a6_li6_text')}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q7')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <div itemprop='text'>
+                    <p class='mb-2'>{t('home.faq_a7_intro')}</p>
+                    <ul class='list-disc'>
+                      <li>
+                        <strong>{t('home.faq_a7_li1_label')}</strong>
+                        {t('home.faq_a7_li1_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a7_li2_label')}</strong>
+                        {t('home.faq_a7_li2_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a7_li3_label')}</strong>
+                        {t('home.faq_a7_li3_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a7_li5_label')}</strong>
+                        {t('home.faq_a7_li5_text')}
+                      </li>
+                      <li>
+                        <strong>{t('home.faq_a7_li6_label')}</strong>
+                        {t('home.faq_a7_li6_text')}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class='faq-item'
+                itemscope
+                itemprop='mainEntity'
+                itemtype='https://schema.org/Question'>
+                <div class='faq-question'>
+                  <span itemprop='name'>{t('home.faq_q8')}</span>
+                  <div class='faq-icon'>
+                    <i class='fa-solid fa-plus'></i>
+                  </div>
+                </div>
+                <div
+                  class='faq-answer'
+                  itemscope
+                  itemprop='acceptedAnswer'
+                  itemtype='https://schema.org/Answer'>
+                  <p itemprop='text'>
+                    {t('home.faq_a8')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Customer Reviews Section -->
+      <section
+        id='reviews'
+        class='py-20 bg-gradient-to-b from-gray-800/50 to-[#001429]'>
+        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <!-- Section Header -->
+          <div class='text-center mb-16'>
+            <span
+              class='inline-block px-4 py-2 bg-green-600/20 text-green-400 rounded-full text-sm font-semibold mb-4 border border-green-500/30'>
+              {t('home.reviews_badge')}
+            </span>
+            <h2
+              class='text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight'>
+              {t('home.reviews_title1')}
+              <span
+                class='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500'
+                >{t('home.reviews_title2')}</span
+              >
+              {t('home.reviews_title3')}
+            </h2>
+            <p class='text-xl text-gray-300 max-w-2xl mx-auto'>
+              {t('home.reviews_subtitle')}
+            </p>
+          </div>
+
+          <!-- Reviews Gallery -->
+          <div class='grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8'>
+            <!-- Review 1 -->
+            <div
+              class='group relative overflow-hidden rounded-2xl bg-gray-900 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20'>
+              <img
+                src='/assets/reviews/image_1.webp'
+                alt={t('home.alt_review1')}
+                class='w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]'
+                width='575'
+                height='163'
+                loading='lazy'
+                decoding='async'
+              />
+            </div>
+
+            <!-- Review 2 -->
+            <div
+              class='group relative overflow-hidden rounded-2xl bg-gray-900 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20'>
+              <img
+                src='/assets/reviews/image_2.webp'
+                alt={t('home.alt_review2')}
+                class='w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]'
+                width='940'
+                height='309'
+                loading='lazy'
+                decoding='async'
+              />
+            </div>
+
+            <!-- Review 3 -->
+            <div
+              class='group relative overflow-hidden rounded-2xl bg-gray-900 border border-gray-700/50 hover:border-green-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/20'>
+              <img
+                src='/assets/reviews/image_3.jpg'
+                alt={t('home.alt_review3')}
+                width='1023'
+                height='296'
+                class='w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]'
+                loading='lazy'
+                decoding='async'
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <Fragment slot='scripts'>
+    <!-- Dynamic, sale-aware pricing cards. While the sale is live (now < window.SALE_END)
+       the discounted `price` shows with `originalPrice` struck through. Once the sale
+       ends, quarterly/annual plans instead show a discount computed against what the
+       same duration would cost at the Monthly plan's rate, so a badge is always shown. -->
+    <script>
+      import { renderPricingSection } from '../../scripts/pricing-cards';
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderPricingSection);
+      } else {
+        renderPricingSection();
+      }
+    </script>
+
+    <script is:inline>
+      (function () {
+        var liveAgentLoaded = false;
+        function loadLiveAgent() {
+          if (liveAgentLoaded) return;
+          liveAgentLoaded = true;
+          ['scroll', 'click', 'touchstart', 'mousemove', 'keydown'].forEach(
+            function (evt) {
+              window.removeEventListener(evt, loadLiveAgent, { passive: true });
+            },
+          );
+          var s = document.createElement('script');
+          s.id = 'la_x2s6df8d';
+          s.defer = true;
+          s.src = 'https://pickmytrade.ladesk.com/scripts/track.js';
+          s.onload = function () {
+            if (typeof LiveAgent !== 'undefined') {
+              LiveAgent.createButton('vp1ob390', s);
+            }
+          };
+          document.body.appendChild(s);
+        }
+        ['scroll', 'click', 'touchstart', 'mousemove', 'keydown'].forEach(
+          function (evt) {
+            window.addEventListener(evt, loadLiveAgent, {
+              passive: true,
+              once: true,
+            });
+          },
+        );
+        setTimeout(loadLiveAgent, 5000);
+      })();
+    </script>
+
+    <script define:vars={{ locale, locales: LOCALES }} is:inline>
+      if (locale === 'en') {
+        try {
+          var target = (navigator.languages || [navigator.language || ''])
+            .map(function (l) { return l.split('-')[0].toLowerCase(); })
+            .find(function (l) { return locales.includes(l) && l !== 'en'; });
+          if (target) location.replace('/' + target + '/');
+        } catch (e) {}
+      }
+    </script>
+  </Fragment>
+</BaseLayout>

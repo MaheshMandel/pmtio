@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const canonicalUrl = `https://pickmytrade.io${localizedPath(locale, 'upcoming/tradingview-to-tastytrade')}`;
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": t('broker_tastytrade.page_title'),
+    "url": canonicalUrl,
+    "description": t('broker_tastytrade.page_description'),
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io"
+    }
+  };
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": t('broker_tastytrade.breadcrumb_home'), "item": `https://pickmytrade.io${localizedPath(locale, '')}` },
+    { "@type": "ListItem", "position": 2, "name": t('broker_tastytrade.breadcrumb_upcoming'), "item": `https://pickmytrade.io${localizedPath(locale, 'upcoming/brokers')}` },
+    { "@type": "ListItem", "position": 3, "name": t('broker_tastytrade.breadcrumb_current'), "item": canonicalUrl }
+  ]
+};
+
+const faqItems = [
+  { q: t('broker_tastytrade.faq_q1'), a: t('broker_tastytrade.faq_a1') },
+  { q: t('broker_tastytrade.faq_q2'), a: t('broker_tastytrade.faq_a2') },
+];
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqItems.map((item) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('broker_tastytrade.page_title')}
+  description={t('broker_tastytrade.page_description')}
+  keywords={t('broker_tastytrade.page_keywords')}
+  canonical={canonicalUrl}
+  structuredData={[schema1, schema2, schema3]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_tastytrade.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, 'upcoming/brokers')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_tastytrade.breadcrumb_upcoming')}</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('broker_tastytrade.breadcrumb_current')}</span>
+          <meta itemprop="position" content="3" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="pt-16 pb-16 px-6 text-center relative overflow-hidden bg-gradient-to-b from-[#001429] to-[#00193a]">
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+      <div class="absolute top-10 left-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-3xl mx-auto" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 bg-blue-500/15 border border-blue-500/30 px-5 py-2 rounded-full text-xs tracking-widest font-semibold text-blue-400 mb-6 electrolize-regular">
+        <i class="fa-solid fa-hourglass-half"></i> {t('broker_tastytrade.hero_badge')}
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        {t('broker_tastytrade.hero_title_prefix')} <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{t('broker_tastytrade.hero_title_highlight')}</span>
+      </h1>
+      <p class="max-w-xl mx-auto text-gray-300 text-lg leading-relaxed">
+        {t('broker_tastytrade.hero_description')}
+      </p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center" data-aos="fade-up">
+    <p class="text-gray-300 leading-relaxed">{t('broker_tastytrade.intro_extra')}</p>
+  </section>
+
+  <!-- HOW TO USE -->
+  <section class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+    <div class="text-center mb-12" data-aos="fade-up">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">{t('broker_tastytrade.how_to_use_title')}</h2>
+      <p class="text-gray-300 max-w-2xl mx-auto leading-relaxed">{t('broker_tastytrade.how_to_use_desc')}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <!-- Step 1 -->
+      <div class="group flex flex-col bg-white/[0.03] border border-white/10 rounded-2xl p-6 hover:border-[#2B77EE]/50 hover:bg-white/[0.06] transition-all duration-300" data-aos="fade-up">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-[#2B77EE]/15 border border-[#2B77EE]/30 flex items-center justify-center text-[#2B77EE] text-lg">
+            <i class="fa-solid fa-user-plus"></i>
+          </div>
+          <span class="text-xs font-bold text-blue-400/70 electrolize-regular tracking-widest">STEP 01</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">{t('broker_tastytrade.step1_title')}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed mb-6 flex-1">{t('broker_tastytrade.step1_desc')}</p>
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#2B77EE] hover:bg-[#1e5fc9] rounded-xl font-semibold text-white transition-all">
+          {t('broker_tastytrade.step1_button')} <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+        </a>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="group flex flex-col bg-white/[0.03] border border-white/10 rounded-2xl p-6 hover:border-[#2B77EE]/50 hover:bg-white/[0.06] transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-[#2B77EE]/15 border border-[#2B77EE]/30 flex items-center justify-center text-[#2B77EE] text-lg">
+            <i class="fa-solid fa-link"></i>
+          </div>
+          <span class="text-xs font-bold text-blue-400/70 electrolize-regular tracking-widest">STEP 02</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">{t('broker_tastytrade.step2_title')}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed mb-6 flex-1">{t('broker_tastytrade.step2_desc')}</p>
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#2B77EE] hover:bg-[#1e5fc9] rounded-xl font-semibold text-white transition-all">
+          {t('broker_tastytrade.step2_button')} <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+        </a>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="group flex flex-col bg-white/[0.03] border border-white/10 rounded-2xl p-6 hover:border-[#2B77EE]/50 hover:bg-white/[0.06] transition-all duration-300" data-aos="fade-up">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-[#2B77EE]/15 border border-[#2B77EE]/30 flex items-center justify-center text-[#2B77EE] text-lg">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span class="text-xs font-bold text-blue-400/70 electrolize-regular tracking-widest">STEP 03</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">{t('broker_tastytrade.step3_title')}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed mb-6 flex-1">
+          {t('broker_tastytrade.step3_desc_pre')} <b class="text-gray-300">{t('broker_tastytrade.step3_desc_bold')}</b>.
+        </p>
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#2B77EE] hover:bg-[#1e5fc9] rounded-xl font-semibold text-white transition-all">
+          {t('broker_tastytrade.step3_button')} <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+        </a>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="group flex flex-col bg-white/[0.03] border border-white/10 rounded-2xl p-6 hover:border-[#2B77EE]/50 hover:bg-white/[0.06] transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-[#2B77EE]/15 border border-[#2B77EE]/30 flex items-center justify-center text-[#2B77EE] text-lg">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <span class="text-xs font-bold text-blue-400/70 electrolize-regular tracking-widest">STEP 04</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">{t('broker_tastytrade.step4_title')}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed mb-6 flex-1">{t('broker_tastytrade.step4_desc')}</p>
+        <a href="https://www.tradingview.com/" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#2B77EE] hover:bg-[#1e5fc9] rounded-xl font-semibold text-white transition-all">
+          {t('broker_tastytrade.step4_button')} <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto" data-aos="fade-up">
+    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8">{t('broker_tastytrade.faq_title')}</h2>
+    <div class="space-y-4">
+      {faqItems.map((item) => (
+        <details class="group bg-white/[0.03] border border-white/10 rounded-2xl p-5">
+          <summary class="cursor-pointer font-semibold text-white flex items-center justify-between gap-4 list-none">
+            {item.q}
+            <i class="fa-solid fa-chevron-down text-xs text-gray-400 shrink-0 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <p class="text-sm text-gray-400 leading-relaxed mt-3">{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

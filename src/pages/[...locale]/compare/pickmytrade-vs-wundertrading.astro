@@ -1,0 +1,285 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import "../../../styles/compare-editorial.css";
+import CompareSpy from "../../../components/CompareSpy.astro";
+import { getLocalePaths } from "../../../i18n/utils";
+import type { Locale } from "../../../i18n/config";
+import Localize from "../../../components/Localize.astro";
+import { makeTr, localizeLd } from "../../../i18n/compare-i18n.mjs";
+
+// Compare pages are translated (de/es/fr/it): text is swapped in by <Localize> from src/i18n/compare/<locale>.json.
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const tr = makeTr(locale);
+const title = tr("PickMyTrade vs WunderTrading 2026: Crypto Bots or Futures");
+const description = tr("WunderTrading runs crypto bots and has a free plan. PickMyTrade has no crypto. Real prices, trial and refund terms, and which tool fits which trader.");
+const lastUpdated = "2026-09-23";
+
+const faqsEn = [
+  {
+    "question": "Can I trade crypto with PickMyTrade?",
+    "answer": "No. PickMyTrade supports no crypto venue on any plan. It automates futures on Tradovate, Rithmic and ProjectX, stocks and options on Interactive Brokers, TradeStation and Tradier, and forex and CFDs on TradeLocker and Match-Trader. A crypto trader comparing these two products should use WunderTrading, and we would rather say that than sell you a trial you cannot use."
+  },
+  {
+    "question": "Does WunderTrading have a free plan?",
+    "answer": "Yes. It publishes a free plan with no time limit that runs one signal bot, one DCA bot and one grid bot, alongside a 7-day trial of its Pro plan that asks for no payment details and a 7-day no-questions refund on paid plans. An earlier version of this comparison page said otherwise. That was wrong, and this page corrects it."
+  },
+  {
+    "question": "Does WunderTrading connect to futures brokers or prop firms?",
+    "answer": "No. Its integrations are crypto venues, and the futures it advertises are crypto perpetuals and futures rather than CME products such as ES, NQ or CL. If your account is a funded or evaluation futures account, or a broker account for stocks, options or forex, WunderTrading cannot reach it on any plan."
+  },
+  {
+    "question": "What does WunderTrading actually cost?",
+    "answer": "Its own structured data lists $0, $19, $49 and $99 a month, with annual billing advertised at up to 25% off. Its FAQ and journal quote different figures, and the site serves prices by location, so check the live pricing page in your own currency before you subscribe rather than trusting any comparison, including this one."
+  },
+  {
+    "question": "How does each tool send one signal to several accounts?",
+    "answer": "WunderTrading calls it a Multi-API trade and caps it by plan at 1, 2, 10 or 50 accounts, applying to a single venue per trade. PickMyTrade sends one alert to every connected account with its own quantity, and adds a Tradovate copier from an admin account to followers with a multiplier each. Neither approach costs extra per trade on our side."
+  },
+  {
+    "question": "I trade crypto and futures. Do I need both?",
+    "answer": "Yes, if you want both automated. Neither product covers the other's market, and nothing transfers between them. Run WunderTrading on the crypto side and PickMyTrade on the futures, stocks, options or forex side, and budget for two subscriptions rather than expecting either one to absorb the other's job."
+  }
+];
+const faqs = faqsEn.map((f) => ({ question: tr(f.question), answer: tr(f.answer) }));
+
+const ld = [
+  { "@context": "https://schema.org", ...{
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "PickMyTrade",
+      "item": "https://pickmytrade.io/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://pickmytrade.io/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "PickMyTrade vs WunderTrading",
+      "item": "https://pickmytrade.io/compare/pickmytrade-vs-wundertrading/"
+    }
+  ]
+} },
+  { "@context": "https://schema.org", ...{
+  "@type": "WebPage",
+  "@id": "https://pickmytrade.io/compare/pickmytrade-vs-wundertrading/#webpage",
+  "url": "https://pickmytrade.io/compare/pickmytrade-vs-wundertrading/",
+  "name": "PickMyTrade vs WunderTrading",
+  "datePublished": "2026-09-23",
+  "dateModified": "2026-09-23",
+  "publisher": {
+    "@id": "https://pickmytrade.io/#organization"
+  }
+} },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "https://pickmytrade.io/compare/pickmytrade-vs-wundertrading/#faq",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  },
+];
+const ldLocalized = localizeLd(ld, locale, tr);
+---
+<BaseLayout locale={locale} title={title} description={description} structuredData={ldLocalized}>
+<Localize locale={locale}>
+<div class="ed">
+<header class="hero">
+<div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/compare/">Compare</a><span aria-hidden="true">›</span><span aria-current="page">PickMyTrade vs WunderTrading</span></nav>
+<div class="hero-grid">
+<div class="hero-copy">
+<p class="eyebrow">Head-to-head comparison · 2026</p>
+
+<h1>PickMyTrade vs WunderTrading</h1>
+<p class="lede">{description}</p>
+<p class="meta"><span>Last reviewed: <time datetime={lastUpdated}>September 23, 2026</time></span></p>
+<div class="actions"><a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start free trial</a><a class="btn btn-quiet" href="#side-by-side">Skip to the comparison table <span aria-hidden="true">→</span></a></div>
+</div>
+<div class="hero-visual"><div class="vs" role="group" aria-label="PickMyTrade compared with WunderTrading"><div class="vs-row"><div class="vs-side vs-own"><div class="vs-mark" aria-hidden="true">P</div><div class="vs-name">PickMyTrade</div><div class="vs-note">$50/month · one plan</div></div><div class="vs-mid"><span>vs</span></div><div class="vs-side"><div class="vs-mark" aria-hidden="true">W</div><div class="vs-name">WunderTrading</div><div class="vs-note">Compared on its own published pages</div></div></div></div></div>
+</div>
+<ul class="standards in-hero">
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>50,000+ traders served</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>7-day free trial, no credit card</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Runs in the cloud — your computer can be off</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Futures, stocks, options, forex and CFDs. No crypto</span></li>
+</ul>
+</div>
+</header>
+
+<nav class="secnav" aria-label="On this page">
+<div class="wrap secnav-inner">
+<ul>
+<li><a href="#the-short-version-different-markets" data-target="the-short-version-different-markets">Summary</a></li>
+<li><a href="#the-price-and-the-plan-that-costs-nothing" data-target="the-price-and-the-plan-that-costs-nothing">Price</a></li>
+<li><a href="#side-by-side" data-target="side-by-side">Side by side</a></li>
+<li><a href="#why-traders-choose-pickmytrade" data-target="why-traders-choose-pickmytrade">Why PickMyTrade</a></li>
+<li><a href="#if-you-are-here-for-futures-stocks-or-forex" data-target="if-you-are-here-for-futures-stocks-or-forex">Different goal</a></li>
+<li><a href="#frequently-asked-questions" data-target="frequently-asked-questions">FAQ</a></li>
+</ul>
+<a class="btn btn-primary btn-sm" href="https://app.pickmytrade.trade/?register=true">Start free trial</a>
+</div>
+</nav>
+
+<section id="the-short-version-different-markets" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Summary</p>
+<h2>The short version: different markets</h2>
+</div>
+<div class="measure">
+<p class="prose">WunderTrading automates crypto. Its pricing page advertises 18+ integrations, its TradingView page says 15+, and every one of them is a crypto venue. Its "futures" are crypto perpetuals and futures, not CME contracts like ES, NQ or CL.</p>
+        <p class="prose">PickMyTrade connects to eight brokers — Tradovate, Rithmic, ProjectX, Interactive Brokers, TradeStation, Tradier, TradeLocker and Match-Trader — and reaches none of the venues WunderTrading reaches. It has no DCA, grid, arbitrage or market-neutral bots, no backtesting and no published API. If you came here to automate crypto, stop at WunderTrading; the rest of this page is for the trader who arrived by accident.</p>
+</div>
+</div>
+</section>
+
+<section id="the-price-and-the-plan-that-costs-nothing" class="sec band">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Price</p>
+<h2>The price, and the plan that costs nothing</h2>
+</div>
+<div class="stats3">
+<div class="stat"><span class="v">$50</span><span class="l">per month, one plan</span></div>
+<div class="stat"><span class="v">$500</span><span class="l">per year</span></div>
+<div class="stat"><span class="v">7 days</span><span class="l">free trial, no card</span></div>
+</div>
+        <p class="prose">WunderTrading has four tiers, including one that is free for as long as you use it. The prices below are the USD figures in its own structured data. Treat them as a starting point, not a quote: the site serves prices by location and its own FAQ and journal give a different set, so read the live page in your currency before you buy.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Comparison table">
+<table>
+<caption>WunderTrading plans from wundertrading.com/en/pricing, checked 22 September 2026. Annual billing is advertised at up to 25% off; no USD annual figure was displayed.</caption>
+<thead><tr><th scope="col">WunderTrading plan</th><th scope="col">Per month</th><th scope="col">Multi-API trade slots</th><th scope="col">What it includes</th></tr></thead>
+<tbody>
+<tr><th scope="row">Free</th><td><span class="pr">$0</span></td><td>1</td><td>1 signal bot, 1 DCA bot, 1 grid bot, 10 API keys per venue, 50 open positions. No multiple take-profits or multiple entries</td></tr>
+<tr><th scope="row">Basic</th><td><span class="pr">$19</span></td><td>2</td><td>5 signal bots, 20 DCA, 5 grid, 1,000 open positions. Open API and MCP are demo only</td></tr>
+<tr><th scope="row">Pro</th><td><span class="pr">$49</span></td><td>10</td><td>50 signal bots, 100 DCA, 20 grid, live Open API and MCP access</td></tr>
+<tr><th scope="row">Premium</th><td><span class="pr">$99</span></td><td>50</td><td>Unlimited signal bots, 300 DCA, 200 grid, market-neutral and multi-pair grid bots</td></tr>
+</tbody>
+</table>
+</div>
+        <p class="prose">PickMyTrade is <span class="pr">$50</span> a month or <span class="pr">$500</span> a year. One plan, every feature, no order caps and no per-trade fees. On WunderTrading's list that lands between Pro and Premium, which settles nothing, because the two products cannot trade the same account. The number that matters is whether your broker is on our list of eight or your venue is on theirs.</p>
+        <p class="prose">The billing units are worth understanding even so. WunderTrading meters fan-out: a Multi-API trade is how one signal reaches several accounts, and it applies to a single venue per trade, with 1, 2, 10 or 50 slots by tier. PickMyTrade meters nothing per trade. One subscription covers unlimited accounts under one broker login — five Apex accounts under one Tradovate login all run on a single <span class="pr">$50</span> subscription — while a second, separate broker login needs its own subscription.</p>
+        <p class="prose"><a href="/pricing/">PickMyTrade pricing</a> · <a href="https://wundertrading.com/en/pricing" target="_blank" rel="noopener noreferrer">WunderTrading pricing</a></p>
+</div>
+</section>
+
+<section id="side-by-side" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Side by side</p>
+<h2>Side by side</h2>
+</div>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Comparison table">
+<table>
+<caption>What each product does, from each company's own pages. WunderTrading checked 22 September 2026.</caption>
+<thead><tr><th scope="col">Decision</th><th scope="col" class="own">PickMyTrade</th><th scope="col">WunderTrading</th></tr></thead>
+<tbody>
+<tr><th scope="row">Markets</th><td class="own">Futures, stocks, options, forex and CFDs. No crypto</td><td>Crypto only, including crypto perpetuals and futures. Not CME products</td></tr>
+<tr><th scope="row">Where your account lives</th><td class="own">Tradovate, Rithmic, ProjectX, Interactive Brokers, TradeStation, Tradier, TradeLocker, Match-Trader. <a href="/broker/">Broker guides</a></td><td>Crypto venues connected by API key. Its pricing page says 18+ integrations, its TradingView page 15+. <a href="https://wundertrading.com/en/pricing" target="_blank" rel="noopener noreferrer">Source</a></td></tr>
+<tr><th scope="row">Signal sources</th><td class="own">TradingView strategy and indicator alerts, and TrendSpider. <a href="https://docs.pickmytrade.trade/docs/tradingview-json-alert-configuration/" target="_blank" rel="noopener noreferrer">Alert setup</a></td><td>TradingView alerts by webhook, plus its own signal, DCA, grid, arbitrage and market-neutral bots. <a href="https://wundertrading.com/en/tradingview-automated-trading" target="_blank" rel="noopener noreferrer">Source</a></td></tr>
+<tr><th scope="row">Strategy tools</th><td class="own">None. You bring the strategy; we execute and manage it</td><td>Bot templates and backtesting are part of the product</td></tr>
+<tr><th scope="row">One signal to several accounts</th><td class="own">Any number of connected accounts, each with its own size, on one subscription, plus a Tradovate copier with per-follower multipliers. <a href="https://docs.pickmytrade.trade/docs/place-trades-in-multiple-accounts/" target="_blank" rel="noopener noreferrer">Guide</a></td><td>Multi-API trades, capped at 1, 2, 10 or 50 by plan, applying to a single venue per trade</td></tr>
+<tr><th scope="row">Account risk limits</th><td class="own">Daily and weekly profit and loss limits per account, trading-time windows, pause automation. <a href="https://docs.pickmytrade.trade/docs/trading-risk-settings/" target="_blank" rel="noopener noreferrer">Guide</a></td><td>Take profit, stop loss, trailing stop and move-to-breakeven on every plan, and a "Max Capital Limit" on its TradingView page. No daily or weekly loss limit is named</td></tr>
+<tr><th scope="row">Order tools</th><td class="own">Stop loss and take profit five ways, brackets and OCO, trailing stop, breakeven with offset, SL/TP changes on an open trade, partial close, reverse. <a href="https://docs.pickmytrade.trade/docs/configure-trailing-stop-loss/" target="_blank" rel="noopener noreferrer">Trailing</a></td><td>Multiple take-profits and multiple entries on paid plans; the free plan does without them</td></tr>
+<tr><th scope="row">Prop firm accounts</th><td class="own">Supported by platform: any firm issuing Tradovate, Rithmic or ProjectX accounts, including TopstepX. Check your firm's rules on automation and copying</td><td>Not applicable. Prop-firm futures accounts are not a market it reaches</td></tr>
+<tr><th scope="row">Published API</th><td class="own">Not offered</td><td>Open API and an MCP server, live on Pro and above and demo only on Free and Basic</td></tr>
+<tr><th scope="row">Free way in</th><td class="own">7-day trial, full access, no credit card</td><td>A free plan with no time limit, a 7-day trial of Pro with no payment details, and a 7-day no-questions refund on paid plans</td></tr>
+<tr><th scope="row">Price</th><td class="own"><span class="pr">$50</span> a month or <span class="pr">$500</span> a year, one plan</td><td><span class="pr">$0,</span> <span class="pr">$19,</span> <span class="pr">$49</span> or <span class="pr">$99</span> a month in its structured data, with annual billing advertised at up to 25% off</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section id="why-traders-choose-pickmytrade" class="sec band">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Why PickMyTrade</p>
+<h2>Why traders choose PickMyTrade</h2>
+</div>
+<div class="cards">
+<article class="card"><h3>It reaches funded and evaluation futures accounts</h3><p>Tradovate, Rithmic and ProjectX, including TopstepX, cover most prop-firm accounts. Firms write their own rules on automation and copy trading, so confirm yours allows it first. <a href="/broker/">See the broker guides</a>.</p></article>
+<article class="card"><h3>Stocks, options, forex and CFDs on the same subscription</h3><p>Interactive Brokers, TradeStation and Tradier for stocks and options, with Tradier options single-leg. TradeLocker and Match-Trader for forex and CFDs. A second broker does not change the bill.</p></article>
+<article class="card"><h3>Loss limits at the account level</h3><p>Daily and weekly profit and loss limits on each connected account, trading-time windows and a pause switch, all set by you to match your own or your firm's rules. <a href="https://docs.pickmytrade.trade/docs/trading-risk-settings/" target="_blank" rel="noopener noreferrer">Risk settings</a>.</p></article>
+<article class="card"><h3>Fan-out that is not metered</h3><p>One alert reaches every connected account with its own quantity, and the Tradovate copier runs an admin account to followers with a multiplier each. There is no per-trade slot to buy. <a href="https://docs.pickmytrade.trade/docs/tradingview-to-tradovate-trade-copier/" target="_blank" rel="noopener noreferrer">Copier guide</a>.</p></article>
+<article class="card"><h3>Futures housekeeping handled</h3><p>Automatic contract rollover and symbol mapping, so an alert written on NQ can place the trade on MNQ. Execution logs record what was sent and when.</p></article>
+</div>
+</div>
+</section>
+
+<section id="if-you-are-here-for-futures-stocks-or-forex" class="sec band">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Different goal</p>
+<h2>If you are here for futures, stocks or forex</h2>
+</div>
+<div class="measure">
+<ol class="steps">
+<li><span class="n">1</span><p><strong>Check your broker is one of the eight.</strong> Tradovate, Rithmic, ProjectX, Interactive Brokers, TradeStation, Tradier, TradeLocker or Match-Trader. If it is not there, PickMyTrade cannot reach your account, and saying so now saves you a trial.</p></li>
+<li><span class="n">2</span><p><strong>Start the 7-day trial and connect it.</strong> Tradovate signs in with OAuth and needs no separate API purchase. Interactive Brokers is the one route that needs TWS or IB Gateway plus the PickMyTrade IB application running.</p></li>
+<li><span class="n">3</span><p><strong>Build the alert, the sizing and the exits.</strong> Generate the JSON in the dashboard, paste it into your TradingView or TrendSpider alert, then choose which accounts receive it and at what quantity, with stop loss, take profit and your loss limits.</p></li>
+<li><span class="n">4</span><p><strong>Test on a demo account first, then go live one account at a time.</strong> Confirm the order reached the broker as intended. If you keep WunderTrading for crypto, leave it on those venues and make sure no other tool is sending orders to the account PickMyTrade now manages.</p></li>
+</ol>
+</div>
+</div>
+</section>
+
+<section id="frequently-asked-questions" class="sec">
+<div class="wrap">
+<div class="faq-wrap">
+<p class="eyebrow">FAQ</p>
+<h2>Frequently asked questions</h2>
+<div class="faq">
+{faqs.map((f) => (
+<details>
+<summary><span>{f.question}</span><i aria-hidden="true"></i></summary>
+<div class="ans"><p>{f.answer}</p></div>
+</details>
+))}
+</div>
+</div>
+</div>
+</section>
+
+<section id="sources" class="sec sec-quiet" aria-label="Sources and disclosure">
+<div class="wrap">
+<div class="measure">
+<p class="eyebrow">Sources</p>
+<h2 class="h-sm">Sources and disclosure</h2>
+<p class="src-p">Prepared by PickMyTrade. WunderTrading details come from its own pages, checked 22 September 2026: <a href="https://wundertrading.com/en/pricing" target="_blank" rel="noopener noreferrer">pricing</a>, its <a href="https://wundertrading.com/en" target="_blank" rel="noopener noreferrer">home page</a> and its <a href="https://wundertrading.com/en/tradingview-automated-trading" target="_blank" rel="noopener noreferrer">TradingView automation page</a>, including the plan prices published in its structured data. PickMyTrade figures are our own published terms. Prices and features change on both sides, so check the live pages before you buy.</p>
+<p class="src-p risk"><strong>Risk disclosure.</strong> Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. The content on this page is for educational and informational purposes only and does not constitute financial, investment, or trading advice. Only trade with capital you can afford to lose.</p>
+</div>
+</div>
+</section>
+
+<section class="cta-sec">
+<div class="wrap">
+<div class="cta">
+<div>
+<h2 class="h-sm">Ready to get started?</h2>
+<p>Trading futures, stocks, options or forex at one of our eight brokers? Connect it and run your own alert on a 7-day free trial. No credit card.</p>
+</div>
+<div class="cta-actions">
+<a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start your 7-day free trial <span aria-hidden="true">→</span></a>
+<a class="btn btn-quiet" href="/pricing/">See pricing <span aria-hidden="true">→</span></a>
+</div>
+</div>
+</div>
+</section>
+</div>
+</Localize>
+
+<CompareSpy />
+</BaseLayout>

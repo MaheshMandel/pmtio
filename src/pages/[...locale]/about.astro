@@ -1,0 +1,284 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://pickmytrade.io/assets/logo.png"
+    },
+    "foundingDate": "2023",
+    "description": "PickMyTrade is a cloud-based trading automation platform that connects TradingView strategies to live trading execution. Supporting 27+ prop firms with millisecond precision and no coding required.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "support@pickmytrade.com",
+      "url": absoluteLocalizedPath(locale, 'page/contact')
+    },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade",
+      "https://blog.pickmytrade.io",
+      "https://docs.pickmytrade.io"
+    ]
+  };
+
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About",
+        "item": absoluteLocalizedPath(locale, 'about')
+      }
+    ]
+  };
+
+const schema3 = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "About Us | PickMyTrade",
+    "description": "Learn about PickMyTrade, the cloud-based trading automation platform founded in 2023. 50,000+ active traders, 28M+ trades executed, 27+ prop firms supported.",
+    "url": absoluteLocalizedPath(locale, 'about'),
+    "inLanguage": LOCALE_BCP47[locale],
+    "datePublished": "2023-06-01",
+    "dateModified": "2026-05-13",
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      }
+    }
+  };
+
+---
+<BaseLayout
+  locale={locale}
+  title={t('about.page_title')}
+  description={t('about.page_description')}
+  keywords={t('about.page_keywords')}
+  structuredData={[schema1, schema2, schema3]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '/')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('about.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('about.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-28 pb-16 px-4" data-aos="fade-up">
+    <div class="max-w-5xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent electrolize-regular">
+        {t('about.hero_title')}
+      </h1>
+      <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+        {t('about.hero_subtitle')}
+      </p>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="pb-16 px-4" data-aos="fade-up">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+          <div class="text-3xl md:text-4xl font-bold text-blue-400 mb-2">{t('about.stat_traders_value')}</div>
+          <div class="text-gray-400 text-sm">{t('about.stat_traders_label')}</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+          <div class="text-3xl md:text-4xl font-bold text-blue-400 mb-2">{t('about.stat_trades_value')}</div>
+          <div class="text-gray-400 text-sm">{t('about.stat_trades_label')}</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+          <div class="text-3xl md:text-4xl font-bold text-blue-400 mb-2">{t('about.stat_propfirms_value')}</div>
+          <div class="text-gray-400 text-sm">{t('about.stat_propfirms_label')}</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+          <div class="text-3xl md:text-4xl font-bold text-blue-400 mb-2">{t('about.stat_founded_value')}</div>
+          <div class="text-gray-400 text-sm">{t('about.stat_founded_label')}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story -->
+  <section class="py-16 px-4" data-aos="fade-up">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center electrolize-regular">{t('about.story_title')}</h2>
+      <div class="space-y-6 text-gray-300 leading-relaxed text-lg">
+        <p>{t('about.story_p1')}</p>
+        <p>{t('about.story_p2')}</p>
+        <p>{t('about.story_p3')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Three Feature Cards -->
+  <section class="py-16 px-4" data-aos="fade-up">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300">
+          <div class="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6">
+            <i class="fa-solid fa-bolt text-blue-400 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('about.feature1_title')}</h3>
+          <p class="text-gray-400 leading-relaxed">{t('about.feature1_desc')}</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300">
+          <div class="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6">
+            <i class="fa-solid fa-shield-halved text-blue-400 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('about.feature2_title')}</h3>
+          <p class="text-gray-400 leading-relaxed">{t('about.feature2_desc')}</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300">
+          <div class="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6">
+            <i class="fa-solid fa-users text-blue-400 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('about.feature3_title')}</h3>
+          <p class="text-gray-400 leading-relaxed">{t('about.feature3_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Mission -->
+  <section class="py-16 px-4" data-aos="fade-up">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center electrolize-regular">{t('about.mission_title')}</h2>
+      <p class="text-lg text-gray-300 text-center max-w-3xl mx-auto mb-12 leading-relaxed">
+        {t('about.mission_subtitle')}
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300">
+          <div class="w-14 h-14 bg-green-500/20 rounded-xl flex items-center justify-center mb-6">
+            <i class="fa-solid fa-code text-green-400 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('about.mission1_title')}</h3>
+          <p class="text-gray-400 leading-relaxed">{t('about.mission1_desc')}</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300">
+          <div class="w-14 h-14 bg-green-500/20 rounded-xl flex items-center justify-center mb-6">
+            <i class="fa-solid fa-dollar-sign text-green-400 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('about.mission2_title')}</h3>
+          <p class="text-gray-400 leading-relaxed">{t('about.mission2_desc')}</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300">
+          <div class="w-14 h-14 bg-green-500/20 rounded-xl flex items-center justify-center mb-6">
+            <i class="fa-solid fa-headset text-green-400 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('about.mission3_title')}</h3>
+          <p class="text-gray-400 leading-relaxed">{t('about.mission3_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Platforms -->
+  <section class="py-16 px-4" data-aos="fade-up">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center electrolize-regular">{t('about.platforms_title')}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h3 class="text-xl font-bold mb-6 flex items-center gap-3">
+            <i class="fa-solid fa-building-columns text-blue-400"></i> {t('about.platforms_brokers_title')}
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_broker_1')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_broker_2')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_broker_3')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_broker_4')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_broker_5')}
+            </li>
+          </ul>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h3 class="text-xl font-bold mb-6 flex items-center gap-3">
+            <i class="fa-solid fa-building text-blue-400"></i> {t('about.platforms_propfirms_title')}
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_propfirm_1')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_propfirm_2')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_propfirm_3')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_propfirm_4')}
+            </li>
+            <li class="flex items-center gap-3 text-gray-300">
+              <i class="fa-solid fa-check text-blue-400 text-sm"></i> {t('about.platforms_propfirm_5')}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4" data-aos="fade-up">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="bg-gradient-to-r from-blue-600/20 to-blue-800/20 border border-blue-500/30 rounded-2xl p-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6 electrolize-regular">{t('about.cta_title')}</h2>
+        <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
+          {t('about.cta_subtitle')}
+        </p>
+        <a href="https://app.pickmytrade.io/?register=true"
+          class="inline-block px-10 py-4 rounded-xl bg-[#0F3EC3] border border-[#2B77EE] text-white font-bold text-lg electrolize-regular hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
+          {t('about.cta_button')}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,410 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqAccordion from '../../../components/FaqAccordion.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../../i18n/utils';
+import { localizedSeo } from '../../../i18n/seo';
+import type { Locale } from '../../../i18n/config';
+import assetsData from '../../../../config/assets.json';
+
+export function getStaticPaths() {
+  return getLocalePaths().flatMap(({ params, props }) =>
+    assetsData.assets.map(asset => ({
+      params: { locale: params.locale, slug: asset.slug },
+      props: { asset, locale: props.locale },
+    }))
+  );
+}
+
+const { locale, asset } = Astro.props as { locale: Locale; asset: typeof assetsData.assets[0] };
+const t = useTranslations(locale);
+
+// Some asset entries (currently: stocks, options) carry a fully
+// custom FAQ set from an SEO content update. When present it replaces the
+// generic templated FAQ below; assets without it (futures, forex) keep the
+// original i18n-driven FAQ unchanged.
+type CustomFaq = { q: string; a: string };
+const customFaqs: CustomFaq[] | undefined = (asset as typeof asset & { faqs?: CustomFaq[] }).faqs;
+
+const faqItems = customFaqs
+  ? customFaqs.map(({ q, a }) => ({ question: q, answer: a }))
+  : [
+      { question: t('asset_detail.faq_q1', { name: asset.name }), answer: t('asset_detail.faq_a1', { name: asset.name, instruments: asset.instruments }) },
+      { question: t('asset_detail.faq_q2'), answer: t('asset_detail.faq_a2') },
+      { question: t('asset_detail.faq_q3', { name: asset.name }), answer: t('asset_detail.faq_a3', { name: asset.name }) },
+      { question: t('asset_detail.faq_q4', { name: asset.name }), answer: t('asset_detail.faq_a4', { name: asset.name }) },
+      { question: t('asset_detail.faq_q5'), answer: t('asset_detail.faq_a5', { name: asset.name }) },
+    ];
+
+const canonical = absoluteLocalizedPath(locale, `assets/${asset.slug}`);
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": asset.seo.title,
+  "description": asset.seo.description,
+  "url": canonical,
+  "author": { "@type": "Organization", "name": "PickMyTrade" },
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1","h2",".faq-question",".faq-answer"] },
+  "mainEntity": customFaqs
+    ? customFaqs.map(({ q, a }) => ({
+        "@type": "Question",
+        "name": q,
+        "acceptedAnswer": { "@type": "Answer", "text": a },
+      }))
+    : [
+        {
+          "@type": "Question",
+          "name": `What ${asset.name} instruments can I automate?`,
+          "acceptedAnswer": { "@type": "Answer", "text": `You can automate any ${asset.name} instruments supported by your broker, including ${asset.instruments}. PickMyTrade works with all TradingView alerts for ${asset.name} trading.` },
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need coding skills?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No coding required! PickMyTrade is a no-code solution. Simply connect your broker, copy the webhook URL, and paste it into TradingView. Setup takes under 5 minutes." },
+        },
+        {
+          "@type": "Question",
+          "name": `How fast are ${asset.name} trades executed?`,
+          "acceptedAnswer": { "@type": "Answer", "text": `PickMyTrade executes ${asset.name} trades within milliseconds of receiving the TradingView webhook. Our ultra-low latency infrastructure ensures minimal slippage.` },
+        },
+        {
+          "@type": "Question",
+          "name": `Can I trade ${asset.name} on multiple accounts?`,
+          "acceptedAnswer": { "@type": "Answer", "text": `Yes! PickMyTrade supports multi-account automation. Execute the same ${asset.name} strategy across multiple broker accounts simultaneously with individual risk settings for each.` },
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a free trial?",
+          "acceptedAnswer": { "@type": "Answer", "text": `Yes! PickMyTrade offers a 7-day free trial with full access to all ${asset.name} automation features. No credit card required to start.` },
+        },
+      ],
+};
+
+// Breadcrumb schema (safe for all 5 asset entries; there is no /assets/
+// index page in this site, so it is a two-level Home -> Asset trail).
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+    { "@type": "ListItem", "position": 2, "name": asset.name, "item": canonical },
+  ],
+};
+
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PickMyTrade",
+  "url": "https://pickmytrade.io",
+  "logo": "https://pickmytrade.io/assets/logo.png",
+  "description": "TradingView automation platform for brokers and prop firms.",
+  "sameAs": [
+    "https://x.com/pickmytrade",
+    "https://discord.gg/FkJ7g7498S",
+    "https://www.instagram.com/pickmytrade",
+    "https://www.youtube.com/@PickMyTrade",
+    "https://www.linkedin.com/company/pickmytrade",
+    "https://sourceforge.net/software/product/PickMyTrade/",
+    "https://www.trustpilot.com/review/pickmytrade.trade",
+    "https://blog.pickmytrade.io",
+    "https://docs.pickmytrade.io",
+  ],
+};
+
+const colorClasses: Record<string, {
+  blob: string; badgeBg: string; badgeBorder: string; badgeText: string;
+  gradFrom: string; stepGradFrom: string;
+  cardBorder: string; cardIconBg: string; cardIconText: string;
+  ctaGradFrom: string; ctaTextColor: string;
+}> = {
+  orange: {
+    blob: 'bg-orange-500', badgeBg: 'bg-orange-500/20', badgeBorder: 'border-orange-500/30', badgeText: 'text-orange-400',
+    gradFrom: 'from-orange-400', stepGradFrom: 'from-orange-500',
+    cardBorder: 'border-orange-500/30', cardIconBg: 'bg-orange-500/20', cardIconText: 'text-orange-400',
+    ctaGradFrom: 'from-orange-600', ctaTextColor: 'text-orange-600',
+  },
+  purple: {
+    blob: 'bg-purple-500', badgeBg: 'bg-purple-500/20', badgeBorder: 'border-purple-500/30', badgeText: 'text-purple-400',
+    gradFrom: 'from-purple-400', stepGradFrom: 'from-purple-500',
+    cardBorder: 'border-purple-500/30', cardIconBg: 'bg-purple-500/20', cardIconText: 'text-purple-400',
+    ctaGradFrom: 'from-purple-600', ctaTextColor: 'text-purple-600',
+  },
+  blue: {
+    blob: 'bg-blue-500', badgeBg: 'bg-blue-500/20', badgeBorder: 'border-blue-500/30', badgeText: 'text-blue-400',
+    gradFrom: 'from-blue-400', stepGradFrom: 'from-blue-500',
+    cardBorder: 'border-blue-500/30', cardIconBg: 'bg-blue-500/20', cardIconText: 'text-blue-400',
+    ctaGradFrom: 'from-blue-600', ctaTextColor: 'text-blue-600',
+  },
+  green: {
+    blob: 'bg-green-500', badgeBg: 'bg-green-500/20', badgeBorder: 'border-green-500/30', badgeText: 'text-green-400',
+    gradFrom: 'from-green-400', stepGradFrom: 'from-green-500',
+    cardBorder: 'border-green-500/30', cardIconBg: 'bg-green-500/20', cardIconText: 'text-green-400',
+    ctaGradFrom: 'from-green-600', ctaTextColor: 'text-green-600',
+  },
+  teal: {
+    blob: 'bg-teal-500', badgeBg: 'bg-teal-500/20', badgeBorder: 'border-teal-500/30', badgeText: 'text-teal-400',
+    gradFrom: 'from-teal-400', stepGradFrom: 'from-teal-500',
+    cardBorder: 'border-teal-500/30', cardIconBg: 'bg-teal-500/20', cardIconText: 'text-teal-400',
+    ctaGradFrom: 'from-teal-600', ctaTextColor: 'text-teal-600',
+  },
+};
+
+const c = colorClasses[asset.color] ?? colorClasses.blue;
+
+// Optional per-asset overrides used by a handful of entries (currently
+// stocks, options) that came out of dedicated SEO update passes.
+// Everything here is undefined for assets that don't define it (futures,
+// forex), so those pages render exactly as before.
+type SectionBlock =
+  | { type: 'p'; html: string }
+  | { type: 'list'; ordered?: boolean; items: string[] };
+type ContentSection = { heading: string; body: SectionBlock[] };
+type BrokerLink = { name: string; href?: string };
+type CardOverride = { title: string; desc: string };
+type AssetExtras = {
+  heroTitle?: string;
+  intro?: string;
+  speedCard?: CardOverride;
+  card1?: CardOverride;
+  brokersHeading?: string;
+  brokersSubtitle?: string;
+  brokers?: BrokerLink[];
+  sections?: ContentSection[];
+};
+const extras = asset as typeof asset & AssetExtras;
+// Localized title/description for non-English locales; English keeps the
+// bespoke per-page copy in config. See src/i18n/seo.ts.
+const seo = localizedSeo(locale, t, 'asset', asset.name, asset.seo);
+
+---
+<BaseLayout
+  locale={locale}
+  title={seo.title}
+  description={seo.description}
+  keywords={asset.seo.keywords}
+  canonical={canonical}
+  structuredData={[articleSchema, faqSchema, orgSchema, breadcrumbSchema]}
+>
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-4">
+    <div class="max-w-7xl mx-auto px-4">
+      <ol class="flex items-center gap-2 text-sm text-gray-400">
+        <li><a href={localizedPath(locale)} class="hover:text-blue-400">{t('asset_detail.breadcrumb_home')}</a></li>
+        <li>/</li>
+        <li><a href={localizedPath(locale, '#assets')} class="hover:text-blue-400">{t('asset_detail.breadcrumb_assets')}</a></li>
+        <li>/</li>
+        <li class="text-white font-semibold">{asset.name}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] py-16 sm:py-24">
+    <div class="absolute inset-0 opacity-10">
+      <div class={`absolute top-20 left-1/4 w-96 h-96 ${c.blob} rounded-full blur-3xl`}></div>
+      <div class="absolute bottom-10 right-1/4 w-80 h-80 bg-blue-500 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+      <div class={`inline-flex items-center gap-2 mb-6 ${c.badgeBg} border ${c.badgeBorder} rounded-full px-5 py-2`} data-aos="fade-down">
+        <i class={`${asset.icon} ${c.badgeText}`}></i>
+        <span class={`text-sm font-semibold ${c.badgeText} uppercase tracking-wider`}>{t('asset_detail.hero_badge', { name: asset.name })}</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" data-aos="fade-up">
+        {extras.heroTitle ? (
+          <span class={`bg-gradient-to-r ${c.gradFrom} to-blue-400 bg-clip-text text-transparent`}>{extras.heroTitle}</span>
+        ) : (
+          <>
+            <span class="text-white">{t('asset_detail.hero_title', { name: asset.name })}</span><br>
+            <span class={`bg-gradient-to-r ${c.gradFrom} to-blue-400 bg-clip-text text-transparent`}>{t('asset_detail.hero_title_accent')}</span>
+          </>
+        )}
+      </h1>
+
+      <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+        {asset.tagline}
+      </p>
+
+      {extras.intro && (
+        <p class="text-base text-gray-400 max-w-3xl mx-auto mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="120">
+          {extras.intro}
+        </p>
+      )}
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10" data-aos="fade-up" data-aos-delay="200">
+        <a href="https://app.pickmytrade.io/?register=true"
+          class={`px-8 py-4 bg-gradient-to-r ${c.stepGradFrom} to-blue-600 rounded-xl font-semibold text-white shadow-lg transition-all duration-300`}>
+          {t('asset_detail.hero_cta_trial')}
+        </a>
+        <a href="https://docs.pickmytrade.io/docs/"
+          class="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl font-semibold text-white hover:bg-white/20 transition-all duration-300">
+          {t('asset_detail.hero_cta_docs')}
+        </a>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-check-circle text-green-400"></i>
+          <span class="text-gray-300">{t('asset_detail.hero_badge_trial')}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-credit-card text-green-400"></i>
+          <span class="text-gray-300">{t('asset_detail.hero_badge_nocard')}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bolt text-yellow-400"></i>
+          <span class="text-gray-300">{t('asset_detail.hero_badge_execution')}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Why Automate -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('asset_detail.why_title')} <span class={`bg-gradient-to-r ${c.gradFrom} to-blue-400 bg-clip-text text-transparent`}>{t('asset_detail.why_title_accent', { name: asset.name })}</span>
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class={`bg-[#001429] border ${c.cardBorder} rounded-xl p-6`} data-aos="fade-up">
+          <div class={`w-12 h-12 ${c.cardIconBg} rounded-lg flex items-center justify-center mb-4`}>
+            <i class={`fa-solid fa-clock ${c.cardIconText} text-xl`}></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{extras.card1?.title ?? t('asset_detail.why_card1_title')}</h3>
+          <p class="text-gray-400">{extras.card1?.desc ?? t('asset_detail.why_card1_desc', { name: asset.name })}</p>
+        </div>
+
+        <div class="bg-[#001429] border border-blue-500/30 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-bolt text-blue-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{extras.speedCard?.title ?? t('asset_detail.why_card2_title')}</h3>
+          <p class="text-gray-400">{extras.speedCard?.desc ?? t('asset_detail.why_card2_desc')}</p>
+        </div>
+
+        <div class="bg-[#001429] border border-green-500/30 rounded-xl p-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-shield-halved text-green-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('asset_detail.why_card3_title')}</h3>
+          <p class="text-gray-400">{t('asset_detail.why_card3_desc', { name: asset.name })}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Brokers -->
+  <section class="bg-[#001429] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {extras.brokersHeading ?? (<>{t('asset_detail.brokers_title')} <span class={`bg-gradient-to-r ${c.gradFrom} to-blue-400 bg-clip-text text-transparent`}>{t('asset_detail.brokers_title_accent', { name: asset.name })}</span></>)}
+      </h2>
+
+      <div class="text-center">
+        <p class="text-gray-400 mb-8 text-lg">{extras.brokersSubtitle ?? t('asset_detail.brokers_subtitle', { count: asset.brokers_count, name: asset.name })}</p>
+
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+          {extras.brokers ? extras.brokers.map((broker) => (
+            broker.href ? (
+              <a href={broker.href} class={`px-6 py-3 bg-gradient-to-br from-[#002040] to-[#001429] border ${c.cardBorder} rounded-xl text-white font-semibold hover:opacity-80 transition-all`}>{broker.name}</a>
+            ) : (
+              <span class={`px-6 py-3 bg-gradient-to-br from-[#002040] to-[#001429] border ${c.cardBorder} rounded-xl text-white font-semibold`}>{broker.name}</span>
+            )
+          )) : ([t('asset_detail.broker_1'), t('asset_detail.broker_2'), t('asset_detail.broker_3'), t('asset_detail.broker_4'), t('asset_detail.broker_5'), t('asset_detail.broker_6')] as string[]).map((broker) => (
+            <span class={`px-6 py-3 bg-gradient-to-br from-[#002040] to-[#001429] border ${c.cardBorder} rounded-xl text-white font-semibold`}>{broker}</span>
+          ))}
+        </div>
+
+        <a href={localizedPath(locale, 'supported-propfirms')} class={`inline-block px-6 py-3 ${c.cardIconBg} border ${c.cardBorder} rounded-xl ${c.cardIconText} hover:opacity-80 font-semibold transition-all`}>
+          {t('asset_detail.brokers_view_all')} <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('asset_detail.how_title')} <span class={`bg-gradient-to-r ${c.gradFrom} to-blue-400 bg-clip-text text-transparent`}>{t('asset_detail.how_title_accent')}</span>
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        {[
+          { n: '1', title: t('asset_detail.how_step1_title'), desc: t('asset_detail.how_step1_desc', { name: asset.name }) },
+          { n: '2', title: t('asset_detail.how_step2_title'), desc: t('asset_detail.how_step2_desc') },
+          { n: '3', title: t('asset_detail.how_step3_title'), desc: t('asset_detail.how_step3_desc', { name: asset.name }) },
+        ].map((step, i) => (
+          <div class="text-center" data-aos="fade-up" data-aos-delay={`${i * 100}`}>
+            <div class={`w-16 h-16 bg-gradient-to-r ${c.stepGradFrom} to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold`}>{step.n}</div>
+            <h3 class="text-xl font-bold mb-3">{step.title}</h3>
+            <p class="text-gray-400">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Extra content sections (per-asset SEO content, optional) -->
+  {extras.sections && (
+    <section class="bg-[#001429] py-16">
+      <div class="max-w-4xl mx-auto px-4 space-y-14">
+        {extras.sections.map((sec) => (
+          <div data-aos="fade-up">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-white">{sec.heading}</h2>
+            {sec.body.map((block) => (
+              block.type === 'list' ? (
+                block.ordered ? (
+                  <ol class="list-decimal list-inside space-y-2 text-gray-400 mb-4 leading-relaxed">
+                    {block.items.map((item) => <li set:html={item} />)}
+                  </ol>
+                ) : (
+                  <ul class="list-disc list-inside space-y-2 text-gray-400 mb-4 leading-relaxed">
+                    {(block.items ?? []).map((item) => <li set:html={item} />)}
+                  </ul>
+                )
+              ) : (
+                <p class="text-gray-400 mb-4 leading-relaxed" set:html={block.html} />
+              )
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ -->
+  <section class={extras.sections ? 'bg-[#002040] py-16' : 'bg-[#001429] py-16'}>
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('asset_detail.faq_title')} <span class={`bg-gradient-to-r ${c.gradFrom} to-blue-400 bg-clip-text text-transparent`}>{t('asset_detail.faq_title_accent')}</span>
+      </h2>
+
+      <FaqAccordion items={faqItems} />
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class={`bg-gradient-to-r ${c.ctaGradFrom} to-blue-600 py-16`}>
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">
+        {t('asset_detail.cta_title', { name: asset.name })}
+      </h2>
+      <p class="text-xl text-blue-100 mb-8" data-aos="fade-up" data-aos-delay="100">
+        {t('asset_detail.cta_subtitle', { name: asset.name })}
+      </p>
+      <a href="https://app.pickmytrade.io/?register=true"
+        class={`inline-block px-8 py-4 bg-white ${c.ctaTextColor} rounded-xl font-semibold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300`}
+        data-aos="fade-up" data-aos-delay="200">
+        {t('asset_detail.cta_button')}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

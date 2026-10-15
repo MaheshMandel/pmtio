@@ -1,0 +1,492 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+// WebPage schema (owned stats only; sameAs is a plain profile link, not a
+// rating/review — AggregateRating/Review schema are intentionally excluded
+// per content policy).
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${absoluteLocalizedPath(locale, 'cloud-trade-copier')}#webpage`,
+  "name": "Cloud Trade Copier With No VPS and No Desktop App",
+  "url": absoluteLocalizedPath(locale, 'cloud-trade-copier'),
+  "description": "PickMyTrade is a cloud trade copier with no VPS, no desktop app and no plugins. Copy one TradingView alert or one manual trade across 10 supported brokers from any device, with under 200ms order processing on our side (total fill time varies with your broker, network and TradingView alert speed). Flat $50 per month or $500 per year, with a 7-day free trial.",
+  "inLanguage": LOCALE_BCP47[locale],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io"
+  },
+  "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://pickmytrade.io/assets/logo.png"
+  },
+  "breadcrumb": { "@id": `${absoluteLocalizedPath(locale, 'cloud-trade-copier')}#breadcrumb` },
+  "about": {
+    "@type": "Thing",
+    "name": "Cloud trade copier"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@pickmytrade.com",
+      "contactType": "Customer Support",
+      "availableLanguage": "English"
+    },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade"
+    ]
+  }
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": ["h1", "h2", ".faq-question", ".faq-answer", "summary", "details > div", "details > p"]
+  },
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a cloud trade copier?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A cloud trade copier runs entirely on remote servers instead of on your own computer, so it copies one source trade across several accounts without any software installed on your machine. With PickMyTrade, your TradingView alert or manual trade is received in the cloud and routed to every connected account automatically. There is no VPS to rent, no desktop app and no broker plugin to keep updated, and it keeps working even when your computer is switched off." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a VPS to copy trades with PickMyTrade?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade is fully cloud based, so you do not need a VPS to copy trades. The copier already runs on our always-on infrastructure, which is the job a VPS would normally do for a desktop copier. If you separately want a VPS to keep TradingView charts or an indicator running, that is your choice, but it is never required for the copier itself." }
+    },
+    {
+      "@type": "Question",
+      "name": "Cloud vs local trade copier, which is better for me?",
+      "acceptedAnswer": { "@type": "Answer", "text": "For most futures, prop and multi-account traders, a cloud copier is the better fit because there is nothing to install, it works from any device and it keeps running when your PC is off. A local copier installed on your computer or a VPS can reach lower raw latency when it is co-located near the exchange, which matters for a small group of ultra-fast scalpers. If your edge depends on single-digit-millisecond fills, local execution can win. If it depends on reliability, convenience and reaching many accounts across brokers, cloud wins." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a cloud copier keep running when my computer is off?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Because PickMyTrade runs in the cloud 24/7, your trades copy automatically even when your computer is asleep, shut down or offline. Once your accounts are connected and your alert is live, you can close the browser and walk away, and the copier still receives your signals and places the orders." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to install any plugins or desktop software?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade needs no plugins, no desktop application and no browser extensions. You connect your broker accounts and set up your alerts in the web dashboard, and everything else happens in the cloud. This is a real difference from download-and-run copiers that install on a specific machine and have to be patched and monitored." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is cloud fast enough, or do I need local execution for scalping?",
+      "acceptedAnswer": { "@type": "Answer", "text": "For the vast majority of strategies, cloud is fast enough. PickMyTrade processes your order in under 200ms on our side, and total fill time also depends on your broker, network latency and how quickly TradingView sends the alert. A local setup co-located near the exchange can beat that on raw latency, so hardcore scalpers who need sub-2ms fills may prefer local execution. Swing, intraday, prop and multi-account traders almost never need it, and they gain reliability and device independence in return." }
+    }
+  ]
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "@id": `${absoluteLocalizedPath(locale, 'cloud-trade-copier')}#breadcrumb`,
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+    { "@type": "ListItem", "position": 2, "name": "Cloud Trade Copier", "item": absoluteLocalizedPath(locale, 'cloud-trade-copier') }
+  ]
+};
+
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": `${absoluteLocalizedPath(locale, 'cloud-trade-copier')}#software`,
+  "image": "https://pickmytrade.io/assets/logo.png",
+  "name": "PickMyTrade - Cloud Trade Copier",
+  "description": "Cloud-based trade copier that mirrors one TradingView alert or manual trade across 10 supported brokers with no VPS, no desktop app and no plugins required. Under 200ms order processing on our side (total fill time varies with your broker, network and TradingView alert speed).",
+  "url": absoluteLocalizedPath(locale, 'cloud-trade-copier'),
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based, Windows, Mac, Linux",
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD",
+    "lowPrice": "50.00",
+    "highPrice": "500.00",
+    "offerCount": "2",
+    "priceValidUntil": "2026-12-31",
+    "availability": "https://schema.org/InStock",
+    "description": "$50 per month or $500 per year. 7-day free trial, no credit card required."
+  },
+  "publisher": { "@type": "Organization", "name": "PickMyTrade", "url": "https://pickmytrade.io" }
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('cloud_trade_copier.page_title')}
+  description={t('cloud_trade_copier.page_description')}
+  keywords={t('cloud_trade_copier.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4]}
+>
+
+  <!-- BREADCRUMB -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('cloud_trade_copier.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('cloud_trade_copier.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- ===================== (1) HERO ===================== -->
+  <section class="relative pt-12 pb-14 sm:pb-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 right-16 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-10 w-56 h-56 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-5 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-cloud text-[#2B77EE]"></i>
+        <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('cloud_trade_copier.hero_badge')}</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white leading-tight">{t('cloud_trade_copier.hero_title')}</h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl mx-auto">{t('cloud_trade_copier.hero_subtitle')}</p>
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('cloud_trade_copier.hero_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="#cloud-vs-local" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('cloud_trade_copier.hero_cta_secondary')}
+        </a>
+      </div>
+      <p class="mt-3 text-xs text-gray-400">{t('cloud_trade_copier.hero_note')}</p>
+
+      <!-- Trust bar (owned stats only, no guaranteed latency headline) -->
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm">
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-users text-[#2B77EE]"></i> {t('cloud_trade_copier.hero_stat_traders')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-chart-line text-[#2B77EE]"></i> {t('cloud_trade_copier.hero_stat_trades')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-server text-[#2B77EE]"></i> {t('cloud_trade_copier.hero_stat_novps')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-network-wired text-[#2B77EE]"></i> {t('cloud_trade_copier.hero_stat_brokers')}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== (2) WHAT IS A CLOUD TRADE COPIER ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('cloud_trade_copier.s2_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s2_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s2_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('cloud_trade_copier.s2_p3')}</p>
+    </div>
+  </section>
+
+  <!-- ===================== (3) CLOUD VS LOCAL COMPARISON ===================== -->
+  <section id="cloud-vs-local" class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040] scroll-mt-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('cloud_trade_copier.s3_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('cloud_trade_copier.s3_intro')}</p>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-[#2B77EE]/40" data-aos="fade-up">
+        <table class="w-full min-w-[640px] text-left text-sm">
+          <thead>
+            <tr class="bg-[#0F3EC3]/25 text-white">
+              <th scope="col" class="px-4 py-3 font-semibold">{t('cloud_trade_copier.s3_col_factor')}</th>
+              <th scope="col" class="px-4 py-3 font-semibold">{t('cloud_trade_copier.s3_col_cloud')}</th>
+              <th scope="col" class="px-4 py-3 font-semibold">{t('cloud_trade_copier.s3_col_local')}</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300">
+            <tr class="border-t border-[#2B77EE]/20 bg-[#122B75]/20">
+              <th scope="row" class="px-4 py-3 font-semibold text-white">{t('cloud_trade_copier.s3_row1_label')}</th>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row1_cloud')}</td>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row1_local')}</td>
+            </tr>
+            <tr class="border-t border-[#2B77EE]/20">
+              <th scope="row" class="px-4 py-3 font-semibold text-white">{t('cloud_trade_copier.s3_row2_label')}</th>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row2_cloud')}</td>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row2_local')}</td>
+            </tr>
+            <tr class="border-t border-[#2B77EE]/20 bg-[#122B75]/20">
+              <th scope="row" class="px-4 py-3 font-semibold text-white">{t('cloud_trade_copier.s3_row3_label')}</th>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row3_cloud')}</td>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row3_local')}</td>
+            </tr>
+            <tr class="border-t border-[#2B77EE]/20">
+              <th scope="row" class="px-4 py-3 font-semibold text-white">{t('cloud_trade_copier.s3_row4_label')}</th>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row4_cloud')}</td>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row4_local')}</td>
+            </tr>
+            <tr class="border-t border-[#2B77EE]/20 bg-[#122B75]/20">
+              <th scope="row" class="px-4 py-3 font-semibold text-white">{t('cloud_trade_copier.s3_row5_label')}</th>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row5_cloud')}</td>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row5_local')}</td>
+            </tr>
+            <tr class="border-t border-[#2B77EE]/20">
+              <th scope="row" class="px-4 py-3 font-semibold text-white">{t('cloud_trade_copier.s3_row6_label')}</th>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row6_cloud')}</td>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row6_local')}</td>
+            </tr>
+            <tr class="border-t border-[#2B77EE]/20 bg-[#122B75]/20">
+              <th scope="row" class="px-4 py-3 font-semibold text-white">{t('cloud_trade_copier.s3_row7_label')}</th>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row7_cloud')}</td>
+              <td class="px-4 py-3">{t('cloud_trade_copier.s3_row7_local')}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-gray-400 text-sm mt-5 max-w-3xl mx-auto text-center">{t('cloud_trade_copier.s3_outro')}</p>
+    </div>
+  </section>
+
+  <!-- ===================== (4) WHY NO VPS IS NEEDED ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('cloud_trade_copier.s4_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s4_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s4_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">
+        {t('cloud_trade_copier.s4_p3_a')} <a href={localizedPath(locale, 'tradoxvps')} class="text-[#7FB8F9] hover:text-white underline">{t('cloud_trade_copier.s4_p3_link')}</a> {t('cloud_trade_copier.s4_p3_b')}
+      </p>
+      <!-- [IMG PLACEHOLDER]: cloud dashboard screenshot -->
+      <div class="mt-6 aspect-video w-full rounded-xl border border-dashed border-[#2B77EE]/40 bg-[#122B75]/10 flex items-center justify-center text-gray-500 text-sm" role="img" aria-label={t('cloud_trade_copier.s4_img_alt')}>
+        {t('cloud_trade_copier.s4_img_alt')}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== (5) MULTI-BROKER, MULTI-ACCOUNT FROM THE CLOUD ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="max-w-4xl mx-auto" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('cloud_trade_copier.s5_h2')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s5_p1')}</p>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s5_p2')}</p>
+        <!-- [IMG PLACEHOLDER]: one alert fanning out to multiple broker accounts -->
+        <div class="aspect-video w-full rounded-xl border border-dashed border-[#2B77EE]/40 bg-[#122B75]/10 flex items-center justify-center text-gray-500 text-sm" role="img" aria-label={t('cloud_trade_copier.s5_img_alt')}>
+          {t('cloud_trade_copier.s5_img_alt')}
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8" data-aos="fade-up">
+        <a href="https://pickmytrade.trade/" class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Tradovate</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Rithmic</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Interactive Brokers</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">TradeStation</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">TradeLocker</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">ProjectX</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-matchtrader')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Match-Trader</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradier')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Tradier</a>
+      </div>
+      <div class="max-w-4xl mx-auto mt-8" data-aos="fade-up">
+        <h3 class="text-xl sm:text-2xl font-bold text-white mb-4">{t('cloud_trade_copier.s5_h3')}</h3>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s5_p3')}</p>
+        <p class="text-gray-300 leading-relaxed">
+          {t('cloud_trade_copier.s5_p4_a')} <a href="https://pickmytrade.trade/tradovate-trade-copier/" class="text-[#7FB8F9] hover:text-white underline">{t('cloud_trade_copier.s5_p4_link_hub')}</a> {t('cloud_trade_copier.s5_p4_and')} <a href="https://pickmytrade.trade/copier/tradovate-to-take-profit-trader-copier/" class="text-[#7FB8F9] hover:text-white underline">{t('cloud_trade_copier.s5_p4_link_tpt')}</a> {t('cloud_trade_copier.s5_p4_link_and2')} <a href="https://pickmytrade.trade/copier/tradovate-to-fundednext-futures-copier/" class="text-[#7FB8F9] hover:text-white underline">{t('cloud_trade_copier.s5_p4_link_fnf')}</a>{t('cloud_trade_copier.s5_p4_end')}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== (6) WHEN LOCAL STILL WINS ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('cloud_trade_copier.s6_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s6_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s6_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('cloud_trade_copier.s6_p3')}</p>
+    </div>
+  </section>
+
+  <!-- ===================== (7) LATENCY AND RELIABILITY ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('cloud_trade_copier.s7_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s7_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('cloud_trade_copier.s7_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('cloud_trade_copier.s7_p3')}</p>
+    </div>
+  </section>
+
+  <!-- ===================== (8) PRICING ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('cloud_trade_copier.s8_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-8 max-w-2xl mx-auto">{t('cloud_trade_copier.s8_intro')}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-7">
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('cloud_trade_copier.s8_monthly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('cloud_trade_copier.s8_monthly_price')}<span class="text-base font-normal text-gray-400">{t('cloud_trade_copier.s8_monthly_suffix')}</span></p>
+          <p class="text-sm text-gray-400">{t('cloud_trade_copier.s8_monthly_desc')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#0F3EC3]/30 via-[#2B77EE]/20 to-[#0F3EC3]/30 border border-[#2B77EE] rounded-xl p-7 relative">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F3EC3] text-white text-xs font-semibold px-3 py-1 rounded-full">{t('cloud_trade_copier.s8_yearly_badge')}</span>
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('cloud_trade_copier.s8_yearly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('cloud_trade_copier.s8_yearly_price')}<span class="text-base font-normal text-gray-400">{t('cloud_trade_copier.s8_yearly_suffix')}</span></p>
+          <p class="text-sm text-gray-400">{t('cloud_trade_copier.s8_yearly_desc')}</p>
+        </div>
+      </div>
+      <div class="mt-8">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('cloud_trade_copier.s8_cta')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <p class="mt-3 text-xs text-gray-400">{t('cloud_trade_copier.s8_note_a')} <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white underline">{t('cloud_trade_copier.s8_note_link')}</a> {t('cloud_trade_copier.s8_note_b')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== (9) WHY TRADERS CHOOSE PICKMYTRADE (PROOF) ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('cloud_trade_copier.s9_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">{t('cloud_trade_copier.s9_intro')}</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5" data-aos="fade-up">
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('cloud_trade_copier.s9_stat1_num')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('cloud_trade_copier.s9_stat1_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('cloud_trade_copier.s9_stat2_num')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('cloud_trade_copier.s9_stat2_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('cloud_trade_copier.s9_stat3_num')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('cloud_trade_copier.s9_stat3_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('cloud_trade_copier.s9_stat4_num')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('cloud_trade_copier.s9_stat4_label')}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== (10) FAQ ===================== -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('cloud_trade_copier.s10_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('cloud_trade_copier.s10_intro')}</p>
+      </div>
+      <div class="faq-content space-y-3" data-aos="fade-up">
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('cloud_trade_copier.faq_q1')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('cloud_trade_copier.faq_a1')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('cloud_trade_copier.faq_q2')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('cloud_trade_copier.faq_a2')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('cloud_trade_copier.faq_q3')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('cloud_trade_copier.faq_a3')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('cloud_trade_copier.faq_q4')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('cloud_trade_copier.faq_a4')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('cloud_trade_copier.faq_q5')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('cloud_trade_copier.faq_a5')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('cloud_trade_copier.faq_q6')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('cloud_trade_copier.faq_a6')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== (11) FINAL CTA ===================== -->
+  <section class="relative py-16 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 right-24 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">{t('cloud_trade_copier.s11_h2')}</h2>
+      <p class="text-gray-300 mb-8 max-w-2xl mx-auto">{t('cloud_trade_copier.s11_p')}</p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('cloud_trade_copier.s11_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="https://docs.pickmytrade.io/docs/" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('cloud_trade_copier.s11_cta_secondary')}
+        </a>
+      </div>
+
+      <!-- Related pages / internal-link mesh -->
+      <div class="mt-12 pt-8 border-t border-white/10">
+        <p class="text-xs uppercase tracking-widest text-gray-400 mb-4 electrolize-regular">{t('cloud_trade_copier.s11_related_label')}</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+          <a href="https://pickmytrade.trade/tradingview-trade-copier/" class="text-[#7FB8F9] hover:text-white transition">{t('cloud_trade_copier.s11_link_tv_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href="https://pickmytrade.trade/tradovate-trade-copier/" class="text-[#7FB8F9] hover:text-white transition">{t('cloud_trade_copier.s11_link_tradovate_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'tradingview-automation')} class="text-[#7FB8F9] hover:text-white transition">{t('cloud_trade_copier.s11_link_automation')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'tradoxvps')} class="text-[#7FB8F9] hover:text-white transition">{t('cloud_trade_copier.s11_link_vps')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white transition">{t('cloud_trade_copier.s11_link_pricing')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  details[open] .faq-chevron { transform: rotate(180deg); }
+  .faq-chevron { transition: transform .2s ease; }
+</style>

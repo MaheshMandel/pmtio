@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Risk Disclosure & Disclaimers",
+    "description": "Important risk disclosures and disclaimers for PickMyTrade automated trading platform.",
+    "url": absoluteLocalizedPath(locale, 'legal/disclaimer'),
+    "dateModified": "2026-07-27",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io/"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      }
+    }
+  };
+
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Risk Disclosure & Disclaimers",
+        "item": absoluteLocalizedPath(locale, 'legal/disclaimer')
+      }
+    ]
+  };
+---
+<BaseLayout
+  locale={locale}
+  title={t('disclaimer.meta_title')}
+  description={t('disclaimer.meta_description')}
+  keywords=""
+  structuredData={[schema1, schema2]}
+>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
+        style="background: linear-gradient(to right, #0055FE, #4A90E2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        {t('disclaimer.page_title')}
+      </h1>
+      <p class="text-gray-400 text-base md:text-lg">{t('disclaimer.last_updated_label')} July 2026</p>
+    </div>
+
+    <!-- Content Container -->
+    <div class="space-y-8 text-gray-300 leading-relaxed">
+
+      <!-- Platform Overview -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.overview_title')}</h2>
+        <p>
+          {t('disclaimer.overview_body')}
+        </p>
+      </section>
+
+      <!-- Risk Disclosure -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.risk_title')}</h2>
+        <p class="mb-4">
+          {t('disclaimer.risk_body')}
+        </p>
+        <p class="font-semibold text-yellow-400">
+          {t('disclaimer.risk_acknowledgment')}
+        </p>
+      </section>
+
+      <!-- Automation Risk & User Responsibility -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.automation_title')}</h2>
+        <p class="mb-4">
+          {t('disclaimer.automation_body')}
+        </p>
+        <p class="mb-4">
+          <strong>{t('disclaimer.automation_responsible_label')}</strong>
+        </p>
+        <ul class="list-disc list-inside space-y-2 mb-4 pl-4">
+          <li>{t('disclaimer.automation_item1')}</li>
+          <li>{t('disclaimer.automation_item2')}</li>
+          <li>{t('disclaimer.automation_item3')}</li>
+          <li>{t('disclaimer.automation_item4')}</li>
+          <li>{t('disclaimer.automation_item5')}</li>
+        </ul>
+        <p class="font-semibold text-yellow-400">
+          {t('disclaimer.automation_acknowledgment')}
+        </p>
+      </section>
+
+      <!-- No Financial Advice -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.no_advice_title')}</h2>
+        <p class="mb-4">
+          {t('disclaimer.no_advice_p1')}
+        </p>
+        <p>
+          {t('disclaimer.no_advice_p2')}
+        </p>
+      </section>
+
+      <!-- Service Provided "As-Is" -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.asis_title')}</h2>
+        <p>
+          {t('disclaimer.asis_body')}
+        </p>
+      </section>
+
+      <!-- Hypothetical Performance -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.hypothetical_title')}</h2>
+        <p>
+          {t('disclaimer.hypothetical_body')}
+        </p>
+      </section>
+
+      <!-- Testimonials -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.testimonial_title')}</h2>
+        <p>
+          {t('disclaimer.testimonial_body')}
+        </p>
+      </section>
+
+      <!-- Third-Party & Prop Firm Disclaimer -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.thirdparty_title')}</h2>
+        <p>
+          {t('disclaimer.thirdparty_body')}
+        </p>
+      </section>
+
+      <!-- Limitation of Liability -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.liability_title')}</h2>
+        <p class="mb-4">
+          {t('disclaimer.liability_intro')}
+        </p>
+        <ul class="list-disc list-inside space-y-2 pl-4">
+          <li>{t('disclaimer.liability_item1')}</li>
+          <li>{t('disclaimer.liability_item2')}</li>
+          <li>{t('disclaimer.liability_item3')}</li>
+          <li>{t('disclaimer.liability_item4')}</li>
+          <li>{t('disclaimer.liability_item5')}</li>
+          <li>{t('disclaimer.liability_item6')}</li>
+          <li>{t('disclaimer.liability_item7')}</li>
+        </ul>
+      </section>
+
+      <!-- Agreement Confirmation -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('disclaimer.agreement_title')}</h2>
+        <p class="mb-4">
+          {t('disclaimer.agreement_p1')}
+        </p>
+        <p>
+          {t('disclaimer.agreement_p2_pre')} <a href={localizedPath(locale, 'legal/terms')}
+            class="text-blue-400 hover:text-blue-300 underline transition-colors">{t('disclaimer.agreement_terms_link')}</a> {t('disclaimer.agreement_and')} <a
+            href={localizedPath(locale, 'legal/privacy')} class="text-blue-400 hover:text-blue-300 underline transition-colors">{t('disclaimer.agreement_privacy_link')}</a>{t('disclaimer.agreement_p2_post')}
+        </p>
+      </section>
+
+      <!-- Contact -->
+      <section class="text-center">
+        <p class="text-gray-400 mb-3">
+          {t('disclaimer.contact_text')}
+        </p>
+        <p>
+          <a href="mailto:support@pickmytrade.com"
+            class="text-blue-400 hover:text-blue-300 transition-colors font-medium">support@pickmytrade.com</a>
+        </p>
+      </section>
+
+    </div>
+
+    <!-- Back Link -->
+    <div class="text-center mt-12 pt-8 border-t border-gray-800">
+      <a href={localizedPath(locale, '')}
+        class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors font-medium">
+        <span>{t('disclaimer.back_home')}</span>
+      </a>
+    </div>
+  </div>
+</BaseLayout>

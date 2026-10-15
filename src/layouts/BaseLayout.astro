@@ -1,0 +1,428 @@
+---
+import { fitMetaDescription } from "../lib/metaDescription";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import SaleBanner from "../components/SaleBanner.astro";
+import Footer from "../components/Footer.astro";
+import {
+  LOCALES,
+  LOCALE_BCP47,
+  LOCALE_DIR,
+  DEFAULT_LOCALE,
+  type Locale,
+} from "../i18n/config";
+import { switchLocalePath } from "../i18n/utils";
+import { indexableLocales, isIndexable, routeFromPath } from "../i18n/coverage";
+import { datesForRoute, withContentDates } from "../data/contentDates";
+import { SALE_END } from "../data/sale";
+
+// Sale cutover as epoch ms — exposed to the client as window.SALE_END so the
+// banner countdown and the dynamic pricing both read one shared value.
+const saleEndMs = new Date(SALE_END).getTime();
+
+// Build-time gate: if the sale is already over when the site is built, the banner
+// markup is never emitted, so there's nothing to paint-then-hide. (Previously the
+// banner shipped in every page and was hidden by JS, which flashed on load because
+// .eb-root's `display:block` in global.css overrides Tailwind's `.hidden`.)
+// A bad/missing date fails open — the banner still renders and the client-side
+// guard handles a sale that ends between the build and the visit.
+const saleActive = !Number.isFinite(saleEndMs) || saleEndMs > Date.now();
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  keywords?: string;
+  ogImage?: string;
+  robots?: string;
+  canonical?: string;
+  structuredData?: object | object[];
+  /**
+   * Path of this page's LCP image (usually the hero). Emits a high-priority
+   * preload so the browser's preload scanner finds it immediately instead of
+   * discovering it late, after the stylesheets in <head> have resolved.
+   * Pair it with fetchpriority="high" on the matching <img>.
+   */
+  lcpImage?: string;
+  /** English-only page (translated copies 301 to English): advertise no hreflang alternates. */
+  englishOnly?: boolean;
+}
+
+const {
+  locale,
+  title: rawTitle,
+  description: rawDescription,
+  keywords,
+  ogImage = "/logo.png",
+  robots,
+  canonical: canonicalOverride,
+  structuredData,
+  lcpImage,
+  englishOnly = false,
+} = Astro.props;
+
+// SERP titles truncate around 60 chars and measured CTR drops past that. Pages
+// append " | PickMyTrade" on their own, so when a title runs long, drop the
+// brand suffix (the domain already carries the brand) rather than editing
+// every page. Titles still over 60 after this need shortening at the source.
+const MAX_TITLE_LENGTH = 60;
+const title =
+  rawTitle.length > MAX_TITLE_LENGTH
+    ? rawTitle.replace(/\s*[|\-–—]\s*PickMyTrade\s*$/, '')
+    : rawTitle;
+
+// Keep the snippet within what search results display (see lib/metaDescription.ts).
+const metaDescription = fitMetaDescription(rawDescription);
+
+const site = Astro.site ?? new URL("http://localhost:4321");
+
+const ogImageUrl = new URL(ogImage, site).href;
+// trailingSlash is "always" (matches pickmytrade.trade's convention — ticket
+// #43): Astro.url.pathname already carries the trailing slash for every route
+// except the root, so it is used as-is rather than stripped.
+const path = Astro.url.pathname
+  .replace(/index\.html$/, "")
+  .replace(/\.html$/, "");
+const canonical = canonicalOverride ?? new URL(path, site).href;
+
+// Translation-coverage gate (src/i18n/coverage.ts). A locale page whose copy is
+// still mostly English is served noindex and dropped from the hreflang set, so
+// the site stops advertising translations that don't exist yet. English is never
+// gated, and an explicit `robots` prop still wins — that's how /upcoming/*
+// opts itself out independently of coverage.
+const route = routeFromPath(path);
+const gatedForCoverage = !isIndexable(route, locale);
+const robotsDirective =
+  robots ??
+  (gatedForCoverage
+    ? "noindex, follow"
+    : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
+
+// Only advertise locales whose version of THIS route is actually translated.
+// Filtering here also fixes the other side of the pair: the English page must
+// stop claiming a German alternate that is really English.
+const alternates = (englishOnly ? [DEFAULT_LOCALE] : indexableLocales(route)).map((l) => ({
+  hreflang: LOCALE_BCP47[l],
+  href: new URL(switchLocalePath(path, l), site).href,
+}));
+const xDefault = new URL(switchLocalePath(path, DEFAULT_LOCALE), site).href;
+
+// Freshness signals. Dates come from git history via src/data/contentDates.ts,
+// so they move when the page's source or its backing config JSON actually
+// changes rather than on every build. Pages that already declare their own
+// dates keep them — withContentDates only fills gaps, and only on node types
+// that legitimately carry these properties.
+const contentDates = datesForRoute(route);
+const datedStructuredData = structuredData
+  ? withContentDates(structuredData, contentDates)
+  : undefined;
+---
+
+<!doctype html>
+<html lang={LOCALE_BCP47[locale]} dir={LOCALE_DIR[locale]}>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- No maximum-scale/user-scalable: capping zoom at 1 blocked pinch-to-zoom
+         sitewide, which fails WCAG 2.1 SC 1.4.4 (Resize Text). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={metaDescription} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <meta name="robots" content={robotsDirective} />
+    <meta name="theme-color" content="#003366" />
+    <link rel="canonical" href={canonical} />
+
+    {alternates.map((alt) => (
+      <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content="PickMyTrade" />
+    <meta property="og:locale" content={LOCALE_BCP47[locale]} />
+    {LOCALES.filter((l) => l !== locale).map((l) => (
+      <meta property="og:locale:alternate" content={LOCALE_BCP47[l]} />
+    ))}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+
+    {lcpImage && <link rel="preload" as="image" href={lcpImage} fetchpriority="high" />}
+
+    <!-- Third-party CSS origins. Without these hints the browser pays a full
+         DNS + TCP + TLS round trip before each render-blocking stylesheet below
+         can even start downloading, delaying FCP and LCP on every page. -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome is icons only: nothing above the fold depends on it to lay
+         out, so it loads non-blocking via the media=print/onload swap instead of
+         delaying first paint. The <noscript> copy keeps icons working with JS off. -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media='all';this.onload=null;"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" />
+    </noscript>
+
+    <!-- AOS stays render-blocking on purpose. Its stylesheet is what sets
+         opacity:0 on [data-aos] elements; deferring it would paint that content
+         visible, then blank it once the CSS landed, then animate it back in.
+         The file is small, and the preconnect above covers the connection cost. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+
+    <!-- Sale cutover (single source of truth: src/data/sale.ts) — read by the
+         banner countdown and the dynamic pricing renderer -->
+    <script is:inline set:html={`window.SALE_END=${saleEndMs};`}></script>
+
+    {datedStructuredData && (
+      Array.isArray(datedStructuredData)
+        ? datedStructuredData.map((sd) => (
+            <script is:inline type="application/ld+json" set:html={JSON.stringify(sd)} />
+          ))
+        : <script is:inline type="application/ld+json" set:html={JSON.stringify(datedStructuredData)} />
+    )}
+
+    <slot name="head" />
+  </head>
+  <body class="min-h-dvh flex flex-col">
+    {saleActive && <SaleBanner locale={locale} />}
+    <Header locale={locale} />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+
+    <!-- Sale banner show/hide + countdown. The fixed header (#nav-bar) is pushed
+         down by the banner's height while the sale is live, and snaps back to the
+         top once it ends. Single source of truth: window.SALE_END (src/data/sale.ts). -->
+    <script is:inline>
+      (function () {
+        var SALE_TARGET = window.SALE_END;
+        var bannerState = ''; // '', 'shown', or 'hidden' — last applied state
+
+        window.positionNavbar = function positionNavbar() {
+          var banner = document.getElementById('sale-banner');
+          var navBar = document.getElementById('nav-bar');
+          if (!navBar) return;
+          var visible =
+            banner &&
+            banner.style.display !== 'none' &&
+            !banner.classList.contains('hidden') &&
+            banner.offsetHeight > 0;
+          var top = visible ? banner.offsetHeight + 'px' : '0px';
+          if (navBar.style.top !== top) navBar.style.top = top;
+        };
+
+        function updateSaleBanner() {
+          var banner = document.getElementById('sale-banner');
+          if (!banner) return;
+          var difference = SALE_TARGET - Date.now();
+
+          if (difference <= 0) {
+            if (bannerState !== 'hidden') {
+              banner.style.display = 'none';
+              bannerState = 'hidden';
+              window.positionNavbar();
+            }
+            return;
+          }
+
+          if (bannerState !== 'shown') {
+            banner.style.display = '';
+            banner.classList.remove('hidden');
+            bannerState = 'shown';
+            window.positionNavbar();
+          }
+
+          // Zero-padded so the boxes always show two digits, and re-triggers its
+          // own CSS "tick" animation (defined on .eb-timer-value) only when the
+          // displayed value actually changes — avoids restarting the animation
+          // every second for units that haven't moved (e.g. days, hours).
+          function setUnit(id, value) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            var next = String(value).padStart(2, '0');
+            if (el.textContent === next) return;
+            el.textContent = next;
+            el.style.animation = 'none';
+            void el.offsetWidth; // force reflow so the animation restarts
+            el.style.animation = '';
+          }
+
+          setUnit('countdown-days', Math.floor(difference / (1000 * 60 * 60 * 24)));
+          setUnit('countdown-hours', Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+          setUnit('countdown-minutes', Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)));
+          setUnit('countdown-seconds', Math.floor((difference % (1000 * 60)) / 1000));
+        }
+
+        updateSaleBanner();
+        setInterval(updateSaleBanner, 1000);
+        window.addEventListener('resize', window.positionNavbar);
+      })();
+    </script>
+
+    <!-- Offset-aware smooth scrolling for in-page anchor links (e.g. Pricing,
+         How it works). The fixed header height = sale banner + navbar, captured
+         via #nav-bar's bottom edge. On initial load we re-correct a few times so
+         lazy images and JS-rendered pricing cards can't leave us short of the
+         target section. -->
+    <script is:inline>
+      (function () {
+        function headerOffset() {
+          var nav = document.getElementById('nav-bar');
+          var bottom = nav ? nav.getBoundingClientRect().bottom : 0;
+          return Math.max(bottom, 0) + 12;
+        }
+
+        function scrollToId(id, smooth) {
+          var el = document.getElementById(id);
+          if (!el) return false;
+          var y = el.getBoundingClientRect().top + window.pageYOffset - headerOffset();
+          window.scrollTo({ top: Math.max(y, 0), behavior: smooth ? 'smooth' : 'auto' });
+          return true;
+        }
+
+        function samePage(url) {
+          var strip = function (p) { return p.replace(/\/+$/, '') || '/'; };
+          return url.origin === location.origin &&
+                 strip(url.pathname) === strip(location.pathname);
+        }
+
+        document.addEventListener('click', function (e) {
+          var a = e.target.closest ? e.target.closest('a[href*="#"]') : null;
+          if (!a) return;
+          var url;
+          try { url = new URL(a.href, location.href); } catch (_) { return; }
+          if (!samePage(url) || !url.hash || url.hash === '#') return;
+          var id = decodeURIComponent(url.hash.slice(1));
+          if (!document.getElementById(id)) return;
+          e.preventDefault();
+          history.pushState(null, '', url.hash);
+          scrollToId(id, true);
+        });
+
+        if (location.hash && location.hash.length > 1 &&
+            document.getElementById(decodeURIComponent(location.hash.slice(1)))) {
+          var id = decodeURIComponent(location.hash.slice(1));
+
+          // Strip the fragment so the browser doesn't perform its own mistimed
+          // jump to a stale position. We keep the page at the top, wait until the
+          // target's position stops moving (lazy images + JS-rendered pricing
+          // cards have settled), then do ONE scroll — no multi-hop flicker.
+          history.replaceState(null, '', location.pathname + location.search);
+
+          var lastTop = -1, stable = 0, tries = 0;
+          var settle = function () {
+            var el = document.getElementById(id);
+            if (!el) return;
+            tries++;
+            var top = Math.round(el.getBoundingClientRect().top + window.pageYOffset);
+            if (top === lastTop) { stable++; } else { stable = 0; lastTop = top; }
+            if (stable >= 3 || tries >= 60) {
+              scrollToId(id, false);
+              history.replaceState(null, '', '#' + id);
+            } else {
+              setTimeout(settle, 50);
+            }
+          };
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () { setTimeout(settle, 0); });
+          } else {
+            setTimeout(settle, 0);
+          }
+        }
+      })();
+    </script>
+
+    <!-- Lenis smooth scrolling -->
+    <script>
+      import Lenis from "lenis";
+
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const lenis = new Lenis({ duration: 1.1 });
+
+        document.querySelectorAll('a[href^="#"]').forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const id = link.getAttribute("href");
+            if (!id || id === "#") return;
+            const target = document.querySelector(id);
+            if (!target) return;
+            e.preventDefault();
+            lenis.scrollTo(target as HTMLElement, { offset: -80 });
+          });
+        });
+
+        const raf = (time: number) => {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        };
+        requestAnimationFrame(raf);
+      }
+    </script>
+
+    <!-- AOS init -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof AOS !== 'undefined') {
+          AOS.init({ once: true, duration: 600, offset: 80 });
+        }
+      });
+    </script>
+
+    <!-- UTM tracking -->
+    <script is:inline src="/js/utm.js?v=2"></script>
+
+    <!-- FAQ accordion (used across many pages) -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.faq-question').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var item = btn.closest('.faq-item');
+            var answer = item ? item.querySelector('.faq-answer') : null;
+            var icon = btn.querySelector('.faq-icon');
+            var isActive = btn.classList.contains('active');
+            document.querySelectorAll('.faq-question.active').forEach(function(activeBtn) {
+              activeBtn.classList.remove('active');
+              var activeItem = activeBtn.closest('.faq-item');
+              if (activeItem) {
+                var activeAnswer = activeItem.querySelector('.faq-answer');
+                var activeIcon = activeBtn.querySelector('.faq-icon');
+                if (activeAnswer) activeAnswer.classList.remove('active');
+                if (activeIcon) activeIcon.classList.remove('active');
+              }
+            });
+            if (!isActive && answer && icon) {
+              btn.classList.add('active');
+              answer.classList.add('active');
+              icon.classList.add('active');
+            }
+          });
+        });
+      });
+    </script>
+
+    <slot name="scripts" />
+  </body>
+</html>

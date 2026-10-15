@@ -1,0 +1,1388 @@
+{
+  "meta": {
+    "verified_on": "2026-10-01",
+    "description": "Firm-specific, dated rules read from each firm's own pages (FE-34). null = not confirmed; never filled from memory. basis: official = fetched official pages; excerpt = excerpts of official pages only; none = nothing verifiable."
+  },
+  "firms": {
+    "apex-trader-funding": {
+      "name": "Apex Trader Funding",
+      "status": "operating",
+      "status_note": "Official help-center pages (Apex 3.0 / Legacy PA articles) are live; most official pages returned HTTP 403 to the fetcher, so only search excerpts of official pages were read.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://support.apextraderfunding.com/hc/en-us/articles/40463668243099-Prohibited-Activities",
+        "https://apextraderfunding.com/help-center/getting-started/prohibited-activities/"
+      ],
+      "market": "futures",
+      "platforms": [],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "restricted",
+      "automation_note": "Automation prohibited on funded PA and Live accounts (AI, bots, algorithms, fully automated systems, HFT); semi-automation of a manually opened position (brackets, trailing stops) allowed.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Copying allowed only if user manually places each order in one originating account and replicates to own accounts; PA must be traded only by the account holder.",
+      "pmt_route": "Tradovate or Rithmic",
+      "pmt_cannot_note": "Apex prohibits bot and fully automated order placement on funded PA and Live accounts, so PickMyTrade webhook orders should not be used there; evaluation-account rules were not confirmed.",
+      "basis": "excerpt"
+    },
+    "topstep": {
+      "name": "Topstep",
+      "status": "operating",
+      "status_note": "Help center and program pages live; Trading Combine, Express Funded Account (Standard and Consistency) and Live Funded Account described.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://help.topstep.com/en/articles/8284099-topstep-program-overview",
+        "https://help.topstep.com/en/articles/8284197-trading-combine-parameters",
+        "https://help.topstep.com/en/articles/8284215-express-funded-account-parameters",
+        "https://www.topstep.com/express-funded-account-rules",
+        "https://help.topstep.com/en/articles/10305426-prohibited-trading-strategies-at-topstep",
+        "https://help.topstep.com/en/articles/11187768-topstepx-api-access"
+      ],
+      "market": "futures",
+      "platforms": [
+        "TopstepX"
+      ],
+      "programs": [
+        {
+          "name": "Trading Combine",
+          "account_sizes": "$50K, $100K, $150K",
+          "profit_target": null,
+          "profit_split": null,
+          "fee": "monthly subscription (amount not confirmed)"
+        },
+        {
+          "name": "Express Funded Account (Standard / Consistency)",
+          "account_sizes": "matches Combine size",
+          "profit_target": null,
+          "profit_split": "90%",
+          "fee": "no monthly subscription"
+        }
+      ],
+      "daily_loss": "Optional on Express Funded Accounts; Live Funded Account has a Daily Loss Limit",
+      "max_loss": {
+        "value": "Max Loss Limit $2,000 ($50K), $3,000 ($100K), $4,500 ($150K)",
+        "type": null
+      },
+      "consistency_rule": "Combine: best day below 55% of profit target. XFA Consistency path: 40% target; Standard path: 5 winning days of $150+",
+      "min_trading_days": "Combine: can pass in as few as 2 days; XFA Consistency path: 3 days",
+      "automation_policy": "restricted",
+      "automation_note": "Custom bots allowed via TopstepX/ProjectX API, but HFT is prohibited and orders must originate from your personal device; VPS, VPN or remote servers may not place orders.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Trade copier reported available for Combine and XFA accounts, not Live Funded (search excerpt of official help center).",
+      "pmt_route": "ProjectX/TopstepX",
+      "pmt_cannot_note": "Topstep bans placing orders from VPS/VPN/remote servers and HFT; cloud-hosted webhook execution may conflict with the personal-device requirement. Not reachable via MT4/MT5.",
+      "basis": "excerpt"
+    },
+    "take-profit-trader": {
+      "name": "Take Profit Trader",
+      "status": "operating",
+      "status_note": "Official site shows Test, PRO and PRO+ programs; help-center pages returned HTTP 403, so rules come from the homepage and search excerpts of official help pages.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://www.takeprofittrader.com",
+        "https://takeprofittraderhelp.zendesk.com/hc/en-us/articles/34431153546397-TakeProfitTrader-Universal-Trading-Policies-UTP"
+      ],
+      "market": "futures",
+      "platforms": [
+        "NinjaTrader",
+        "TradingView",
+        "Tradovate",
+        "RTrader",
+        "Quantower",
+        "MotiveWave"
+      ],
+      "programs": [
+        {
+          "name": "Test",
+          "account_sizes": null,
+          "profit_target": null,
+          "profit_split": "none (no withdrawals)",
+          "fee": null
+        },
+        {
+          "name": "PRO",
+          "account_sizes": null,
+          "profit_target": null,
+          "profit_split": "80%",
+          "fee": "one-time $130 PRO fee"
+        },
+        {
+          "name": "PRO+",
+          "account_sizes": null,
+          "profit_target": null,
+          "profit_split": "90%",
+          "fee": null
+        }
+      ],
+      "daily_loss": null,
+      "max_loss": {
+        "value": "PRO+: end-of-day drawdown",
+        "type": "trailing_eod"
+      },
+      "consistency_rule": null,
+      "min_trading_days": "3 trading days to reach PRO (homepage)",
+      "automation_policy": "prohibited",
+      "automation_note": "Universal Trading Policies (search excerpt): automated systems, bots and algorithmic execution tools not permitted; all trades must be placed manually. Applies to Test, PRO, PRO+.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Trade Copier Policy excerpt: copiers allowed only across accounts you own and control, using approved copiers.",
+      "pmt_route": "Rithmic",
+      "pmt_cannot_note": "Firm rules prohibit automated/bot order placement, so PickMyTrade webhook orders are not permitted even though Tradovate/Rithmic connectivity exists.",
+      "basis": "excerpt"
+    },
+    "tradeify": {
+      "name": "Tradeify",
+      "status": "operating",
+      "status_note": "Homepage and Funded Trader Agreement live; Growth, Select and Lightning programs listed. Help-center rule pages returned HTTP 403.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://tradeify.co",
+        "https://tradeify.co/funded-trader-agreement"
+      ],
+      "market": "futures",
+      "platforms": [
+        "Tradovate",
+        "WealthCharts",
+        "Rithmic/Tradesea"
+      ],
+      "programs": [
+        {
+          "name": "Growth",
+          "account_sizes": "$25K-$150K",
+          "profit_target": null,
+          "profit_split": "90%",
+          "fee": null
+        },
+        {
+          "name": "Select",
+          "account_sizes": "$25K-$150K",
+          "profit_target": null,
+          "profit_split": "90%",
+          "fee": null
+        },
+        {
+          "name": "Lightning",
+          "account_sizes": "$25K-$150K",
+          "profit_target": null,
+          "profit_split": "90%",
+          "fee": null
+        }
+      ],
+      "daily_loss": null,
+      "max_loss": {
+        "value": "End-of-day drawdown (homepage; amounts not confirmed)",
+        "type": "trailing_eod"
+      },
+      "consistency_rule": "Homepage: 35% on Growth/Select funded accounts; none stated for Lightning",
+      "min_trading_days": null,
+      "automation_policy": "restricted",
+      "automation_note": "Agreement s.6.6: bots allowed only if trader is sole owner of the strategy and no one else has access; HFT bots prohibited. s.6.8: 50%+ of profit must come from trades held over 10 seconds.",
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": "Agreement s.6.7 text read as prohibiting copying between accounts; a help-center excerpt says own accounts are allowed. Conflicting, unresolved.",
+      "pmt_route": "Tradovate",
+      "pmt_cannot_note": "Bot use must be self-owned and not HFT; microscalping rule applies. Webhook orders are permitted only if these conditions are met.",
+      "basis": "excerpt"
+    },
+    "leeloo-trading": {
+      "name": "Leeloo Trading",
+      "status": "operating",
+      "status_note": "Official site and support portal live; offers Practice and Performance Accounts with monthly subscriptions.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://leelootrading.com",
+        "https://support.leelootrading.com/kb/root.aspx",
+        "https://support.leelootrading.com/kb/a205/is-dca-or-algo-trading-allowed-at-leeloo.aspx"
+      ],
+      "market": "futures",
+      "platforms": [
+        "NinjaTrader 7/8",
+        "Rithmic Pro",
+        "EdgeProX",
+        "MotiveWave",
+        "MultiCharts",
+        "ATAS",
+        "Sierra Charts",
+        "Bookmap X-Ray",
+        "Trade Navigator"
+      ],
+      "programs": [
+        {
+          "name": "Practice Accounts to Performance Accounts",
+          "account_sizes": "$25K-$300K",
+          "profit_target": "e.g. $1,500 on $25K Aspire",
+          "profit_split": null,
+          "fee": "Aspire $250 up to Explode $850 (homepage table); PA $88/month"
+        }
+      ],
+      "daily_loss": null,
+      "max_loss": {
+        "value": "e.g. $1,500 trailing on $25K Aspire",
+        "type": "trailing_other"
+      },
+      "consistency_rule": "Daily profit in a PA should not exceed 30% of net profit; flipping on under 5% of days",
+      "min_trading_days": "10 active U.S. trading days",
+      "automation_policy": "prohibited",
+      "automation_note": "Full automation (auto-entry and auto-exit) not allowed; any system placing or managing trades without manual input is prohibited on Practice and Performance Accounts.",
+      "copy_trading_policy": "prohibited",
+      "copy_trading_note": "Copying another person's trades, copier tools and external signal bots are not allowed; manual trades from alerts are fine.",
+      "pmt_route": "Rithmic",
+      "pmt_cannot_note": "Leeloo prohibits fully automated order placement, so PickMyTrade webhook orders are not allowed on Practice or Performance Accounts.",
+      "basis": "official"
+    },
+    "fundednext": {
+      "name": "FundedNext",
+      "status": "operating",
+      "status_note": "Official futures site and help center are live and list active Futures challenges (Flex, Legacy, Rapid, Bolt).",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://fundednext.com/futures",
+        "https://fundednext.com/futures-challenge-terms",
+        "https://helpfutures.fundednext.com/en/articles/14298560-is-the-usage-of-automated-trading-systems-eas-and-bots-allowed-in-fundednext-futures",
+        "https://fundednext.com/general-rules/futures/what-is-forbidden"
+      ],
+      "market": "multi",
+      "platforms": [
+        "NinjaTrader",
+        "Tradovate",
+        "TradingView"
+      ],
+      "programs": [
+        {
+          "name": "Flex",
+          "account_sizes": "$50K-$150K",
+          "profit_target": "$2,500 (50K) / $5,000 (100K) / $8,000 (150K)",
+          "profit_split": "95%",
+          "fee": "$69.99-$249.99"
+        },
+        {
+          "name": "Legacy",
+          "account_sizes": "$25K-$100K",
+          "profit_target": "$1,250 (25K) / $3,000 (50K) / $6,000 (100K)",
+          "profit_split": "up to 90%",
+          "fee": null
+        },
+        {
+          "name": "Rapid",
+          "account_sizes": "$25K-$100K",
+          "profit_target": "$1,500 (25K) / $3,000 (50K) / $5,000 (100K)",
+          "profit_split": "90%",
+          "fee": "from $99.99"
+        },
+        {
+          "name": "Bolt",
+          "account_sizes": "$50K",
+          "profit_target": null,
+          "profit_split": "up to 90%",
+          "fee": "$99.99"
+        }
+      ],
+      "daily_loss": "Flex/Legacy: none; Rapid Daily: mandatory ($500/$1,000/$1,250 for 25K/50K/100K); Rapid Pro: optional add-on",
+      "max_loss": {
+        "value": "Trailing on highest end-of-day balance (e.g. $1,500 on Flex 50K)",
+        "type": "trailing_eod"
+      },
+      "consistency_rule": "Flex and Legacy: 40% of profit target per day; Rapid: none during challenge",
+      "min_trading_days": null,
+      "automation_policy": "allowed",
+      "automation_note": "Help center: EAs, bots and automated systems allowed in challenge and funded phases; no setup support. Latency abuse, order flooding, latency arbitrage, spoofing, layering, grid trading prohibited; micro-scalping under 10s limited if 40%+ of trades/profit. Terms say firm may ask to see the system.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Copying between accounts registered to the same trader allowed; copying others, group or coordinated trading prohibited.",
+      "pmt_route": "Tradovate",
+      "pmt_cannot_note": "NinjaTrader-only or TradingView-only accounts are not reachable by PickMyTrade; use the Tradovate connection. Latency-sensitive or order-flooding strategies are prohibited by the firm.",
+      "basis": "official"
+    },
+    "myfundedfx": {
+      "name": "MyFundedFX",
+      "status": "closed",
+      "status_note": "myfundedfx.com redirects (302) to seacrestmarkets.io, which states 'Seacrest Markets is no longer operating'; MyFundedFX is not named on that page and no successor program was found.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://myfundedfx.com",
+        "https://seacrestmarkets.io/"
+      ],
+      "market": "multi",
+      "platforms": [],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "unclear",
+      "automation_note": null,
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": null,
+      "pmt_route": "none",
+      "pmt_cannot_note": "No operating official site found, so no accounts to automate.",
+      "basis": "official"
+    },
+    "ftmo": {
+      "name": "FTMO",
+      "status": "operating",
+      "status_note": "Official site lists active Forex/CFD 1-Step and 2-Step programs plus a Futures offering (Growth and Pro).",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://ftmo.com/en/faq/",
+        "https://ftmo.com/en/trading-objectives/",
+        "https://ftmo.com/en/futures/trading-objectives-and-rules/",
+        "https://ftmo.com/en/faq/which-instruments-can-i-trade-and-what-strategies-am-i-allowed-to-use/"
+      ],
+      "market": "multi",
+      "platforms": [
+        "MT4",
+        "MT5",
+        "cTrader",
+        "TradingView"
+      ],
+      "programs": [
+        {
+          "name": "2-Step (Forex/CFD)",
+          "account_sizes": "up to $200K",
+          "profit_target": "10% Challenge / 5% Verification",
+          "profit_split": null,
+          "fee": null
+        },
+        {
+          "name": "1-Step (Forex/CFD)",
+          "account_sizes": "up to $200K",
+          "profit_target": "10%",
+          "profit_split": null,
+          "fee": null
+        },
+        {
+          "name": "Futures Growth",
+          "account_sizes": "$50K-$150K",
+          "profit_target": "$3,000 / $6,000 / $9,000",
+          "profit_split": "90% payout ratio",
+          "fee": null
+        },
+        {
+          "name": "Futures Pro",
+          "account_sizes": "$50K-$150K",
+          "profit_target": "$3,000 / $6,000 / $9,000",
+          "profit_split": "90% payout ratio",
+          "fee": null
+        }
+      ],
+      "daily_loss": "2-Step: 5% of initial capital; 1-Step: 3%; Futures Pro: $1,000-$2,000; Futures Growth: none in evaluation (soft limit when funded)",
+      "max_loss": {
+        "value": "2-Step: 10% static; 1-Step: 10% EOD trailing; Futures: EOD trailing $2,000-$5,000",
+        "type": "trailing_eod"
+      },
+      "consistency_rule": "1-Step: best day max 50% of positive days' profit; Futures Growth 40%, Pro 50% best-day rule; 2-Step: none stated",
+      "min_trading_days": "2-Step: at least 4 trading days",
+      "automation_policy": "allowed",
+      "automation_note": "FAQ states algorithmic trading and EAs are permitted if trading stays realistic and replicable live. Third-party EAs risk breaching max capital allocation per strategy; limits of 200 orders at a time and 2,000 requests/day; hyperactive EAs may be forbidden.",
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": "Copy trading rule not found on pages fetched.",
+      "pmt_route": "cTrader",
+      "pmt_cannot_note": "MT4/MT5 accounts cannot be automated by PickMyTrade; only cTrader accounts. Futures account platform connection not confirmed on pages read.",
+      "basis": "official"
+    },
+    "fundingpips": {
+      "name": "FundingPips",
+      "status": "operating",
+      "status_note": "Official help center articles (via search listing) show current programs (2 Step Pro, 1 Step Flex, Zero, Monthly Competition); official pages returned HTTP 403/429 on fetch so details are limited.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://help.fundingpips.com/hc/en-us/articles/34505029138449-Trading-Conduct-and-Security-Standards"
+      ],
+      "market": "forex",
+      "platforms": [],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "restricted",
+      "automation_note": "Per help center excerpt: third-party EAs only as trade/risk manager; own EAs allowed full automation with proof of ownership; 1K Instant allows third-party EAs/copiers; Monthly Competition bans all EAs. HFT, latency arb, server spamming, tick scalping banned.",
+      "copy_trading_policy": "prohibited",
+      "copy_trading_note": "Copy trading between different users' accounts and third-party account management prohibited (excerpt).",
+      "pmt_route": "none",
+      "pmt_cannot_note": "Platforms not confirmed from official page; forex accounts on MT4/MT5/DXTrade cannot be automated by PickMyTrade. Third-party webhook automation is disallowed on most programs, which restrict third-party EAs to trade/risk management.",
+      "basis": "excerpt"
+    },
+    "the5ers": {
+      "name": "The5%ers",
+      "status": "operating",
+      "status_note": "Official site live (operating since 2016 per its own text) with CFD programs and a Futures offering.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://the5ers.com",
+        "https://the5ers.com/futures/",
+        "https://the5ers.com/challenge-programs-bootcamp-high-stakes-hyper-growth-explained/",
+        "https://www.the5ers.com/faqs/prohibited-trading-practices/",
+        "https://the5ers.com/futures-faqs/can-i-copytrade-between-my-futures-accounts/"
+      ],
+      "market": "multi",
+      "platforms": [
+        "MT5",
+        "BlackArrow (futures demo)"
+      ],
+      "programs": [
+        {
+          "name": "Hyper Growth (1-Step)",
+          "account_sizes": null,
+          "profit_target": "10%",
+          "profit_split": "starts 50%, up to 100%",
+          "fee": null
+        },
+        {
+          "name": "High Stakes (2-Step)",
+          "account_sizes": null,
+          "profit_target": "10% / 5%",
+          "profit_split": "starts 80%, up to 100%",
+          "fee": null
+        },
+        {
+          "name": "Futures Day Trade / Swing",
+          "account_sizes": "$25K",
+          "profit_target": "6% eval / 4% funded",
+          "profit_split": null,
+          "fee": "$59 one-time, refunded on 3rd payout"
+        },
+        {
+          "name": "Bootcamp (3-Step)",
+          "account_sizes": null,
+          "profit_target": "6% per step",
+          "profit_split": "starts 50%, up to 100%",
+          "fee": null
+        }
+      ],
+      "daily_loss": "Futures: 4% max daily loss; CFD Hyper Growth 3% pause; High Stakes 5%",
+      "max_loss": {
+        "value": "Futures: end-of-day drawdown; CFD: 6% (Hyper Growth), 10% (High Stakes)",
+        "type": "trailing_eod"
+      },
+      "consistency_rule": "Futures: 40% consistency rule; Summer Plan CFD: 50% daily",
+      "min_trading_days": "High Stakes/Pro Growth: 3 profitable days; Bootcamp/Hyper Growth: none",
+      "automation_policy": "restricted",
+      "automation_note": "FAQ: EAs allowed only if trader owns the source code; no third-party EAs with shared trades, HFT, tick scalping, latency/reverse/hedge arbitrage, rollover scalping or excessive server requests. Futures-specific bot rules not found.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Futures: copying own accounts only, on 25K/50K accounts totaling up to $75,000; copying other traders prohibited.",
+      "pmt_route": "none",
+      "pmt_cannot_note": "Futures platform connection (beyond BlackArrow demo) not confirmed on official pages; MT5 CFD accounts cannot be automated by PickMyTrade. Third-party signal/EA use is prohibited.",
+      "basis": "official"
+    },
+    "e8-markets": {
+      "name": "E8 Markets",
+      "status": "unknown",
+      "status_note": "e8markets.com and its help centers returned HTTP 403 to fetches; no official page could be read today.",
+      "verified_on": "2026-10-01",
+      "sources": [],
+      "market": "multi",
+      "platforms": [],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "unclear",
+      "automation_note": null,
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": null,
+      "pmt_route": "Tradovate (not confirmed on an official page today)",
+      "pmt_cannot_note": "Official rules could not be read; automation and webhook-order policy is unverified.",
+      "basis": "none"
+    },
+    "alpha-capital-group": {
+      "name": "Alpha Capital Group",
+      "status": "operating",
+      "status_note": "alphacapitalgroup.uk and help center are live; the site lists MT5, cTrader, TradeLocker and DX Trade.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://alphacapitalgroup.uk",
+        "https://help.alphacapitalgroup.uk/en/articles/6934236-can-i-use-an-expert-advisor-ea",
+        "https://help.alphacapitalgroup.uk/en/articles/8786973-is-copy-trading-allowed",
+        "https://help.alphacapitalgroup.uk/en/articles/6934210-what-are-the-daily-risk-limits-and-how-do-they-work",
+        "https://help.alphacapitalgroup.uk/en/articles/6934220-what-is-the-maximum-total-loss",
+        "https://help.alphacapitalgroup.uk/en/articles/6934275-what-are-prohibited-trading-strategies"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MetaTrader 5",
+        "cTrader",
+        "TradeLocker",
+        "DX Trade"
+      ],
+      "programs": [
+        {
+          "name": "Alpha Pro / Swing / One / Three / Direct plans",
+          "account_sizes": "up to $200K",
+          "profit_target": null,
+          "profit_split": "80% standard, up to 90% with add-on",
+          "fee": null
+        }
+      ],
+      "daily_loss": "3%-5% of starting balance/equity depending on plan",
+      "max_loss": {
+        "value": "6%-10% static (Alpha Pro, Swing, Three); 4%-8% trailing (Alpha One, Direct)",
+        "type": "trailing_other"
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "restricted",
+      "automation_note": "EAs allowed on MT5 only, for trade management (lot size, SL/TP, risk) with pre-approval of the EX5/MQ5 file; independent automated systems, third-party bots, HFT and latency arbitrage prohibited.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Allowed from own/verified master accounts with prior notice to support; copying from other traders or groups prohibited; not allowed on cTrader, DX Trade, TradeLocker.",
+      "pmt_route": "none",
+      "pmt_cannot_note": "EAs are unavailable on cTrader/TradeLocker/DX Trade and copy trading is barred there; independent automated systems are banned, so webhook-placed automation is not supported.",
+      "basis": "official"
+    },
+    "aqua-funded": {
+      "name": "AquaFunded",
+      "status": "operating",
+      "status_note": "aquafunded.com and help center live; futures offered on a separate site (aquafutures.io), not reviewed.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://aquafunded.com",
+        "https://help.aquafunded.com/en/articles/11831659-are-eas-trade-copiers-allowed",
+        "https://help.aquafunded.com/en/articles/11877755-is-copy-trading-allowed",
+        "https://help.aquafunded.com/en/articles/11875903-consistency-rule",
+        "https://help.aquafunded.com/en/articles/15255671-are-there-minimum-trading-days",
+        "https://help.aquafunded.com/en/articles/9250960-what-platforms-are-available"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MatchTrader",
+        "TradeLocker",
+        "Meta Trader 5",
+        "cTrader"
+      ],
+      "programs": [
+        {
+          "name": "CFD models (Instant, Two Step, Flex and others)",
+          "account_sizes": "$2.5K-$400K",
+          "profit_target": null,
+          "profit_split": "90% standard; 100% add-on",
+          "fee": "from $14 for $5K"
+        }
+      ],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": "Funded payout rule by model: 15% (Instant Standard), 20% (Instant Pro), 25% (One Step Pro), 50% (Two Step Pro)",
+      "min_trading_days": "None for evaluations; 3-5 days on funded/instant models (day = at least 0.5% profit)",
+      "automation_policy": "allowed",
+      "automation_note": "EAs allowed as part of the trader's own personal strategy and must comply with all trading rules.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Copying allowed between own AquaFunded accounts and external accounts, only from personal accounts legally bound to the account holder.",
+      "pmt_route": "Match-Trader, TradeLocker or cTrader",
+      "pmt_cannot_note": "MT5-only accounts cannot be automated by PickMyTrade.",
+      "basis": "official"
+    },
+    "audacity-capital": {
+      "name": "Audacity Capital",
+      "status": "operating",
+      "status_note": "audacitycapital.co.uk redirects to audacity.capital, which is live.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://audacity.capital/",
+        "https://audacity.capital/knowledge-center/trading-guidelines/"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MetaTrader 5",
+        "DXTrade"
+      ],
+      "programs": [
+        {
+          "name": "Ability Challenge (2-step)",
+          "account_sizes": "$5K-$200K",
+          "profit_target": "10%",
+          "profit_split": null,
+          "fee": "$42 ($5K) to $902 ($200K)"
+        },
+        {
+          "name": "Ability One (1-step)",
+          "account_sizes": "$5K-$200K",
+          "profit_target": "5%",
+          "profit_split": null,
+          "fee": null
+        },
+        {
+          "name": "FTP (instant funding)",
+          "account_sizes": null,
+          "profit_target": null,
+          "profit_split": "up to 90%",
+          "fee": null
+        }
+      ],
+      "daily_loss": "7.5% (Challenge), 5% (Ability One, FTP)",
+      "max_loss": {
+        "value": "15% Challenge, 10% Ability One and FTP; static in challenges, trailing on FTP",
+        "type": "trailing_other"
+      },
+      "consistency_rule": "none (applies only to free competition accounts)",
+      "min_trading_days": "4 days Challenge, 3 Ability One, 5 FTP (per knowledge center; homepage says 4 for Ability One)",
+      "automation_policy": "restricted",
+      "automation_note": "EAs allowed if they follow prohibited-strategy rules and are not from third-party signals; HFT and tick scalping (trades under 2 minutes) prohibited.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Allowed between own accounts and from an external account only if it belongs to the trader; third-party mirroring prohibited.",
+      "pmt_route": "none",
+      "pmt_cannot_note": "Only MT5 and DXTrade are offered; PickMyTrade does not connect to either.",
+      "basis": "official"
+    },
+    "blueguardian": {
+      "name": "BlueGuardian",
+      "status": "operating",
+      "status_note": "blueguardian.com live with separate CFD and futures help centers.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://blueguardian.com",
+        "https://help.blueguardian.com/en/articles/9661512-prohibited-trading-practices-account-policies",
+        "https://helpfutures.blueguardian.com/en/articles/15654479-standard-account-rules"
+      ],
+      "market": "multi",
+      "platforms": [
+        "MetaTrader 5",
+        "TradeLocker",
+        "Match-Trader",
+        "NinjaTrader",
+        "Tradovate",
+        "DeepCharts",
+        "TradingView"
+      ],
+      "programs": [
+        {
+          "name": "Futures Standard",
+          "account_sizes": "$25K-$150K",
+          "profit_target": "6%",
+          "profit_split": "90%",
+          "fee": null
+        },
+        {
+          "name": "CFD Instant/1 Step/2 Step",
+          "account_sizes": "$5K-$400K",
+          "profit_target": null,
+          "profit_split": "up to 90%",
+          "fee": "$467 for 100K Instant (before code)"
+        }
+      ],
+      "daily_loss": "Futures Standard: 2% (none on $25K); soft breach, resets next day",
+      "max_loss": {
+        "value": "End-of-day trailing, locks at starting balance",
+        "type": "trailing_eod"
+      },
+      "consistency_rule": "Futures Standard funded: 40% best-day rule per payout cycle",
+      "min_trading_days": null,
+      "automation_policy": "restricted",
+      "automation_note": "CFD site: EAs permitted per homepage, but tick scalping, HFT, arbitrage bots and trade emulators banned; futures bot/EA policy not read on an official page.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Futures Standard: copy trading only between accounts the trader legally owns; CFD homepage lists copy trading as permitted.",
+      "pmt_route": "Tradovate, TradeLocker or Match-Trader",
+      "pmt_cannot_note": "MT5 accounts cannot be automated by PickMyTrade; futures micro-scalping (under 10 seconds) is restricted.",
+      "basis": "official"
+    },
+    "blufx": {
+      "name": "BluFX",
+      "status": "unknown",
+      "status_note": "Official domain blufx.co redirected to a non-official host and could not be read; only third-party results say it ceased operations.",
+      "verified_on": "2026-10-01",
+      "sources": [],
+      "market": "forex",
+      "platforms": [],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "unclear",
+      "automation_note": null,
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": null,
+      "pmt_route": "none",
+      "pmt_cannot_note": "No verifiable official rules or active site found, so no automation route can be stated.",
+      "basis": "none"
+    },
+    "brightfunded": {
+      "name": "BrightFunded",
+      "status": "operating",
+      "status_note": "Official site and help center are live; accounts are described as simulated demo accounts.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://brightfunded.com",
+        "https://brightfunded.com/terms-conditions",
+        "https://help.brightfunded.com/en/articles/9241704-which-strategies-are-prohibited-at-brightfunded",
+        "https://help.brightfunded.com/en/articles/9241611-what-are-the-current-rules-for-the-evaluation-process"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MetaTrader 5 (MT5)",
+        "cTrader",
+        "Match-Trader (DX)"
+      ],
+      "programs": [
+        {
+          "name": "1-Step",
+          "account_sizes": null,
+          "profit_target": "10%",
+          "profit_split": null,
+          "fee": null
+        },
+        {
+          "name": "2-Step Bright",
+          "account_sizes": null,
+          "profit_target": "8% then 5%",
+          "profit_split": null,
+          "fee": null
+        },
+        {
+          "name": "2-Step Classic",
+          "account_sizes": null,
+          "profit_target": "10% then 5%",
+          "profit_split": null,
+          "fee": null
+        }
+      ],
+      "daily_loss": "3% (1-Step), 4% (2-Step Bright), 5% (2-Step Classic); resets at rollover 11:30-11:59 PM CET",
+      "max_loss": {
+        "value": "6% trailing (1-Step); 8% static (Bright); 10% static (Classic)",
+        "type": "static"
+      },
+      "consistency_rule": null,
+      "min_trading_days": "5 days per stage (a trade must stay open at least 1 minute)",
+      "automation_policy": "prohibited",
+      "automation_note": "Terms forbid software, AI or ultra-high-speed trading that could manipulate the system; help center bans HFT/bots and systems executing orders with superhuman speed.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Terms: copy trading permitted only between accounts owned by the same individual.",
+      "pmt_route": "cTrader",
+      "pmt_cannot_note": "Automated or bot-placed orders are prohibited by BrightFunded rules, and MT5 and Match-Trader accounts are not natively reachable by PickMyTrade; cTrader is the only listed platform PMT supports.",
+      "basis": "official"
+    },
+    "city-traders-imperium": {
+      "name": "City Traders Imperium",
+      "status": "operating",
+      "status_note": "Official site live with 1-Step, 2-Step, Instant and Direct funding programs.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://citytradersimperium.com/",
+        "https://citytradersimperium.com/choosing-your-funding-program/",
+        "https://citytradersimperium.com/eas-on-cti-1-step-challenge-whats-allowed/"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MetaTrader 5",
+        "Match-Trader"
+      ],
+      "programs": [
+        {
+          "name": "1-Step Challenge",
+          "account_sizes": "up to $200K per account",
+          "profit_target": "8%",
+          "profit_split": "80% base, 90-100% VIP",
+          "fee": "from $29"
+        },
+        {
+          "name": "2-Step Challenge",
+          "account_sizes": "up to $200K per account",
+          "profit_target": "10% then 5%",
+          "profit_split": "80% base, 90-100% VIP",
+          "fee": "from $39"
+        },
+        {
+          "name": "Instant Funding",
+          "account_sizes": "up to $2M per account",
+          "profit_target": "10% per level",
+          "profit_split": "50-80% base, 90-100% VIP",
+          "fee": "from $79"
+        },
+        {
+          "name": "Direct Funding",
+          "account_sizes": "up to $2M per account",
+          "profit_target": null,
+          "profit_split": "70-80% base, 90-100% VIP",
+          "fee": "from $229"
+        }
+      ],
+      "daily_loss": "5% (2-Step only); none on 1-Step",
+      "max_loss": {
+        "value": "5% trailing (1-Step); 10% static (2-Step); 6% static (Instant/Direct)",
+        "type": "static"
+      },
+      "consistency_rule": "Minimum profit of 2% / $100 per profitable day listed on all programs",
+      "min_trading_days": "7 profitable days (1-Step/2-Step); 5 (Instant/Direct)",
+      "automation_policy": "allowed",
+      "automation_note": "EAs allowed; 1-Step permits third-party EAs, other programs require EAs you own. Stop-loss within 60 seconds required. HFT, latency arbitrage, gap trading banned.",
+      "copy_trading_policy": "prohibited",
+      "copy_trading_note": "1-Step guide prohibits copying from signal providers and sharing EAs with others.",
+      "pmt_route": "none",
+      "pmt_cannot_note": "CTI offers MT5 and Match-Trader; Match-Trader is a PMT route, but whether webhook-placed orders and copying of external signals are accepted is not stated, and MT5 is not supported by PMT.",
+      "basis": "official"
+    },
+    "for-traders": {
+      "name": "For Traders",
+      "status": "operating",
+      "status_note": "Official site live; describes itself as a SaaS educational trading simulation and evaluation company founded 2023.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://fortraders.com",
+        "https://fortraders.com/how-it-works",
+        "https://www.fortraders.com/general-rules-old",
+        "https://help.fortraders.com/en/articles/15343227-what-is-forbidden-with-us"
+      ],
+      "market": "multi",
+      "platforms": [
+        "MetaTrader 5 (MT5)",
+        "TradeLocker",
+        "cTrader"
+      ],
+      "programs": [
+        {
+          "name": "Fast",
+          "account_sizes": "$6K-$100K",
+          "profit_target": "9%",
+          "profit_split": "80%",
+          "fee": null
+        },
+        {
+          "name": "Fast Pro",
+          "account_sizes": "$6K-$100K",
+          "profit_target": "10%",
+          "profit_split": "80%",
+          "fee": null
+        },
+        {
+          "name": "Instant",
+          "account_sizes": "$6K-$50K",
+          "profit_target": "10%",
+          "profit_split": "80%",
+          "fee": null
+        },
+        {
+          "name": "Pay After Pass",
+          "account_sizes": "$25K-$200K",
+          "profit_target": "2%",
+          "profit_split": "80%",
+          "fee": null
+        }
+      ],
+      "daily_loss": "3% (listed forex programs)",
+      "max_loss": {
+        "value": "6% trailing (Fast, Instant, Pay After Pass); 6% static (Fast Pro)",
+        "type": "trailing_other"
+      },
+      "consistency_rule": "20% best-day on Fast master account; 15% on instant accounts per search snippet only (not confirmed)",
+      "min_trading_days": "3 days (Fast/Fast Pro); 6 (Instant); none (Pay After Pass)",
+      "automation_policy": "prohibited",
+      "automation_note": "Forbidden list bans automated bots and software executing trades without direct decision at execution time; also bans arbitrage, HFT (5-second minimum hold), grid, tick scalping, martingale.",
+      "copy_trading_policy": "prohibited",
+      "copy_trading_note": "Inbound copy trading into For Traders accounts is prohibited; copying outward to own external accounts is allowed (help center).",
+      "pmt_route": "TradeLocker",
+      "pmt_cannot_note": "Bot or webhook-placed orders are prohibited by For Traders rules, so PickMyTrade should not be used to place trades on its accounts even via TradeLocker or cTrader.",
+      "basis": "official"
+    },
+    "funded-trading-plus": {
+      "name": "Funded Trading Plus",
+      "status": "operating",
+      "status_note": "Official site and help center live; some older programs (e.g. Experienced Trader) are marked legacy.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://help.fundedtradingplus.com/trading-rules/",
+        "https://help.fundedtradingplus.com/2-step-classic-program-information/",
+        "https://help.fundedtradingplus.com/copy-trading-rules/",
+        "https://help.fundedtradingplus.com/experienced-trader-program-information/"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MT5",
+        "DXtrade",
+        "Match Trader",
+        "cTrader"
+      ],
+      "programs": [
+        {
+          "name": "2-Step Classic",
+          "account_sizes": "$10K-$2.5M (scaling)",
+          "profit_target": "7% per phase",
+          "profit_split": "80% standard",
+          "fee": null
+        }
+      ],
+      "daily_loss": "4% (2-Step Classic)",
+      "max_loss": {
+        "value": "8% static (2-Step Classic)",
+        "type": "static"
+      },
+      "consistency_rule": "50% on FT+ Trader simulated live account (2-Step Classic)",
+      "min_trading_days": null,
+      "automation_policy": "unclear",
+      "automation_note": "Official trading-rules page fetched does not state an EA policy; search snippet of help center says EAs allowed without arbitrage, not confirmed on a fetched page.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Copy trading allowed between your own accounts only; copying others or letting others copy you is prohibited.",
+      "pmt_route": "Match-Trader",
+      "pmt_cannot_note": "MT5, DXtrade and cTrader are not all reachable by PickMyTrade; only Match-Trader or cTrader accounts could be connected, and EA/webhook policy is unconfirmed.",
+      "basis": "excerpt"
+    },
+    "funder-pro": {
+      "name": "FunderPro",
+      "status": "operating",
+      "status_note": "Official site live with challenge, rules and terms pages.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://funderpro.com/the-challenge/",
+        "https://funderpro.com/trading-rules/",
+        "https://funderpro.com/terms-conditions/"
+      ],
+      "market": "forex",
+      "platforms": [],
+      "programs": [
+        {
+          "name": "One Phase",
+          "account_sizes": "$5K-$200K (range stated for all programs)",
+          "profit_target": "10%",
+          "profit_split": "up to 90%",
+          "fee": "$69 (entry listed)"
+        },
+        {
+          "name": "Pro (2-phase)",
+          "account_sizes": "$5K-$200K",
+          "profit_target": "5% phase 1 and 2 (site also shows 10%/8% examples on rules page)",
+          "profit_split": "up to 90%",
+          "fee": null
+        },
+        {
+          "name": "Classic (2-phase)",
+          "account_sizes": "$5K-$200K",
+          "profit_target": "5% phase 1 and 2",
+          "profit_split": "up to 90%",
+          "fee": null
+        }
+      ],
+      "daily_loss": "5% (Pro/Classic); 3% (One Phase); balance-based, resets 5:00 PM EST",
+      "max_loss": {
+        "value": "10% overall drawdown, balance-based",
+        "type": "static"
+      },
+      "consistency_rule": "none on Classic; consistency rule applies during Challenge on other programs",
+      "min_trading_days": "4 days for challenge phases",
+      "automation_policy": "restricted",
+      "automation_note": "Site says EAs permitted; T&C prohibit third-party EAs for tick/rollover scalping or HFT and require owning source code of third-party EAs. HFT and gap trading banned.",
+      "copy_trading_policy": "prohibited",
+      "copy_trading_note": "T&C forbid copy/mirror trading or using EAs to replicate trades among multiple clients.",
+      "pmt_route": null,
+      "pmt_cannot_note": "Trading platform not stated on official pages read (T&C call it a third-party platform); PMT route could not be confirmed. Instruments listed are forex/metals/oil/indices/crypto.",
+      "basis": "official"
+    },
+    "fxify": {
+      "name": "FXIFY",
+      "status": "operating",
+      "status_note": "Official site live with forex programs and an FXIFY Futures offering.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://fxify.com/",
+        "https://fxify.com/faqs/rules/",
+        "https://fxify.com/faqs/all-faqs/two-phase-pro/2-phase-pro-can-i-use-expert-advisors-eas-or-bots-for-trading/"
+      ],
+      "market": "multi",
+      "platforms": [
+        "TradingView",
+        "MetaTrader 5",
+        "DXTrade"
+      ],
+      "programs": [
+        {
+          "name": "Lightning Challenge (1-step)",
+          "account_sizes": "up to $100K",
+          "profit_target": "5%",
+          "profit_split": "up to 90%",
+          "fee": "from $59"
+        },
+        {
+          "name": "Instant Funding",
+          "account_sizes": "up to $50K",
+          "profit_target": "none (no evaluation)",
+          "profit_split": "up to 90%",
+          "fee": null
+        },
+        {
+          "name": "Evaluation (1/2/3-phase)",
+          "account_sizes": "up to $400K",
+          "profit_target": null,
+          "profit_split": "up to 90%",
+          "fee": null
+        },
+        {
+          "name": "FXIFY Futures",
+          "account_sizes": "up to $450K simulated",
+          "profit_target": null,
+          "profit_split": "up to 100%",
+          "fee": null
+        }
+      ],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": "unlimited trading days stated for evaluation programs",
+      "automation_policy": "restricted",
+      "automation_note": "Two Phase Pro: EAs allowed only after support reviews the EA; unapproved use can breach the account. Instant Funding/Instant Lite: EAs, bots, copiers not allowed.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Copy between own FXIFY accounts and to external accounts allowed per rules FAQ; not allowed on Instant Funding LITE.",
+      "pmt_route": "none",
+      "pmt_cannot_note": "Platforms named on official site (TradingView, MT5, DXTrade) are not PMT-connected; futures platform not confirmed on pages read. Instant accounts prohibit bots/EAs.",
+      "basis": "official"
+    },
+    "goat-funded-trader": {
+      "name": "Goat Funded Trader",
+      "status": "operating",
+      "status_note": "Official site and help center live; offers forex and futures products.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://www.goatfundedtrader.com/legal/terms-and-conditions",
+        "https://help.goatfundedtrader.com/en/collections/11969353-rules",
+        "https://help.goatfundedtrader.com/en/articles/10741900-which-platforms-can-i-trade-on",
+        "https://help.goatfundedtrader.com/en/articles/10749630-can-i-use-expert-advisors-eas"
+      ],
+      "market": "multi",
+      "platforms": [
+        "cTrader",
+        "TradeLocker",
+        "MatchTrader",
+        "Volumetrica",
+        "MT5"
+      ],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": "A consistency rule exists (help article 'What Is the Consistency Rule?'); details not read",
+      "min_trading_days": null,
+      "automation_policy": "restricted",
+      "automation_note": "EAs allowed if compliant with prohibited practices; HFT and Gold Arbitrage EAs banned; third-party/off-the-shelf EAs breach; may be asked to show EA code.",
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": "Prohibited practices list duplicating trades/trade ideas across accounts; copy-trading article not read.",
+      "pmt_route": "TradeLocker, Match-Trader, cTrader",
+      "pmt_cannot_note": "MT5 and Volumetrica not PMT-connected; MT5/cTrader unavailable to US clients. Third-party EAs and duplicated trades across accounts prohibited; per-account-type platform support not confirmed.",
+      "basis": "official"
+    },
+    "lark-funding": {
+      "name": "Lark Funding",
+      "status": "operating",
+      "status_note": "Official site live, operating since 2022.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://larkfunding.com/",
+        "https://helpdesk.larkfunding.com/en/articles/7174115-can-i-use-an-expert-advisor",
+        "https://helpdesk.larkfunding.com/en/articles/11739114-what-is-lark-funding"
+      ],
+      "market": "forex",
+      "platforms": [
+        "DXTrade",
+        "CTrader",
+        "MatchTrader"
+      ],
+      "programs": [
+        {
+          "name": "Instant",
+          "account_sizes": "$10K-$200K",
+          "profit_target": "$1,000 (10%) shown per homepage example",
+          "profit_split": null,
+          "fee": "$200 one-time (as shown)"
+        },
+        {
+          "name": "1-Step",
+          "account_sizes": null,
+          "profit_target": null,
+          "profit_split": "80% above base",
+          "fee": null
+        },
+        {
+          "name": "3-Step",
+          "account_sizes": null,
+          "profit_target": null,
+          "profit_split": null,
+          "fee": null
+        }
+      ],
+      "daily_loss": "5% (homepage example $500 on $10K)",
+      "max_loss": {
+        "value": "7% (homepage example $700)",
+        "type": "static"
+      },
+      "consistency_rule": "none",
+      "min_trading_days": "none",
+      "automation_policy": "restricted",
+      "automation_note": "EAs not prohibited, but no public API; connections at own risk. EAs designed for HFT or arbitrage strictly prohibited.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Copier allowed between funded accounts; cannot take same trades across multiple evaluations; copy-trading services prohibited.",
+      "pmt_route": "cTrader, Match-Trader",
+      "pmt_cannot_note": "DXTrade not PMT-connected. Lark offers no public API; connections to its cTrader/Match-Trader instances are at the user's own risk.",
+      "basis": "official"
+    },
+    "lux-trading-firm": {
+      "name": "Lux Trading Firm",
+      "status": "operating",
+      "status_note": "Official trading-rules page live; forex/CFD firm, no futures on rules page.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://luxtradingfirm.com/trading-rules/"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MT5",
+        "Lux Trader"
+      ],
+      "programs": [
+        {
+          "name": "Career Trading Plan (Evaluation > Advanced > Professional)",
+          "account_sizes": "$50K, $200K, $1MM special",
+          "profit_target": "$50K: $3K/$2K; $200K: $12K/$8K; 10% later stages",
+          "profit_split": "75%",
+          "fee": "reset $139 (50K), $299 (200K), $699 ($1MM)"
+        }
+      ],
+      "daily_loss": null,
+      "max_loss": {
+        "value": "6% maximum relative drawdown",
+        "type": "trailing_other"
+      },
+      "consistency_rule": "Evaluation: risk per trade must be the same % of available risk capital, +/-20% variation",
+      "min_trading_days": "29 days in Evaluation (15 for swing traders)",
+      "automation_policy": "restricted",
+      "automation_note": "Self-developed EAs allowed; third-party EAs prohibited; HFT over 2,500 server messages per 24h forbidden.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Limited copy trading between own accounts allowed since Nov 2024; third-party signals/commercial EAs prohibited.",
+      "pmt_route": "none",
+      "pmt_cannot_note": "MT5 and proprietary Lux Trader platform are not PMT-connected.",
+      "basis": "official"
+    },
+    "maven-trading": {
+      "name": "Maven Trading",
+      "status": "operating",
+      "status_note": "Terms and FAQ pages live; no closure notice seen.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://maventrading.com/terms-and-conditions",
+        "https://maventrading.com/faqs"
+      ],
+      "market": "forex",
+      "platforms": [
+        "MetaTrader 5",
+        "Match Trader"
+      ],
+      "programs": [
+        {
+          "name": "Two-Step",
+          "account_sizes": null,
+          "profit_target": "8% Phase 1 / 5% Phase 2",
+          "profit_split": "80%",
+          "fee": null
+        },
+        {
+          "name": "One-Step",
+          "account_sizes": null,
+          "profit_target": "8%",
+          "profit_split": "80%",
+          "fee": null
+        },
+        {
+          "name": "Instant",
+          "account_sizes": null,
+          "profit_target": "3% minimum for payout",
+          "profit_split": "80%",
+          "fee": null
+        },
+        {
+          "name": "Three-Step",
+          "account_sizes": null,
+          "profit_target": "3% per phase",
+          "profit_split": "80%",
+          "fee": null
+        }
+      ],
+      "daily_loss": "Two-Step 4%; One-Step 3%; Instant 2%; Three-Step 2%",
+      "max_loss": {
+        "value": "Two-Step 8% static; One-Step 5% trailing; Instant 3% trailing from highest equity; Three-Step 3% static",
+        "type": null
+      },
+      "consistency_rule": "Instant: 20% consistency score and 3% minimum profit needed for withdrawal; Mini: 15% rule",
+      "min_trading_days": "Two-Step: 3 profitable days of 0.5% per phase (FAQ page states 4)",
+      "automation_policy": "prohibited",
+      "automation_note": "Terms say EAs, bots or automated systems are prohibited unless pre-approved; FAQ says EAs are not permitted under any circumstances on all platforms. HFT, tick scalping, arbitrage banned.",
+      "copy_trading_policy": "prohibited",
+      "copy_trading_note": "Cannot copy trade from another individual; both users are breached.",
+      "pmt_route": "Match-Trader",
+      "pmt_cannot_note": "Rules prohibit EAs/bots, so webhook-placed automated orders are not permitted; MT5 accounts are not reachable by PickMyTrade.",
+      "basis": "official"
+    },
+    "oneup-trader": {
+      "name": "OneUp Trader",
+      "status": "operating",
+      "status_note": "Official site and help center live; no closure notice seen.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://www.oneuptrader.com/",
+        "https://help.oneuptrader.com/article/372-funded-trader-rules",
+        "https://help.oneuptrader.com/article/385-evaluation-rules-parameters",
+        "https://help.oneuptrader.com/article/389-rules-definitions",
+        "https://blog.oneuptrader.com/funded-trading/what-is-an-algorithmic-trading-system/"
+      ],
+      "market": "futures",
+      "platforms": [
+        "NinjaTrader",
+        "rTrader",
+        "rTrader Pro",
+        "Sierra Chart",
+        "MotiveWave",
+        "MultiCharts",
+        "Bookmap",
+        "QuickScreen Trading",
+        "Jigsaw Trading",
+        "Track'n'Trade",
+        "Trade Navigator",
+        "Photon",
+        "QScalp",
+        "Medved Trader"
+      ],
+      "programs": [
+        {
+          "name": "Standard Evaluation",
+          "account_sizes": "$25K-$250K",
+          "profit_target": null,
+          "profit_split": "90% (100% of first $10,000)",
+          "fee": "from $65/month"
+        },
+        {
+          "name": "Express Evaluation",
+          "account_sizes": "$25K-$250K",
+          "profit_target": null,
+          "profit_split": "90% (100% of first $10,000)",
+          "fee": "from $100/month"
+        }
+      ],
+      "daily_loss": null,
+      "max_loss": {
+        "value": "Trailing drawdown, real-time; becomes fixed once it reaches the starting balance",
+        "type": "trailing_intraday"
+      },
+      "consistency_rule": "Three next-best days' profits must sum to 80% or more of the largest day",
+      "min_trading_days": "10 days Standard; 5 days Express",
+      "automation_policy": "prohibited",
+      "automation_note": "Firm blog states OneUp Trader does not allow algo trading on its funded program. Rules also ban sub-10-second trades, HFT, latency arbitrage, tick scalping. Rules pages do not mention bots.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Copying between different traders' accounts forbidden; across the trader's own funded accounts permitted.",
+      "pmt_route": "Rithmic",
+      "pmt_cannot_note": "Firm blog states algo trading is not allowed, so automated webhook orders are not permitted.",
+      "basis": "official"
+    },
+    "smart-prop-trader": {
+      "name": "Smart Prop Trader",
+      "status": "closed",
+      "status_note": "smartproptrader.com 301-redirects to smartprofitfx.com, an unrelated Eightcap account-opening site; third-party press reports closure Dec 29, 2024.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://smartproptrader.com",
+        "https://smartprofitfx.com/"
+      ],
+      "market": "forex",
+      "platforms": [],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "unclear",
+      "automation_note": null,
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": null,
+      "pmt_route": "none",
+      "pmt_cannot_note": "Firm no longer offers prop accounts; nothing to automate.",
+      "basis": "official"
+    },
+    "the-funded-trader": {
+      "name": "The Funded Trader",
+      "status": "unknown",
+      "status_note": "Official site and help center returned HTTP 402/403 to the fetcher; rules could not be read, so no figures are recorded.",
+      "verified_on": "2026-10-01",
+      "sources": [],
+      "market": "multi",
+      "platforms": [],
+      "programs": [],
+      "daily_loss": null,
+      "max_loss": {
+        "value": null,
+        "type": null
+      },
+      "consistency_rule": null,
+      "min_trading_days": null,
+      "automation_policy": "unclear",
+      "automation_note": null,
+      "copy_trading_policy": "unclear",
+      "copy_trading_note": null,
+      "pmt_route": "none",
+      "pmt_cannot_note": "Could not verify official rules or platforms this run.",
+      "basis": "none"
+    },
+    "the-trading-pit": {
+      "name": "The Trading Pit",
+      "status": "operating",
+      "status_note": "Official site, trading rules and futures pages live; no closure notice seen.",
+      "verified_on": "2026-10-01",
+      "sources": [
+        "https://thetradingpit.com",
+        "https://www.thetradingpit.com/trading-rules",
+        "https://www.thetradingpit.com/futures",
+        "https://www.thetradingpit.com/blog/futures-prime-program"
+      ],
+      "market": "multi",
+      "platforms": [
+        "ATAS",
+        "EdgeClear",
+        "Quantower",
+        "Rithmic",
+        "Sierra Chart",
+        "NinjaTrader",
+        "Tradovate"
+      ],
+      "programs": [
+        {
+          "name": "Futures Prime Challenge",
+          "account_sizes": "$50K-$150K",
+          "profit_target": "$3,000 / $6,000 / $9,000",
+          "profit_split": "80%",
+          "fee": "$99-$289 one-time"
+        }
+      ],
+      "daily_loss": "Futures Prime: daily pause $1,000 / $2,000 / $3,000 (50K/100K/150K)",
+      "max_loss": {
+        "value": "$2,000 / $3,000 / $4,500 (50K/100K/150K), trails end-of-day balance up to starting balance",
+        "type": "trailing_eod"
+      },
+      "consistency_rule": "40% of profit target during challenge (rules page); not applied to Prime earning accounts per blog",
+      "min_trading_days": "3 unique trading days per phase (futures)",
+      "automation_policy": "allowed",
+      "automation_note": "Custom EAs permitted; software or EAs meant to manipulate or misuse the system lead to termination. HFT and micro-scalping banned.",
+      "copy_trading_policy": "own_accounts_only",
+      "copy_trading_note": "Futures: up to 5 accounts with same strategy; copying between challenge and earning accounts prohibited; external copying prohibited on CFDs.",
+      "pmt_route": "Rithmic",
+      "pmt_cannot_note": "CFD accounts (MT/other platforms) are not reachable by PickMyTrade; only futures accounts via Rithmic/Tradovate.",
+      "basis": "official"
+    }
+  }
+}

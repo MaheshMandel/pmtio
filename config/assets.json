@@ -1,0 +1,217 @@
+{
+  "meta": {
+    "generator_version": "1.0",
+    "last_updated": "2026-02-06",
+    "description": "Configuration for asset class landing pages"
+  },
+  "assets": [
+    {
+      "name": "Futures",
+      "slug": "futures",
+      "color": "orange",
+      "icon": "fa-solid fa-chart-line",
+      "tagline": "Automate ES, NQ, CL, and all major futures contracts with TradingView webhooks. Ultra-low latency execution for futures traders.",
+      "instruments": "ES, NQ, YM, RTY, CL, GC, SI, and all CME/CBOT futures contracts",
+      "brokers_count": "10",
+      "seo": {
+        "title": "Futures Trading Automation | TradingView to Brokers",
+        "description": "Automate futures trading from TradingView to top brokers. Support for ES, NQ, CL, GC and all major contracts. Ultra-low latency execution. Start free trial.",
+        "keywords": "futures trading automation, automate futures trading, tradingview futures, futures bot, ES automation, NQ automation, tradingview to rithmic"
+      }
+    },
+    {
+      "name": "Stocks",
+      "slug": "stocks",
+      "color": "blue",
+      "icon": "fa-solid fa-building-columns",
+      "tagline": "Automate stock trades from TradingView alerts to Interactive Brokers, TradeStation, and Tradier. Fast, cloud-based order processing with built-in stop-loss, take-profit, and position sizing.",
+      "instruments": "All US equities, ETFs, and stock options on major exchanges",
+      "brokers_count": "3",
+      "seo": {
+        "title": "Stock Trading Automation via TradingView | PickMyTrade",
+        "description": "Automate stock trades from TradingView to Interactive Brokers, TradeStation and Tradier with no code. Flat $50/mo, 7-day free trial.",
+        "keywords": "stock trading automation, automate stock trading, tradingview stocks, equity automation, stock trading bot, tradingview to interactive brokers, tradingview to tradestation, tradingview to tradier, pattern day trader rule, PDT automation"
+      },
+      "heroTitle": "Stock Trading Automation via TradingView",
+      "intro": "PickMyTrade automates stock trades from your TradingView alerts to three equities brokers: Interactive Brokers, TradeStation, and Tradier. When your TradingView strategy or indicator fires an alert, PickMyTrade reads it and places the matching stock order at your connected broker. There is nothing to code and nothing to keep running on your own computer, because the automation lives in the cloud. You keep your existing brokerage account and your existing TradingView charts, and PickMyTrade is the bridge that turns an alert into a live order.",
+      "speedCard": {
+        "title": "Fast order processing",
+        "desc": "PickMyTrade processes your order in under 200ms on our side. Total fill time also depends on your broker's execution, network latency, and how quickly TradingView sends the alert."
+      },
+      "card1": {
+        "title": "Always-on automation",
+        "desc": "Your automation runs in the cloud around the clock, so you never miss an alert. Stock orders are placed during your broker's market and extended hours, with no computer or VPS to keep running."
+      },
+      "brokers": [
+        { "name": "Interactive Brokers", "href": "/broker/tradingview-to-ib" },
+        { "name": "TradeStation", "href": "/broker/tradingview-to-tradestation" },
+        { "name": "Tradier", "href": "/broker/tradingview-to-tradier" }
+      ],
+      "sections": [
+        {
+          "heading": "How to automate a stock strategy from TradingView",
+          "body": [
+            { "type": "p", "html": "Automating a stock strategy takes four steps and no programming:" },
+            { "type": "list", "ordered": true, "items": [
+              "<strong>Connect your broker.</strong> Create a PickMyTrade account and connect your Interactive Brokers, TradeStation, or Tradier account. You can use a live account or a paper / demo account where your broker offers one.",
+              "<strong>Generate your alert.</strong> In PickMyTrade, generate the alert message and the webhook URL for your buy and sell signals. PickMyTrade writes this for you, so there is no JSON to hand-code.",
+              "<strong>Paste it into TradingView.</strong> Create an alert on your strategy or indicator in TradingView, delete the default message, paste the PickMyTrade message, and set the webhook URL in the alert's Notifications tab. Webhook alerts require a paid TradingView plan (Pro, Pro+, or Premium), because free TradingView accounts cannot send webhooks.",
+              "<strong>Go live.</strong> Enable the alert. When it fires, PickMyTrade places the stock order at your broker automatically. Test on a small size first, then confirm the fill in your PickMyTrade alert log and in your brokerage account."
+            ] },
+            { "type": "p", "html": "PickMyTrade processes your order in under 200ms on our side. Total fill time also depends on your broker's execution, network latency, and how quickly TradingView sends the alert." }
+          ]
+        },
+        {
+          "heading": "Supported equities brokers and account types",
+          "body": [
+            { "type": "p", "html": "PickMyTrade automates US stock and ETF orders through three brokers:" },
+            { "type": "list", "ordered": false, "items": [
+              "<strong>Interactive Brokers (IBKR):</strong> stocks, ETFs, and options across a wide range of US and global markets, with live and paper accounts. <a href=\"/broker/tradingview-to-ib\" class=\"text-blue-400 hover:text-blue-300 underline\">Automate TradingView to Interactive Brokers</a>",
+              "<strong>TradeStation:</strong> US stocks, ETFs, and options, with live and simulated accounts. <a href=\"/broker/tradingview-to-tradestation\" class=\"text-blue-400 hover:text-blue-300 underline\">TradingView to TradeStation automation</a>",
+              "<strong>Tradier:</strong> an API-first brokerage for US stocks and options. <a href=\"/broker/tradingview-to-tradier\" class=\"text-blue-400 hover:text-blue-300 underline\">TradingView to Tradier for stocks and options</a>"
+            ] },
+            { "type": "p", "html": "You can connect a cash account or a margin account. The account type matters for day-trading limits: margin accounts with under $25,000 in equity are subject to the pattern day trader rule, while cash accounts are not, though cash accounts settle on a delay. Connect the broker you already use. PickMyTrade does not hold your funds and does not act as a broker." },
+            { "type": "p", "html": "Trading forex or futures instead? PickMyTrade also connects to TradeLocker for forex, and Tradovate, Rithmic, and ProjectX for futures, among others. Those are separate from the equities brokers above." }
+          ]
+        },
+        {
+          "heading": "The pattern day trader (PDT) rule and day-trading considerations",
+          "body": [
+            { "type": "p", "html": "Automating stock trades does not exempt you from US day-trading rules, so it is worth understanding the pattern day trader (PDT) rule before you switch a strategy on. Under long-standing FINRA rules, if you place four or more day trades within five business days in a margin account, and those trades make up more than 6% of your total trades in that period, you are flagged as a pattern day trader and must keep at least $25,000 in equity in that account. Fall below $25,000 and your broker can restrict day trading until you top the account back up." },
+            { "type": "p", "html": "A few practical points for automated stock strategies:" },
+            { "type": "list", "ordered": false, "items": [
+              "The rule applies to margin accounts. Cash accounts are not subject to the PDT count, but they settle on a delay, so you can only trade with settled funds, which limits how often you can round-trip the same money.",
+              "The rule is about intraday round trips. Strategies that hold overnight are generally not counted as day trades.",
+              "Futures are not subject to the PDT rule, which is one reason some automated traders run intraday strategies on futures instead of stocks."
+            ] },
+            { "type": "p", "html": "Rules like these change over time, and your broker may apply them slightly differently, so confirm the current requirements with your broker before you automate an intraday stock strategy. For a fuller walkthrough, read our guide on <a href=\"https://blog.pickmytrade.io/day-trading-rules-pdt-requirements-workarounds-2025/\" class=\"text-blue-400 hover:text-blue-300 underline\">day trading rules and PDT requirements</a>." }
+          ]
+        },
+        {
+          "heading": "Order types and controls",
+          "body": [
+            { "type": "p", "html": "PickMyTrade places real broker orders, not just notifications, so you get proper order control on every automated stock trade:" },
+            { "type": "list", "ordered": false, "items": [
+              "<strong>Order types:</strong> Market, Limit, and Stop orders.",
+              "<strong>Stop-loss and take-profit:</strong> attach protective exits to each entry so a position is managed even when you are away from the screen.",
+              "<strong>Position sizing:</strong> size each trade by a fixed number of shares or by a risk percentage of the account.",
+              "<strong>Multi-account:</strong> send one alert to more than one connected account at the same time, each with its own sizing."
+            ] },
+            { "type": "p", "html": "Everything runs in the cloud, so there is no desktop app to keep open and no VPS to rent. You set the rules once, and PickMyTrade applies them to every alert." }
+          ]
+        },
+        {
+          "heading": "Pricing and free trial",
+          "body": [
+            { "type": "p", "html": "PickMyTrade is a flat $50 per month, or $500 per year. Every plan starts with a 7-day free trial, and no credit card is required to begin. One subscription covers automated stock trading across your connected accounts, with unlimited alerts and tickers, plus live support. You keep your brokerage account and pay your broker's own commissions separately, since PickMyTrade is only the automation layer. See full plan details on our <a href=\"/pricing\" class=\"text-blue-400 hover:text-blue-300 underline\">pricing page</a>." }
+          ]
+        }
+      ],
+      "faqs": [
+        { "q": "Can I automate stock trades from TradingView?", "a": "Yes. PickMyTrade turns your TradingView alerts into live stock orders at your broker. When your strategy or indicator fires an alert, PickMyTrade reads the symbol, side, and size and places the matching order on your connected Interactive Brokers, TradeStation, or Tradier account. No coding is required, and the automation runs in the cloud so your computer does not need to stay on." },
+        { "q": "Which stock brokers does PickMyTrade support?", "a": "For US stocks and ETFs, PickMyTrade connects to Interactive Brokers, TradeStation, and Tradier. You connect the brokerage account you already use, and PickMyTrade does not hold your funds. It also supports other brokers for forex and futures, but those are separate from equities." },
+        { "q": "How does the PDT rule affect automated stock trading?", "a": "The pattern day trader rule still applies to automated trades. In a margin account, four or more day trades within five business days flags you as a pattern day trader and requires you to keep at least $25,000 of equity in the account. Automation does not change this, so plan your strategy around it: use a cash account, hold positions longer than a day, or keep your account above the threshold. Always confirm the current rules with your broker." },
+        { "q": "Do I need to code to automate a stock strategy?", "a": "No. PickMyTrade generates the alert message and webhook URL for you. You paste them into a TradingView alert and set the webhook, and that is the whole setup. There is no script to write and no API integration to build." },
+        { "q": "How much does stock automation cost?", "a": "PickMyTrade is $50 per month or $500 per year, with a 7-day free trial and no credit card required to start. Your broker's own commissions are separate, and there is no extra per-trade fee from PickMyTrade." }
+      ]
+    },
+    {
+      "name": "Options",
+      "slug": "options",
+      "color": "green",
+      "icon": "fa-solid fa-coins",
+      "tagline": "Turn TradingView alerts into live options orders on Interactive Brokers and Tradier, including single-leg calls and puts and multi-leg strategies like iron condors and verticals.",
+      "instruments": "Equity and index options, including verticals, butterflies, and iron condors",
+      "brokers_count": "3",
+      "seo": {
+        "title": "Automated Options Trading via TradingView | PickMyTrade",
+        "description": "Automate options and multi-leg strategies like iron condors from TradingView to Interactive Brokers and Tradier. Flat $50/mo, 7-day free trial.",
+        "keywords": "automated options trading, options trading automation, automate options trading, automated options trading bot, automated iron condor system, automated iron condor SPX, multi-leg options automation"
+      },
+      "intro": "Automated options trading with PickMyTrade turns a TradingView alert into a live options order at your broker. When your indicator or strategy fires, PickMyTrade reads the alert, applies the rules you set, and places the matching options trade for you. You keep full control of the logic; PickMyTrade handles the execution. PickMyTrade automates options through Interactive Brokers and Tradier, covering both single-leg trades (buying or selling calls and puts) and multi-leg strategies such as verticals, butterflies, and iron condors. Supported order handling includes market and limit entries with stop-loss, take-profit, and position sizing, so options trading automation follows the same risk rules on every trade. This is honest options trading automation for retail brokerage accounts, not a signal-selling service and not a promise of profits.",
+      "speedCard": {
+        "title": "Fast Order Handling",
+        "desc": "PickMyTrade processes your order in under 200ms on our side. Total fill time also depends on your broker's execution, network latency, and how quickly TradingView sends the alert."
+      },
+      "brokers": [
+        { "name": "Interactive Brokers", "href": "/broker/tradingview-to-ib" },
+        { "name": "Tradier", "href": "/broker/tradingview-to-tradier" },
+        { "name": "TradeStation", "href": "/broker/tradingview-to-tradestation" }
+      ],
+      "sections": [
+        {
+          "heading": "How to automate an options strategy from TradingView",
+          "body": [
+            { "type": "p", "html": "The flow is the same whether you trade one contract or a four-leg spread: an alert leaves TradingView, PickMyTrade receives it, and the order lands at your broker. Here is the full alert-to-execution path." },
+            { "type": "list", "ordered": true, "items": [
+              "<strong>Connect your options broker.</strong> Create a PickMyTrade account and connect your Interactive Brokers or Tradier account. This is where your options orders will be placed, so use a paper or simulated account first while you test.",
+              "<strong>Set your rules in PickMyTrade.</strong> Choose how each alert should behave: the option type, how strikes and expiries are chosen, position size (a fixed number of contracts or a risk-percentage of the account), and any stop-loss or take-profit. PickMyTrade can select strikes based on real-time prices and the rules you define, so you are not hard-coding a single strike into every alert.",
+              "<strong>Generate the webhook and paste it into TradingView.</strong> PickMyTrade gives you an alert message and a webhook URL. In TradingView, create an alert on your strategy or indicator, delete the default message, paste the PickMyTrade message, and set the webhook URL in the alert's notifications tab. Webhook alerts need a paid TradingView plan (Pro, Pro+, or Premium), since free TradingView accounts cannot send webhooks. There is nothing to code.",
+              "<strong>Test, then go live.</strong> Fire a test alert, confirm the order in your PickMyTrade log and in your broker, then enable the alert. From that point your strategy runs on its own. On speed: PickMyTrade processes your order in under 200ms on our side. Total fill time also depends on your broker's execution, network latency, and how quickly TradingView sends the alert."
+            ] }
+          ]
+        },
+        {
+          "heading": "Multi-leg and iron condor automation",
+          "body": [
+            { "type": "p", "html": "Multi-leg options automation is where a rules-based tool earns its keep. Placing a four-leg iron condor by hand means legging into a short call spread and a short put spread while prices move against you. An automated iron condor system sends all of that from one TradingView alert, so the legs go out together instead of one click at a time." },
+            { "type": "p", "html": "With PickMyTrade you can automate the strategies most range-bound and premium-selling traders use: verticals, butterflies, and full iron condors. Because you define the legs, strikes, and widths in your rules, an automated iron condor on SPX or another underlying follows the exact structure you designed, every time the alert fires. This is genuine multi-leg options automation, not a black box: you decide the strategy and PickMyTrade executes it." },
+            { "type": "p", "html": "For a step-by-step walkthrough of building an automated iron condor, including how the four legs map to your alert, read our full guide: <a href=\"https://blog.pickmytrade.io/automate-iron-condor-multi-leg-options-automation-ib-strategies/\" class=\"text-blue-400 hover:text-blue-300 underline\">Automate Iron Condor: multi-leg options automation guide</a>. If you trade options on Interactive Brokers specifically, our <a href=\"https://blog.pickmytrade.io/automate-options-trading-on-interactive-brokers-2025/\" class=\"text-blue-400 hover:text-blue-300 underline\">guide to automating options trading on Interactive Brokers</a> covers the IB setup in detail." }
+          ]
+        },
+        {
+          "heading": "Supported options brokers and account types",
+          "body": [
+            { "type": "p", "html": "Options automation through PickMyTrade is available on two brokers, with a third for standard options orders. Being clear about scope matters more than a long logo wall." },
+            { "type": "list", "ordered": false, "items": [
+              "<strong>Interactive Brokers:</strong> equity options and futures options, single-leg and multi-leg strategies, including iron condors and vertical spreads. Best fit for traders who want the widest options coverage. <a href=\"/broker/tradingview-to-ib\" class=\"text-blue-400 hover:text-blue-300 underline\">TradingView to Interactive Brokers automation</a>",
+              "<strong>Tradier:</strong> stock and options automation, including options spreads such as iron condors, butterflies, and verticals. <a href=\"/broker/tradingview-to-tradier\" class=\"text-blue-400 hover:text-blue-300 underline\">TradingView to Tradier automation</a>",
+              "<strong>TradeStation:</strong> also supports options orders through PickMyTrade, alongside stocks and futures."
+            ] },
+            { "type": "p", "html": "Honest scope: options are not available on every broker PickMyTrade connects to. Futures-only and forex brokers such as Tradovate, Rithmic, and TradeLocker do not route options. If your goal is automated options trading, connect Interactive Brokers or Tradier. You can automate options on live or paper/simulated brokerage accounts, and we recommend starting in simulation before you commit real capital." }
+          ]
+        },
+        {
+          "heading": "Risk and order controls for options automation",
+          "body": [
+            { "type": "p", "html": "An automated options trading bot is only as safe as the controls around it, so PickMyTrade puts risk settings on every alert rather than leaving them to chance." },
+            { "type": "list", "ordered": false, "items": [
+              "<strong>Position sizing.</strong> Trade a fixed number of contracts per alert, or size the position so the maximum loss is a set percentage of the account. That keeps a single trade from oversizing the account.",
+              "<strong>Stop-loss and take-profit.</strong> Attach exits to the order so the strategy manages itself instead of relying on you to watch the screen.",
+              "<strong>Strike and expiry rules.</strong> Define how strikes and expiries are chosen so the same logic applies whether the alert fires today or next week.",
+              "<strong>You stay in control.</strong> PickMyTrade does not provide trading signals or investment advice. It executes your rules. Automated systems act on predefined logic and may not adapt to sudden market moves, and options trading carries real risk, including losing 100% of the premium paid. Test in paper trading first."
+            ] }
+          ]
+        },
+        {
+          "heading": "Pricing: one flat plan, unlimited trades",
+          "body": [
+            { "type": "p", "html": "PickMyTrade is a flat $50/month, or $500/year, with a 7-day free trial and no credit card required. One plan covers your options automation with no per-contract fee and no per-strategy add-on." },
+            { "type": "p", "html": "That flat model is the difference from asset-metered or per-broker tools that charge more as you add markets or scale up volume. With PickMyTrade the price does not change whether you send one iron condor a week or run several options strategies a day. You can start on the free trial, connect Interactive Brokers or Tradier, and test automate options trading end to end before you pay anything. See full plan details on our <a href=\"/pricing\" class=\"text-blue-400 hover:text-blue-300 underline\">pricing page</a>." }
+          ]
+        }
+      ],
+      "faqs": [
+        { "q": "Can I automate options trades from TradingView?", "a": "Yes. PickMyTrade turns a TradingView alert into a live options order at your broker. When your indicator or strategy fires, PickMyTrade reads the alert, applies your rules for strikes, expiries, size, and risk, and places the options trade automatically. You need a paid TradingView plan (Pro, Pro+, or Premium) to send webhook alerts, and no coding is required." },
+        { "q": "Which brokers does PickMyTrade support for options?", "a": "PickMyTrade automates options through Interactive Brokers and Tradier, and TradeStation also supports options orders. Interactive Brokers and Tradier are the primary choices for multi-leg strategies such as iron condors and vertical spreads. Options are not available on futures-only or forex brokers such as Tradovate, Rithmic, or TradeLocker." },
+        { "q": "Can I automate multi-leg strategies like iron condors or SPX spreads?", "a": "Yes. PickMyTrade supports multi-leg options automation, including iron condors, butterflies, and vertical spreads, through Interactive Brokers and Tradier. You define the legs, strikes, and widths in your rules, so an automated iron condor on SPX or another underlying follows the exact structure you designed each time the alert fires. See our iron condor automation guide for a full walkthrough." },
+        { "q": "How much does automated options trading cost with PickMyTrade?", "a": "PickMyTrade is a flat $50 per month, or $500 per year, with a 7-day free trial and no credit card required. One plan covers your options automation with no per-contract fee, which is different from asset-metered tools that charge more as you scale up." },
+        { "q": "Do I need to code anything to automate an options strategy?", "a": "No. Setup is a no-code webhook flow. You connect your broker, set your rules in PickMyTrade, then paste a generated alert message and webhook URL into a TradingView alert. There is nothing to program, and you can test the whole flow in a paper or simulated account first." }
+      ]
+    },
+    {
+      "name": "Forex",
+      "slug": "forex",
+      "color": "teal",
+      "icon": "fa-solid fa-dollar-sign",
+      "tagline": "Automate forex trading with TradingView. Trade major, minor and exotic pairs 24/5 through the brokers PickMyTrade supports, including cTrader, Match-Trader, TradeLocker and Tradovate Brokers. PickMyTrade does not support MT4, MT5 or DXtrade.",
+      "instruments": "EUR/USD, GBP/USD, USD/JPY, and 50+ major, minor, and exotic pairs",
+      "brokers_count": "8",
+      "seo": {
+        "title": "Forex Trading Automation | TradingView to cTrader & More",
+        "description": "Automate forex trading from TradingView to MT4, MT5, and modern brokers. All currency pairs. 24/5 trading. Ultra-low latency. Start free trial.",
+        "keywords": "forex trading automation, automate forex trading, tradingview forex, forex bot, tradingview to mt4, tradingview to mt5, currency trading automation"
+      }
+    }
+  ]
+}

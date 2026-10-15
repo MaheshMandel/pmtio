@@ -1,0 +1,62 @@
+---
+// Magazine-style section header for the Advanced Guide.
+// Splits the leading "N. " off the localized title into a decorative number
+// (all copy is preserved — only relaid out visually) and renders a clean
+// heading with a hairline rule flowing to the edge of the content column.
+const { title } = Astro.props as { title: string };
+const i = title.indexOf('. ');
+const rawNum = i < 0 ? '' : title.slice(0, i);
+const heading = i < 0 ? title : title.slice(i + 2);
+const num = /^\d+$/.test(rawNum) ? rawNum.padStart(2, '0') : rawNum;
+---
+<header class="ed-head">
+  {num && <span class="ed-num electrolize-regular" aria-hidden="true">{num}</span>}
+  <h2 class="ed-title">{heading}</h2>
+</header>
+
+<style>
+  /* Sits in the parent .adv-section grid's centered "content" column.
+     Reference-console header: mono number pill + title + hairline rule. */
+  .ed-head {
+    grid-column: content;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 0 1.75rem;
+  }
+
+  .ed-num {
+    flex: 0 0 auto;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    color: #60a5fa;
+    background: rgba(43, 119, 238, 0.06);
+    border: 1px solid rgba(43, 119, 238, 0.18);
+    border-radius: 6px;
+    padding: 0.32rem 0.55rem;
+  }
+
+  .ed-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin: 0;
+  }
+  .ed-title::after {
+    content: "";
+    flex: 1 1 auto;
+    min-width: 1.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.4), rgba(124, 58, 237, 0.1) 60%, transparent);
+  }
+</style>

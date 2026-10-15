@@ -1,0 +1,237 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const canonical = absoluteLocalizedPath(locale, 'webhook-to-broker');
+
+const brokers = [
+  { name: 'Rithmic', slug: 'tradingview-to-rithmic', icon: 'fa-chart-line' },
+  { name: 'Interactive Brokers', slug: 'tradingview-to-ib', icon: 'fa-globe' },
+  { name: 'TradeStation', slug: 'tradingview-to-tradestation', icon: 'fa-building-columns' },
+  { name: 'TradeLocker', slug: 'tradingview-to-tradelocker', icon: 'fa-lock' },
+  { name: 'ProjectX', slug: 'tradingview-to-projectx', icon: 'fa-square-poll-vertical' },
+  { name: 'Tradier', slug: 'tradingview-to-tradier', icon: 'fa-dollar-sign' },
+  { name: 'TopstepX', slug: 'tradingview-to-topstepx', icon: 'fa-award' },
+  { name: 'MatchTrader', slug: 'tradingview-to-matchtrader', icon: 'fa-shuffle' },
+];
+
+const steps = [
+  { title: t('webhook_broker_pillar.step1_title'), desc: t('webhook_broker_pillar.step1_desc') },
+  { title: t('webhook_broker_pillar.step2_title'), desc: t('webhook_broker_pillar.step2_desc') },
+  { title: t('webhook_broker_pillar.step3_title'), desc: t('webhook_broker_pillar.step3_desc') },
+  { title: t('webhook_broker_pillar.step4_title'), desc: t('webhook_broker_pillar.step4_desc') },
+  { title: t('webhook_broker_pillar.step5_title'), desc: t('webhook_broker_pillar.step5_desc') },
+  { title: t('webhook_broker_pillar.step6_title'), desc: t('webhook_broker_pillar.step6_desc') },
+];
+
+const faqItems = [
+  { question: t('webhook_broker_pillar.faq_q1'), answer: t('webhook_broker_pillar.faq_a1') },
+  { question: t('webhook_broker_pillar.faq_q2'), answer: t('webhook_broker_pillar.faq_a2') },
+  { question: t('webhook_broker_pillar.faq_q3'), answer: t('webhook_broker_pillar.faq_a3') },
+  { question: t('webhook_broker_pillar.faq_q4'), answer: t('webhook_broker_pillar.faq_a4') },
+  { question: t('webhook_broker_pillar.faq_q5'), answer: t('webhook_broker_pillar.faq_a5') },
+  { question: t('webhook_broker_pillar.faq_q6'), answer: t('webhook_broker_pillar.faq_a6') },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://pickmytrade.io' },
+    { '@type': 'ListItem', position: 2, name: 'Webhook to Broker', item: canonical },
+  ],
+};
+
+const techArticleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'From TradingView Alert to Live Broker Order in Under 200ms',
+  description: t('webhook_broker_pillar.meta_description'),
+  author: { '@type': 'Organization', name: 'PickMyTrade' },
+  publisher: { '@type': 'Organization', name: 'PickMyTrade', logo: { '@type': 'ImageObject', url: 'https://pickmytrade.io/logo.png' } },
+  mainEntityOfPage: canonical,
+  dateModified: '2026-07-21',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'h2', '.faq-question', '.faq-answer'] },
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('webhook_broker_pillar.meta_title')}
+  description={t('webhook_broker_pillar.meta_description')}
+  canonical={canonical}
+  structuredData={[breadcrumbSchema, techArticleSchema, faqSchema]}
+>
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-4">
+    <div class="max-w-7xl mx-auto px-4">
+      <ol class="flex items-center gap-2 text-sm text-gray-400">
+        <li><a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition">{t('webhook_broker_pillar.breadcrumb_home')}</a></li>
+        <li>/</li>
+        <li class="text-white font-semibold">{t('webhook_broker_pillar.breadcrumb_current')}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] py-16 sm:py-24">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-1/4 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-1/4 w-80 h-80 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+      <div class="inline-block bg-[#2B77EE]/15 border border-[#2B77EE]/30 px-6 py-2 rounded-full text-xs tracking-widest font-semibold text-[#7FB8F9] mb-6 electrolize" data-aos="fade-down">
+        {t('webhook_broker_pillar.hero_badge')}
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight" data-aos="fade-up">
+        <span class="text-white">{t('webhook_broker_pillar.hero_title_pre')}</span><br>
+        <span class="bg-gradient-to-r from-[#2B77EE] to-purple-400 bg-clip-text text-transparent">{t('webhook_broker_pillar.hero_title_highlight')}</span>
+        <span class="text-white">{t('webhook_broker_pillar.hero_title_post')}</span>
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+        {t('webhook_broker_pillar.hero_subtitle')}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
+        <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-4 bg-[#2B77EE] hover:bg-blue-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 transition-all">
+          {t('webhook_broker_pillar.hero_cta_trial')}
+        </a>
+        <a href="#pipeline" class="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl font-semibold text-white hover:bg-white/20 transition-all">
+          {t('webhook_broker_pillar.hero_cta_browse')} <i class="fa-solid fa-chevron-down ml-1"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- What is a webhook-to-broker bridge -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-8">
+        {t('webhook_broker_pillar.what_title_pre')} <span class="bg-gradient-to-r from-[#2B77EE] to-purple-400 bg-clip-text text-transparent">{t('webhook_broker_pillar.what_title_highlight')}</span>
+      </h2>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">{t('webhook_broker_pillar.what_p1')}</p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-6">{t('webhook_broker_pillar.what_p2')}</p>
+      <div class="flex items-start gap-3 bg-[#0F3EC3]/15 border border-[#2B77EE]/40 rounded-xl px-6 py-4">
+        <i class="fa-solid fa-circle-info text-[#7FB8F9] mt-0.5 shrink-0"></i>
+        <p class="text-sm sm:text-base text-gray-300 leading-relaxed">{t('webhook_broker_pillar.what_note')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pipeline -->
+  <section id="pipeline" class="bg-[#001429] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-3">
+          {t('webhook_broker_pillar.pipeline_title_pre')} <span class="bg-gradient-to-r from-[#2B77EE] to-purple-400 bg-clip-text text-transparent">{t('webhook_broker_pillar.pipeline_title_highlight')}</span>
+        </h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">{t('webhook_broker_pillar.pipeline_subtitle')}</p>
+      </div>
+      <ol class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {steps.map((step) => (
+          <li class="bg-[#002040] border border-white/10 rounded-xl p-6 hover:border-[#2B77EE]/50 transition-all">
+            <h3 class="text-lg font-bold text-white mb-2">{step.title}</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Latency -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-8">
+        {t('webhook_broker_pillar.latency_title_pre')} <span class="bg-gradient-to-r from-[#2B77EE] to-purple-400 bg-clip-text text-transparent">{t('webhook_broker_pillar.latency_title_highlight')}</span> {t('webhook_broker_pillar.latency_title_post')}
+      </h2>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">{t('webhook_broker_pillar.latency_p1')}</p>
+      <p class="text-gray-300 text-lg leading-relaxed">{t('webhook_broker_pillar.latency_p2')}</p>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section class="bg-[#001429] py-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-8">
+        {t('webhook_broker_pillar.security_title_pre')} <span class="bg-gradient-to-r from-[#2B77EE] to-purple-400 bg-clip-text text-transparent">{t('webhook_broker_pillar.security_title_highlight')}</span>
+      </h2>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">{t('webhook_broker_pillar.security_p1')}</p>
+      <p class="text-gray-300 text-lg leading-relaxed mb-4">{t('webhook_broker_pillar.security_p2')}</p>
+      <p class="text-gray-300 text-lg leading-relaxed">{t('webhook_broker_pillar.security_p3')}</p>
+    </div>
+  </section>
+
+  <!-- Brokers grid -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-3">
+          {t('webhook_broker_pillar.brokers_title_pre')} <span class="bg-gradient-to-r from-[#2B77EE] to-purple-400 bg-clip-text text-transparent">{t('webhook_broker_pillar.brokers_title_highlight')}</span>
+        </h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">{t('webhook_broker_pillar.brokers_subtitle')}</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+        {brokers.map((broker) => (
+          <a href={localizedPath(locale, `broker/${broker.slug}`)} class="bg-[#001429] border border-white/10 rounded-xl p-5 hover:border-[#2B77EE]/50 hover:bg-[#001f3f] transition-all group flex items-center gap-3">
+            <div class="w-10 h-10 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] flex-shrink-0">
+              <i class={`fa-solid ${broker.icon}`} aria-hidden="true"></i>
+            </div>
+            <span class="text-white font-semibold group-hover:text-[#2B77EE] transition-colors">{broker.name}</span>
+          </a>
+        ))}
+      </div>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={localizedPath(locale, 'broker-faq')} class="px-6 py-3 bg-white/10 border border-white/20 rounded-xl font-semibold text-white hover:bg-white/20 transition-all">
+          {t('webhook_broker_pillar.brokers_cta_hub')}
+        </a>
+        <a href={localizedPath(locale, 'supported-propfirms')} class="px-6 py-3 bg-white/10 border border-white/20 rounded-xl font-semibold text-white hover:bg-white/20 transition-all">
+          {t('webhook_broker_pillar.propfirms_cta')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-[#001429] py-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">
+        {t('webhook_broker_pillar.faq_title')} <span class="bg-gradient-to-r from-[#2B77EE] to-purple-400 bg-clip-text text-transparent">{t('webhook_broker_pillar.faq_title_highlight')}</span>
+      </h2>
+      <FaqAccordion items={faqItems} />
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] py-16">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">{t('webhook_broker_pillar.cta_title')}</h2>
+      <p class="text-white/90 mb-8">{t('webhook_broker_pillar.cta_subtitle')}</p>
+      <a href="https://app.pickmytrade.io/?register=true" class="inline-block bg-white text-[#0F3EC3] px-10 py-4 rounded-xl font-bold hover:shadow-[0_0_30px_5px_rgba(255,255,255,0.4)] transition-all">
+        {t('webhook_broker_pillar.cta_button')}
+      </a>
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="bg-[#000a15] py-10 px-4 border-t border-white/10">
+    <div class="max-w-4xl mx-auto text-sm text-white/60 leading-relaxed space-y-3">
+      <h2 class="text-lg font-bold text-white/80 mb-2">{t('webhook_broker_pillar.disclaimer_title')}</h2>
+      <p>{t('webhook_broker_pillar.disclaimer_text')}</p>
+    </div>
+  </section>
+</BaseLayout>

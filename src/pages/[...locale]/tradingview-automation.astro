@@ -1,0 +1,1580 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "TradingView Automation Guide - Connect Alerts to Rithmic, IB, TradeStation",
+    "description": "Master TradingView automation with our complete guide. Learn position sizing, SL/TP strategies, broker connections, alert configuration, and risk management.",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://pickmytrade.io/assets/logo.png",
+      "width": 1200,
+      "height": 630
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      }
+    },
+    "datePublished": "2025-01-15",
+    "dateModified": "2026-04-17",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": absoluteLocalizedPath(locale, 'tradingview-automation')
+    }
+  };
+
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "TradingView Automation Guide",
+        "item": absoluteLocalizedPath(locale, 'tradingview-automation')
+      }
+    ]
+  };
+
+const schema3 = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "TradingView Automation Guide",
+    "description": "Master TradingView automation with our complete guide. Learn position sizing, SL/TP strategies, broker connections, alert configuration, and risk management.",
+    "url": absoluteLocalizedPath(locale, 'tradingview-automation'),
+    "inLanguage": LOCALE_BCP47[locale],
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io/"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "Trading Automation"
+    },
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Traders"
+    }
+  };
+
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+    "image": "https://pickmytrade.io/assets/logo.png",
+  "name": "PickMyTrade",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based",
+  "offers": {
+    "@type": "Offer",
+    "price": "50.00",
+    "priceCurrency": "USD",
+    "description": "7-day free trial, then subscription-based pricing"
+  },
+  "description": "TradingView automation platform that executes trades automatically from TradingView alerts to 60+ brokers and 27+ prop firms with ultra-low latency.",
+  "featureList": [
+    "Ultra-low latency webhook execution",
+    "60+ broker integrations",
+    "27+ prop firm integrations",
+    "Multi-account management",
+    "Advanced risk management",
+    "Portfolio tracking",
+    "No coding required"
+  ],
+  "screenshot": "https://pickmytrade.io/assets/logo.png",
+  "softwareVersion": "3.0",
+  "releaseNotes": "Enhanced automation features and expanded broker support"
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('tradingview_automation.page_title')}
+  description={t('tradingview_automation.page_description')}
+  keywords={t('tradingview_automation.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4]}
+>
+<nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('tradingview_automation.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('tradingview_automation.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative pt-32 mt-10 pb-40 px-4 overflow-hidden">
+    <!-- Advanced Animated Background -->
+    <div class="absolute inset-0">
+      <!-- Base Gradient -->
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-purple-600/10"></div>
+
+      <!-- Animated Orbs -->
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+      <div class="absolute top-1/2 left-1/2 w-72 h-72 bg-pink-500/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+
+      <!-- Grid Pattern -->
+      <div class="absolute inset-0 opacity-[0.02]" style="background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+      <!-- Gradient Lines -->
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+      <!-- Main Hero Content -->
+      <div class="text-center mb-20" data-aos="fade-up">
+        <!-- Premium Badge -->
+        <div class="inline-flex items-center gap-3 bg-blue-600/20 border border-blue-500/30 rounded-full px-8 py-3 mb-10">
+          <div class="relative">
+            <i class="fa-solid fa-bolt text-blue-400 text-lg"></i>
+            <span class="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full animate-ping"></span>
+          </div>
+          <span class="text-blue-400 text-base font-semibold tracking-wide">{t('tradingview_automation.hero_badge_brand')}</span>
+          <div class="w-px h-4 bg-blue-500/30"></div>
+          <span class="text-gray-300 text-sm">{t('tradingview_automation.hero_badge_platform')}</span>
+        </div>
+
+        <!-- Main Headline with Enhanced Styling -->
+        <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold mb-10 leading-tight tracking-tight">
+          <span class="block text-white mb-3">
+            {t('tradingview_automation.hero_title_line1')}
+          </span>
+          <span class="block text-[#2B77EE]">
+            {t('tradingview_automation.hero_title_line2')}
+          </span>
+        </h1>
+
+        <!-- Subheadline with Better Typography -->
+        <div class="mb-14 space-y-3">
+          <p class="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+            {t('tradingview_automation.hero_subtitle_part1')} <span class="text-blue-400 font-semibold">{t('tradingview_automation.hero_subtitle_tradingview')}</span> {t('tradingview_automation.hero_subtitle_part2')}
+            <span class="text-blue-400 font-semibold">{t('tradingview_automation.hero_subtitle_anybroker')}</span>.
+          </p>
+          <p class="text-xl md:text-2xl text-blue-400 font-semibold">
+            {t('tradingview_automation.hero_subtitle_seamlessly')}
+          </p>
+        </div>
+
+        <!-- Enhanced CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-5 justify-center items-center mb-20">
+          <a href="https://app.pickmytrade.io/?register=true"
+            class="group relative px-12 py-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-2xl font-bold text-xl transition-all duration-300 shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/60 hover:scale-105 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            <span class="relative flex items-center gap-3">
+              {t('tradingview_automation.hero_cta_trial')}
+              <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"></i>
+            </span>
+          </a>
+          <a href="https://docs.pickmytrade.io/docs/"
+            class="group px-12 py-6 bg-white/5 hover:bg-white/10 border-2 border-white/10 hover:border-blue-500/50 rounded-2xl font-bold text-xl transition-all duration-300 backdrop-blur-sm">
+            <span class="flex items-center gap-3">
+              <i class="fa-solid fa-book text-gray-400 group-hover:text-blue-400 transition-colors duration-300"></i>
+              {t('tradingview_automation.hero_cta_docs')}
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Enhanced Hero Visual - 3 Column Bridge with Flow Animation -->
+      <div class="relative max-w-6xl mx-auto mb-20" data-aos="fade-up" data-aos-delay="200">
+        <!-- Connection Flow Lines (Desktop Only) -->
+        <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 z-0">
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/50 to-pink-500/0"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50 animate-pulse"></div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10 relative z-10">
+          <!-- TradingView Column -->
+          <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-10 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20" data-aos="zoom-in" data-aos-delay="300">
+            <div class="text-center">
+              <div class="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <img src="/assets/TV-black-short-logo.svg" alt={t('tradingview_automation.bridge_tv_logo_alt')} class="rounded-md" width="180" height="180" loading="eager" decoding="async">
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">{t('tradingview_automation.bridge_tv_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('tradingview_automation.bridge_tv_desc')}</p>
+            </div>
+          </div>
+
+          <!-- Strategy Bridge Column -->
+          <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-10 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20" data-aos="zoom-in" data-aos-delay="400">
+            <div class="text-center">
+              <div class="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <img src="assets/logo.webp" alt={t('tradingview_automation.bridge_strategy_logo_alt')} class="rounded-md" width="1563" height="1563" loading="lazy" decoding="async">
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">{t('tradingview_automation.bridge_strategy_title')}</h3>
+              <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <i class="fa-solid fa-arrow-right text-blue-400 text-lg"></i>
+                <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+              </div>
+              <p class="text-gray-300 leading-relaxed">{t('tradingview_automation.bridge_strategy_desc')}</p>
+            </div>
+          </div>
+
+          <!-- Execution Column -->
+          <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-10 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20" data-aos="zoom-in" data-aos-delay="500">
+            <div class="text-center">
+              <div class="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-building-columns text-4xl text-blue-400"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">{t('tradingview_automation.bridge_execution_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('tradingview_automation.bridge_execution_desc')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Trust Indicators -->
+      <div class="text-center" data-aos="fade-up" data-aos-delay="600">
+        <div class="inline-block bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-8 py-6">
+          <p class="text-gray-400 text-xs uppercase tracking-widest mb-6 font-semibold">{t('tradingview_automation.trust_heading')}</p>
+          <div class="flex flex-wrap justify-center items-center gap-12">
+            <div class="flex flex-col items-center gap-2 group cursor-pointer">
+              <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center group-hover:bg-blue-500/20 transition-all duration-300">
+                <i class="fa-solid fa-bolt text-blue-400 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+              </div>
+              <span class="text-sm font-medium text-gray-300">{t('tradingview_automation.trust_millisecond')}<br>{t('tradingview_automation.trust_execution')}</span>
+            </div>
+            <div class="hidden sm:block w-px h-12 bg-white/10"></div>
+            <div class="flex flex-col items-center gap-2 group cursor-pointer">
+              <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center group-hover:bg-green-500/20 transition-all duration-300">
+                <i class="fa-solid fa-shield-halved text-green-400 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+              </div>
+              <span class="text-sm font-medium text-gray-300">{t('tradingview_automation.trust_banklevel')}<br>{t('tradingview_automation.trust_security')}</span>
+            </div>
+            <div class="hidden sm:block w-px h-12 bg-white/10"></div>
+            <div class="flex flex-col items-center gap-2 group cursor-pointer">
+              <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center group-hover:bg-purple-500/20 transition-all duration-300">
+                <i class="fa-solid fa-clock text-purple-400 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+              </div>
+              <span class="text-sm font-medium text-gray-300">{t('tradingview_automation.trust_247')}<br>{t('tradingview_automation.trust_automation')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Your Bridge from Strategy to Execution -->
+  <section class="relative py-32 px-4 overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up">
+        <div class="inline-block mb-6">
+          <div class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30">
+            {t('tradingview_automation.bridge2_badge')}
+          </div>
+        </div>
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
+          {t('tradingview_automation.bridge2_title')}
+        </h2>
+        <p class="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          {t('tradingview_automation.bridge2_desc_part1')} <span class="text-blue-400 font-semibold">{t('tradingview_automation.bridge2_desc_instantly')}</span> {t('tradingview_automation.bridge2_desc_and')} <span class="text-blue-400 font-semibold">{t('tradingview_automation.bridge2_desc_accurately')}</span>{t('tradingview_automation.bridge2_desc_part2')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-12 relative">
+        <!-- Enhanced Connection Lines with Pulse Animation -->
+        <div class="hidden md:block absolute top-32 left-1/4 right-1/4 h-0.5 -translate-y-1/2 z-0">
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-purple-500/50 to-pink-500/50"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50 animate-pulse"></div>
+        </div>
+
+        <!-- Step 1: Connect -->
+        <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20" data-aos="fade-up" data-aos-delay="100">
+          <div class="absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform duration-300">
+            <span class="text-white font-bold text-xl">1</span>
+          </div>
+          <div class="mt-6">
+            <div class="w-16 h-16 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fa-solid fa-plug text-3xl text-blue-400"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">{t('tradingview_automation.bridge2_step1_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">{t('tradingview_automation.bridge2_step1_desc')}</p>
+          </div>
+        </div>
+
+        <!-- Step 2: Configure -->
+        <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20" data-aos="fade-up" data-aos-delay="200">
+          <div class="absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform duration-300">
+            <span class="text-white font-bold text-xl">2</span>
+          </div>
+          <div class="mt-6">
+            <div class="w-16 h-16 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fa-solid fa-sliders text-3xl text-blue-400"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">{t('tradingview_automation.bridge2_step2_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">{t('tradingview_automation.bridge2_step2_desc')}</p>
+          </div>
+        </div>
+
+        <!-- Step 3: Automate -->
+        <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20" data-aos="fade-up" data-aos-delay="300">
+          <div class="absolute -top-4 left-8 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform duration-300">
+            <span class="text-white font-bold text-xl">3</span>
+          </div>
+          <div class="mt-6">
+            <div class="w-16 h-16 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fa-solid fa-rocket text-3xl text-blue-400"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">{t('tradingview_automation.bridge2_step3_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">{t('tradingview_automation.bridge2_step3_desc')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activating Your Automation in TradingView -->
+  <section class="py-20 px-4 bg-gradient-to-b from-transparent to-purple-900/10">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">{t('tradingview_automation.activate_title')}</h2>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          {t('tradingview_automation.activate_subtitle')}
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-4 gap-4" data-aos="fade-up">
+        <!-- Step 1 -->
+        <div class="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-4 font-bold text-xl">1</div>
+          <h3 class="text-lg font-bold mb-3">{t('tradingview_automation.activate_step1_title')}</h3>
+          <p class="text-sm text-gray-300">{t('tradingview_automation.activate_step1_desc')}</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30 rounded-xl p-6">
+          <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mb-4 font-bold text-xl">2</div>
+          <h3 class="text-lg font-bold mb-3">{t('tradingview_automation.activate_step2_title')}</h3>
+          <p class="text-sm text-gray-300">{t('tradingview_automation.activate_step2_desc')}</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-gradient-to-br from-pink-500/10 to-pink-600/10 border border-pink-500/30 rounded-xl p-6">
+          <div class="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center mb-4 font-bold text-xl">3</div>
+          <h3 class="text-lg font-bold mb-3">{t('tradingview_automation.activate_step3_title')}</h3>
+          <p class="text-sm text-gray-300">{t('tradingview_automation.activate_step3_desc')}</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/30 rounded-xl p-6">
+          <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mb-4 font-bold text-xl">4</div>
+          <h3 class="text-lg font-bold mb-3">{t('tradingview_automation.activate_step4_title')}</h3>
+          <p class="text-sm text-gray-300">{t('tradingview_automation.activate_step4_desc_part1')} <strong>{t('tradingview_automation.activate_step4_desc_strong')}</strong> {t('tradingview_automation.activate_step4_desc_part2')}</p>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-6">
+          <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center mb-4 font-bold text-xl">5</div>
+          <h3 class="text-lg font-bold mb-3">{t('tradingview_automation.activate_step5_title')}</h3>
+          <p class="text-sm text-gray-300">{t('tradingview_automation.activate_step5_desc')}</p>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/30 rounded-xl p-6">
+          <div class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center mb-4 font-bold text-xl">6</div>
+          <h3 class="text-lg font-bold mb-3">{t('tradingview_automation.activate_step6_title')}</h3>
+          <p class="text-sm text-gray-300">{t('tradingview_automation.activate_step6_desc')}</p>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-500/30 rounded-xl p-6">
+          <div class="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center mb-4 font-bold text-xl">7</div>
+          <h3 class="text-lg font-bold mb-3">{t('tradingview_automation.activate_step7_title')}</h3>
+          <p class="text-sm text-gray-300">{t('tradingview_automation.activate_step7_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Broker Connections -->
+  <section class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">{t('tradingview_automation.broker_title')}</h2>
+        <p class="text-gray-300 text-lg">{t('tradingview_automation.broker_subtitle')}</p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8" data-aos="fade-up">
+        <button class="broker-tab active px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50" data-broker="ibkr">
+          {t('tradingview_automation.broker_tab_ibkr')}
+        </button>
+        <button class="broker-tab px-6 py-3 rounded-xl bg-white/5 text-gray-300 font-semibold border border-gray-700/50 transition-all duration-300 hover:bg-white/10 hover:border-blue-500/50" data-broker="tradestation">
+          {t('tradingview_automation.broker_tab_tradestation')}
+        </button>
+        <button class="broker-tab px-6 py-3 rounded-xl bg-white/5 text-gray-300 font-semibold border border-gray-700/50 transition-all duration-300 hover:bg-white/10 hover:border-blue-500/50" data-broker="projectx">
+          {t('tradingview_automation.broker_tab_projectx')}
+        </button>
+        <button class="broker-tab px-6 py-3 rounded-xl bg-white/5 text-gray-300 font-semibold border border-gray-700/50 transition-all duration-300 hover:bg-white/10 hover:border-blue-500/50" data-broker="tradelocker">
+          {t('tradingview_automation.broker_tab_tradelocker')}
+        </button>
+        <button class="broker-tab px-6 py-3 rounded-xl bg-white/5 text-gray-300 font-semibold border border-gray-700/50 transition-all duration-300 hover:bg-white/10 hover:border-blue-500/50" data-broker="rithmic">
+          {t('tradingview_automation.broker_tab_rithmic')}
+        </button>
+      </div>
+
+      <!-- Tab Contents -->
+      <div class="broker-content-container">
+        <!-- Interactive Brokers (IBKR) -->
+        <div class="broker-content active" id="ibkr-content" data-aos="fade-up">
+          <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-8">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-16 h-16 bg-black rounded-xl flex items-center justify-center p-2">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAnFBMVEUeHh4fHx8dHR0gICDZICcUFBQTExMhISEZGRkSEhIYGBgaGhoXFxcVFRUWFhYcHBwbGxsiIiLjICgAGRi0HyS5HyQAHRwAFRXCHyUKHBzYICfGHyYAGBcPFRWsHiMIFRUlHBxPHR8VHBw7HR2mHyRvHSCUHiLmICiBHSF7HiFfHR+cHiMxGxzQICYkHR1pHiBDGhyJGx9TGhs3FRXAJaFEAAABrElEQVQ4jW2T23aCMBBFI8ZWEYUmQQjhZpRWEUpp///fmgtD6GVe917nDFkMetHzrGa9Xq9WK4SQ54VhGEX7/Xbr+z76h3uy1twIAXLcCorz81lCwFIALi/XveE6QAu/CiIuGj5zJThuA05M1LBAEBzRnwVe324cFgiOswAF/E6yWkLB0QpL3mLyoK7geEA/voCfM0w66QqM4AJk12Nc0kXBQQkL/h5jjFu+KFCC/QKzgLwSjFO6LDhskFvg9Ko4afiywAhTwWlU+VjU/lYGc8HGCmaBQXMyUpl3dV4AVwIUaI77C/9gQjzqwiyw2TwheKIT0cKVfmQ6KE6mAC3Yn8gI5EKZSSJDZbkVPBAYrVMj4EdiuRIsD6kWhnxrBTImlu/Q9JdGWshueT6aXcilcII3CyJucr8kmJA7BOyAayFjLG3yvH2M3cQnIZwEUbI4HpIqSYoD8N18JpSoABanaZtML2C4FfSZUNKXSlDGV7XgStBcC2/MCiLtqrlACXCHFJeT0MfKAK4Fe4dUlGYF0fc47grgSojsIRefelo1w9B8FcCNYO+scpO4gN03blIy4n+tBNQAAAAASUVORK5CYII=" alt={t('tradingview_automation.broker_ibkr_logo_alt')} class="w-full h-full object-contain" width="32" height="32" loading="lazy" decoding="async">
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold">{t('tradingview_automation.broker_ibkr_heading')}</h3>
+          </div>
+        </div>
+
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6">
+          <p class="text-sm text-gray-300">
+            <strong class="text-yellow-400">{t('tradingview_automation.broker_ibkr_note_strong')}</strong> {t('tradingview_automation.broker_ibkr_note_text')}
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-download text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2">{t('tradingview_automation.broker_ibkr_step1_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ibkr_step1_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-gear text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2">{t('tradingview_automation.broker_ibkr_step2_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ibkr_step2_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-download text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2">{t('tradingview_automation.broker_ibkr_step3_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ibkr_step3_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-power-off text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2">{t('tradingview_automation.broker_ibkr_step4_title')}</h4>
+            <p class="text-xs text-gray-300"><strong>{t('tradingview_automation.broker_ibkr_step4_desc_strong1')}</strong>{t('tradingview_automation.broker_ibkr_step4_desc_text1')} <strong>{t('tradingview_automation.broker_ibkr_step4_desc_strong2')}</strong>{t('tradingview_automation.broker_ibkr_step4_desc_text2')}</p>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+          <h4 class="font-semibold mb-2 text-blue-400">{t('tradingview_automation.broker_ibkr_protip_title')}</h4>
+          <p class="text-sm text-gray-300">
+            {t('tradingview_automation.broker_ibkr_protip_desc')}
+          </p>
+        </div>
+          </div>
+        </div>
+
+        <!-- TradeStation -->
+        <div class="broker-content" id="tradestation-content">
+          <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-8">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-16 h-16 bg-black rounded-xl flex items-center justify-center p-2">
+            <img src="https://images.contentstack.io/v3/assets/blta05ad1a9b328245c/bltf4bb74055d1225f9/68d18fbcfaf8184b891f95f7/TS-Logo-Cropped.svg" alt={t('tradingview_automation.broker_ts_logo_alt')} class="w-full h-full object-contain" width="658" height="100" loading="lazy" decoding="async">
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold">{t('tradingview_automation.broker_ts_heading')}</h3>
+          </div>
+        </div>
+
+        <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-4 mb-6">
+          <p class="text-sm text-gray-300">
+            <strong class="text-green-400">{t('tradingview_automation.broker_ts_note_strong')}</strong> {t('tradingview_automation.broker_ts_note_text')}
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-5 gap-4">
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-3 font-bold">1</div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_ts_step1_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ts_step1_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-3 font-bold">2</div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_ts_step2_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ts_step2_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-3 font-bold">3</div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_ts_step3_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ts_step3_desc_text')} <strong>{t('tradingview_automation.broker_ts_step3_desc_strong')}</strong></p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-3 font-bold">4</div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_ts_step4_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ts_step4_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-3 font-bold">5</div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_ts_step5_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_ts_step5_desc')}</p>
+          </div>
+        </div>
+        <div class="mt-6">
+          <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')} class="inline-flex items-center gap-2 text-[#2B77EE] hover:text-[#7FB8F9] font-semibold text-sm underline">
+            {t('tradingview_automation.broker_ts_fulldetails')}
+          </a>
+        </div>
+          </div>
+        </div>
+
+        <!-- ProjectX (for TopstepX) -->
+        <div class="broker-content" id="projectx-content">
+          <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-8">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-16 h-16 bg-black rounded-xl flex items-center justify-center p-2">
+            <img src="https://cdn.prod.website-files.com/66a9389e5ac764c100249180/68682d662cef421db6545f16_Asset%201%404x-p-500.png" alt={t('tradingview_automation.broker_px_logo_alt')} class="w-full h-full object-contain" width="500" height="390" loading="lazy" decoding="async">
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold">{t('tradingview_automation.broker_px_heading')}</h3>
+          </div>
+        </div>
+
+        <div class="bg-pink-500/10 border border-pink-500/20 rounded-xl p-4 mb-6">
+          <p class="text-sm text-gray-300">
+            <strong class="text-pink-400">{t('tradingview_automation.broker_px_note_strong')}</strong> {t('tradingview_automation.broker_px_note_text')}
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-link text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_px_step1_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_px_step1_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-gear text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_px_step2_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_px_step2_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-copy text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_px_step3_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_px_step3_desc')}</p>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-4">
+            <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-3">
+              <i class="fa-solid fa-plug text-xl"></i>
+            </div>
+            <h4 class="font-semibold mb-2 text-sm">{t('tradingview_automation.broker_px_step4_title')}</h4>
+            <p class="text-xs text-gray-300">{t('tradingview_automation.broker_px_step4_desc')}</p>
+          </div>
+        </div>
+
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+          <h4 class="font-semibold mb-3 text-yellow-400">{t('tradingview_automation.broker_px_critical_title')}</h4>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li class="flex items-start gap-2">
+              <span class="text-yellow-400 font-bold">•</span>
+              <span><strong>{t('tradingview_automation.broker_px_critical_1_strong1')}</strong> {t('tradingview_automation.broker_px_critical_1_text1')} <strong>{t('tradingview_automation.broker_px_critical_1_strong2')}</strong> {t('tradingview_automation.broker_px_critical_1_text2')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-yellow-400 font-bold">•</span>
+              <span><strong>{t('tradingview_automation.broker_px_critical_2_strong1')}</strong> {t('tradingview_automation.broker_px_critical_2_text1')} <strong>{t('tradingview_automation.broker_px_critical_2_strong2')}</strong> {t('tradingview_automation.broker_px_critical_2_text2')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-yellow-400 font-bold">•</span>
+              <span><strong>{t('tradingview_automation.broker_px_critical_3_strong')}</strong> {t('tradingview_automation.broker_px_critical_3_text')}</span>
+            </li>
+          </ul>
+        </div>
+          </div>
+        </div>
+
+        <!-- TradeLocker -->
+        <div class="broker-content" id="tradelocker-content">
+          <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-8">
+          <div class="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-4 p-2">
+            <img src="https://tradelocker.com/wp-content/uploads/2023/05/cropped-Tradelockerlogo-1.png" alt={t('tradingview_automation.broker_tl_logo_alt')} class="w-full h-full object-contain" width="646" height="196" loading="lazy" decoding="async">
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('tradingview_automation.broker_tl_heading')}</h3>
+          <p class="text-sm text-gray-400 mb-4">{t('tradingview_automation.broker_tl_method')}</p>
+
+          <p class="text-sm text-gray-300 mb-4">
+            {t('tradingview_automation.broker_tl_intro')}
+          </p>
+
+          <ul class="space-y-2 text-xs text-gray-300 mb-4">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-purple-400 mt-1"></i>
+              <span>{t('tradingview_automation.broker_tl_field1')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-purple-400 mt-1"></i>
+              <span>{t('tradingview_automation.broker_tl_field2')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-purple-400 mt-1"></i>
+              <span>{t('tradingview_automation.broker_tl_field3')}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-check text-purple-400 mt-1"></i>
+              <span>{t('tradingview_automation.broker_tl_field4')}</span>
+            </li>
+          </ul>
+
+          <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+            <p class="text-xs text-gray-300">
+              <i class="fa-solid fa-exclamation-triangle text-yellow-400 mr-1"></i>
+              {t('tradingview_automation.broker_tl_note_text1')} <strong>{t('tradingview_automation.broker_tl_note_strong')}</strong> {t('tradingview_automation.broker_tl_note_text2')}
+            </p>
+          </div>
+          </div>
+        </div>
+
+        <!-- Rithmic -->
+        <div class="broker-content" id="rithmic-content">
+          <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-8">
+          <div class="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-4 p-2">
+            <img src="https://signup.rithmic.com/agreement/config/standard/logo.png" alt={t('tradingview_automation.broker_rithmic_logo_alt')} class="w-full h-full object-contain" width="137" height="35" loading="lazy" decoding="async">
+          </div>
+          <h3 class="text-xl font-bold mb-4">{t('tradingview_automation.broker_rithmic_heading')}</h3>
+          <p class="text-sm text-gray-400 mb-4">{t('tradingview_automation.broker_rithmic_method')}</p>
+          <p class="text-sm text-gray-400 mb-4">{t('tradingview_automation.broker_rithmic_use')}</p>
+
+          <p class="text-sm text-gray-300 mb-4">
+            {t('tradingview_automation.broker_rithmic_intro')}
+          </p>
+
+          <p class="text-xs text-gray-400">
+            {t('tradingview_automation.broker_rithmic_note')}
+          </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Broker tabs functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.broker-tab');
+      const contents = document.querySelectorAll('.broker-content');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function(this: HTMLElement) {
+          const broker = this.getAttribute('data-broker');
+
+          // Remove active class from all tabs
+          tabs.forEach(t => {
+            t.classList.remove('active', 'bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
+            t.classList.add('bg-white/5', 'text-gray-300', 'border', 'border-gray-700/50');
+          });
+
+          // Add active class to clicked tab
+          this.classList.remove('bg-white/5', 'text-gray-300', 'border', 'border-gray-700/50');
+          this.classList.add('active', 'bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
+
+          // Hide all content
+          contents.forEach(content => {
+            content.classList.remove('active');
+          });
+
+          // Show selected content
+          const selectedContent = document.getElementById(broker + '-content');
+          if (selectedContent) {
+            selectedContent.classList.add('active');
+          }
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .broker-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .broker-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <!-- The First Step: Indicator or Strategy? -->
+  <section class="relative py-32 px-4 overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-900/5 to-transparent"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up">
+        <div class="inline-block mb-6">
+          <div class="flex items-center gap-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-full px-6 py-2 backdrop-blur-sm">
+            <i class="fa-solid fa-code-branch text-blue-400"></i>
+            <span class="text-base text-gray-300 font-semibold">{t('tradingview_automation.firststep_badge')}</span>
+          </div>
+        </div>
+        <h2 class="text-4xl md:text-6xl font-black mb-8 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+          {t('tradingview_automation.firststep_title')}
+        </h2>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          {t('tradingview_automation.firststep_subtitle_text1')} <span class="text-blue-400 font-semibold">{t('tradingview_automation.firststep_subtitle_crucial')}</span> {t('tradingview_automation.firststep_subtitle_text2')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10">
+        <!-- Indicator Alert -->
+        <div class="relative group" data-aos="fade-right">
+          <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div class="relative bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-2 border-blue-500/40 rounded-3xl p-10 hover:border-blue-400/60 transition-all duration-300 backdrop-blur-sm">
+            <div class="flex items-center gap-4 mb-8">
+              <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/50 group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-chart-line text-3xl"></i>
+              </div>
+              <h3 class="text-3xl font-black">{t('tradingview_automation.firststep_indicator_title')}</h3>
+            </div>
+
+            <p class="text-gray-200 mb-8 text-lg leading-relaxed">
+              {t('tradingview_automation.firststep_indicator_desc')}
+            </p>
+
+            <div class="bg-blue-500/20 border border-blue-400/30 rounded-2xl p-6 backdrop-blur-sm">
+              <h4 class="font-bold mb-3 flex items-center gap-2 text-blue-300">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                {t('tradingview_automation.firststep_indicator_check_title')}
+              </h4>
+              <p class="text-gray-300 leading-relaxed">
+                {t('tradingview_automation.firststep_indicator_check_desc')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy Alert -->
+        <div class="relative group" data-aos="fade-left">
+          <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-purple-400 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div class="relative bg-gradient-to-br from-purple-500/20 to-purple-600/20 border-2 border-purple-500/40 rounded-3xl p-10 hover:border-purple-400/60 transition-all duration-300 backdrop-blur-sm">
+            <div class="flex items-center gap-4 mb-8">
+              <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/50 group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-brain text-3xl"></i>
+              </div>
+              <h3 class="text-3xl font-black">{t('tradingview_automation.firststep_strategy_title')}</h3>
+            </div>
+
+            <p class="text-gray-200 mb-8 text-lg leading-relaxed">
+              {t('tradingview_automation.firststep_strategy_desc')}
+            </p>
+
+            <div class="bg-purple-500/20 border border-purple-400/30 rounded-2xl p-6 backdrop-blur-sm">
+              <h4 class="font-bold mb-3 flex items-center gap-2 text-purple-300">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                {t('tradingview_automation.firststep_strategy_check_title')}
+              </h4>
+              <p class="text-gray-300 leading-relaxed">
+                {t('tradingview_automation.firststep_strategy_check_desc')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Defining Your Trade Actions -->
+  <section class="relative py-32 px-4 overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0">
+      <div class="absolute bottom-0 left-0 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
+      <div class="absolute top-0 right-0 w-96 h-96 bg-red-500/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up">
+        <div class="inline-block mb-6">
+          <div class="flex items-center gap-3 bg-gradient-to-r from-green-500/10 via-red-500/10 to-gray-500/10 border border-green-500/20 rounded-full px-6 py-2 backdrop-blur-sm">
+            <i class="fa-solid fa-bolt text-green-400"></i>
+            <span class="text-sm text-gray-300 font-semibold">{t('tradingview_automation.actions_badge')}</span>
+          </div>
+        </div>
+        <h2 class="text-4xl md:text-6xl font-black mb-8 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+          {t('tradingview_automation.actions_title')}
+        </h2>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          {t('tradingview_automation.actions_subtitle_text1')} <span class="text-blue-400 font-semibold">{t('tradingview_automation.actions_subtitle_key')}</span> {t('tradingview_automation.actions_subtitle_text2')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-10">
+        <!-- BUY -->
+        <div class="relative group" data-aos="fade-up" data-aos-delay="100">
+          <div class="absolute -inset-1 bg-gradient-to-r from-green-600 to-green-400 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div class="relative bg-gradient-to-br from-green-500/20 to-green-600/20 border-2 border-green-500/40 rounded-3xl p-10 hover:border-green-400/60 transition-all duration-300 backdrop-blur-sm">
+            <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-green-500/50 group-hover:scale-110 transition-transform duration-300">
+              <i class="fa-solid fa-arrow-up text-4xl"></i>
+            </div>
+            <h3 class="text-4xl font-black mb-6 text-center tracking-tight">{t('tradingview_automation.actions_buy_title')}</h3>
+
+            <div class="mb-8 bg-green-500/20 border border-green-400/30 rounded-2xl p-4 backdrop-blur-sm">
+              <h4 class="font-bold text-green-300 mb-2">{t('tradingview_automation.actions_buy_logic')}</h4>
+            </div>
+
+            <ul class="space-y-4 text-gray-300">
+              <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
+                <div class="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                <span>{t('tradingview_automation.actions_buy_li1')}</span>
+              </li>
+              <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
+                <div class="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                <span>{t('tradingview_automation.actions_buy_li2')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SELL -->
+        <div class="relative group" data-aos="fade-up" data-aos-delay="200">
+          <div class="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-400 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div class="relative bg-gradient-to-br from-red-500/20 to-red-600/20 border-2 border-red-500/40 rounded-3xl p-10 hover:border-red-400/60 transition-all duration-300 backdrop-blur-sm">
+            <div class="w-24 h-24 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-red-500/50 group-hover:scale-110 transition-transform duration-300">
+              <i class="fa-solid fa-arrow-down text-4xl"></i>
+            </div>
+            <h3 class="text-4xl font-black mb-6 text-center tracking-tight">{t('tradingview_automation.actions_sell_title')}</h3>
+
+            <div class="mb-8 bg-red-500/20 border border-red-400/30 rounded-2xl p-4 backdrop-blur-sm">
+              <h4 class="font-bold text-red-300 mb-2">{t('tradingview_automation.actions_sell_logic')}</h4>
+            </div>
+
+            <ul class="space-y-4 text-gray-300">
+              <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
+                <div class="w-2 h-2 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                <span>{t('tradingview_automation.actions_sell_li1')}</span>
+              </li>
+              <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
+                <div class="w-2 h-2 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                <span>{t('tradingview_automation.actions_sell_li2')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- CLOSE -->
+        <div class="relative group" data-aos="fade-up" data-aos-delay="300">
+          <div class="absolute -inset-1 bg-gradient-to-r from-gray-600 to-gray-400 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div class="relative bg-gradient-to-br from-gray-500/20 to-gray-600/20 border-2 border-gray-500/40 rounded-3xl p-10 hover:border-gray-400/60 transition-all duration-300 backdrop-blur-sm">
+            <div class="w-24 h-24 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-gray-500/50 group-hover:scale-110 transition-transform duration-300">
+              <i class="fa-solid fa-xmark text-4xl"></i>
+            </div>
+            <h3 class="text-4xl font-black mb-6 text-center tracking-tight">{t('tradingview_automation.actions_close_title')}</h3>
+
+            <div class="mb-8 bg-gray-500/20 border border-gray-400/30 rounded-2xl p-4 backdrop-blur-sm">
+              <h4 class="font-bold text-gray-300 mb-2">{t('tradingview_automation.actions_close_logic')}</h4>
+            </div>
+
+            <ul class="space-y-4 text-gray-300">
+              <li class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                <span>{t('tradingview_automation.actions_close_li1')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Tip -->
+      <div class="relative mt-16 group" data-aos="fade-up">
+        <div class="absolute -inset-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-3xl blur opacity-20 group-hover:opacity-30 transition duration-500"></div>
+        <div class="relative bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-2 border-yellow-500/40 rounded-3xl p-8 backdrop-blur-sm">
+          <div class="flex items-start gap-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-yellow-500/50">
+              <i class="fa-solid fa-lightbulb text-2xl"></i>
+            </div>
+            <div>
+              <h4 class="font-black text-2xl mb-4 text-yellow-300">{t('tradingview_automation.actions_tip_title')}</h4>
+              <p class="text-gray-200 text-lg leading-relaxed">
+                {t('tradingview_automation.actions_tip_desc_text1')} <code class="bg-black/40 px-3 py-1.5 rounded-lg text-yellow-300 font-mono text-base">'reverse_order_close: true'</code> {t('tradingview_automation.actions_tip_desc_text2')} <code class="bg-black/40 px-3 py-1.5 rounded-lg text-yellow-300 font-mono text-base">'false'</code> {t('tradingview_automation.actions_tip_desc_text3')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sizing Your Positions with Precision -->
+  <section class="relative py-32 px-4 overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/5 to-transparent"></div>
+    <div class="absolute top-1/3 left-1/3 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"></div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up">
+        <div class="inline-block mb-6">
+          <div class="flex items-center gap-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-full px-6 py-2 backdrop-blur-sm">
+            <i class="fa-solid fa-scale-balanced text-purple-400"></i>
+            <span class="text-sm text-gray-300 font-semibold">{t('tradingview_automation.sizing_badge')}</span>
+          </div>
+        </div>
+        <h2 class="text-4xl md:text-6xl font-black mb-8 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+          {t('tradingview_automation.sizing_title')}
+        </h2>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          {t('tradingview_automation.sizing_subtitle_text1')} <span class="text-purple-400 font-semibold">{t('tradingview_automation.sizing_subtitle_highlight')}</span> {t('tradingview_automation.sizing_subtitle_text2')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10">
+        <!-- Quantity (Fixed) -->
+        <div class="relative group" data-aos="fade-right">
+          <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div class="relative bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-2 border-blue-500/40 rounded-3xl p-10 hover:border-blue-400/60 transition-all duration-300 backdrop-blur-sm">
+            <div class="flex items-center gap-5 mb-8">
+              <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-4xl font-black shadow-lg shadow-blue-500/50">
+                #
+              </div>
+              <h3 class="text-3xl font-black">{t('tradingview_automation.sizing_fixed_title')}</h3>
+            </div>
+
+            <p class="text-gray-200 mb-8 text-lg leading-relaxed">
+              {t('tradingview_automation.sizing_fixed_desc')}
+            </p>
+
+            <div class="bg-blue-500/20 border border-blue-400/30 rounded-2xl p-5 mb-5 backdrop-blur-sm">
+              <h4 class="font-bold mb-3 text-blue-300 text-lg">{t('tradingview_automation.sizing_fixed_usecase_title')}</h4>
+              <p class="text-gray-300 leading-relaxed">
+                {t('tradingview_automation.sizing_fixed_usecase_desc')}
+              </p>
+            </div>
+
+            <div class="bg-black/30 border border-blue-400/20 rounded-2xl p-5 backdrop-blur-sm">
+              <h4 class="font-bold mb-3 text-blue-300 text-lg">{t('tradingview_automation.sizing_fixed_example_title')}</h4>
+              <p class="text-gray-300 leading-relaxed">
+                {t('tradingview_automation.sizing_fixed_example_desc')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Percentage (Dynamic) -->
+        <div class="relative group" data-aos="fade-left">
+          <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-purple-400 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div class="relative bg-gradient-to-br from-purple-500/20 to-purple-600/20 border-2 border-purple-500/40 rounded-3xl p-10 hover:border-purple-400/60 transition-all duration-300 backdrop-blur-sm">
+            <div class="flex items-center gap-5 mb-8">
+              <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-4xl font-black shadow-lg shadow-purple-500/50">
+                %
+              </div>
+              <h3 class="text-3xl font-black">{t('tradingview_automation.sizing_risk_title')}</h3>
+            </div>
+
+            <p class="text-gray-200 mb-8 text-lg leading-relaxed">
+              {t('tradingview_automation.sizing_risk_desc')}
+            </p>
+
+            <div class="bg-purple-500/20 border border-purple-400/30 rounded-2xl p-5 mb-5 backdrop-blur-sm">
+              <h4 class="font-bold mb-3 text-purple-300 text-lg">{t('tradingview_automation.sizing_risk_usecase_title')}</h4>
+              <p class="text-gray-300 leading-relaxed">
+                {t('tradingview_automation.sizing_risk_usecase_desc')}
+              </p>
+            </div>
+
+            <div class="bg-yellow-500/15 border border-yellow-400/40 rounded-2xl p-5 mb-5 backdrop-blur-sm">
+              <div class="flex items-start gap-3">
+                <i class="fa-solid fa-exclamation-triangle text-yellow-400 mt-1 text-xl"></i>
+                <div>
+                  <h4 class="font-bold mb-2 text-yellow-300 text-lg">{t('tradingview_automation.sizing_risk_key_title')}</h4>
+                  <p class="text-gray-300 leading-relaxed">
+                    {t('tradingview_automation.sizing_risk_key_desc')}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-black/30 border border-purple-400/20 rounded-2xl p-5 backdrop-blur-sm">
+              <h4 class="font-bold mb-3 text-purple-300 text-lg">{t('tradingview_automation.sizing_risk_example_title')}</h4>
+              <p class="text-gray-300 leading-relaxed">
+                {t('tradingview_automation.sizing_risk_example_desc')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mastering Risk: The 5 Ways to Set Your Stop-Loss & Take-Profit -->
+  <section class="relative py-32 px-4 overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up">
+        <div class="inline-block mb-6">
+          <div class="flex items-center gap-3 bg-gradient-to-r from-red-500/10 via-green-500/10 to-blue-500/10 border border-red-500/20 rounded-full px-6 py-2 backdrop-blur-sm">
+            <i class="fa-solid fa-shield-halved text-green-400"></i>
+            <span class="text-sm text-gray-300 font-semibold">{t('tradingview_automation.mastering_badge')}</span>
+          </div>
+        </div>
+        <h2 class="text-4xl md:text-6xl font-black mb-8 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent leading-tight">
+          {t('tradingview_automation.mastering_title_line1')}<br/>{t('tradingview_automation.mastering_title_line2')}
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto" data-aos="fade-up">
+        <div class="relative">
+          <div class="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur"></div>
+          <table class="relative w-full bg-gradient-to-br from-white/5 to-white/10 border-2 border-white/20 rounded-3xl overflow-hidden backdrop-blur-sm">
+            <thead>
+              <tr class="bg-gradient-to-r from-blue-500/30 to-purple-500/30 border-b-2 border-white/20">
+                <th class="px-6 py-5 text-left font-black text-lg">{t('tradingview_automation.mastering_th_type')}</th>
+                <th class="px-6 py-5 text-left font-black text-lg">{t('tradingview_automation.mastering_th_how')}</th>
+                <th class="px-6 py-5 text-left font-black text-lg">{t('tradingview_automation.mastering_th_example')}</th>
+                <th class="px-6 py-5 text-left font-black text-lg">{t('tradingview_automation.mastering_th_bestfor')}</th>
+              </tr>
+            </thead>
+          <tbody class="divide-y divide-white/10">
+            <tr class="hover:bg-white/10 transition-all duration-300 group">
+              <td class="px-6 py-6 font-black text-blue-400 text-lg">{t('tradingview_automation.mastering_r1_type')}</td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r1_how')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r1_example_1')}<br>
+                {t('tradingview_automation.mastering_r1_example_2')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r1_bestfor')}
+              </td>
+            </tr>
+            <tr class="hover:bg-white/10 transition-all duration-300 group">
+              <td class="px-6 py-6 font-black text-purple-400 text-lg">{t('tradingview_automation.mastering_r2_type')}</td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r2_how')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r2_example')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r2_bestfor')}
+              </td>
+            </tr>
+            <tr class="hover:bg-white/10 transition-all duration-300 group">
+              <td class="px-6 py-6 font-black text-green-400 text-lg">{t('tradingview_automation.mastering_r3_type')}</td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r3_how_text1')} <code class="bg-black/40 px-2 py-1 rounded font-mono text-green-300">{"{{plot_0}}"}</code>, <code class="bg-black/40 px-2 py-1 rounded font-mono text-green-300">{"{{plot_1}}"}</code> {t('tradingview_automation.mastering_r3_how_text2')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r3_example_text1')} <code class="bg-black/40 px-2 py-1 rounded font-mono text-green-300">{"{{plot_1}}"}</code> {t('tradingview_automation.mastering_r3_example_text2')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r3_bestfor')}
+              </td>
+            </tr>
+            <tr class="hover:bg-white/10 transition-all duration-300 group">
+              <td class="px-6 py-6 font-black text-yellow-400 text-lg">{t('tradingview_automation.mastering_r4_type')}</td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r4_how')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r4_example')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r4_bestfor')}
+              </td>
+            </tr>
+            <tr class="hover:bg-white/10 transition-all duration-300 group">
+              <td class="px-6 py-6 font-black text-pink-400 text-lg">{t('tradingview_automation.mastering_r5_type')}</td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r5_how')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r5_example')}
+              </td>
+              <td class="px-6 py-6 text-gray-300">
+                {t('tradingview_automation.mastering_r5_bestfor')}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Configuring Your Options Trades -->
+  <section class="py-20 px-4 bg-gradient-to-b from-transparent to-blue-900/10">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">{t('tradingview_automation.options_title')}</h2>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          {t('tradingview_automation.options_subtitle')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Strike Price Selection -->
+        <div class="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-2xl p-8" data-aos="fade-right">
+          <h3 class="text-2xl font-bold mb-6">{t('tradingview_automation.options_strike_title')}</h3>
+
+          <p class="text-gray-300 mb-6">
+            {t('tradingview_automation.options_strike_desc')}
+          </p>
+
+          <div class="space-y-4 mb-6">
+            <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+              <h4 class="font-semibold mb-2">{t('tradingview_automation.options_strike_itm_title')}</h4>
+              <p class="text-sm text-gray-300">{t('tradingview_automation.options_strike_itm_desc')}</p>
+            </div>
+
+            <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+              <h4 class="font-semibold mb-2">{t('tradingview_automation.options_strike_atm_title')}</h4>
+              <p class="text-sm text-gray-300">{t('tradingview_automation.options_strike_atm_desc')}</p>
+            </div>
+
+            <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+              <h4 class="font-semibold mb-2">{t('tradingview_automation.options_strike_otm_title')}</h4>
+              <p class="text-sm text-gray-300">{t('tradingview_automation.options_strike_otm_desc')}</p>
+            </div>
+          </div>
+
+          <div class="bg-white/5 rounded-xl p-6">
+            <div class="flex justify-center items-center gap-6">
+              <div class="text-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">-2</div>
+              </div>
+              <div class="text-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">-1</div>
+              </div>
+              <div class="text-center">
+                <div class="w-14 h-14 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">0</div>
+              </div>
+              <div class="text-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">+1</div>
+              </div>
+              <div class="text-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">+2</div>
+              </div>
+            </div>
+            <p class="text-center text-sm text-gray-400 mt-4">{t('tradingview_automation.options_strike_market_label')}</p>
+          </div>
+        </div>
+
+        <!-- Expiry Date Selection -->
+        <div class="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30 rounded-2xl p-8" data-aos="fade-left">
+          <h3 class="text-2xl font-bold mb-6">{t('tradingview_automation.options_expiry_title')}</h3>
+
+          <p class="text-gray-300 mb-6">
+            {t('tradingview_automation.options_expiry_desc')}
+          </p>
+
+          <div class="space-y-3">
+            <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+              <i class="fa-regular fa-calendar text-purple-400 mt-1"></i>
+              <div>
+                <h4 class="font-semibold mb-1">{t('tradingview_automation.options_expiry_1_title')}</h4>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.options_expiry_1_desc')}</p>
+              </div>
+            </div>
+
+            <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+              <i class="fa-regular fa-clock text-purple-400 mt-1"></i>
+              <div>
+                <h4 class="font-semibold mb-1">{t('tradingview_automation.options_expiry_2_title')}</h4>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.options_expiry_2_desc')}</p>
+              </div>
+            </div>
+
+            <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+              <i class="fa-solid fa-arrow-right text-purple-400 mt-1"></i>
+              <div>
+                <h4 class="font-semibold mb-1">{t('tradingview_automation.options_expiry_3_title')}</h4>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.options_expiry_3_desc')}</p>
+              </div>
+            </div>
+
+            <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+              <i class="fa-regular fa-calendar-days text-purple-400 mt-1"></i>
+              <div>
+                <h4 class="font-semibold mb-1">{t('tradingview_automation.options_expiry_4_title')}</h4>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.options_expiry_4_desc')}</p>
+              </div>
+            </div>
+
+            <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+              <i class="fa-regular fa-calendar-check text-purple-400 mt-1"></i>
+              <div>
+                <h4 class="font-semibold mb-1">{t('tradingview_automation.options_expiry_5_title')}</h4>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.options_expiry_5_desc')}</p>
+              </div>
+            </div>
+
+            <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+              <i class="fa-solid fa-chart-line text-purple-400 mt-1"></i>
+              <div>
+                <h4 class="font-semibold mb-1">{t('tradingview_automation.options_expiry_6_title')}</h4>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.options_expiry_6_desc')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trade Across Multiple Accounts from a Single Alert -->
+  <section class="py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">{t('tradingview_automation.multi_title')}</h2>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          {t('tradingview_automation.multi_subtitle')}
+        </p>
+      </div>
+
+      <div class="rounded-2xl p-8" data-aos="fade-up">
+        <div class="grid lg:grid-cols-1 gap-10">
+          <div class="bg-white/5 border border-green-500/20 rounded-xl p-6">
+            <h4 class="font-semibold mb-6 text-center text-green-400 text-xl">{t('tradingview_automation.multi_example_title')}</h4>
+
+            <div class="space-y-4">
+              <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                <div class="text-center py-3 bg-blue-500/20 rounded mb-3">
+                  <h4 class="font-semibold mb-1">{t('tradingview_automation.multi_tv_alert_label')}</h4>
+                  <div class="text-2xl font-bold">{t('tradingview_automation.multi_base_qty')}</div>
+                </div>
+              </div>
+
+              <div class="flex justify-center mb-4">
+                <i class="fa-solid fa-arrow-down text-3xl text-green-400"></i>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-center">
+                  <div class="font-semibold text-sm mb-1">{t('tradingview_automation.multi_acc1_name')}</div>
+                  <div class="text-xs text-gray-400 mb-2">{t('tradingview_automation.multi_acc1_mult')}</div>
+                  <div class="bg-green-500/20 rounded px-2 py-2">
+                    <span class="text-sm font-bold text-green-400">{t('tradingview_automation.multi_acc1_result')}</span>
+                  </div>
+                </div>
+
+                <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3 text-center">
+                  <div class="font-semibold text-sm mb-1">{t('tradingview_automation.multi_acc2_name')}</div>
+                  <div class="text-xs text-gray-400 mb-2">{t('tradingview_automation.multi_acc2_mult')}</div>
+                  <div class="bg-purple-500/20 rounded px-2 py-2">
+                    <span class="text-sm font-bold text-purple-400">{t('tradingview_automation.multi_acc2_result')}</span>
+                  </div>
+                </div>
+
+                <div class="bg-pink-500/10 border border-pink-500/30 rounded-lg p-3 text-center">
+                  <div class="font-semibold text-sm mb-1">{t('tradingview_automation.multi_acc3_name_1')}<br>{t('tradingview_automation.multi_acc3_name_2')}</div>
+                  <div class="text-xs text-gray-400 mb-2">{t('tradingview_automation.multi_acc3_mult')}</div>
+                  <div class="bg-pink-500/20 rounded px-2 py-2">
+                    <span class="text-sm font-bold text-pink-400">{t('tradingview_automation.multi_acc3_result')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Visual Example -->
+
+          <!-- Explanation -->
+          <div>
+            <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-6 mb-4">
+              <h4 class="font-semibold mb-3 text-green-400 text-lg">{t('tradingview_automation.multi_keyconcept_title')}</h4>
+              <p class="text-sm text-gray-300">
+                {t('tradingview_automation.multi_keyconcept_desc')}
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <p class="text-gray-300 text-sm leading-relaxed">
+                {t('tradingview_automation.multi_explanation')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Monitoring Trades & Troubleshooting -->
+  <section class="py-20 px-4 bg-gradient-to-b from-transparent to-blue-900/10">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">{t('tradingview_automation.monitoring_title')}</h2>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          {t('tradingview_automation.monitoring_subtitle')}
+        </p>
+      </div>
+
+      <!-- Execution Flow -->
+      <div class="mb-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-8" data-aos="fade-up">
+        <h3 class="text-2xl font-bold mb-8 text-center">{t('tradingview_automation.monitoring_flow_title')}</h3>
+
+        <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+          <div class="bg-blue-500/20 border-2 border-blue-500/50 rounded-xl p-6 text-center flex-1">
+            <div
+              class="w-24 h-24 mx-auto bg-white/70 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 shadow-lg p-4 border border-white/20">
+              <img src="/assets/TV-black-short-logo.svg" alt={t('tradingview_automation.monitoring_flow_tv_alt')} width="180" height="180" loading="lazy" decoding="async">
+            </div>
+            <i class="fa-brands fa-tradingview text-4xl text-blue-400 mb-3"></i>
+            <h4 class="font-bold mb-2">{t('tradingview_automation.monitoring_flow_tv_label')}</h4>
+            <p class="text-sm text-gray-300">{t('tradingview_automation.monitoring_flow_tv_status')}</p>
+          </div>
+
+          <i class="fa-solid fa-arrow-right text-3xl text-purple-400 rotate-90 md:rotate-0"></i>
+
+          <div class="bg-purple-500/20 border-2 border-purple-500/50 rounded-xl p-6 text-center flex-1">
+            <div
+              class="w-24 h-24 mx-auto bg-white/70 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 shadow-lg p-4 border border-white/20">
+              <img src="assets/logo.webp" alt={t('tradingview_automation.monitoring_flow_pmt_alt')} width="1563" height="1563" loading="lazy" decoding="async">
+            </div>
+            <h4 class="font-bold mb-2">{t('tradingview_automation.monitoring_flow_pmt_label')}</h4>
+            <p class="text-sm text-gray-300">{t('tradingview_automation.monitoring_flow_pmt_status')}</p>
+          </div>
+
+          <i class="fa-solid fa-arrow-right text-3xl text-pink-400 rotate-90 md:rotate-0"></i>
+
+          <div class="bg-pink-500/20 border-2 border-pink-500/50 rounded-xl p-6 text-center flex-1">
+            <div
+              class="w-24 h-24 mx-auto bg-white/70 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 shadow-lg p-4 border border-white/20">
+              <img src="https://cdn.prod.website-files.com/66a9389e5ac764c100249180/68682d662cef421db6545f16_Asset%201%404x-p-500.png" alt={t('tradingview_automation.monitoring_flow_broker_alt')} width="500" height="390" loading="lazy" decoding="async">
+            </div>
+            <h4 class="font-bold mb-2">{t('tradingview_automation.monitoring_flow_broker_label')}</h4>
+            <p class="text-sm text-gray-300">{t('tradingview_automation.monitoring_flow_broker_status')}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Troubleshooting Steps -->
+      <div class="mb-8" data-aos="fade-up">
+        <h3 class="text-2xl font-bold mb-6 text-center">{t('tradingview_automation.monitoring_troubleshoot_title')}</h3>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-2xl p-8" data-aos="fade-right">
+          <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+            <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center font-bold">1</div>
+            {t('tradingview_automation.monitoring_step1_title')}
+          </h3>
+
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3 text-yellow-400">{t('tradingview_automation.monitoring_question')}</h4>
+
+            <div class="space-y-4">
+              <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-xmark text-red-400"></i>
+                  <span class="font-semibold text-red-400">{t('tradingview_automation.monitoring_no')}</span>
+                </div>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.monitoring_step1_no_desc')}</p>
+              </div>
+
+              <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-check text-green-400"></i>
+                  <span class="font-semibold text-green-400">{t('tradingview_automation.monitoring_yes')}</span>
+                </div>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.monitoring_step1_yes_desc')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-2xl p-8" data-aos="fade-left">
+          <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+            <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center font-bold">2</div>
+            {t('tradingview_automation.monitoring_step2_title')}
+          </h3>
+
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3 text-purple-400">{t('tradingview_automation.monitoring_question')}</h4>
+
+            <div class="space-y-4">
+              <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-xmark text-red-400"></i>
+                  <span class="font-semibold text-red-400">{t('tradingview_automation.monitoring_no')}</span>
+                </div>
+                <p class="text-sm text-gray-300 mb-3">{t('tradingview_automation.monitoring_step2_no_desc1')}</p>
+                <p class="text-xs text-gray-400">{t('tradingview_automation.monitoring_step2_no_desc2')}
+                  <strong>support@pickmytrade.com</strong>.</p>
+              </div>
+
+              <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-check text-green-400"></i>
+                  <span class="font-semibold text-green-400">{t('tradingview_automation.monitoring_yes')}</span>
+                </div>
+                <p class="text-sm text-gray-300">{t('tradingview_automation.monitoring_step2_yes_desc')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-6 text-center" data-aos="fade-up">
+        <p class="text-gray-300 mb-4">
+          {t('tradingview_automation.monitoring_help_text1')} <a href="mailto:support@pickmytrade.com"
+            class="text-blue-400 hover:underline font-semibold">support@pickmytrade.com</a> {t('tradingview_automation.monitoring_help_text2')} <a
+            href="https://discord.gg/FkJ7g7498S" target="_blank" class="text-purple-400 hover:underline font-semibold">{t('tradingview_automation.monitoring_help_discord')}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Advanced Settings & Platform Rules -->
+  <section class="py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">{t('tradingview_automation.advanced_title')}</h2>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          {t('tradingview_automation.advanced_subtitle')}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Custom Symbol Mapping -->
+        <div class="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-2xl p-8" data-aos="fade-right">
+          <h3 class="text-2xl font-bold mb-6">{t('tradingview_automation.advanced_symbol_title')}</h3>
+
+          <p class="text-gray-300 mb-6">
+            {t('tradingview_automation.advanced_symbol_desc')}
+          </p>
+
+          <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-4">
+            <h4 class="font-semibold mb-2 text-blue-400">{t('tradingview_automation.advanced_symbol_howto_title')}</h4>
+            <p class="text-sm text-gray-300 mb-3">
+              {t('tradingview_automation.advanced_symbol_howto_desc')}
+            </p>
+          </div>
+        </div>
+
+        <!-- Futures Contract Rollover Policy -->
+        <div class="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30 rounded-2xl p-8" data-aos="fade-left">
+          <h3 class="text-2xl font-bold mb-6">{t('tradingview_automation.advanced_rollover_title')}</h3>
+
+          <p class="text-gray-300 mb-6">
+            {t('tradingview_automation.advanced_rollover_desc')}
+          </p>
+
+          <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 mb-4">
+            <h4 class="font-semibold mb-2 text-purple-400">{t('tradingview_automation.advanced_rollover_process_title')}</h4>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-purple-400 mt-1"></i>
+                <span><strong>{t('tradingview_automation.advanced_rollover_li1_strong')}</strong> {t('tradingview_automation.advanced_rollover_li1_text')}</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-purple-400 mt-1"></i>
+                <span><strong>{t('tradingview_automation.advanced_rollover_li2_strong')}</strong> {t('tradingview_automation.advanced_rollover_li2_text')}</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+            <h4 class="font-semibold mb-2 text-yellow-400">{t('tradingview_automation.advanced_rollover_resp_title')}</h4>
+            <p class="text-sm text-gray-300">
+              {t('tradingview_automation.advanced_rollover_resp_desc')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 px-4 bg-gradient-to-b from-transparent to-purple-900/10">
+    <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+      <div class="bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-blue-500/40 rounded-3xl p-12">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">{t('tradingview_automation.finalcta_title')}</h2>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+          {t('tradingview_automation.finalcta_subtitle')}
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+          <a href="https://app.pickmytrade.io/?register=true"
+            class="px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl font-bold text-xl transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105">
+            {t('tradingview_automation.finalcta_trial')}
+          </a>
+          <a href="https://docs.pickmytrade.io/docs/"
+            class="px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xl transition-all duration-300">
+            {t('tradingview_automation.finalcta_docs')}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

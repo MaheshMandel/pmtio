@@ -1,0 +1,1926 @@
+﻿---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AnswerBlock from '../../../components/AnswerBlock.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "PickMyTrade - TradingView to ProjectX & TopstepX Automation",
+    "description": "No-code platform that automates TradingView alerts to ProjectX and TopstepX. Webhook trade copier for futures with stop loss, take profit, position sizing, multipliers, and multi-account support for Topstep evaluations and funded accounts.",
+    "url": absoluteLocalizedPath(locale, 'broker/tradingview-to-projectx'),
+    "image": "https://pickmytrade.io/assets/logo.png",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web-based, Windows, Mac, Linux",
+    "offers": {
+      "@type": "Offer",
+      "price": "50.00",
+      "priceCurrency": "USD",
+      "priceValidUntil": "2026-12-31",
+      "availability": "https://schema.org/InStock",
+      "description": "$50/month or $500/year. 7-day free trial, no credit card required."
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io",
+      "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" }
+    }
+  };
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Can I automate TradingView strategies to a Topstep or TopstepX funded account?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. You generate a TopstepX API key, add the account to PickMyTrade, paste the webhook URL into TradingView, and your buy, sell, and close alerts fire automatically. Topstep sets its own rules for automation and API use, and those rules can change, so confirm Topstep's current policy before trading a live funded account." } },
+      { "@type": "Question", "name": "How do I get my TopstepX (Topstep) API key and connect it to PickMyTrade?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Log in to your Topstep/TopstepX account, create an API key, then add a ProjectX/TopstepX connection in PickMyTrade and paste the key in. Select your account, set your risk defaults, and paste the PickMyTrade webhook URL into a TradingView alert. Our Topstep API access guide walks through every step with screenshots." } },
+      { "@type": "Question", "name": "Does PickMyTrade work with ProjectX-based funded accounts, and which firms still use it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Since 28 February 2026, Topstep is the firm that runs on ProjectX technology, as TopstepX. Firms that previously used ProjectX have moved to other engines. PickMyTrade automates TopstepX accounts today, and also connects to Tradovate and Rithmic accounts that many other prop firms run on. Rules vary by firm, so always confirm your firm's current policy." } },
+      { "@type": "Question", "name": "Which futures contracts can I trade through ProjectX/TopstepX?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Index futures and their micros like NQ, MNQ, ES, MES, YM, and RTY, plus other major CME, CBOT, NYMEX, and COMEX products such as CL, NG, and GC. Availability depends on your Topstep account and data subscription." } },
+      { "@type": "Question", "name": "How fast is order execution and what is the uptime?",
+        "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade processes your order in under 200ms on our side. Your total fill time also depends on your broker's execution speed, network latency, and how quickly TradingView sends the alert, so we do not promise a guaranteed end-to-end number. PickMyTrade's published platform uptime is 99.9%." } },
+      { "@type": "Question", "name": "Can I test in a TopstepX evaluation or demo before risking a funded account?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes, and we recommend it. Connect an evaluation or demo/practice account, run your alerts on a one-minute chart, and confirm entries, exits, stops, and targets in the alert log before you switch a live funded account on." } },
+      { "@type": "Question", "name": "How is this different from TopstepX's native TradingView chart integration?",
+        "acceptedAnswer": { "@type": "Answer", "text": "TopstepX's own chart integration lets you place and manage trades manually from a TradingView chart. PickMyTrade is about automation: it takes your TradingView alerts and executes them for you, adds stop loss, take profit, sizing, and multipliers, and can copy one signal to several accounts at once. Use the native integration for manual trading and PickMyTrade for hands-off, rules-based execution." } },
+      { "@type": "Question", "name": "What is a Webhook URL, and where do I find it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A Webhook URL is the connection point for TradingView to send alerts to PickMyTrade. You can find it in PickMyTrade after generating an alert." } },
+      { "@type": "Question", "name": "What's the difference between an Indicator and a Strategy alert type?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Indicator: Triggers from specific chart conditions (manual/semi-automated use). Strategy: Triggers from a full Pine Script strategy with entry and exit automation." } },
+      { "@type": "Question", "name": "How do the Buy, Sell, and Close alerts work?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Buy Alert: Opens or adds to a long position; closes any open short position first. Sell Alert: Opens or adds to a short position; closes any open long position first. Close Alert: Closes all open positions and cancels pending orders." } },
+      { "@type": "Question", "name": "Can I use both quantity and risk percentage for my trades?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. You must choose either fixed quantity or risk percentage per trade. Both cannot be used simultaneously." } },
+      { "@type": "Question", "name": "How do the different Stop Loss and Take Profit types work?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Point/Dollar (from entry): Sets SL/TP at a specific point distance (e.g., -100 points from entry). Percentage: Sets SL/TP as a percentage of entry price (e.g., -2% from entry). Ticks: Sets SL/TP in tick increments, useful for futures contracts. Total Profit/Loss (USD): Fixed dollar gain/loss per contract." } },
+      { "@type": "Question", "name": "What does \"Account Not Found\" mean?",
+        "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade cannot see the account you selected. Recheck that your TopstepX API key is valid and active, and that the account name in PickMyTrade matches the account name in TopstepX exactly, including spacing and case." } },
+      { "@type": "Question", "name": "What does \"Order Rejected\" mean?",
+        "acceptedAnswer": { "@type": "Answer", "text": "TopstepX accepted the request but declined the order. Common causes are being outside allowed trading hours, exceeding a position or daily-loss limit, insufficient buying power, or a closed market. Check your account rules and current status, then resend." } },
+      { "@type": "Question", "name": "What should I do if I get a \"Contract Not Found\" error?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The ticker in your TradingView alert did not map to a live TopstepX contract, often because the contract rolled to a new expiry or the symbol is spelled differently. Update the symbol mapping in PickMyTrade to the current front-month contract (for example, MNQ1! for Micro Nasdaq)." } },
+      { "@type": "Question", "name": "What should I do if I get an \"Unknown Error\"?",
+        "acceptedAnswer": { "@type": "Answer", "text": "This is usually a temporary connection or API hiccup. Confirm your API key is still valid, check the PickMyTrade alert log for detail, and if it repeats, contact support with the alert timestamp." } }
+    ]
+  };
+const schema3 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+      { "@type": "ListItem", "position": 2, "name": "Brokers", "item": absoluteLocalizedPath(locale, 'broker') },
+      { "@type": "ListItem", "position": 3, "name": "TradingView to ProjectX & TopstepX", "item": absoluteLocalizedPath(locale, 'broker/tradingview-to-projectx') }
+    ]
+  };
+const schema4 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to connect TradingView to ProjectX / TopstepX with PickMyTrade",
+                  "name": "How to connect TradingView to ProjectX / TopstepX with PickMyTrade",
+                  "description": "Automate TradingView alerts to a ProjectX or TopstepX account using a TopstepX API key and a PickMyTrade webhook. No coding required.",
+                  "timeRequired": "PT5M",
+                  "dependencies": "TradingView account (Pro, Pro+, or Premium for webhooks); Topstep / TopstepX account (evaluation, funded, or demo); PickMyTrade account",
+                  "articleSection": [
+                    "Generate your TopstepX API key — Log in to your Topstep/TopstepX account and create an API key so PickMyTrade can place orders on your behalf.",
+                    "Add your account in PickMyTrade — Add a ProjectX/TopstepX connection in PickMyTrade, paste in your API key, select your account, and set default risk controls.",
+                    "Paste the webhook URL into a TradingView alert — Create a TradingView alert, delete the default message, paste the PickMyTrade alert message, and set the PickMyTrade webhook URL under notifications.",
+                    "Send buy, sell, and close signals and go live — Test on a one-minute chart, confirm the order in the PickMyTrade alert log and your TopstepX account, then switch on your live strategy."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+const schema5 = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" },
+    "description": "PickMyTrade automates TradingView alerts to futures brokers and prop-firm platforms including ProjectX and TopstepX. Used by more than 50,000 traders.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@pickmytrade.com",
+      "contactType": "Customer Support",
+      "availableLanguage": "English"
+    },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade"
+    ]
+  };
+---
+<BaseLayout
+  locale={locale}
+  title={t('broker_projectx.page_title')}
+  description={t('broker_projectx.page_description')}
+  keywords={t('broker_projectx.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4, schema5]}
+>
+<!-- Spacer for fixed navbar -->
+  <!-- <div class="h-16"></div> -->
+
+  <!-- BREADCRUMB NAVIGATION -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_projectx.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('broker_projectx.breadcrumb_current')}</span>
+          <meta itemprop="position" content="3" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION - REDESIGNED -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040]">
+    <!-- Animated Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <canvas id="tradingCanvas" class="w-full h-full" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#001429]/30 to-[#002040]"></div>
+
+    <!-- Content Container -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-20 sm:pb-28">
+      <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+
+        <!-- Top Badge -->
+        <div
+          class="inline-flex items-center gap-2 mb-6 sm:mb-8 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 sm:px-6 py-2 sm:py-3"
+          data-aos="fade-down" data-aos-delay="100">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B77EE] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#2B77EE]"></span>
+          </span>
+          <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+            {t('broker_projectx.hero_badge')}
+          </span>
+          <i class="fa-solid fa-check-circle text-[#2B77EE]" aria-hidden="true"></i>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight"
+          data-aos="fade-up" data-aos-delay="200">
+          <span class="block text-white mb-2">{t('broker_projectx.hero_title_line1')}</span>
+          <span class="block bg-gradient-to-r from-[#2B77EE] via-[#4B94FF] to-[#7FB8F9] bg-clip-text text-transparent">
+            {t('broker_projectx.hero_title_line2')}
+          </span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="max-w-3xl mx-auto text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 sm:mb-10 leading-relaxed px-4"
+          data-aos="fade-up" data-aos-delay="300">
+          {t('broker_projectx.hero_subtitle_pre')} <strong class="text-white">{t('broker_projectx.hero_subtitle_tv')}</strong> {t('broker_projectx.hero_subtitle_to')} <strong
+            class="text-white">{t('broker_projectx.hero_subtitle_projectx')}</strong> {t('broker_projectx.hero_subtitle_post')}
+          <span class="block mt-2 text-[#7FB8F9]">{t('broker_projectx.hero_subtitle_line2')}</span>
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10 sm:mb-12 px-4" data-aos="fade-up"
+          data-aos-delay="400">
+          <a href="https://app.pickmytrade.io/?register=true" rel="noopener" aria-label={t('broker_projectx.hero_cta_trial_aria')}
+            class="group relative inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl overflow-hidden shadow-lg hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span
+              class="absolute inset-0 w-full h-full bg-gradient-to-r from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <span class="relative flex items-center gap-2">
+              <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+              {t('broker_projectx.hero_cta_trial')}
+            </span>
+          </a>
+
+          <a href="https://app.pickmytrade.io" rel="noopener" aria-label={t('broker_projectx.hero_cta_login_aria')}
+            class="group inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-[#2B77EE] bg-white/10 backdrop-blur-sm border-2 border-[#2B77EE]/50 rounded-xl hover:bg-white/20 hover:border-[#2B77EE] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i>
+              {t('broker_projectx.hero_cta_login')}
+            </span>
+          </a>
+        </div>
+
+        <!-- Feature Pills -->
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 text-sm sm:text-base" data-aos="fade-up"
+          data-aos-delay="500">
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_projectx.hero_pill_trial')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-credit-card text-blue-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_projectx.hero_pill_no_card')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-infinity text-purple-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_projectx.hero_pill_unlimited')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_projectx.hero_pill_instant')}</span>
+          </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-12 sm:mt-16 pt-8 border-t border-white/10" data-aos="fade-up" data-aos-delay="600">
+          <p class="text-xs sm:text-sm text-gray-400 mb-4 uppercase tracking-wider">{t('broker_projectx.hero_trust_label')}</p>
+          <div class="flex flex-wrap justify-center items-center gap-8 sm:gap-12">
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">50,000+</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_projectx.hero_stat_rating')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">99.9%</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_projectx.hero_stat_uptime')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">&lt;5min</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_projectx.hero_stat_setup')}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Smooth Wave Transition -->
+    <div class="absolute bottom-0 left-0 right-0 z-20">
+      <svg class="w-full h-16 sm:h-20 md:h-24" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none">
+        <path
+          d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+          fill="url(#wave-gradient)" />
+        <defs>
+          <linearGradient id="wave-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#002040" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#002040" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </header>
+
+  <AnswerBlock
+    locale={locale}
+    answer={t('broker_projectx.answer_block')}
+    factsHeading={t('broker_projectx.facts_heading')}
+    asOfLabel={t('broker_projectx.facts_as_of')}
+    asOfDate="2026-10-01"
+    facts={[
+      { label: t('broker_projectx.facts_connection_label'), value: t('broker_projectx.facts_connection_value') },
+      { label: t('broker_projectx.facts_credentials_label'), value: t('broker_projectx.facts_credentials_value') },
+      { label: t('broker_projectx.facts_accounts_label'), value: t('broker_projectx.facts_accounts_value') },
+      { label: t('broker_projectx.facts_status_label'), value: t('broker_projectx.facts_status_value') },
+      { label: t('broker_projectx.facts_tv_plan_label'), value: t('broker_projectx.facts_tv_plan_value') },
+      { label: t('broker_projectx.facts_speed_label'), value: t('broker_projectx.facts_speed_value') },
+      { label: t('broker_projectx.facts_price_label'), value: t('broker_projectx.facts_price_value') },
+    ]}
+    notSupportedHeading={t('broker_projectx.not_supported_heading')}
+    notSupported={[t('broker_projectx.not_supported_1'), t('broker_projectx.not_supported_2'), t('broker_projectx.not_supported_3')]}
+    reviewedBy={t('broker_projectx.reviewed_by')}
+    updatedLabel={t('broker_projectx.updated_label')}
+  />
+
+  <!-- SEO CONTENT SECTION - REDESIGNED -->
+  <article
+    class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-info-circle text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_projectx.seo_badge')}</span>
+        </div>
+        <h2
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-[#7FB8F9] to-white bg-clip-text text-transparent">
+          {t('broker_projectx.seo_heading')}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-400 max-w-3xl mx-auto">{t('broker_projectx.seo_subheading')}</p>
+      </div>
+
+      <!-- Main Content Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
+        <!-- Card 1: What is it? -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/30 via-[#0F3EC3]/20 to-[#122B75]/30 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20"
+          data-aos="fade-right" data-aos-delay="100">
+          <div
+            class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#2B77EE]/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-start gap-4 mb-4">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-rocket text-white text-xl"></i>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold text-white pt-2">{t('broker_projectx.seo_card1_title')}</h3>
+          </div>
+
+          <p class="text-gray-300 leading-relaxed mb-4">
+            {t('broker_projectx.seo_card1_p1_pre')} <strong class="text-[#7FB8F9]">{t('broker_projectx.seo_card1_p1_b1')}</strong> {t('broker_projectx.seo_card1_p1_mid')} <strong class="text-[#7FB8F9]">{t('broker_projectx.seo_card1_p1_b2')}</strong>. {t('broker_projectx.seo_card1_p1_post')}
+          </p>
+          <p class="text-gray-300 leading-relaxed">
+            {t('broker_projectx.seo_card1_p2_pre')} <strong class="text-[#7FB8F9]">{t('broker_projectx.seo_card1_p2_b1')}</strong>{t('broker_projectx.seo_card1_p2_mid')} <strong class="text-[#7FB8F9]">{t('broker_projectx.seo_card1_p2_b2')} <a
+                href="#comparison">{t('broker_projectx.seo_card1_p2_link')}</a></strong>{t('broker_projectx.seo_card1_p2_post')}
+          </p>
+        </div>
+
+        <!-- Card 2: Why Choose? -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/30 via-[#0F3EC3]/20 to-[#122B75]/30 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20"
+          data-aos="fade-left" data-aos-delay="200">
+          <div
+            class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#2B77EE]/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-start gap-4 mb-4">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-chart-line text-white text-xl"></i>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold text-white pt-2">{t('broker_projectx.seo_card2_title')}</h3>
+          </div>
+
+          <p class="text-gray-300 leading-relaxed mb-4">
+            <strong class="text-[#7FB8F9]">{t('broker_projectx.seo_card2_p1_b1')}</strong> {t('broker_projectx.seo_card2_p1_mid')} <strong
+              class="text-[#7FB8F9]">{t('broker_projectx.seo_card2_p1_b2')}</strong>{t('broker_projectx.seo_card2_p1_post')}
+          </p>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_projectx.seo_card2_li1_b')}</strong>{t('broker_projectx.seo_card2_li1_t')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_projectx.seo_card2_li2_b')}</strong>{t('broker_projectx.seo_card2_li2_t')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_projectx.seo_card2_li3_b')}</strong>{t('broker_projectx.seo_card2_li3_t')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_projectx.seo_card2_li4_b')}</strong>{t('broker_projectx.seo_card2_li4_t')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_projectx.seo_card2_li5_b')}</strong>{t('broker_projectx.seo_card2_li5_t')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supported Platforms Card -->
+      <div
+        class="relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/30 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-10 overflow-hidden"
+        data-aos="fade-up" data-aos-delay="300">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent">
+        </div>
+
+        <div class="text-center mb-8">
+          <h3 class="text-2xl sm:text-3xl font-bold text-white mb-2">{t('broker_projectx.platforms_heading')}</h3>
+          <p class="text-gray-400">{t('broker_projectx.platforms_subheading')}</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <!-- Signal Generation -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bell text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_projectx.platforms_signal_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_projectx.platforms_signal_1')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_projectx.platforms_signal_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_projectx.platforms_signal_3')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_projectx.platforms_signal_4')}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Execution Platform -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_projectx.platforms_exec_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_projectx.platforms_exec_1')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_projectx.platforms_exec_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_projectx.platforms_exec_3')}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Prop Firms -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80 sm:col-span-2 lg:col-span-1">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-building text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_projectx.platforms_propfirms_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                Topstep (TopstepX)
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                Tradovate
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                Rithmic
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <a href="#comparison" class="text-blue-500">
+                  <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                  {t('broker_projectx.platforms_propfirms_viewall')}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- INTERNAL LINKING SECTION - REDESIGNED -->
+  <section class="relative py-12 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] overflow-hidden">
+    <!-- Decorative Elements -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-10 right-20 w-64 h-64 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-5">
+      <!-- Section Header -->
+      <div class="text-center mb-10 sm:mb-12" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-link text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_projectx.internal_links_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_projectx.internal_links_heading')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">
+          {t('broker_projectx.internal_links_subheading')}
+        </p>
+      </div>
+
+      <!-- Integration Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8 sm:mb-10">
+        <!-- Rithmic -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="100">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.internal_links_rithmic_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_projectx.internal_links_rithmic_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_projectx.internal_links_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- TradeStation -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="200">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-chart-line text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.internal_links_tradestation_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_projectx.internal_links_tradestation_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_projectx.internal_links_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- Interactive Brokers -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="300">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-globe text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.internal_links_ib_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_projectx.internal_links_ib_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_projectx.internal_links_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- TradeLocker -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="400">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-coins text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.internal_links_tradelocker_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_projectx.internal_links_tradelocker_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_projectx.internal_links_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+      </div>
+
+      <!-- View All Link -->
+      <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+        <a href={localizedPath(locale)}
+          class="group inline-flex items-center gap-3 bg-gradient-to-r from-[#122B75]/40 to-[#0F3EC3]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-full px-6 py-3 text-sm sm:text-base text-[#7FB8F9] hover:border-[#2B77EE] hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20">
+          <i class="fa-solid fa-arrow-left transform group-hover:-translate-x-1 transition-transform"></i>
+          <span class="font-semibold">{t('broker_projectx.internal_links_viewall')}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO TUTORIALS SECTION -->
+  <section class="relative py-16 sm:py-20 bg-gradient-to-b from-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-circle-play text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_projectx.video_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_projectx.video_heading')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">
+          {t('broker_projectx.video_subheading')}
+        </p>
+      </div>
+
+      <!-- Video Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8" data-aos="fade-up" data-aos-delay="100">
+        <!-- Video Player (Left Side - Takes 2 columns) -->
+        <div class="lg:col-span-2">
+          <div
+            class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl overflow-hidden">
+            <!-- Video Container -->
+            <div class="relative aspect-video bg-black/50">
+              <iframe id="videoPlayer" class="w-full h-full" src="https://www.youtube.com/embed/Yd7N4lHzgdc"
+                title={t('broker_projectx.video_iframe_title')} style="border:0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+            </div>
+            <!-- Video Info -->
+            <div class="p-5 sm:p-6">
+              <h3 id="currentVideoTitle" class="text-lg sm:text-xl font-bold text-white mb-2">{t('broker_projectx.video_current_title')}</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video List (Right Side - Takes 1 column) -->
+        <div class="lg:col-span-1">
+          <div
+            class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-4 sm:p-5 max-h-[600px] overflow-y-auto custom-scrollbar">
+            <h4 class="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-list text-[#2B77EE]"></i>
+              {t('broker_projectx.video_playlist')}
+            </h4>
+
+            <!-- Video List Items -->
+            <div class="space-y-3">
+              <!-- Video 1 -->
+              <div
+                class="video-item active group cursor-pointer p-3 bg-[#2B77EE]/20 border border-[#2B77EE]/50 rounded-lg hover:bg-[#2B77EE]/30 transition-all duration-300"
+                data-video-id="Yd7N4lHzgdc" data-title="How to Automate Trade with ProjectX">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0 w-20 h-12 bg-black/30 rounded overflow-hidden relative">
+                    <img src="/assets/projectx/projectXOne.jpg" alt={t('broker_projectx.video_item1_alt')}
+                      class="w-full h-full object-cover" width="1280" height="720" loading="lazy" decoding="async">
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <i class="fa-solid fa-play text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h5
+                      class="text-sm font-semibold text-white group-hover:text-[#7FB8F9] transition-colors line-clamp-2">
+                      {t('broker_projectx.video_item1_title')}</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS - REDESIGNED -->
+  <section id="howitworks"
+    class="relative py-20 sm:py-24 bg-gradient-to-b from-[#001429] via-[#002040] to-[#001429] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/4 left-10 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16 sm:mb-20" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-gears text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_projectx.steps_badge')}</span>
+        </div>
+        <h2
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-[#7FB8F9] to-white bg-clip-text text-transparent">
+          {t('broker_projectx.steps_heading')}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+          {t('broker_projectx.steps_subheading_pre')} <strong class="text-[#7FB8F9]">{t('broker_projectx.steps_subheading_b')}</strong>{t('broker_projectx.steps_subheading_post')}
+        </p>
+      </div>
+
+      <!-- Steps with Visual Timeline -->
+      <div class="relative">
+        <!-- Connection Line (Desktop) -->
+        <div
+          class="hidden lg:block absolute top-20 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent"
+          style="top: 80px;"></div>
+
+        <!-- Steps Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6">
+          <!-- Step 1 -->
+          <div class="relative group" data-aos="fade-up" data-aos-delay="100">
+            <!-- Step Number Circle -->
+            <div class="flex justify-center mb-6">
+              <div
+                class="relative w-20 h-20 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center shadow-lg shadow-[#2B77EE]/50 group-hover:shadow-[#2B77EE]/80 transition-all duration-300 group-hover:scale-110">
+                <span class="text-3xl font-bold text-white electrolize-regular">1</span>
+                <div
+                  class="absolute inset-0 rounded-full bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300">
+                </div>
+              </div>
+            </div>
+
+            <!-- Step Card -->
+            <div
+              class="relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full">
+              <!-- Icon -->
+              <div class="flex justify-center mb-4">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-xl flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                  <i class="fa-solid fa-link text-2xl text-[#2B77EE] group-hover:text-white transition-colors"></i>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.step1_title')}</h3>
+              <p class="text-gray-300 text-center mb-6">{t('broker_projectx.step1_intro')}</p>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step1_li1_pre')} <strong class="text-white">{t('broker_projectx.step1_li1_b')}</strong> {t('broker_projectx.step1_li1_post')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step1_li2_pre')} <strong class="text-white">{t('broker_projectx.step1_li2_b')}</strong> {t('broker_projectx.step1_li2_post')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step1_li3_pre')} <strong class="text-white">{t('broker_projectx.step1_li3_b')}</strong></span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step1_li4_pre')} <strong class="text-white">{t('broker_projectx.step1_li4_b')}</strong> {t('broker_projectx.step1_li4_post')}</span>
+                </li>
+              </ul>
+              <p class="text-gray-300 text-center mt-6">{t('broker_projectx.step1_outro')}</p>
+              <p class="text-center mt-3">
+                <a href="https://docs.pickmytrade.io/docs/connect-projectx-to-topstep-api/" target="_blank" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline text-sm">Topstep API access guide (get and use your TopstepX API key)</a>
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="relative group" data-aos="fade-up" data-aos-delay="200">
+            <!-- Step Number Circle -->
+            <div class="flex justify-center mb-6">
+              <div
+                class="relative w-20 h-20 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center shadow-lg shadow-[#2B77EE]/50 group-hover:shadow-[#2B77EE]/80 transition-all duration-300 group-hover:scale-110">
+                <span class="text-3xl font-bold text-white electrolize-regular">2</span>
+                <div
+                  class="absolute inset-0 rounded-full bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300">
+                </div>
+              </div>
+            </div>
+
+            <!-- Step Card -->
+            <div
+              class="relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full">
+              <!-- Icon -->
+              <div class="flex justify-center mb-4">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-xl flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                  <i class="fa-solid fa-bolt text-2xl text-[#2B77EE] group-hover:text-white transition-colors"></i>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.step2_title')}</h3>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step2_li1_pre')} <strong class="text-white">{t('broker_projectx.step2_li1_b')}</strong> {t('broker_projectx.step2_li1_post')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step2_li2_pre')} <strong class="text-white">{t('broker_projectx.step2_li2_b')}</strong> {t('broker_projectx.step2_li2_post')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step2_li3_pre')} <strong class="text-white">{t('broker_projectx.step2_li3_b')}</strong></span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step2_li4_pre')} <strong class="text-white">{t('broker_projectx.step2_li4_b')}</strong></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="relative group" data-aos="fade-up" data-aos-delay="300">
+            <!-- Step Number Circle -->
+            <div class="flex justify-center mb-6">
+              <div
+                class="relative w-20 h-20 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-full flex items-center justify-center shadow-lg shadow-[#2B77EE]/50 group-hover:shadow-[#2B77EE]/80 transition-all duration-300 group-hover:scale-110">
+                <span class="text-3xl font-bold text-white electrolize-regular">3</span>
+                <div
+                  class="absolute inset-0 rounded-full bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300">
+                </div>
+              </div>
+            </div>
+
+            <!-- Step Card -->
+            <div
+              class="relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full">
+              <!-- Icon -->
+              <div class="flex justify-center mb-4">
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-xl flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                  <i class="fa-solid fa-rocket text-2xl text-[#2B77EE] group-hover:text-white transition-colors"></i>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.step3_title')}</h3>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step3_li1_pre')} <strong class="text-white">{t('broker_projectx.step3_li1_b')}</strong>{t('broker_projectx.step3_li1_post')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step3_li2')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span><strong class="text-white">{t('broker_projectx.step3_li3_b')}</strong> {t('broker_projectx.step3_li3_post')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+                  <span>{t('broker_projectx.step3_li4_pre')} <strong class="text-white">{t('broker_projectx.step3_li4_b')}</strong></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="text-center mt-12 sm:mt-16" data-aos="fade-up" data-aos-delay="400">
+          <a href="https://app.pickmytrade.io/?register=true" rel="noopener"
+            class="group inline-flex items-center gap-3 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl px-8 py-4 text-base sm:text-lg font-semibold text-white shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300 hover:scale-105 electrolize-regular">
+            <i class="fa-solid fa-play text-lg"></i>
+            <span>{t('broker_projectx.steps_cta')}</span>
+            <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS - REDESIGNED -->
+  <section
+    class="relative py-20 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#001429] via-[#002040] to-[#001429] overflow-hidden"
+    id="benefits">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-80 h-80 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-16 sm:mb-20" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-star text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_projectx.benefits_badge')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4">
+          {t('broker_projectx.benefits_heading_pre')} <span
+            class="bg-gradient-to-r from-[#2B77EE] to-[#7FB8F9] bg-clip-text text-transparent electrolize-regular">PickMyTrade</span>
+          {t('broker_projectx.benefits_heading_post')}
+        </h2>
+        <p class="max-w-3xl mx-auto text-gray-400 text-base sm:text-lg leading-relaxed">
+          {t('broker_projectx.benefits_intro_pre')} <strong class="text-[#7FB8F9]">{t('broker_projectx.benefits_intro_b1')}</strong> {t('broker_projectx.benefits_intro_mid')}
+          <strong class="text-[#7FB8F9]">{t('broker_projectx.benefits_intro_b2')}</strong>{t('broker_projectx.benefits_intro_post')}
+        </p>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Feature 1: Multiple Alert Types -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="100">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-bell text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature1_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_projectx.feature1_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature1_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature1_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature1_tag3')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 2: Flexible Symbol Mapping -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="200">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-exchange-alt text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature2_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_projectx.feature2_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature2_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature2_tag2')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 3: Smart Quantity Settings -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="300">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-sliders-h text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature3_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_projectx.feature3_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature3_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature3_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature3_tag3')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 4: Advanced SL & TP Options -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="100">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-shield-alt text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature4_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_projectx.feature4_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature4_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature4_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature4_tag3')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature4_tag4')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 5: Multiple Account Support -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full md:col-span-2 lg:col-span-1"
+          data-aos="fade-up" data-aos-delay="200">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-users text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature5_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_projectx.feature5_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature5_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature5_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.feature5_tag3')}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROP FIRMS COMPARISON SECTION -->
+  <section id="comparison"
+    class="relative py-20 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/4 left-20 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/4 right-20 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-building text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_projectx.comparison_badge')}</span>
+        </div>
+        <h2
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-[#7FB8F9] to-white bg-clip-text text-transparent">
+          {t('broker_projectx.comparison_heading')}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-400 max-w-3xl mx-auto">
+          {t('broker_projectx.comparison_subheading_pre')} <strong class="text-[#7FB8F9]">{t('broker_projectx.comparison_subheading_b')}</strong> {t('broker_projectx.comparison_subheading_post')}
+        </p>
+      </div>
+
+      <!-- Primary Platform Card: Topstep / TopstepX -->
+      <div
+        class="relative bg-gradient-to-br from-[#122B75]/50 via-[#0F3EC3]/30 to-[#122B75]/50 backdrop-blur-sm border-2 border-[#2B77EE] rounded-2xl p-6 sm:p-10 mb-8"
+        data-aos="fade-up" data-aos-delay="100">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <div
+            class="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center text-white font-bold text-xl">
+            TS
+          </div>
+          <div class="flex-1 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row items-center sm:items-center gap-3 mb-3">
+              <h3 class="text-xl sm:text-2xl font-bold text-white">Topstep (TopstepX)</h3>
+              <span
+                class="px-3 py-1 bg-[#2B77EE]/20 border border-[#2B77EE]/50 rounded-full text-xs font-semibold text-[#7FB8F9] uppercase tracking-wide">Primary
+                ProjectX Platform</span>
+            </div>
+            <p class="text-gray-300 leading-relaxed">
+              Since 28 February 2026, ProjectX technology is exclusive to Topstep and runs as TopstepX. Automate
+              your TradingView alerts to a Topstep evaluation or funded account using a TopstepX API key. Always
+              confirm Topstep's current automation policy before trading a live funded account.
+            </p>
+            <a href={localizedPath(locale, 'propfirms/topstep')}
+              class="inline-flex items-center gap-2 mt-4 text-[#2B77EE] hover:text-[#7FB8F9] font-semibold text-sm underline">
+              Learn about Topstep / TopstepX automation
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Engines Note -->
+      <div class="grid sm:grid-cols-2 gap-6 mb-10" data-aos="fade-up" data-aos-delay="150">
+        <div class="bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6">
+          <h4 class="font-bold text-[#7FB8F9] text-lg mb-2"><i class="fa-solid fa-bolt mr-2"></i>Tradovate</h4>
+          <p class="text-gray-400 text-sm leading-relaxed">Many other prop firms run on the Tradovate execution
+            engine rather than ProjectX. PickMyTrade connects to Tradovate accounts too.</p>
+        </div>
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+          class="group bg-[#001429]/50 border border-[#2B77EE]/30 rounded-xl p-6 hover:border-[#2B77EE] transition-all duration-300">
+          <h4 class="font-bold text-[#7FB8F9] text-lg mb-2 group-hover:text-white transition-colors"><i
+              class="fa-solid fa-server mr-2"></i>Rithmic</h4>
+          <p class="text-gray-400 text-sm leading-relaxed">Other prop firms run on Rithmic's infrastructure. See
+            our dedicated TradingView to Rithmic automation page.</p>
+        </a>
+      </div>
+
+      <p class="text-center text-gray-500 text-sm max-w-2xl mx-auto mb-10">
+        Copy-trading and automation rules vary by prop firm and change over time, so always confirm your firm's
+        current policy before you go live.
+      </p>
+
+      <!-- View All Button -->
+      <div class="text-center">
+        <a href={localizedPath(locale, 'supported-propfirms')}
+          class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl text-white font-semibold text-lg shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300 hover:scale-105">
+          <i class="fa-solid fa-building"></i>
+          <span>{t('broker_projectx.comparison_viewall_btn')}</span>
+          <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        <p class="text-gray-400 text-sm mt-3">{t('broker_projectx.comparison_viewall_caption')}</p>
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="200">
+        <p class="text-gray-400 mb-4">{t('broker_projectx.comparison_cta_text')}</p>
+        <a href="https://app.pickmytrade.io/?register=true" rel="noopener"
+          class="inline-flex items-center gap-3 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl px-8 py-4 text-base sm:text-lg font-semibold text-white shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300 hover:scale-105 electrolize-regular">
+          <i class="fa-solid fa-rocket"></i>
+          <span>{t('broker_projectx.comparison_cta_btn')}</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- USE CASES SECTION -->
+  <section class="py-20 px-5 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <span
+          class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide inline-block">
+          {t('broker_projectx.usecases_badge')}</span>
+        <h2 class="text-4xl font-bold mt-4 mb-6 text-[#2B77EE]">{t('broker_projectx.usecases_heading')}</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <article class="p-6 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl">
+          <div class="text-4xl mb-4">📊</div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_projectx.usecase1_title')}</h3>
+          <p class="text-gray-300">
+            {t('broker_projectx.usecase1_desc')}
+          </p>
+        </article>
+
+        <article class="p-6 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl">
+          <div class="text-4xl mb-4">⚡</div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_projectx.usecase2_title')}</h3>
+          <p class="text-gray-300">
+            {t('broker_projectx.usecase2_pre')} <strong>{t('broker_projectx.usecase2_b1')}</strong> {t('broker_projectx.usecase2_mid')} <strong>{t('broker_projectx.usecase2_b2')}</strong>{t('broker_projectx.usecase2_post')}
+          </p>
+        </article>
+
+        <article class="p-6 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl">
+          <div class="text-4xl mb-4">🤖</div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_projectx.usecase3_title')}</h3>
+          <p class="text-gray-300">
+            {t('broker_projectx.usecase3_pre')} <strong>{t('broker_projectx.usecase3_b1')}</strong>{t('broker_projectx.usecase3_mid')} <strong>{t('broker_projectx.usecase3_b2')}</strong>{t('broker_projectx.usecase3_post')}
+          </p>
+        </article>
+
+        <article class="p-6 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl">
+          <div class="text-4xl mb-4">💼</div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_projectx.usecase4_title')}</h3>
+          <p class="text-gray-300">
+            {t('broker_projectx.usecase4_pre')} <strong>{t('broker_projectx.usecase4_b1')}</strong> {t('broker_projectx.usecase4_post')}
+          </p>
+        </article>
+
+        <article class="p-6 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl">
+          <div class="text-4xl mb-4">📈</div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_projectx.usecase5_title')}</h3>
+          <p class="text-gray-300">
+            {t('broker_projectx.usecase5_pre')} <strong>{t('broker_projectx.usecase5_b1')}</strong> {t('broker_projectx.usecase5_post')}
+          </p>
+        </article>
+
+        <article class="p-6 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl">
+          <div class="text-4xl mb-4">🎓</div>
+          <h3 class="text-xl font-bold mb-3 text-white">{t('broker_projectx.usecase6_title')}</h3>
+          <p class="text-gray-300">
+            {t('broker_projectx.usecase6_pre')} <strong>{t('broker_projectx.usecase6_b1')}</strong> {t('broker_projectx.usecase6_post')}
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE SECTION -->
+  <section class="py-20 px-5 bg-[#001429]">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <span
+          class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide inline-block">
+          {t('broker_projectx.vs_badge')}
+        </span>
+        <h2 class="text-4xl font-bold mt-4 mb-6 text-[#2B77EE]">{t('broker_projectx.vs_heading')}</h2>
+        <p class="text-gray-300 max-w-3xl mx-auto">
+          {t('broker_projectx.vs_subheading')}
+        </p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse bg-[#122B75]/20 rounded-xl overflow-hidden">
+          <thead>
+            <tr class="bg-[#0F3EC3]">
+              <th class="p-4 text-left text-white font-bold">{t('broker_projectx.vs_col_feature')}</th>
+              <th class="p-4 text-center text-white font-bold">{t('broker_projectx.vs_col_manual')}</th>
+              <th class="p-4 text-center text-white font-bold">{t('broker_projectx.vs_col_pine')}</th>
+              <th class="p-4 text-center text-white font-bold bg-[#2B77EE]">{t('broker_projectx.vs_col_pmt')}</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300">
+            <tr class="border-b border-gray-700">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row1_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row1_manual')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row1_pine')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold">
+                {t('broker_projectx.vs_row1_pmt')}</td>
+            </tr>
+            <tr class="border-b border-gray-700 bg-[#122B75]/10">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row2_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_no')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_no')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold">{t('broker_projectx.vs_yes')}</td>
+            </tr>
+            <tr class="border-b border-gray-700">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row3_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row3_manual')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row3_pine')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold">{t('broker_projectx.vs_row3_pmt')}</td>
+            </tr>
+            <tr class="border-b border-gray-700 bg-[#122B75]/10">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row4_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row4_manual')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_no')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold flex flex-row items-center justify-center">
+                {t('broker_projectx.vs_row4_pmt')}
+                <div class="relative group/tooltip ml-3">
+                  <i class="fas fa-info-circle text-white/60 text-xs cursor-help"></i>
+                  <div
+                    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+                    {t('broker_projectx.vs_row4_tooltip')}
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-2 h-2 bg-gray-900 rotate-45">
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="border-b border-gray-700">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row5_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row5_manual')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row5_pine')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold">{t('broker_projectx.vs_row5_pmt')}</td>
+            </tr>
+            <tr class="border-b border-gray-700 bg-[#122B75]/10">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row6_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row6_manual')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row6_manual')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold">{t('broker_projectx.vs_row6_pmt')}</td>
+            </tr>
+            <tr class="border-b border-gray-700">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row7_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row7_manual')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row7_pine')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold">{t('broker_projectx.vs_row7_pmt')}</td>
+            </tr>
+            <tr class="bg-[#122B75]/10">
+              <td class="p-4 font-semibold">{t('broker_projectx.vs_row8_feature')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_no')}</td>
+              <td class="p-4 text-center">{t('broker_projectx.vs_row8_pine')}</td>
+              <td class="p-4 text-center text-[#2B77EE] font-bold">{t('broker_projectx.vs_row8_pmt')}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-8 p-6 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl">
+        <h3 class="text-xl font-bold mb-3 text-white">{t('broker_projectx.vs_why_title')}</h3>
+        <p class="text-gray-300 mb-4">
+          <strong>{t('broker_projectx.vs_why_p1_b1')}</strong> {t('broker_projectx.vs_why_p1_mid')} <strong>{t('broker_projectx.vs_why_p1_b2')}</strong> {t('broker_projectx.vs_why_p1_post')}
+        </p>
+        <p class="text-gray-300">
+          <strong>{t('broker_projectx.vs_why_p2_b1')}</strong> {t('broker_projectx.vs_why_p2_post')}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMON QUESTIONS SECTION -->
+  <section class="py-20 px-5 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <article class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE] text-center">{t('broker_projectx.cq_heading')}</h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+
+          <div>
+            <h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.cq_q2')}</h3>
+            <p class="text-gray-300 leading-relaxed">
+              {t('broker_projectx.cq_a2_pre')} <strong>{t('broker_projectx.cq_a2_b1')}</strong>{t('broker_projectx.cq_a2_post')}
+            </p>
+          </div>
+
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.cq_q4')}</h3>
+            <p class="text-gray-300 leading-relaxed">
+              {t('broker_projectx.cq_a4_pre')} <strong>{t('broker_projectx.cq_a4_b1')}</strong>{t('broker_projectx.cq_a4_post')}
+            </p>
+          </div>
+
+
+          <div>
+            <h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.cq_q6')}</h3>
+            <p class="text-gray-300 leading-relaxed">
+              {t('broker_projectx.cq_a6_pre')}<strong>{t('broker_projectx.cq_a6_b1')}</strong>{t('broker_projectx.cq_a6_post')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- PROJECTX / TOPSTEPX EXPLAINED (2026 UPDATE) -->
+  <section id="projectx-topstepx-explained" class="py-20 px-5 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <article class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE] text-center">{t('broker_projectx.explained_heading')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_projectx.explained_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-8">{t('broker_projectx.explained_p2')}</p>
+      <div class="overflow-x-auto rounded-xl border border-[#2B77EE]/30">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gradient-to-r from-[#0F3EC3]/30 to-[#2B77EE]/30">
+              <th class="px-6 py-3 text-left text-[#7FB8F9] font-bold">{t('broker_projectx.explained_table_head1')}</th>
+              <th class="px-6 py-3 text-left text-[#7FB8F9] font-bold">{t('broker_projectx.explained_table_head2')}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#2B77EE]/20">
+            <tr class="bg-[#001429]/50"><td class="px-6 py-3 font-semibold text-white">{t('broker_projectx.explained_row1_term')}</td><td class="px-6 py-3 text-gray-300">{t('broker_projectx.explained_row1_desc')}</td></tr>
+            <tr class="bg-[#001429]/30"><td class="px-6 py-3 font-semibold text-white">{t('broker_projectx.explained_row2_term')}</td><td class="px-6 py-3 text-gray-300">{t('broker_projectx.explained_row2_desc')}</td></tr>
+            <tr class="bg-[#001429]/50"><td class="px-6 py-3 font-semibold text-white">{t('broker_projectx.explained_row3_term')}</td><td class="px-6 py-3 text-gray-300">{t('broker_projectx.explained_row3_desc')}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-gray-400 text-sm mt-4 text-center">
+        <a href={localizedPath(locale, 'broker/tradingview-to-topstepx')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_projectx.explained_topstepx_link')}</a>
+      </p>
+    </article>
+  </section>
+
+  <!-- TRADE COPIER SECTION -->
+  <section class="py-20 px-5 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <article class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE] text-center">{t('broker_projectx.copier_heading')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_projectx.copier_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_projectx.copier_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('broker_projectx.copier_p3')}</p>
+    </article>
+  </section>
+
+  <!-- RISK MANAGEMENT SECTION -->
+  <section class="py-20 px-5 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <article class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE] text-center">{t('broker_projectx.risk_heading')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-6">{t('broker_projectx.risk_p1')}</p>
+      <ul class="space-y-3 mb-6">
+        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i><span class="text-gray-300"><strong class="text-white">{t('broker_projectx.risk_li1_b')}</strong>{t('broker_projectx.risk_li1_t')}</span></li>
+        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i><span class="text-gray-300"><strong class="text-white">{t('broker_projectx.risk_li2_b')}</strong>{t('broker_projectx.risk_li2_t')}</span></li>
+        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i><span class="text-gray-300"><strong class="text-white">{t('broker_projectx.risk_li3_b')}</strong>{t('broker_projectx.risk_li3_t')}</span></li>
+        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i><span class="text-gray-300"><strong class="text-white">{t('broker_projectx.risk_li4_b')}</strong>{t('broker_projectx.risk_li4_t')}</span></li>
+        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i><span class="text-gray-300"><strong class="text-white">{t('broker_projectx.risk_li5_b')}</strong>{t('broker_projectx.risk_li5_t')}</span></li>
+      </ul>
+      <p class="text-gray-300 leading-relaxed">
+        {t('broker_projectx.risk_p2')}
+        <a href={localizedPath(locale, 'broker/tradingview-to-topstepx')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline ml-1">Topstep evaluations and funded accounts</a>
+      </p>
+    </article>
+  </section>
+
+  <!-- PRICING & FREE TRIAL SECTION -->
+  <section class="py-20 px-5 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <article class="max-w-5xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE]">{t('broker_projectx.pricing_heading')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('broker_projectx.pricing_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-8">{t('broker_projectx.pricing_p2')}</p>
+      <a href={localizedPath(locale, 'pricing')} class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl text-white font-semibold hover:shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300">
+        <i class="fa-solid fa-tag"></i>
+        {t('broker_projectx.pricing_cta')}
+      </a>
+    </article>
+  </section>
+
+  <!-- NEW FAQ: PROJECTX & TOPSTEPX 2026 UPDATE -->
+  <section class="py-20 px-5 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <article class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE] text-center">{t('broker_projectx.newfaq_heading')}</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <div><h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.newfaq_q2')}</h3><p class="text-gray-300 leading-relaxed">{t('broker_projectx.newfaq_a2')}</p></div>
+          <div><h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.newfaq_q3')}</h3><p class="text-gray-300 leading-relaxed">{t('broker_projectx.newfaq_a3')}</p></div>
+          <div><h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.newfaq_q4')}</h3><p class="text-gray-300 leading-relaxed">{t('broker_projectx.newfaq_a4')}</p></div>
+        </div>
+        <div class="space-y-6">
+          <div><h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.newfaq_q7')}</h3><p class="text-gray-300 leading-relaxed">{t('broker_projectx.newfaq_a7')}</p></div>
+          <div><h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.newfaq_q8')}</h3><p class="text-gray-300 leading-relaxed">{t('broker_projectx.newfaq_a8')}</p></div>
+          <div><h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.newfaq_q9')}</h3><p class="text-gray-300 leading-relaxed">{t('broker_projectx.newfaq_a9')}</p></div>
+          <div><h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.newfaq_q10')}</h3><p class="text-gray-300 leading-relaxed">{t('broker_projectx.newfaq_a10')}</p></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- EXEMPLES Completed -->
+  <section id="examples" class="bg-[#001429] flex justify-center md:px-8 py-20">
+    <div
+      class="bg-zinc-950 md:max-w-7xl md:px-8 flex flex-col gap-y-10 md:gap-y-0 md:flex-row justify-between md:border-4 border-zinc-800 rounded-2xl shadow-xl md:shadow-[#2B77EE] py-20">
+      <div class="flex-1 flex flex-col items-center justify-center px-10">
+        <p
+          class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide">
+          {t('broker_projectx.example_badge')}</p>
+        <h2 class="text-4xl font-bold text-center mb-12 text-[#2B77EE]">{t('broker_projectx.example_heading')}</h2>
+        <p class="text-justify text-lg">
+          {t('broker_projectx.example_p1')}
+          <br /> <br />
+          {t('broker_projectx.example_p2_pre')} <span
+            class="font-bold electrolize-regular text-xl text-[#2B77EE]">PickMyTrade</span> {t('broker_projectx.example_p2_post')}
+        </p>
+      </div>
+      <div
+        class="bg-slate-900 border border-slate-700/50 rounded-2xl shadow-2xl p-8 max-w-2xl mx-auto text-white relative overflow-hidden flex-1"
+        data-aos="fade-left">
+        <div class="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 pointer-events-none">
+        </div>
+        <div
+          class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-black/5 to-transparent rounded-full blur-3xl">
+        </div>
+
+        <div class="relative grid grid-cols-2 gap-4 mb-8">
+          <div
+            class="bg-slate-800/40 hover:bg-slate-800/60 transition-all duration-300 backdrop-blur-sm border border-slate-700/30 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_projectx.example_entry_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              {t('broker_projectx.example_buy_nq')} <span class="text-emerald-400 font-mono" id="entry-price">21,891.00</span>
+            </p>
+            <p class="text-xs text-slate-500">{t('broker_projectx.example_entry_sub')}</p>
+          </div>
+
+          <div
+            class="bg-slate-800/40 hover:bg-slate-800/60 transition-all duration-300 backdrop-blur-sm border border-slate-700/30 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-[#2B77EE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="6" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_projectx.example_position_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1" id="position-size">10 Contracts</p>
+            <p class="text-xs text-slate-500">{t('broker_projectx.example_position_sub')}</p>
+          </div>
+
+          <div
+            class="bg-red-950/20 hover:bg-red-950/30 transition-all duration-300 backdrop-blur-sm border border-red-500/20 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_projectx.example_sl_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              <span class="text-red-400 font-mono" id="stop-loss">21,841.00</span>
+            </p>
+            <p class="text-xs text-red-300/70">{t('broker_projectx.example_sl_sub')}</p>
+          </div>
+
+          <div
+            class="bg-emerald-950/20 hover:bg-emerald-950/30 transition-all duration-300 backdrop-blur-sm border border-emerald-500/20 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_projectx.example_tp_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              <span class="text-emerald-400 font-mono" id="take-profit">21,991.00</span>
+            </p>
+            <p class="text-xs text-emerald-300/70">{t('broker_projectx.example_tp_sub')}</p>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            </svg>
+            <h3 class="text-lg font-semibold text-white">{t('broker_projectx.example_risk_analysis')}</h3>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div
+              class="bg-gradient-to-br from-red-950/30 to-red-900/20 hover:from-red-950/40 hover:to-red-900/30 transition-all duration-300 border border-red-500/30 rounded-xl p-6 relative overflow-hidden cursor-pointer"
+              onclick="updateRiskMetrics()">
+              <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/5 rounded-full blur-2xl"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-red-300/80 text-sm font-medium uppercase tracking-wide">{t('broker_projectx.example_max_risk_label')}</p>
+                  <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p class="text-3xl font-bold text-red-400 mb-1 font-mono" id="max-risk">$10,000</p>
+                <p class="text-xs text-red-300/60">{t('broker_projectx.example_max_risk_sub')}</p>
+                <div class="mt-3 pt-3 border-t border-red-500/20">
+                  <p class="text-xs text-red-300/80" id="risk-per-contract">{t('broker_projectx.example_risk_per_contract')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-emerald-950/30 to-emerald-900/20 hover:from-emerald-950/40 hover:to-emerald-900/30 transition-all duration-300 border border-emerald-500/30 rounded-xl p-6 relative overflow-hidden cursor-pointer"
+              onclick="updateProfitMetrics()">
+              <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-2xl"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-emerald-300/80 text-sm font-medium uppercase tracking-wide">{t('broker_projectx.example_max_profit_label')}</p>
+                  <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+                  </svg>
+                </div>
+                <p class="text-3xl font-bold text-emerald-400 mb-1 font-mono" id="max-profit">$20,000</p>
+                <p class="text-xs text-emerald-300/60">{t('broker_projectx.example_max_profit_sub')}</p>
+                <div class="mt-3 pt-3 border-t border-emerald-500/20">
+                  <p class="text-xs text-emerald-300/80" id="risk-reward-ratio">{t('broker_projectx.example_risk_reward')}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQs - REDESIGNED -->
+  <section id="faq"
+    class="relative py-20 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#001429] via-[#002040] to-[#001429] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-10 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-10 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-circle-question text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_projectx.faq_badge')}</span>
+        </div>
+        <h2
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-[#7FB8F9] to-white bg-clip-text text-transparent">
+          {t('broker_projectx.faq_heading')}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">
+          {t('broker_projectx.faq_subheading')}
+        </p>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="space-y-4" data-aos="fade-up">
+
+        <!-- Setup & Connections Category -->
+        <div class="mb-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-lg flex items-center justify-center">
+              <i class="fa-solid fa-link text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.faq_cat1_title')}</h3>
+          </div>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl mb-3 hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q2')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              {t('broker_projectx.faq_a2')}
+            </div>
+          </details>
+
+        </div>
+
+        <!-- Alerts & Order Logic Category -->
+        <div class="mb-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-lg flex items-center justify-center">
+              <i class="fa-solid fa-bell text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.faq_cat2_title')}</h3>
+          </div>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl mb-3 hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q4')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              <p class="mb-2"><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a4_indicator_label')}</span> {t('broker_projectx.faq_a4_indicator')}</p>
+              <p><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a4_strategy_label')}</span> {t('broker_projectx.faq_a4_strategy')}</p>
+            </div>
+          </details>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q5')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              <p class="mb-2"><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a5_buy_label')}</span> {t('broker_projectx.faq_a5_buy')}</p>
+              <p class="mb-2"><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a5_sell_label')}</span> {t('broker_projectx.faq_a5_sell')}</p>
+              <p><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a5_close_label')}</span> {t('broker_projectx.faq_a5_close')}</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Trade Management & Risk Settings Category -->
+        <div class="mb-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-lg flex items-center justify-center">
+              <i class="fa-solid fa-chart-line text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.faq_cat3_title')}</h3>
+          </div>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl mb-3 hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q6')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              {t('broker_projectx.faq_a6')}
+            </div>
+          </details>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q7')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              <p class="mb-2"><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a7_point_label')}</span> {t('broker_projectx.faq_a7_point')}</p>
+              <p class="mb-2"><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a7_pct_label')}</span> {t('broker_projectx.faq_a7_pct')}</p>
+              <p class="mb-2"><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a7_ticks_label')}</span> {t('broker_projectx.faq_a7_ticks')}</p>
+              <p><span class="font-bold text-[#7FB8F9]">{t('broker_projectx.faq_a7_total_label')}</span> {t('broker_projectx.faq_a7_total')}</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Troubleshooting & Errors Category -->
+        <div class="mb-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-lg flex items-center justify-center">
+              <i class="fa-solid fa-wrench text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-[#7FB8F9] electrolize-regular">{t('broker_projectx.faq_cat4_title')}</h3>
+          </div>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl mb-3 hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q8')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              {t('broker_projectx.faq_a8')}
+            </div>
+          </details>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl mb-3 hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q9')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              {t('broker_projectx.faq_a9')}
+            </div>
+          </details>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl mb-3 hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q10')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              {t('broker_projectx.faq_a10')}
+            </div>
+          </details>
+
+          <details
+            class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl hover:border-[#2B77EE] transition-all duration-300">
+            <summary class="flex items-center justify-between p-5 cursor-pointer list-none">
+              <span class="font-semibold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_projectx.faq_q11')}</span>
+              <i
+                class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <div class="px-5 pb-5 text-gray-300 leading-relaxed">
+              {t('broker_projectx.faq_a11')}
+            </div>
+          </details>
+          <p class="text-sm text-gray-400 mt-4">
+            For step-by-step fixes with screenshots, see the
+            <a href="https://docs.pickmytrade.io/docs/connect-projectx-to-topstep-api/" target="_blank" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">PickMyTrade ProjectX / TopstepX docs</a>.
+          </p>
+        </div>
+
+
+      </div>
+
+      <!-- View Full FAQ CTA -->
+      <div class="text-center mt-12" data-aos="fade-up">
+        <p class="text-gray-400 mb-4">{t('broker_projectx.faq_cta_text')}</p>
+        <a href={localizedPath(locale, 'broker-faq/projectx-faq/')}
+          class="inline-flex items-center gap-2 px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25">
+          <i class="fa-solid fa-circle-question"></i>
+          {t('broker_projectx.faq_cta_btn')}
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FINAL SEO CONTENT SECTION -->
+  <section class="py-16 px-5 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <article class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE] text-center">{t('broker_projectx.final_heading')}</h2>
+
+      <div class="grid md:grid-cols-2 gap-12">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xl font-semibold mb-3 text-white">{t('broker_projectx.final_card_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">
+              {t('broker_projectx.final_card_p_pre')} <strong>{t('broker_projectx.final_card_p_b1')}</strong>{t('broker_projectx.final_card_p_mid1')}
+              <strong>{t('broker_projectx.final_card_p_b2')}</strong>{t('broker_projectx.final_card_p_mid2')}
+              <strong>{t('broker_projectx.final_card_p_b3')}</strong> {t('broker_projectx.final_card_p_mid3')} <strong>{t('broker_projectx.final_card_p_b4')}</strong>{t('broker_projectx.final_card_p_post')}
+            </p>
+            <ul class="mt-4 space-y-2 text-gray-300">
+              <li class="flex items-start">
+                <span class="text-[#2B77EE] mr-2">✓</span>
+                <span><strong>{t('broker_projectx.final_li1_b')}</strong>{t('broker_projectx.final_li1_t')}</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-[#2B77EE] mr-2">✓</span>
+                <span><strong>{t('broker_projectx.final_li2_b')}</strong>{t('broker_projectx.final_li2_t')}</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-[#2B77EE] mr-2">✓</span>
+                <span><strong>{t('broker_projectx.final_li3_b')}</strong>{t('broker_projectx.final_li3_t')}</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-[#2B77EE] mr-2">✓</span>
+                <span><strong>{t('broker_projectx.final_li4_b')}</strong>{t('broker_projectx.final_li4_t')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 p-8 bg-[#122B75]/30 border border-[#2B77EE] rounded-xl text-center">
+        <h3 class="text-2xl font-bold mb-4 text-white">{t('broker_projectx.final_cta_title')}</h3>
+        <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+          {t('broker_projectx.final_cta_p_pre')} <strong>{t('broker_projectx.final_cta_p_b1')}</strong> {t('broker_projectx.final_cta_p_mid1')}
+          <strong>{t('broker_projectx.final_cta_p_b2')}</strong>{t('broker_projectx.final_cta_p_mid2')} <strong>{t('broker_projectx.final_cta_p_b3')}</strong>{t('broker_projectx.final_cta_p_post')}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="https://app.pickmytrade.io/?register=true"
+            class="px-8 py-3 text-lg rounded-xl shadow-lg transition hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] electrolize-regular bg-[#0F3EC3] inline-block">
+            {t('broker_projectx.final_cta_btn_trial')}
+          </a>
+          <a href="#howitworks"
+            class="px-8 py-3 text-lg rounded-xl shadow-lg transition hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] electrolize-regular bg-transparent border-2 border-[#2B77EE] inline-block">
+            {t('broker_projectx.final_cta_btn_how')}
+          </a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="py-20 bg-[#001429] text-center flex flex-col items-center">
+    <span
+      class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide"
+      data-aos="fade-up">
+      {t('broker_projectx.contact_badge')}
+    </span>
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-4xl font-bold mb-6 text-[#2B77EE]" data-aos="fade-up" data-aos-delay="100">
+        {t('broker_projectx.contact_heading')}
+      </h2>
+
+      <p class="text-lg text-zinc-400 mb-8" data-aos="fade-up" data-aos-delay="200">
+        {t('broker_projectx.contact_text')}
+      </p>
+
+      <div class="flex flex-col md:flex-row gap-6 justify-center items-center" data-aos="fade-up" data-aos-delay="300">
+        <a href="https://discord.gg/FkJ7g7498S" target="_blank"
+          class="px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]">
+          <i class="fab fa-discord text-xl mr-2"></i> {t('broker_projectx.contact_discord')}
+        </a>
+
+        <a href="mailto:support@pickmytrade.com"
+          class="px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]">
+          <i class="fa-solid fa-envelope text-xl mr-2"></i> support@pickmytrade.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+</BaseLayout>

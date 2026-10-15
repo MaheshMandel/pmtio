@@ -1,0 +1,278 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import "../../../styles/compare-editorial.css";
+import CompareSpy from "../../../components/CompareSpy.astro";
+import { getLocalePaths } from "../../../i18n/utils";
+import type { Locale } from "../../../i18n/config";
+import Localize from "../../../components/Localize.astro";
+import { makeTr, localizeLd } from "../../../i18n/compare-i18n.mjs";
+
+// Compare pages are translated (de/es/fr/it): text is swapped in by <Localize> from src/i18n/compare/<locale>.json.
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const tr = makeTr(locale);
+const title = tr("PickMyTrade vs Autoview (2026): Per-Broker Pricing Compared");
+const description = tr("Autoview charges $39.99 per broker or exchange; PickMyTrade is $50 per broker login, with a copier and loss limits. See the two-broker math and who wins.");
+const lastUpdated = "2026-09-23";
+
+const faqsEn = [
+  {
+    "question": "Is PickMyTrade more expensive than Autoview?",
+    "answer": "For one venue that is not Tradovate, yes: $39.99 against $50 a month. For a Tradovate account, no, because Autoview's own guides require a paid Tradovate API Access add-on, which they report at around $25 to $30 a month, plus a live account above $1,000 before Tradovate issues the key. PickMyTrade connects by OAuth with neither."
+  },
+  {
+    "question": "Do I need to buy Tradovate API access for PickMyTrade?",
+    "answer": "No. PickMyTrade connects to Tradovate with OAuth, so there is no separate Tradovate API subscription and no key to generate. That is the single biggest cost difference between the two products on the one venue they both serve."
+  },
+  {
+    "question": "Can I connect a prop firm evaluation or funded account?",
+    "answer": "With PickMyTrade, yes, on the platforms it supports: any firm offering Tradovate, Rithmic or ProjectX accounts, including TopstepX. Autoview's own guides say an evaluation or funded prop account is not a path to connecting it directly, simulation included. Firms set their own rules on automation and copy trading, so check yours before going live."
+  },
+  {
+    "question": "Does PickMyTrade support crypto?",
+    "answer": "No. PickMyTrade has no crypto on any plan, and nothing here is hedging that. Autoview reaches about sixteen crypto venues, one of them free to trade live, so for crypto it is the better tool and we will not pretend otherwise."
+  },
+  {
+    "question": "Does PickMyTrade have a trade copier?",
+    "answer": "Yes, and it is in the $50 plan. On Tradovate, an admin account can be mirrored to follower accounts with a quantity multiplier for each one. Separately, a single alert can be routed to several accounts, each at its own size. Autoview's Tradovate command reference says one command drives one account and a separate command is needed per account."
+  },
+  {
+    "question": "How many accounts does one PickMyTrade subscription cover?",
+    "answer": "One subscription covers unlimited accounts under one broker login. Five Apex accounts under a single Tradovate login all automate on one $50 subscription. If your accounts sit under separate broker logins, each login needs its own subscription, so two brokers means two subscriptions."
+  },
+  {
+    "question": "Is the PickMyTrade free trial five days?",
+    "answer": "No, it is seven days, with no credit card and full access to the single plan. Autoview's comparison page says five days, which is the one plain error on an otherwise fair page, and we have asked for it to be corrected. You can start the trial, connect a broker and fire your own alert without entering a card."
+  }
+];
+const faqs = faqsEn.map((f) => ({ question: tr(f.question), answer: tr(f.answer) }));
+
+const ld = [
+  { "@context": "https://schema.org", ...{
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "PickMyTrade",
+      "item": "https://pickmytrade.io/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://pickmytrade.io/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "PickMyTrade vs Autoview",
+      "item": "https://pickmytrade.io/compare/pickmytrade-vs-autoview/"
+    }
+  ]
+} },
+  { "@context": "https://schema.org", ...{
+  "@type": "WebPage",
+  "@id": "https://pickmytrade.io/compare/pickmytrade-vs-autoview/#webpage",
+  "url": "https://pickmytrade.io/compare/pickmytrade-vs-autoview/",
+  "name": "PickMyTrade vs Autoview",
+  "datePublished": "2026-09-23",
+  "dateModified": "2026-09-23",
+  "publisher": {
+    "@id": "https://pickmytrade.io/#organization"
+  }
+} },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "https://pickmytrade.io/compare/pickmytrade-vs-autoview/#faq",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  },
+];
+const ldLocalized = localizeLd(ld, locale, tr);
+---
+<BaseLayout locale={locale} title={title} description={description} structuredData={ldLocalized}>
+<Localize locale={locale}>
+<div class="ed">
+<header class="hero">
+<div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/compare/">Compare</a><span aria-hidden="true">›</span><span aria-current="page">PickMyTrade vs Autoview</span></nav>
+<div class="hero-grid">
+<div class="hero-copy">
+<p class="eyebrow">Head-to-head comparison · 2026</p>
+
+<h1>PickMyTrade vs Autoview</h1>
+<p class="lede">{description}</p>
+<p class="meta"><span>Last reviewed: <time datetime={lastUpdated}>September 23, 2026</time></span></p>
+<div class="actions"><a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start free trial</a><a class="btn btn-quiet" href="#side-by-side">Skip to the comparison table <span aria-hidden="true">→</span></a></div>
+</div>
+<div class="hero-visual"><div class="vs" role="group" aria-label="PickMyTrade compared with Autoview"><div class="vs-row"><div class="vs-side vs-own"><div class="vs-mark" aria-hidden="true">P</div><div class="vs-name">PickMyTrade</div><div class="vs-note">$50/month · one plan</div></div><div class="vs-mid"><span>vs</span></div><div class="vs-side"><div class="vs-mark" aria-hidden="true">A</div><div class="vs-name">Autoview</div><div class="vs-note">Compared on its own published pages</div></div></div></div></div>
+</div>
+<ul class="standards in-hero">
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>50,000+ traders served</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>7-day free trial, no credit card</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Runs in the cloud — your computer can be off</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Tradovate connects by OAuth, with no API fee</span></li>
+</ul>
+</div>
+</header>
+
+<nav class="secnav" aria-label="On this page">
+<div class="wrap secnav-inner">
+<ul>
+<li><a href="#the-price-matched-like-for-like" data-target="the-price-matched-like-for-like">Price</a></li>
+<li><a href="#side-by-side" data-target="side-by-side">Side by side</a></li>
+<li><a href="#why-traders-choose-pickmytrade" data-target="why-traders-choose-pickmytrade">Why PickMyTrade</a></li>
+<li><a href="#moving-from-autoview" data-target="moving-from-autoview">Switching</a></li>
+<li><a href="#frequently-asked-questions" data-target="frequently-asked-questions">FAQ</a></li>
+</ul>
+<a class="btn btn-primary btn-sm" href="https://app.pickmytrade.trade/?register=true">Start free trial</a>
+</div>
+</nav>
+
+<section id="the-price-matched-like-for-like" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Price</p>
+<h2>The price, matched like for like</h2>
+</div>
+<div class="stats3">
+<div class="stat"><span class="v">$50</span><span class="l">per month, one plan</span></div>
+<div class="stat"><span class="v">$500</span><span class="l">per year</span></div>
+<div class="stat"><span class="v">7 days</span><span class="l">free trial, no card</span></div>
+</div>
+        <p class="prose">Autoview's platform is free and you pay per live venue: <span class="pr">$39.99</span> a month or <span class="pr">$399.99</span> a year for each exchange or broker. In its own words it bills per broker, not per account. PickMyTrade is <span class="pr">$50</span> a month or <span class="pr">$500</span> a year and covers unlimited accounts under one broker login, with a second broker login needing its own subscription. Neither of us charges per account, so the arithmetic turns on how many separate brokers you connect and what each broker charges you directly.</p>
+        <p class="prose">Here is the worked example, with Autoview's figures read from its own pages and checked 22 September 2026. Take a trader running futures on Tradovate and stocks and options on a second broker such as TradeStation. <strong>Autoview:</strong> two venues at <span class="pr">$39.99</span> is <span class="pr">$79.98</span> a month, plus the paid Tradovate API Access add-on its own guides say is required, which it reports at around <span class="pr">$25</span> to <span class="pr">$30,</span> and Tradovate only issues that key against a live account holding more than <span class="pr">$1,000,</span> simulation included. Call it <span class="pr">$105</span> to <span class="pr">$110</span>. <strong>PickMyTrade:</strong> two brokers means two broker logins and two subscriptions, so <span class="pr">$100</span> a month, with no API purchase and no funding threshold.</p>
+        <p class="prose">That puts us roughly <span class="pr">$5</span> to <span class="pr">$10</span> a month ahead, and only once the Tradovate add-on is counted. On sticker price alone Autoview is <span class="pr">$20</span> cheaper, and we would rather you read that here than find it on their page. The result changes by setup, so here is the whole grid rather than the one row that flatters us.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Comparison table">
+<table>
+<caption>Monthly cost by setup. Autoview prices and requirements from its own pricing page and guides, checked 22 September 2026.</caption>
+<thead><tr><th scope="col">Your setup</th><th scope="col">Autoview</th><th scope="col" class="own">PickMyTrade</th></tr></thead>
+<tbody>
+<tr><th scope="row">One venue, and it is not Tradovate</th><td><span class="pr">$39.99</span>, or <span class="pr">$399.99</span> a year</td><td class="own"><span class="pr">$50,</span> or <span class="pr">$500</span> a year. Autoview is <span class="pr">$10.01</span> a month cheaper here</td></tr>
+<tr><th scope="row">One Tradovate account</th><td><span class="pr">$39.99</span> plus Tradovate's paid API Access add-on, which Autoview reports at around <span class="pr">$25</span> to <span class="pr">$30,</span> so roughly <span class="pr">$65</span> to <span class="pr">$70</span>. A live account above <span class="pr">$1,000</span> is needed before the key is issued</td><td class="own"><span class="pr">$50,</span> connected by OAuth. No API purchase, no funding threshold to connect</td></tr>
+<tr><th scope="row">Futures on Tradovate plus stocks and options on a second broker</th><td><span class="pr">$79.98</span> on sticker, about <span class="pr">$105</span> to <span class="pr">$110</span> once the Tradovate add-on counts</td><td class="own"><span class="pr">$100,</span> being two broker logins and two subscriptions</td></tr>
+<tr><th scope="row">Five accounts under one broker login</th><td><span class="pr">$39.99</span>, because it bills per broker rather than per account</td><td class="own"><span class="pr">$50,</span> all five on one subscription</td></tr>
+<tr><th scope="row">A prop firm evaluation or funded futures account</th><td>Not a price question. Its own guides say an evaluation or funded prop account is not a path to connecting Autoview directly, simulation included</td><td class="own"><span class="pr">$50</span> on Tradovate, Rithmic or ProjectX, subject to your firm's rules on automation</td></tr>
+<tr><th scope="row">Crypto, or a broker on its list we do not reach</th><td><span class="pr">$39.99</span> each, some connections included free, and one crypto venue free to trade live</td><td class="own">Not offered at any price</td></tr>
+</tbody>
+</table>
+</div>
+        <p class="prose"><a href="/pricing/">PickMyTrade pricing</a> · <a href="https://autoview.com/pricing/" target="_blank" rel="noopener noreferrer">Autoview pricing</a></p>
+</div>
+</section>
+
+<section id="side-by-side" class="sec band">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Side by side</p>
+<h2>Side by side</h2>
+</div>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Comparison table">
+<table>
+<caption>What each product does, from each company's own documentation. Autoview checked 22 September 2026.</caption>
+<thead><tr><th scope="col">Decision</th><th scope="col" class="own">PickMyTrade</th><th scope="col">Autoview</th></tr></thead>
+<tbody>
+<tr><th scope="row">Futures brokers</th><td class="own">Tradovate, Rithmic, ProjectX including TopstepX. <a href="/broker/">Broker guides</a></td><td>Tradovate. Of ProjectX and TopstepX its own article says it does not have a connector for it today</td></tr>
+<tr><th scope="row">Tradovate connection</th><td class="own">OAuth. No separate Tradovate API purchase. <a href="https://docs.pickmytrade.trade/docs/faqs/" target="_blank" rel="noopener noreferrer">Tradovate FAQ</a></td><td>Paid Tradovate API Access add-on plus a live account above <span class="pr">$1,000,</span> per its own Tradovate guide. It stores the Tradovate username, password and key values</td></tr>
+<tr><th scope="row">Prop firm accounts</th><td class="own">By platform: any firm offering Tradovate, Rithmic or ProjectX accounts. Check your firm's rules on automation and copy trading first</td><td>Its own guide: an evaluation or funded prop account is not a path to connecting Autoview directly, simulation included</td></tr>
+<tr><th scope="row">Stocks and options</th><td class="own">Interactive Brokers, TradeStation, Tradier. Tradier options are single-leg</td><td>TradeStation, Alpaca, Charles Schwab</td></tr>
+<tr><th scope="row">Forex and CFDs</th><td class="own">TradeLocker and Match-Trader, with no MetaTrader terminal involved</td><td>Its own venue list, including Capital.com and a spot forex broker we do not connect to. <a href="https://autoview.com/pricing/" target="_blank" rel="noopener noreferrer">Venue list</a></td></tr>
+<tr><th scope="row">Crypto</th><td class="own">Not offered</td><td>About sixteen crypto venues, with one free to trade live</td></tr>
+<tr><th scope="row">Trade copier and multi-account</th><td class="own">One alert to many accounts, each with its own size, plus a Tradovate copier from an admin account to followers with a quantity multiplier each. <a href="https://docs.pickmytrade.trade/docs/tradingview-to-tradovate-trade-copier/" target="_blank" rel="noopener noreferrer">Copier guide</a></td><td>Its Tradovate command reference: one command, one account, and send a separate command per account</td></tr>
+<tr><th scope="row">Account risk limits</th><td class="own">Daily and weekly profit and loss limits per account, trading-time windows, and a news filter on Tradovate. <a href="https://docs.pickmytrade.trade/docs/trading-risk-settings/" target="_blank" rel="noopener noreferrer">Risk settings</a></td><td>Its risk guide: no built-in kill switch, no daily-loss auto-halt and no panic button</td></tr>
+<tr><th scope="row">Building the alert</th><td class="own">Generated from the dashboard, with saved alerts, symbol mapping and automatic futures rollover. <a href="https://docs.pickmytrade.trade/docs/tradingview-json-alert-configuration/" target="_blank" rel="noopener noreferrer">Alert setup</a></td><td>Its own command syntax, one line per order, with a dry-run flag. Anything that can send an HTTP POST can drive it</td></tr>
+<tr><th scope="row">Where it runs</th><td class="own">In the cloud. Interactive Brokers is the exception: TWS or IB Gateway plus the PickMyTrade IB application must stay running. <a href="https://docs.pickmytrade.io/docs/interactive-brokers-trading-setup/" target="_blank" rel="noopener noreferrer">IBKR setup</a></td><td>Cloud webhooks, or a browser extension that keeps keys on your own machine</td></tr>
+<tr><th scope="row">Trying it for nothing</th><td class="own">7 days free, no credit card, full access to the one plan</td><td>Free platform, free paper trading on fifteen testnets and demos with no time limit, and no card to start</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section id="why-traders-choose-pickmytrade" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Why PickMyTrade</p>
+<h2>Why traders choose PickMyTrade</h2>
+</div>
+<div class="cards">
+<article class="card"><h3>Prop firm accounts actually connect</h3><p>Evaluation and funded futures accounts work on the platforms we support, which is where most futures prop firms live. Autoview's own guides rule these out. Firms set their own rules on automation and copy trading, so confirm yours before you go live.</p></article>
+<article class="card"><h3>No Tradovate API purchase and no funding threshold</h3><p>Tradovate connects by OAuth. There is no API Access subscription to buy and no live-account balance needed just to get a key. <a href="https://docs.pickmytrade.trade/docs/faqs/" target="_blank" rel="noopener noreferrer">Tradovate FAQ</a>.</p></article>
+<article class="card"><h3>Brokers Autoview does not list</h3><p>Rithmic and ProjectX for futures, Interactive Brokers and Tradier for stocks and options, TradeLocker and Match-Trader for forex and CFDs. All on the same one plan, priced per broker login, so a second broker login is a second subscription. <a href="/broker/">See the broker guides</a>.</p></article>
+<article class="card"><h3>One alert, many accounts, and a real copier</h3><p>Send one alert and every selected account takes the trade at its own size, or run the Tradovate copier so follower accounts mirror an admin account with a quantity multiplier each. <a href="https://docs.pickmytrade.trade/docs/place-trades-in-multiple-accounts/" target="_blank" rel="noopener noreferrer">Multi-account guide</a>.</p></article>
+<article class="card"><h3>Limits that stop the day for you</h3><p>Daily and weekly profit and loss limits on each account, trading-time windows, and a news filter on Tradovate. They are settings, not promises: set them to match your firm's rules. <a href="https://docs.pickmytrade.trade/docs/trading-risk-settings/" target="_blank" rel="noopener noreferrer">Risk settings</a>.</p></article>
+<article class="card"><h3>Nothing to learn before the first order</h3><p>The alert message is generated for you and the exits are dashboard settings: stop loss and take profit by points, percentage, price, ticks or total profit and loss, brackets and OCO, trailing on Tradovate and ProjectX, breakeven with an offset, partial close and reverse.</p></article>
+</div>
+</div>
+</section>
+
+<section id="moving-from-autoview" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Switching</p>
+<h2>Moving from Autoview</h2>
+</div>
+<div class="measure">
+<ol class="steps">
+<li><span class="n">1</span><p><strong>Start the free trial and connect your broker.</strong> Sign in to Tradovate with OAuth, or follow the guide for Rithmic, ProjectX, Interactive Brokers, TradeStation, Tradier, TradeLocker or Match-Trader.</p></li>
+<li><span class="n">2</span><p><strong>Rebuild the alert message.</strong> Generate it in the dashboard and paste it into your TradingView alert with the PickMyTrade webhook URL. Autoview commands do not carry across as they are: what lived on one command line now lives in the alert plus your account and exit settings.</p></li>
+<li><span class="n">3</span><p><strong>Set accounts, sizing and exits.</strong> Choose which accounts receive the alert and at what size, then the stop loss, take profit and any trailing or breakeven rule. If you were sending one command per account, this is the step that replaces that work.</p></li>
+<li><span class="n">4</span><p><strong>Test on a demo account, then switch one account at a time.</strong> Confirm the order at your broker before going live, and turn Autoview off for that account first, so only one tool is placing orders. If you keep Autoview for crypto, keep the two pointed at different accounts.</p></li>
+</ol>
+</div>
+</div>
+</section>
+
+<section id="frequently-asked-questions" class="sec band">
+<div class="wrap">
+<div class="faq-wrap">
+<p class="eyebrow">FAQ</p>
+<h2>Frequently asked questions</h2>
+<div class="faq">
+{faqs.map((f) => (
+<details>
+<summary><span>{f.question}</span><i aria-hidden="true"></i></summary>
+<div class="ans"><p>{f.answer}</p></div>
+</details>
+))}
+</div>
+</div>
+</div>
+</section>
+
+<section id="sources" class="sec sec-quiet" aria-label="Sources and disclosure">
+<div class="wrap">
+<div class="measure">
+<p class="eyebrow">Sources</p>
+<h2 class="h-sm">Sources and disclosure</h2>
+<p class="src-p">Prepared by PickMyTrade. Autoview details come from its own pages, checked 22 September 2026: <a href="https://autoview.com/pricing/" target="_blank" rel="noopener noreferrer">pricing</a>, its <a href="https://autoview.com/articles/vs/pickmytrade/" target="_blank" rel="noopener noreferrer">PickMyTrade comparison</a>, its <a href="https://autoview.com/guides/tradovate/" target="_blank" rel="noopener noreferrer">Tradovate guide</a>, its <a href="https://autoview.com/guides/risk-management-best-practices/" target="_blank" rel="noopener noreferrer">risk-management guide</a> and its <a href="https://autoview.com/guides/tradovate-command-reference/" target="_blank" rel="noopener noreferrer">Tradovate command reference</a>. The Tradovate API add-on figure is Autoview's own reported range, not a price we have verified with Tradovate. Prices and features change on both sides; check both sites before you buy.</p>
+<p class="src-p risk"><strong>Risk disclosure.</strong> Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. The content on this page is for educational and informational purposes only and does not constitute financial, investment, or trading advice. Only trade with capital you can afford to lose.</p>
+</div>
+</div>
+</section>
+
+<section class="cta-sec">
+<div class="wrap">
+<div class="cta">
+<div>
+<h2 class="h-sm">Ready to get started?</h2>
+<p>Connect your broker and run your own alert on a 7-day free trial. No credit card.</p>
+</div>
+<div class="cta-actions">
+<a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start your 7-day free trial <span aria-hidden="true">→</span></a>
+<a class="btn btn-quiet" href="/pricing/">See pricing <span aria-hidden="true">→</span></a>
+</div>
+</div>
+</div>
+</section>
+</div>
+</Localize>
+
+<CompareSpy />
+</BaseLayout>

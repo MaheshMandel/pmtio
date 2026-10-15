@@ -1,0 +1,796 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqAccordion from '../../../components/FaqAccordion.astro';
+import ReadingMotion from '../../../components/ReadingMotion.astro';
+import { getLocalePaths, localizedPath, useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const pageUrl = 'https://pickmytrade.io/ai-ml/trading-plan/';
+
+// ---------------------------------------------------------------------------
+// TODO(pre-launch): finalize these three items before this page goes live.
+//   1. CANONICAL — <BaseLayout> auto-emits the locale-prefixed canonical from
+//      astro.config `site`: https://pickmytrade.io/<locale>/ai-ml/trading-plan.
+//      `pageUrl` above (used in the JSON-LD) omits the /<locale> prefix — confirm
+//      the intended public canonical and align both. To pin a fixed canonical,
+//      pass an explicit `canonical="..."` prop to <BaseLayout> below.
+//   2. OG IMAGE — `OG_IMAGE` below is still the generic /logo.png fallback.
+//      Replace with a page-specific 1200x630 social card before launch
+//      (suggested path: /og/ai-ml-trading-plan.png).
+//   3. FOOTER LINK — Footer.astro links this page via `footer.link_ai_trading_plan`.
+//      Keep that key translated in every locale (en ✓, de ✓).
+// ---------------------------------------------------------------------------
+const OG_IMAGE = '/logo.png'; // TODO(pre-launch): swap for /og/ai-ml-trading-plan.png (1200x630)
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI Trading for Beginners: The Complete Machine-Learning Trading Plan, Executed with PickMyTrade",
+  "description": "A plain-English, step-by-step guide for US-based beginners: build an AI/ML trading system using meta-labeling, regime detection, and volatility-based position sizing, with Claude Fable (Anthropic's AI model) writing the code and PickMyTrade automating execution at your broker.",
+  "author": { "@type": "Organization", "name": "PickMyTrade", "url": "https://pickmytrade.io/" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/logo.png" }
+  },
+  "datePublished": "2026-07-03",
+  "dateModified": "2026-07-03",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": pageUrl },
+  "image": "https://pickmytrade.io/logo.png",
+  "about": ["AI trading", "machine learning trading", "automated trading", "algorithmic trading for beginners", "PickMyTrade", "TradingView webhook automation"]
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io/" },
+    { "@type": "ListItem", "position": 2, "name": "AI Trading for Beginners with PickMyTrade", "item": pageUrl }
+  ]
+};
+
+const schema3 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to Build an AI/ML Trading System and Automate It with PickMyTrade",
+                  "name": "How to Build an AI/ML Trading System and Automate It with PickMyTrade",
+                  "description": "An eight-step educational plan for building a machine-learning-assisted trading system: pick a market and timeframe, gather clean data, engineer features, label history with the triple-barrier method, train a LightGBM trade filter, validate honestly, paper trade, then automate execution through TradingView alerts and PickMyTrade.",
+                  "timeRequired": "P90D",
+                  "articleSection": [
+                    "Pick your market and timeframe — Start with daily or swing trading (holding trades for days to weeks) on highly liquid US instruments: SPY or QQQ ETFs, or Micro E-mini futures (MES, MNQ). Micro futures require only small margin deposits and are not subject to the Pattern Day Trader $25,000 rule that applies to frequent stock day-trading in margin accounts.",
+                    "Get clean historical data — Download 10 or more years of daily price history. Free sources like yfinance are fine for learning; survivorship-bias-free vendors like Norgate Data are the professional upgrade once you expand beyond a single index product.",
+                    "Build simple features — Compute a small set of inputs the model will learn from: recent returns at several horizons, realized volatility, ATR, and one or two trend measures. Simple, decorrelated features generalize better than piles of indicators.",
+                    "Label your history with the triple-barrier method — For each historical trade signal, ask which happened first: the profit target, the stop-loss, or a time limit. Set the target and stop as multiples of recent volatility (ATR) so they adapt to market conditions. These win/loss labels become the model's answer key.",
+                    "Train a LightGBM trade filter (meta-labeling) — Train a LightGBM classifier to predict the probability that each new signal from your base strategy will hit its target before its stop. The AI does not invent trades; it grades the trades your strategy proposes, and only high-confidence trades get taken.",
+                    "Validate honestly — Test the model only on data it has never seen, using walk-forward and purged cross-validation, and subtract realistic commissions and slippage. Re-run the test at double your cost estimate; a robust system should still make sense.",
+                    "Paper trade the full pipeline — Run the whole system on live market data with simulated money for one to three months. Confirm real-time signals, fills, and behavior match what the backtest predicted before any real dollars are involved.",
+                    "Go live small with TradingView alerts and PickMyTrade — Connect your strategy's TradingView alerts to PickMyTrade via webhook. PickMyTrade routes each signal to your connected broker account with take-profit and stop-loss brackets attached, executing the plan automatically and without emotion. Start with the smallest position size available."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+
+const faqKeys = Array.from({ length: 13 }, (_, i) => i + 1);
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqKeys.map((n) => ({
+    "@type": "Question",
+    "name": t(`ai_ml_trading_plan.faq_q${n}` as any),
+    "acceptedAnswer": { "@type": "Answer", "text": t(`ai_ml_trading_plan.faq_a${n}` as any) }
+  }))
+};
+
+const faqItems = faqKeys.map((n) => ({
+  question: t(`ai_ml_trading_plan.faq_q${n}` as any),
+  answer: t(`ai_ml_trading_plan.faq_a${n}` as any),
+}));
+
+const tocKeys = Array.from({ length: 12 }, (_, i) => i + 1);
+const tocAnchors = [
+  'what-is-ai-trading', 'professional-goal', 'architecture', 'build-plan', 'claude-fable',
+  'build-vs-buy', 'pickmytrade', 'toolbox', 'mistakes', 'glossary', 'faq', 'full-disclaimer',
+];
+const tocIcons = [
+  'fa-lightbulb', 'fa-bullseye', 'fa-diagram-project', 'fa-list-check', 'fa-robot',
+  'fa-scale-balanced', 'fa-bolt', 'fa-toolbox', 'fa-triangle-exclamation', 'fa-book', 'fa-circle-question', 'fa-shield-halved',
+];
+
+const archBlocks = [1, 2, 3, 4, 5].map((n) => ({
+  tag: t(`ai_ml_trading_plan.arch_block${n}_tag` as any),
+  title: t(`ai_ml_trading_plan.arch_block${n}_title` as any),
+  desc: t(`ai_ml_trading_plan.arch_block${n}_desc` as any),
+}));
+const archIcons = ['fa-chart-line', 'fa-brain', 'fa-cloud-bolt', 'fa-scale-balanced', 'fa-bolt'];
+
+const steps = Array.from({ length: 8 }, (_, i) => i + 1).map((n) => ({
+  title: t(`ai_ml_trading_plan.step${n}_title` as any),
+  desc: t(`ai_ml_trading_plan.step${n}_desc` as any),
+}));
+
+const prompts = [1, 2, 3, 4, 5, 6].map((n) => ({
+  label: t(`ai_ml_trading_plan.prompt${n}_label` as any),
+  text: t(`ai_ml_trading_plan.prompt${n}_text` as any),
+}));
+
+const bvbCards = [1, 2, 3, 4].map((n) => ({
+  title: t(`ai_ml_trading_plan.bvb_card${n}_title` as any),
+  desc: t(`ai_ml_trading_plan.bvb_card${n}_desc` as any),
+}));
+
+const tools = [
+  { name: 'LightGBM', key: 'lightgbm' }, { name: 'scikit-learn', key: 'sklearn' },
+  { name: 'pandas', key: 'pandas' }, { name: 'mlfinpy', key: 'mlfinpy' },
+  { name: 'skfolio', key: 'skfolio' }, { name: 'hmmlearn', key: 'hmmlearn' },
+  { name: 'vectorbt', key: 'vectorbt' }, { name: 'NautilusTrader', key: 'nautilus' },
+  { name: 'MLflow', key: 'mlflow' }, { name: 'FinBERT', key: 'finbert' },
+  { name: 'Chronos / TimesFM', key: 'chronos' }, { name: 'yfinance', key: 'yfinance' },
+  { name: 'Norgate Data', key: 'norgate' },
+].map((tool) => ({
+  name: tool.name,
+  cat: t(`ai_ml_trading_plan.tool_${tool.key}_cat` as any),
+  desc: t(`ai_ml_trading_plan.tool_${tool.key}_desc` as any),
+}));
+
+const mistakes = [1, 2, 3, 4, 5, 6].map((n) => ({
+  title: t(`ai_ml_trading_plan.mistake${n}_title` as any),
+  desc: t(`ai_ml_trading_plan.mistake${n}_desc` as any),
+}));
+
+const glossary = Array.from({ length: 22 }, (_, i) => i + 1).map((n) => ({
+  term: t(`ai_ml_trading_plan.g${n}_term` as any),
+  def: t(`ai_ml_trading_plan.g${n}_def` as any),
+}));
+
+const discParas = [1, 2, 3, 4, 5, 6].map((n) => ({
+  strong: t(`ai_ml_trading_plan.disc_p${n}_strong` as any),
+  text: t(`ai_ml_trading_plan.disc_p${n}_text` as any),
+}));
+
+const pmtFlow = [1, 2, 3, 4].map((n) => ({
+  strong: t(`ai_ml_trading_plan.pmt_flow_step${n}_strong` as any),
+  text: t(`ai_ml_trading_plan.pmt_flow_step${n}_text` as any),
+}));
+const pmtSupports = [1, 2, 3, 4, 5].map((n) => ({
+  label: t(`ai_ml_trading_plan.pmt_supports_li${n}_label` as any),
+  text: t(`ai_ml_trading_plan.pmt_supports_li${n}_text` as any),
+}));
+const pmtWhy = [1, 2, 3].map((n) => ({
+  label: t(`ai_ml_trading_plan.pmt_why_li${n}_label` as any),
+  text: t(`ai_ml_trading_plan.pmt_why_li${n}_text` as any),
+}));
+const fableLis = [1, 2, 3, 4, 5].map((n) => ({
+  label: t(`ai_ml_trading_plan.fable_li${n}_label` as any),
+  text: t(`ai_ml_trading_plan.fable_li${n}_text` as any),
+}));
+const whatisTerms = [1, 2, 3].map((n) => ({
+  label: t(`ai_ml_trading_plan.whatis_term${n}_label` as any),
+  text: t(`ai_ml_trading_plan.whatis_term${n}_text` as any),
+}));
+const goalScores = [1, 2].map((n) => ({
+  label: t(`ai_ml_trading_plan.goal_score${n}_label` as any),
+  text: t(`ai_ml_trading_plan.goal_score${n}_text` as any),
+}));
+---
+<BaseLayout
+  locale={locale}
+  title={t('ai_ml_trading_plan.page_title')}
+  description={t('ai_ml_trading_plan.page_description')}
+  keywords={t('ai_ml_trading_plan.page_keywords')}
+  ogImage={OG_IMAGE}
+  structuredData={[schema1, schema2, schema3, schema4]}
+>
+  <ReadingMotion />
+  <!-- Top disclaimer banner -->
+  <div class="bg-[#001429] pt-20 text-center px-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-blue-500/20 pb-3">
+      <p class="text-xs sm:text-sm text-gray-400">
+        <strong class="text-white">{t('ai_ml_trading_plan.top_banner_strong')}</strong>
+        {t('ai_ml_trading_plan.top_banner_text')}
+      </p>
+    </div>
+  </div>
+
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-3 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('ai_ml_trading_plan.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('ai_ml_trading_plan.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="relative pt-16 pb-24 overflow-hidden bg-[#001429]">
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-orange-600/10"></div>
+      <div class="absolute top-0 left-[12%] w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-0 right-[8%] w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+      <div class="absolute inset-0 opacity-[0.02]" style="background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 50px 50px;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-4xl" data-aos="fade-up">
+        <span class="inline-block bg-zinc-800 border border-blue-500/40 rounded-full px-5 py-2 mb-6 text-xs sm:text-sm font-bold tracking-wide uppercase text-zinc-300 electrolize-regular">
+          {t('ai_ml_trading_plan.hero_eyebrow')}
+        </span>
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight mb-6">
+          <span class="text-white">{t('ai_ml_trading_plan.hero_title_1')} </span>
+          <span class="text-[#2B77EE]">{t('ai_ml_trading_plan.hero_title_grad')}</span>
+          <span class="text-white">, {t('ai_ml_trading_plan.hero_title_2')}</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-300 leading-relaxed mb-8 max-w-3xl">
+          {t('ai_ml_trading_plan.hero_subhead')}
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+          <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-4 text-lg rounded-xl shadow-lg transition hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] hover:scale-105 electrolize-regular bg-[#0F3EC3] text-white text-center inline-flex items-center justify-center gap-2">
+            {t('ai_ml_trading_plan.cta_trial')}
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a href="https://docs.pickmytrade.io/docs/" class="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-lg transition-all duration-300 electrolize-regular text-white text-center">
+            {t('ai_ml_trading_plan.cta_docs')}
+          </a>
+        </div>
+
+        <div class="flex flex-wrap gap-3 sm:gap-4 mb-10 text-sm">
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{t('ai_ml_trading_plan.hero_badge_trial')}</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-credit-card text-blue-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{t('ai_ml_trading_plan.hero_badge_nocard')}</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-infinity text-purple-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{t('ai_ml_trading_plan.hero_badge_unlimited')}</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300 electrolize-regular">{t('ai_ml_trading_plan.hero_badge_instant')}</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm border border-gray-700/50 border-l-4 border-l-orange-500 rounded-2xl p-6 sm:p-8 max-w-4xl" aria-label="Quick answer" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-blue-400 mb-3 flex items-center gap-2"><i class="fa-solid fa-bolt"></i>{t('ai_ml_trading_plan.hero_answer_title')}</h2>
+        <p class="text-gray-300 mb-3 leading-relaxed">{t('ai_ml_trading_plan.hero_answer_p1')}</p>
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.hero_answer_p2')}</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- TOC -->
+  <section class="py-16 bg-gradient-to-b from-[#001429] to-[#00182f]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">{t('ai_ml_trading_plan.toc_title')}</span>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3" data-aos="fade-up">
+        {tocKeys.map((n, i) => (
+          <a href={`#${tocAnchors[i]}`} class="group flex items-center gap-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-blue-500/50 rounded-xl px-4 py-3 transition-all duration-300 hover:-translate-y-1">
+            <span class="w-9 h-9 flex-shrink-0 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+              <i class={`fa-solid ${tocIcons[i]}`}></i>
+            </span>
+            <span class="text-sm text-gray-300 group-hover:text-blue-400 transition-colors">{t(`ai_ml_trading_plan.toc_${n}` as any)}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- What is AI/ML trading -->
+  <section id="what-is-ai-trading" class="relative py-20 scroll-mt-28 bg-[#001429] overflow-hidden">
+    <div class="absolute top-1/3 -left-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">01</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.whatis_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.whatis_lede')}</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto space-y-4 mb-10" data-aos="fade-up">
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.whatis_p1')}</p>
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.whatis_p2')}</p>
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.whatis_terms_intro')}</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5 mb-10">
+        {whatisTerms.map((term) => (
+          <article class="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-blue-500/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1" data-aos="zoom-in">
+            <div class="w-12 h-12 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform"><i class="fa-solid fa-angle-right"></i></div>
+            <h3 class="font-bold text-white mb-2">{term.label}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{term.text}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="max-w-4xl mx-auto bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6 sm:p-7 flex gap-4" data-aos="fade-up">
+        <div class="w-11 h-11 flex-shrink-0 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-circle-info text-lg"></i></div>
+        <div>
+          <span class="block font-bold text-blue-400 mb-1">{t('ai_ml_trading_plan.whatis_callout_title')}</span>
+          <p class="text-gray-300">{t('ai_ml_trading_plan.whatis_callout_p')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Professional goal -->
+  <section id="professional-goal" class="py-20 scroll-mt-28 bg-gradient-to-b from-[#00182f] to-[#001429]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">02</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.goal_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.goal_lede')}</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto mb-8" data-aos="fade-up">
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.goal_p1')}</p>
+      </div>
+
+      <figure class="max-w-5xl mx-auto mb-10" data-aos="zoom-in">
+        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-4 sm:p-6 overflow-x-auto">
+          <svg viewBox="0 0 720 320" role="img" aria-label={t('ai_ml_trading_plan.goal_fig_alt')} class="w-full h-auto">
+            <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+              <line x1="52" y1="60" x2="700" y2="60"/>
+              <line x1="52" y1="120" x2="700" y2="120"/>
+              <line x1="52" y1="180" x2="700" y2="180"/>
+              <line x1="52" y1="240" x2="700" y2="240"/>
+            </g>
+            <line x1="52" y1="20" x2="52" y2="272" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <line x1="52" y1="272" x2="700" y2="272" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <text x="26" y="170" font-size="12" fill="#9fb2cc" transform="rotate(-90 26 170)">Account value →</text>
+            <text x="376" y="292" font-size="12" fill="#9fb2cc" text-anchor="middle">Time →</text>
+            <path d="M 52 250 C 100 238, 130 220, 168 196 C 200 176, 222 168, 248 148 C 268 133, 282 122, 296 118 C 316 130, 330 168, 344 205 C 354 231, 362 244, 376 248 C 402 240, 434 214, 470 192 C 510 168, 560 140, 610 116 C 644 100, 668 92, 696 84" fill="none" stroke="#ff5722" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M 52 252 C 110 244, 160 232, 210 220 C 250 210, 280 206, 310 208 C 330 209, 345 212, 362 210 C 400 204, 440 192, 490 178 C 540 164, 590 150, 640 136 C 662 130, 680 126, 696 122" fill="none" stroke="#2B77EE" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="296" y1="118" x2="296" y2="248" stroke="#ff8a65" stroke-width="1.3" stroke-dasharray="5 4"/>
+            <line x1="288" y1="118" x2="304" y2="118" stroke="#ff8a65" stroke-width="1.3"/>
+            <line x1="288" y1="248" x2="304" y2="248" stroke="#ff8a65" stroke-width="1.3"/>
+            <text x="286" y="186" font-size="12" fill="#ff8a65" text-anchor="end">deep drawdown</text>
+            <text x="286" y="201" font-size="11" fill="#ff8a65" text-anchor="end">(big peak-to-valley drop)</text>
+            <line x1="352" y1="206" x2="352" y2="214" stroke="#2B77EE" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <text x="362" y="232" font-size="12" fill="#6ea8fe">shallow, shorter dips</text>
+            <text x="560" y="106" font-size="13" font-weight="700" fill="#ff8a65">Buy &amp; hold</text>
+            <text x="510" y="150" font-size="13" font-weight="700" fill="#6ea8fe">Risk-managed system</text>
+            <g font-size="12" fill="#c2d2e8">
+              <line x1="60" y1="36" x2="86" y2="36" stroke="#ff5722" stroke-width="2.5"/>
+              <text x="92" y="40">Buy &amp; hold (deeper swings)</text>
+              <line x1="290" y1="36" x2="316" y2="36" stroke="#2B77EE" stroke-width="2.5"/>
+              <text x="322" y="40">Risk-managed (smoother path)</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-gray-500 mt-3 text-center">{t('ai_ml_trading_plan.goal_fig_caption')}</figcaption>
+      </figure>
+
+      <div class="max-w-3xl mx-auto mb-6" data-aos="fade-up">
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.goal_scores_intro')}</p>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-5 max-w-4xl mx-auto mb-8">
+        {goalScores.map((s) => (
+          <article class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-6" data-aos="fade-up">
+            <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-gauge-high text-blue-400"></i>{s.label}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{s.text}</p>
+          </article>
+        ))}
+      </div>
+      <div class="max-w-3xl mx-auto mb-8" data-aos="fade-up">
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.goal_p2')}</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6 sm:p-7 flex gap-4" data-aos="fade-up">
+        <div class="w-11 h-11 flex-shrink-0 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-400"><i class="fa-solid fa-triangle-exclamation text-lg"></i></div>
+        <div>
+          <span class="block font-bold text-yellow-400 mb-1">{t('ai_ml_trading_plan.goal_callout_title')}</span>
+          <p class="text-gray-300">{t('ai_ml_trading_plan.goal_callout_p')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section id="architecture" class="relative py-20 scroll-mt-28 bg-[#001429] overflow-hidden">
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">03</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.arch_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.arch_lede')}</p>
+      </div>
+
+      <figure class="mb-12" data-aos="zoom-in">
+        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-4 sm:p-6 overflow-x-auto">
+          <svg viewBox="0 0 1180 250" width="1180" style="min-width:980px" role="img" aria-label={t('ai_ml_trading_plan.arch_fig_alt')}>
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#9fb2cc"/>
+              </marker>
+            </defs>
+            <g>
+              <rect x="14" y="52" width="200" height="120" rx="14" fill="rgba(43,119,238,0.15)" stroke="#2B77EE" stroke-width="1.6"/>
+              <text x="114" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">1 · Strategy signal</text>
+              <text x="114" y="106" text-anchor="middle" font-size="12.5" fill="#c2d2e8">Your rules (e.g., a</text>
+              <text x="114" y="123" text-anchor="middle" font-size="12.5" fill="#c2d2e8">TradingView strategy)</text>
+              <text x="114" y="140" text-anchor="middle" font-size="12.5" fill="#c2d2e8">propose a trade</text>
+              <text x="114" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#6ea8fe">"Here's a trade idea"</text>
+            </g>
+            <line x1="214" y1="112" x2="248" y2="112" stroke="#6ea8fe" stroke-width="2" class="flow-line" marker-end="url(#arrow)"/>
+            <g>
+              <rect x="252" y="52" width="200" height="120" rx="14" fill="rgba(0,132,209,0.18)" stroke="#0084d1" stroke-width="1.6"/>
+              <text x="352" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">2 · AI trade filter</text>
+              <text x="352" y="106" text-anchor="middle" font-size="12.5" fill="#c2d2e8">Meta-labeling: LightGBM</text>
+              <text x="352" y="123" text-anchor="middle" font-size="12.5" fill="#c2d2e8">scores win probability;</text>
+              <text x="352" y="140" text-anchor="middle" font-size="12.5" fill="#c2d2e8">weak trades skipped</text>
+              <text x="352" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#4bb4e6">"Is it worth taking?"</text>
+            </g>
+            <line x1="452" y1="112" x2="486" y2="112" stroke="#6ea8fe" stroke-width="2" class="flow-line" marker-end="url(#arrow)"/>
+            <g>
+              <rect x="490" y="52" width="200" height="120" rx="14" fill="rgba(233,61,0,0.15)" stroke="#e93d00" stroke-width="1.6"/>
+              <text x="590" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">3 · Regime gate</text>
+              <text x="590" y="106" text-anchor="middle" font-size="12.5" fill="#c2d2e8">AI detects calm vs.</text>
+              <text x="590" y="123" text-anchor="middle" font-size="12.5" fill="#c2d2e8">stormy markets; stands</text>
+              <text x="590" y="140" text-anchor="middle" font-size="12.5" fill="#c2d2e8">aside in storms</text>
+              <text x="590" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#ff8a65">"Is it safe out there?"</text>
+            </g>
+            <line x1="690" y1="112" x2="724" y2="112" stroke="#6ea8fe" stroke-width="2" class="flow-line" marker-end="url(#arrow)"/>
+            <g>
+              <rect x="728" y="52" width="200" height="120" rx="14" fill="rgba(255,255,255,0.06)" stroke="#6ea8fe" stroke-width="1.6"/>
+              <text x="828" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">4 · Position sizing</text>
+              <text x="828" y="106" text-anchor="middle" font-size="12.5" fill="#c2d2e8">Volatility targeting +</text>
+              <text x="828" y="123" text-anchor="middle" font-size="12.5" fill="#c2d2e8">fractional Kelly math;</text>
+              <text x="828" y="140" text-anchor="middle" font-size="12.5" fill="#c2d2e8">ATR stops &amp; targets</text>
+              <text x="828" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#9fc3ff">"How much?"</text>
+            </g>
+            <line x1="928" y1="112" x2="962" y2="112" stroke="#6ea8fe" stroke-width="2" class="flow-line" marker-end="url(#arrow)"/>
+            <g>
+              <rect x="966" y="52" width="200" height="120" rx="14" fill="#0a0e17" stroke="#4a90e2" stroke-width="1.6"/>
+              <text x="1066" y="84" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">5 · PickMyTrade</text>
+              <text x="1066" y="106" text-anchor="middle" font-size="12.5" fill="#bcd4f7">TradingView webhook →</text>
+              <text x="1066" y="123" text-anchor="middle" font-size="12.5" fill="#bcd4f7">bracket order placed</text>
+              <text x="1066" y="140" text-anchor="middle" font-size="12.5" fill="#bcd4f7">at your broker</text>
+              <text x="1066" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#ff5722">"Execute — no emotion"</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="text-sm text-gray-500 mt-3 text-center">{t('ai_ml_trading_plan.arch_fig_caption')}</figcaption>
+      </figure>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        {archBlocks.map((block, i) => (
+          <article class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-7 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2" data-aos="fade-up" data-aos-delay={i * 60}>
+            <div class="w-14 h-14 mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center text-blue-400 text-xl group-hover:scale-110 transition-transform"><i class={`fa-solid ${archIcons[i]}`}></i></div>
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3 bg-blue-500/15 text-blue-300 electrolize-regular">{block.tag}</span>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{block.title}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{block.desc}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="max-w-4xl mx-auto bg-green-500/10 border border-green-500/30 rounded-2xl p-6 sm:p-7 flex gap-4" data-aos="fade-up">
+        <div class="w-11 h-11 flex-shrink-0 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400"><i class="fa-solid fa-lightbulb text-lg"></i></div>
+        <div>
+          <span class="block font-bold text-green-400 mb-1">{t('ai_ml_trading_plan.arch_callout_title')}</span>
+          <p class="text-gray-300">{t('ai_ml_trading_plan.arch_callout_p')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Build plan -->
+  <section id="build-plan" class="py-20 scroll-mt-28 bg-gradient-to-b from-[#001429] to-[#00182f]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-14" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">04</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.build_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.build_lede')}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-x-8 gap-y-10">
+        {steps.map((step, i) => (
+          <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-7 pt-9 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-1" data-aos="fade-up">
+            <div class="absolute -top-5 left-7 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-[#001429] group-hover:scale-110 transition-transform">
+              <span class="text-white font-bold text-lg">{i + 1}</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{step.title}</h3>
+            <p class="text-gray-300 leading-relaxed">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Claude Fable -->
+  <section id="claude-fable" class="py-20 scroll-mt-28 bg-gradient-to-b from-[#00182f] to-[#001429]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">05</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.fable_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.fable_lede')}</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto mb-8" data-aos="fade-up">
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.fable_intro')}</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {fableLis.map((li) => (
+          <article class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-6" data-aos="zoom-in">
+            <div class="w-10 h-10 mb-3 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-400"><i class="fa-solid fa-check"></i></div>
+            <h3 class="font-bold text-white mb-1">{li.label}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{li.text}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="max-w-3xl mx-auto mb-6" data-aos="fade-up">
+        <p class="text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.fable_prompts_intro')}</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-5 max-w-6xl mx-auto">
+        {prompts.map((prompt) => (
+          <div class="bg-black/40 border border-blue-500/20 rounded-xl overflow-hidden" data-aos="fade-up">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-blue-500/10 text-xs uppercase tracking-wider text-blue-300">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-terminal"></i>{prompt.label}</span>
+              <button type="button" class="copy-btn bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full px-3 py-1 text-[11px] font-semibold normal-case tracking-normal">{t('ai_ml_trading_plan.fable_copy')}</button>
+            </div>
+            <pre class="p-4 whitespace-pre-wrap break-words font-mono text-[13px] leading-relaxed text-gray-200">{prompt.text}</pre>
+          </div>
+        ))}
+      </div>
+
+      <div class="max-w-4xl mx-auto bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6 sm:p-7 mt-8 flex gap-4" data-aos="fade-up">
+        <div class="w-11 h-11 flex-shrink-0 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-400"><i class="fa-solid fa-circle-exclamation text-lg"></i></div>
+        <div>
+          <span class="block font-bold text-yellow-400 mb-1">{t('ai_ml_trading_plan.fable_callout_title')}</span>
+          <p class="text-gray-300">{t('ai_ml_trading_plan.fable_callout_p')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Build vs buy -->
+  <section id="build-vs-buy" class="py-20 scroll-mt-28 bg-[#001429]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">06</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.bvb_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.bvb_lede')}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-12">
+        {bvbCards.map((card, i) => (
+          <article class="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 border-l-4 border-l-blue-500 rounded-2xl p-7 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1" data-aos="fade-up">
+            <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-3">
+              <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-blue-400 text-white text-sm font-bold flex-shrink-0">{i + 1}</span>
+              {card.title}
+            </h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{card.desc}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="text-center max-w-3xl mx-auto" data-aos="zoom-in">
+        <p class="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent mb-3">{t('ai_ml_trading_plan.bvb_rent_line')}</p>
+        <p class="text-gray-400">{t('ai_ml_trading_plan.bvb_rent_sub')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PickMyTrade -->
+  <section id="pickmytrade" class="relative py-20 scroll-mt-28 bg-gradient-to-b from-[#001429] to-[#00182f] overflow-hidden">
+    <div class="absolute top-1/4 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">07</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.pmt_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.pmt_lede')}</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto mb-10">
+        <h3 class="text-xl font-bold text-white mb-3 text-center">{t('ai_ml_trading_plan.pmt_flow_title')}</h3>
+        <p class="text-gray-300 leading-relaxed mb-6 text-center max-w-3xl mx-auto">{t('ai_ml_trading_plan.pmt_flow_intro')}</p>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {pmtFlow.map((f, i) => (
+            <div class="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-5" data-aos="fade-up" data-aos-delay={i * 60}>
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white text-xs font-bold mb-3">{i + 1}</span>
+              <h4 class="font-bold text-white mb-1 text-sm">{f.strong}</h4>
+              <p class="text-xs text-gray-300 leading-relaxed">{f.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="text-gray-300 leading-relaxed text-center max-w-3xl mx-auto">{t('ai_ml_trading_plan.pmt_flow_after')}</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8 mb-10">
+        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-7" data-aos="fade-right">
+          <h3 class="text-xl font-bold text-white mb-5 flex items-center gap-2"><i class="fa-solid fa-plug text-blue-400"></i>{t('ai_ml_trading_plan.pmt_supports_title')}</h3>
+          <ul class="space-y-3">
+            {pmtSupports.map((li) => (
+              <li class="flex items-start gap-2 text-gray-300"><i class="fa-solid fa-check text-blue-400 mt-1.5"></i><span><strong class="text-white">{li.label}</strong> {li.text}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-7" data-aos="fade-left">
+          <h3 class="text-xl font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-circle-question text-blue-400"></i>{t('ai_ml_trading_plan.pmt_why_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-4">{t('ai_ml_trading_plan.pmt_why_intro')}</p>
+          <ul class="space-y-3">
+            {pmtWhy.map((li) => (
+              <li class="flex items-start gap-2 text-gray-300"><i class="fa-solid fa-check text-blue-400 mt-1.5"></i><span><strong class="text-white">{li.label}</strong> {li.text}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6 sm:p-7 flex gap-4" data-aos="fade-up">
+        <div class="w-11 h-11 flex-shrink-0 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-circle-info text-lg"></i></div>
+        <div>
+          <span class="block font-bold text-blue-400 mb-1">{t('ai_ml_trading_plan.pmt_callout_title')}</span>
+          <p class="text-gray-300">{t('ai_ml_trading_plan.pmt_callout_p')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbox -->
+  <section id="toolbox" class="py-20 scroll-mt-28 bg-[#001429]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">08</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.toolbox_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.toolbox_lede')}</p>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/50 to-gray-900/50" data-aos="fade-up">
+        <table class="w-full min-w-[640px] text-sm border-collapse">
+          <thead>
+            <tr class="bg-blue-500/10 text-blue-300">
+              <th class="text-left font-semibold px-5 py-3.5 whitespace-nowrap">{t('ai_ml_trading_plan.toolbox_th_tool')}</th>
+              <th class="text-left font-semibold px-5 py-3.5 whitespace-nowrap">{t('ai_ml_trading_plan.toolbox_th_category')}</th>
+              <th class="text-left font-semibold px-5 py-3.5">{t('ai_ml_trading_plan.toolbox_th_desc')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tools.map((tool) => (
+              <tr class="border-t border-gray-700/50 hover:bg-white/[0.02] transition-colors">
+                <td class="px-5 py-3.5 font-semibold text-white whitespace-nowrap">{tool.name}</td>
+                <td class="px-5 py-3.5 text-gray-400 whitespace-nowrap">{tool.cat}</td>
+                <td class="px-5 py-3.5 text-gray-300">{tool.desc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mistakes -->
+  <section id="mistakes" class="py-20 scroll-mt-28 bg-gradient-to-b from-[#001429] to-[#00182f]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-orange-600/20 text-orange-400 rounded-full text-sm font-semibold border border-orange-500/30 electrolize-regular mb-4">09</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{t('ai_ml_trading_plan.mistakes_title')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{t('ai_ml_trading_plan.mistakes_lede')}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {mistakes.map((mistake) => (
+          <article class="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 border-l-4 border-l-orange-500 rounded-2xl p-6 hover:border-orange-500/50 transition-all duration-300 hover:-translate-y-1" data-aos="fade-up">
+            <div class="w-11 h-11 mb-3 rounded-xl bg-orange-500/15 flex items-center justify-center text-orange-400"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3 class="text-base font-bold text-orange-400 mb-2">{mistake.title}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{mistake.desc}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Glossary -->
+  <section id="glossary" class="py-20 scroll-mt-28 bg-[#001429]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">10</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">{t('ai_ml_trading_plan.glossary_title')}</h2>
+      </div>
+      <dl class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {glossary.map((item) => (
+          <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-blue-500/40 rounded-xl p-5 transition-colors" data-aos="fade-up">
+            <dt class="font-bold text-blue-400 mb-1">{item.term}</dt>
+            <dd class="text-sm text-gray-300 leading-relaxed">{item.def}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 scroll-mt-28 bg-gradient-to-b from-[#001429] to-[#00182f]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">11</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">{t('ai_ml_trading_plan.faq_title')}</h2>
+      </div>
+      <div data-aos="fade-up">
+        <FaqAccordion items={faqItems} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Full disclaimer + go deeper -->
+  <section id="full-disclaimer" class="py-16 scroll-mt-28 bg-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 border-t-4 border-t-gray-500 rounded-2xl p-6 sm:p-8 mb-8" data-aos="fade-up">
+        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-gray-400"></i>{t('ai_ml_trading_plan.disclaimer_title')}</h2>
+        {discParas.map((para) => (
+          <p class="text-sm text-gray-400 leading-relaxed mb-3"><strong class="text-gray-200">{para.strong}</strong> {para.text}</p>
+        ))}
+      </div>
+
+      <div class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6 sm:p-7 flex gap-4" data-aos="fade-up">
+        <div class="w-11 h-11 flex-shrink-0 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-arrow-trend-up text-lg"></i></div>
+        <div>
+          <span class="block font-bold text-blue-400 mb-1">{t('ai_ml_trading_plan.deeper_title')}</span>
+          <p class="text-gray-300">
+            {t('ai_ml_trading_plan.deeper_text')}
+            <a href={localizedPath(locale, 'ai-ml/advanced-guide')} class="text-blue-400 hover:underline font-semibold">{t('ai_ml_trading_plan.deeper_link')}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 bg-gradient-to-b from-[#00182f] to-[#002040]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-aos="fade-up">
+      <div class="relative bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-blue-500/40 rounded-3xl p-10 sm:p-14 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10">
+          <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">{t('ai_ml_trading_plan.cta_title')}</h2>
+          <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">{t('ai_ml_trading_plan.cta_subtitle')}</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="https://app.pickmytrade.io/?register=true" class="px-10 py-4 text-lg rounded-xl shadow-lg transition hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] hover:scale-105 electrolize-regular bg-[#0F3EC3] text-white inline-flex items-center gap-2">{t('ai_ml_trading_plan.cta_trial')}<i class="fa-solid fa-arrow-right"></i></a>
+            <a href="https://docs.pickmytrade.io/docs/" class="px-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-lg transition-all duration-300 electrolize-regular text-white">{t('ai_ml_trading_plan.cta_docs')}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.copy-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var pre = btn.closest('.rounded-xl') ? btn.closest('.rounded-xl').querySelector('pre') : null;
+          if (!pre) return;
+          var text = pre.innerText;
+          var original = btn.textContent;
+          function done() { btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = original; }, 1600); }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(function () {});
+          }
+        });
+      });
+    });
+  </script>
+</BaseLayout>

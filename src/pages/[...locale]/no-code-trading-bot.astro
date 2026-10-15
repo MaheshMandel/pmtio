@@ -1,0 +1,585 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "No-Code Trading Bot: Automate Without Coding",
+  "description": "How to run a no-code trading bot with PickMyTrade: build and backtest your strategy in TradingView, then automate it to your broker with no coding, no VPS and plain alert messages across 10 brokers.",
+  "url": absoluteLocalizedPath(locale, 'no-code-trading-bot'),
+  "inLanguage": LOCALE_BCP47[locale],
+  "isPartOf": { "@type": "WebSite", "name": "PickMyTrade", "url": "https://pickmytrade.io" },
+  "primaryImageOfPage": { "@type": "ImageObject", "url": "https://pickmytrade.io/logo.png" },
+  "about": { "@type": "Thing", "name": "No-code trading bot" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/logo.png" },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade"
+    ]
+  }
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "image": "https://pickmytrade.io/logo.png",
+  "name": "PickMyTrade - No-Code Trading Bot",
+  "description": "No-code trading automation that connects TradingView alerts to your broker without writing integration code. You build and backtest your strategy in TradingView, and PickMyTrade executes it to Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader or Tradier. Cloud-based, so there is no VPS to rent. PickMyTrade processes your order in under 200ms on our side; total fill time also depends on your broker, network latency and how fast TradingView sends the alert.",
+  "url": absoluteLocalizedPath(locale, 'no-code-trading-bot'),
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based, Windows, Mac, Linux",
+  "offers": {
+    "@type": "Offer",
+    "price": "50.00",
+    "priceCurrency": "USD",
+    "priceValidUntil": "2026-12-31",
+    "availability": "https://schema.org/InStock",
+    "description": "$50 per month or $500 per year. 7-day free trial, no credit card required."
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/logo.png" },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@pickmytrade.com",
+      "contactType": "Customer Support",
+      "availableLanguage": "English"
+    },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade"
+    ]
+  }
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+    { "@type": "ListItem", "position": 2, "name": "No-Code Trading Bot", "item": absoluteLocalizedPath(locale, 'no-code-trading-bot') }
+  ]
+};
+
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": ["h1", "h2", ".faq-question", ".faq-answer"]
+  },
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I automate trading without knowing how to code?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. With PickMyTrade you never write integration code. You build and backtest your strategy in TradingView, create a normal TradingView alert, then paste in a short message that PickMyTrade generates for you and set your broker and quantity. When the alert fires, PickMyTrade places the order on your broker automatically. If you can set up a TradingView alert, you can run a no-code trading bot." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a VPS or a server running to use a no-code trading bot?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade runs in the cloud, so there is no VPS to rent and no desktop app to keep open. Once your broker is connected and your alert is live, trades execute even when your computer is switched off. This is different from download-and-run bots that need a machine or a rented server online 24/7." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to know Pine Script?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. You do not need Pine Script to connect TradingView to your broker through PickMyTrade. You can automate any TradingView strategy, indicator or manual chart alert that can fire an alert, including strategies you bought or found. Pine Script is only relevant if you choose to build your own custom indicator in TradingView, and even then PickMyTrade handles execution, not coding." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does PickMyTrade write or generate trading strategies for me?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade is the execution layer, not a strategy builder. It does not generate strategies, it is not an AI that writes code, and it is not a backtester. You design and backtest your strategy in TradingView using its built-in tools, and PickMyTrade turns the resulting alerts into real orders on your broker. TradingView decides when to trade; PickMyTrade handles how the order reaches your account." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have to format JSON to send alerts?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade generates a ready-to-paste alert message for your buy and sell signals, so you copy and paste rather than hand-write JSON. The message is short and readable and names your symbol, side and size. If you prefer to work with JSON you can, but it is optional, not required." }
+    },
+    {
+      "@type": "Question",
+      "name": "Which brokers and prop firms work with no-code automation?",
+      "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade automates 10 brokers with no code: Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader and Ironbeam. PickMyTrade also connects to accounts on Tradovate, Rithmic and ProjectX, which many prop firms run on, such as Apex, Topstep, Alpha Futures, Take Profit Trader, FundedNext Futures, MyFundedFutures, TradeDay and Tradeify. Copy trading and automation rules vary by prop firm and change over time, so always confirm your firm's current policy before you go live." }
+    }
+  ]
+};
+
+const schema5 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to automate your trading strategy without coding",
+                  "name": "How to automate your trading strategy without coding",
+                  "description": "Run a no-code trading bot with PickMyTrade: connect your broker, set your size, paste a generated alert message into a TradingView alert, then go live. No coding and no VPS.",
+                  "image": "https://pickmytrade.io/logo.png",
+                  "timeRequired": "PT10M",
+                  "dependencies": "PickMyTrade account; A supported broker account (live, demo or prop firm); TradingView Pro, Pro+ or Premium (for webhook alerts)",
+                  "articleSection": [
+                    "Connect your broker to PickMyTrade — Create a PickMyTrade account and connect your broker. There is no code and no API script to write.",
+                    "Set your broker account, quantity and risk — Choose the account to trade, set your quantity or risk sizing and any stop-loss and take-profit, all from the PickMyTrade dashboard.",
+                    "Create a TradingView alert and paste the message — In TradingView, create an alert on your strategy or indicator, delete the default text, paste the message PickMyTrade generated, and set the webhook URL in the alert's notifications tab. Webhook alerts need a paid TradingView plan (Pro, Pro+ or Premium).",
+                    "Test once, then go live — Fire a test alert, confirm the fill in your PickMyTrade alert log and your broker, then enable the alert. From now on each alert executes on your broker automatically in the cloud."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+---
+<BaseLayout
+  locale={locale}
+  title={t('no_code_trading_bot.page_title')}
+  description={t('no_code_trading_bot.page_description')}
+  keywords={t('no_code_trading_bot.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4, schema5]}
+>
+  <!-- BREADCRUMB -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('no_code_trading_bot.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('no_code_trading_bot.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- (1) HERO -->
+  <section class="relative py-14 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 right-16 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-10 w-56 h-56 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-5 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-wand-magic-sparkles text-[#2B77EE]"></i>
+        <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('no_code_trading_bot.hero_badge')}</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white leading-tight">{t('no_code_trading_bot.hero_title')}</h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl mx-auto">{t('no_code_trading_bot.hero_subtitle')}</p>
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('no_code_trading_bot.hero_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="#how-it-works" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('no_code_trading_bot.hero_cta_secondary')}
+        </a>
+      </div>
+      <p class="mt-3 text-xs text-gray-400">{t('no_code_trading_bot.hero_note')}</p>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm">
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-users text-[#2B77EE]"></i> {t('no_code_trading_bot.hero_stat_traders')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-chart-line text-[#2B77EE]"></i> {t('no_code_trading_bot.hero_stat_trades')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-cloud text-[#2B77EE]"></i> {t('no_code_trading_bot.hero_stat_cloud')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-code text-[#2B77EE]"></i> {t('no_code_trading_bot.hero_stat_nocode')}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- (2) WHAT NO-CODE MEANS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('no_code_trading_bot.s2_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('no_code_trading_bot.s2_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-6">{t('no_code_trading_bot.s2_p2')}</p>
+
+      <div class="bg-[#0F3EC3]/10 border border-[#2B77EE]/40 rounded-xl p-6" data-aos="fade-up">
+        <h3 class="font-bold text-white text-lg mb-3 flex items-center gap-2"><i class="fa-solid fa-circle-info text-[#7FB8F9]"></i> {t('no_code_trading_bot.s2_box_title')}</h3>
+        <p class="text-sm text-gray-300 leading-relaxed mb-3">{t('no_code_trading_bot.s2_box_intro')}</p>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li class="flex gap-2"><i class="fa-solid fa-check text-[#2B77EE] mt-1"></i><span><strong class="text-white">{t('no_code_trading_bot.s2_box_item1_strong')}</strong> {t('no_code_trading_bot.s2_box_item1_text')}</span></li>
+          <li class="flex gap-2"><i class="fa-solid fa-xmark text-[#7FB8F9] mt-1"></i><span><strong class="text-white">{t('no_code_trading_bot.s2_box_item2_strong')}</strong> {t('no_code_trading_bot.s2_box_item2_text')}</span></li>
+          <li class="flex gap-2"><i class="fa-solid fa-xmark text-[#7FB8F9] mt-1"></i><span><strong class="text-white">{t('no_code_trading_bot.s2_box_item3_strong')}</strong> {t('no_code_trading_bot.s2_box_item3_text')}</span></li>
+        </ul>
+        <p class="text-sm text-gray-300 leading-relaxed mt-3">
+          {t('no_code_trading_bot.s2_box_outro_a')} <em>{t('no_code_trading_bot.s2_box_outro_when')}</em> {t('no_code_trading_bot.s2_box_outro_b')} <em>{t('no_code_trading_bot.s2_box_outro_how')}</em> {t('no_code_trading_bot.s2_box_outro_c')} <strong class="text-white">{t('no_code_trading_bot.s2_box_outro_strong')}</strong>{t('no_code_trading_bot.s2_box_outro_d')}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (3) WHAT YOU NEED / DO NOT NEED -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('no_code_trading_bot.s3_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('no_code_trading_bot.s3_sub')}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-check text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-3">{t('no_code_trading_bot.s3_need_title')}</h3>
+          <ul class="space-y-3 text-sm text-gray-300">
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check text-[#2B77EE] mt-1"></i><span>{t('no_code_trading_bot.s3_need_1')}</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check text-[#2B77EE] mt-1"></i><span>{t('no_code_trading_bot.s3_need_2')}</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check text-[#2B77EE] mt-1"></i><span>{t('no_code_trading_bot.s3_need_3')}</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check text-[#2B77EE] mt-1"></i><span>{t('no_code_trading_bot.s3_need_4')}</span></li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-xmark text-[#7FB8F9]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-3">{t('no_code_trading_bot.s3_notneed_title')}</h3>
+          <ul class="space-y-3 text-sm text-gray-300">
+            <li class="flex gap-2"><i class="fa-solid fa-ban text-[#7FB8F9] mt-1"></i><span>{t('no_code_trading_bot.s3_notneed_1')}</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-ban text-[#7FB8F9] mt-1"></i><span>{t('no_code_trading_bot.s3_notneed_2')}</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-ban text-[#7FB8F9] mt-1"></i><span>{t('no_code_trading_bot.s3_notneed_3')}</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-ban text-[#7FB8F9] mt-1"></i><span>{t('no_code_trading_bot.s3_notneed_4')}</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (4) HOW IT WORKS -->
+  <section id="how-it-works" class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] scroll-mt-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('no_code_trading_bot.s4_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('no_code_trading_bot.s4_sub')}</p>
+      </div>
+      <ol class="space-y-4">
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">1</span>
+          <div class="w-full">
+            <h3 class="font-bold text-white text-base mb-1">{t('no_code_trading_bot.s4_step1_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('no_code_trading_bot.s4_step1_desc')}</p>
+            <!-- [IMG PLACEHOLDER] alt: connecting a broker account in the PickMyTrade no-code dashboard -->
+            <div class="mt-3 flex items-center justify-center gap-2 border border-dashed border-[#2B77EE]/40 rounded-lg py-6 text-xs text-gray-500 bg-black/20">
+              <i class="fa-solid fa-image"></i> {t('no_code_trading_bot.s4_step1_img_alt')}
+            </div>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="50">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">2</span>
+          <div class="w-full">
+            <h3 class="font-bold text-white text-base mb-1">{t('no_code_trading_bot.s4_step2_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('no_code_trading_bot.s4_step2_desc')}</p>
+            <div class="mt-3 flex items-center justify-center gap-2 border border-dashed border-[#2B77EE]/40 rounded-lg py-6 text-xs text-gray-500 bg-black/20">
+              <i class="fa-solid fa-image"></i> {t('no_code_trading_bot.s4_step2_img_alt')}
+            </div>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="100">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">3</span>
+          <div class="w-full">
+            <h3 class="font-bold text-white text-base mb-1">{t('no_code_trading_bot.s4_step3_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('no_code_trading_bot.s4_step3_desc')}</p>
+            <div class="mt-3 flex items-center justify-center gap-2 border border-dashed border-[#2B77EE]/40 rounded-lg py-6 text-xs text-gray-500 bg-black/20">
+              <i class="fa-solid fa-image"></i> {t('no_code_trading_bot.s4_step3_img_alt')}
+            </div>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="150">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">4</span>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">{t('no_code_trading_bot.s4_step4_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('no_code_trading_bot.s4_step4_desc')}</p>
+          </div>
+        </li>
+      </ol>
+      <p class="text-gray-400 text-sm mt-6 text-center max-w-3xl mx-auto">
+        {t('no_code_trading_bot.s4_outro_a')} <a href="https://docs.pickmytrade.trade/docs/automate-tradingview-strategies/" rel="noopener" target="_blank" class="text-[#7FB8F9] hover:text-white underline">{t('no_code_trading_bot.s4_outro_link')}</a>{t('no_code_trading_bot.s4_outro_b')} <a href={localizedPath(locale, 'tradingview-automation')} class="text-[#7FB8F9] hover:text-white underline">{t('no_code_trading_bot.s4_outro_link2')}</a> {t('no_code_trading_bot.s4_outro_c')}
+      </p>
+    </div>
+  </section>
+
+  <!-- (5) NO VPS REQUIRED -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('no_code_trading_bot.s5_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('no_code_trading_bot.s5_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('no_code_trading_bot.s5_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('no_code_trading_bot.s5_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (6) PLAIN-LANGUAGE ALERTS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('no_code_trading_bot.s6_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('no_code_trading_bot.s6_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('no_code_trading_bot.s6_p2')}</p>
+      <div class="bg-[#0a0f24] border border-[#2B77EE]/40 rounded-xl p-5 mb-4 overflow-x-auto">
+        <pre class="text-sm text-[#9fd0ff] leading-relaxed"><code>symbol = MNQ
+action = buy
+quantity = 1</code></pre>
+        <p class="text-xs text-gray-500 mt-3">{t('no_code_trading_bot.s6_example_note')}</p>
+      </div>
+      <p class="text-gray-300 leading-relaxed">{t('no_code_trading_bot.s6_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (7) SUPPORTED BROKERS AND PROP FIRMS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="max-w-3xl mx-auto text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('no_code_trading_bot.s7_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('no_code_trading_bot.s7_sub')}</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" data-aos="fade-up">
+        <a href="https://pickmytrade.trade/tradingview-to-tradovate/" rel="noopener" target="_blank" class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Tradovate</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Rithmic</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Interactive Brokers</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">TradeStation</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">TradeLocker</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">ProjectX</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-matchtrader')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Match-Trader</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradier')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Tradier</a>
+      </div>
+      <div class="max-w-3xl mx-auto mt-8" data-aos="fade-up">
+        <h3 class="text-xl font-bold text-white mb-3">{t('no_code_trading_bot.s7_propfirm_title')}</h3>
+        <p class="text-gray-300 leading-relaxed">{t('no_code_trading_bot.s7_propfirm_text')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (8) NO-CODE VS CODING YOUR OWN -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('no_code_trading_bot.s8_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">{t('no_code_trading_bot.s8_sub')}</p>
+      </div>
+      <div class="overflow-x-auto" data-aos="fade-up">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="text-left">
+              <th class="p-3 border-b border-[#2B77EE]/40 text-[#7FB8F9] font-semibold">{t('no_code_trading_bot.s8_col_aspect')}</th>
+              <th class="p-3 border-b border-[#2B77EE]/40 text-gray-300 font-semibold">{t('no_code_trading_bot.s8_col_diy')}</th>
+              <th class="p-3 border-b border-[#2B77EE]/40 text-white font-semibold">{t('no_code_trading_bot.s8_col_pmt')}</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300">
+            <tr>
+              <td class="p-3 border-b border-white/5 font-medium text-white">{t('no_code_trading_bot.s8_row1_aspect')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row1_diy')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row1_pmt')}</td>
+            </tr>
+            <tr>
+              <td class="p-3 border-b border-white/5 font-medium text-white">{t('no_code_trading_bot.s8_row2_aspect')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row2_diy')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row2_pmt')}</td>
+            </tr>
+            <tr>
+              <td class="p-3 border-b border-white/5 font-medium text-white">{t('no_code_trading_bot.s8_row3_aspect')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row3_diy')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row3_pmt')}</td>
+            </tr>
+            <tr>
+              <td class="p-3 border-b border-white/5 font-medium text-white">{t('no_code_trading_bot.s8_row4_aspect')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row4_diy')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row4_pmt')}</td>
+            </tr>
+            <tr>
+              <td class="p-3 border-b border-white/5 font-medium text-white">{t('no_code_trading_bot.s8_row5_aspect')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row5_diy')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row5_pmt')}</td>
+            </tr>
+            <tr>
+              <td class="p-3 border-b border-white/5 font-medium text-white">{t('no_code_trading_bot.s8_row6_aspect')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row6_diy')}</td>
+              <td class="p-3 border-b border-white/5">{t('no_code_trading_bot.s8_row6_pmt')}</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-medium text-white">{t('no_code_trading_bot.s8_row7_aspect')}</td>
+              <td class="p-3">{t('no_code_trading_bot.s8_row7_diy')}</td>
+              <td class="p-3">{t('no_code_trading_bot.s8_row7_pmt')}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-gray-400 text-sm mt-6 leading-relaxed">
+        {t('no_code_trading_bot.s8_outro_a')} <a href={localizedPath(locale, 'use-cases/strategy-developers')} class="text-[#7FB8F9] hover:text-white underline">{t('no_code_trading_bot.s8_outro_link')}</a> {t('no_code_trading_bot.s8_outro_b')}
+      </p>
+    </div>
+  </section>
+
+  <!-- (9) PRICING -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('no_code_trading_bot.s9_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-8 max-w-2xl mx-auto">{t('no_code_trading_bot.s9_p')}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-7">
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('no_code_trading_bot.s9_monthly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('no_code_trading_bot.s9_monthly_price')}<span class="text-base font-normal text-gray-400">{t('no_code_trading_bot.s9_monthly_suffix')}</span></p>
+          <p class="text-sm text-gray-400">{t('no_code_trading_bot.s9_monthly_note')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#0F3EC3]/30 via-[#2B77EE]/20 to-[#0F3EC3]/30 border border-[#2B77EE] rounded-xl p-7 relative">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F3EC3] text-white text-xs font-semibold px-3 py-1 rounded-full">{t('no_code_trading_bot.s9_yearly_badge')}</span>
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('no_code_trading_bot.s9_yearly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('no_code_trading_bot.s9_yearly_price')}<span class="text-base font-normal text-gray-400">{t('no_code_trading_bot.s9_yearly_suffix')}</span></p>
+          <p class="text-sm text-gray-400">{t('no_code_trading_bot.s9_yearly_note')}</p>
+        </div>
+      </div>
+      <div class="mt-8">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('no_code_trading_bot.s9_cta')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <p class="mt-3 text-xs text-gray-400">{t('no_code_trading_bot.s9_note_a')} <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white underline">{t('no_code_trading_bot.s9_note_link')}</a> {t('no_code_trading_bot.s9_note_b')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (10) WHY TRADERS CHOOSE PICKMYTRADE -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('no_code_trading_bot.s10_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">{t('no_code_trading_bot.s10_sub')}</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5" data-aos="fade-up">
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('no_code_trading_bot.s10_stat1_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('no_code_trading_bot.s10_stat1_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('no_code_trading_bot.s10_stat2_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('no_code_trading_bot.s10_stat2_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('no_code_trading_bot.s10_stat3_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('no_code_trading_bot.s10_stat3_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('no_code_trading_bot.s10_stat4_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('no_code_trading_bot.s10_stat4_label')}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (11) FAQ -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('no_code_trading_bot.s11_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('no_code_trading_bot.s11_sub')}</p>
+      </div>
+      <div class="faq-content space-y-4" data-aos="fade-up">
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('no_code_trading_bot.s11_q1')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('no_code_trading_bot.s11_a1')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('no_code_trading_bot.s11_q2')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('no_code_trading_bot.s11_a2')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('no_code_trading_bot.s11_q3')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('no_code_trading_bot.s11_a3')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('no_code_trading_bot.s11_q4')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('no_code_trading_bot.s11_a4')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('no_code_trading_bot.s11_q5')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('no_code_trading_bot.s11_a5')}</p>
+          </div>
+        </div>
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-question">
+            <span itemprop="name">{t('no_code_trading_bot.s11_q6')}</span>
+            <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">{t('no_code_trading_bot.s11_a6')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (12) FINAL CTA -->
+  <section class="relative py-16 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 right-24 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">{t('no_code_trading_bot.s12_h2')}</h2>
+      <p class="text-gray-300 mb-8 max-w-2xl mx-auto">{t('no_code_trading_bot.s12_p')}</p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('no_code_trading_bot.s12_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="https://docs.pickmytrade.trade/docs/automate-tradingview-strategies/" rel="noopener" target="_blank" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('no_code_trading_bot.s12_cta_secondary')}
+        </a>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-white/10">
+        <p class="text-xs uppercase tracking-widest text-gray-400 mb-4 electrolize-regular">{t('no_code_trading_bot.s12_links_label')}</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+          <a href={localizedPath(locale, 'tradingview-automation')} class="text-[#7FB8F9] hover:text-white transition">{t('no_code_trading_bot.link_tv_automation')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'use-cases/strategy-developers')} class="text-[#7FB8F9] hover:text-white transition">{t('no_code_trading_bot.link_strategy_developers')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-[#7FB8F9] hover:text-white transition">{t('no_code_trading_bot.link_rithmic')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'broker/tradingview-to-ib')} class="text-[#7FB8F9] hover:text-white transition">{t('no_code_trading_bot.link_ib')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')} class="text-[#7FB8F9] hover:text-white transition">{t('no_code_trading_bot.link_tradelocker')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white transition">{t('no_code_trading_bot.link_pricing')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

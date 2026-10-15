@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const canonical = absoluteLocalizedPath(locale, 'pipe-help');
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://pickmytrade.io/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Pipe Help",
+      "item": canonical
+    }
+  ]
+};
+
+// This page and its locale variants previously carried no page-level structured
+// data beyond the breadcrumb. WebPage ties it to the canonical Organization/
+// WebSite entities so it isn't machine-invisible relative to the rest of the site.
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  "url": canonical,
+  "name": t('pipe_help.page_title'),
+  "description": t('pipe_help.page_description'),
+  "isPartOf": { "@id": "https://pickmytrade.io/#website" },
+  "about": { "@id": "https://pickmytrade.io/#organization" },
+  "publisher": { "@id": "https://pickmytrade.io/#organization" }
+};
+
+// FAQPage, not TechArticle: the page has no article body, just the two real
+// support paths it offers (see hero_subtitle above) — reflected as Q&A rather
+// than inventing content that isn't actually on the page.
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Where can I find PickMyTrade's documentation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PickMyTrade's official documentation, including setup guides and troubleshooting, is at https://docs.pickmytrade.io/docs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I contact PickMyTrade support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the Contact Support link on this page to reach the PickMyTrade team directly."
+      }
+    }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('pipe_help.page_title')}
+  description={t('pipe_help.page_description')}
+  structuredData={[schema1, schema2, schema3]}
+>
+  <div class="min-h-[60vh] flex items-center justify-center px-4 pt-20">
+    <div class="max-w-xl mx-auto text-center">
+      <h1 class="text-3xl font-bold text-white mb-4">{t('pipe_help.hero_title')}</h1>
+      <p class="text-gray-400 mb-8">{t('pipe_help.hero_subtitle')}</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://docs.pickmytrade.io/docs/" class="px-8 py-3 bg-[#0F3EC3] border border-[#2B77EE] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+          {t('pipe_help.btn_documentation')}
+        </a>
+        <a href={localizedPath(locale, 'page/contact')} class="px-8 py-3 bg-white/10 border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300">
+          {t('pipe_help.btn_contact_support')}
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

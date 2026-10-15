@@ -1,0 +1,289 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import "../../../styles/compare-editorial.css";
+import CompareSpy from "../../../components/CompareSpy.astro";
+import { getLocalePaths } from "../../../i18n/utils";
+import type { Locale } from "../../../i18n/config";
+import Localize from "../../../components/Localize.astro";
+import { makeTr, localizeLd } from "../../../i18n/compare-i18n.mjs";
+
+// Compare pages are translated (de/es/fr/it): text is swapped in by <Localize> from src/i18n/compare/<locale>.json.
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const tr = makeTr(locale);
+const title = tr("PickMyTrade vs SignalStack 2026: Signal Caps vs Flat $50");
+const description = tr("SignalStack bills per signal, PickMyTrade is one flat $50 plan. See the order count where each one is cheaper, plus brokers, the copier and risk limits.");
+const lastUpdated = "2026-09-23";
+
+const faqsEn = [
+  {
+    "question": "Is PickMyTrade cheaper than SignalStack?",
+    "answer": "It depends entirely on volume. SignalStack's Basic plan covers 50 orders a month for $27, which beats our $50, and its Free plan covers five orders at no cost. Past 50 orders the next SignalStack plan is $97 a month while PickMyTrade stays at $50 with no cap, so heavier and multi-account traders pay less with us."
+  },
+  {
+    "question": "What counts as a signal on SignalStack?",
+    "answer": "SignalStack defines a Signal as a trade order successfully sent to a linked broker account, and its plans include 5, 50, 250 or 1,000 of them a month. Broker connections are not charged separately, so the cost driver is orders multiplied by accounts. Unused signals do not roll into the next month."
+  },
+  {
+    "question": "How many orders does PickMyTrade allow?",
+    "answer": "There is no order cap and no per-trade fee. The plan is $50 a month or $500 a year, and a strategy that trades twenty times a day costs the same as one that trades twice a week. Your broker's own commissions and exchange fees still apply, as they do with any automation tool."
+  },
+  {
+    "question": "Does SignalStack connect to Rithmic or ProjectX?",
+    "answer": "Not in its broker directory as we read it on 22 September 2026. Its Tradovate integration does mean a prop-firm account issued on Tradovate can still connect. PickMyTrade supports Tradovate, Rithmic and ProjectX including TopstepX, which covers most prop-firm futures accounts that are not on Tradovate."
+  },
+  {
+    "question": "Can I use TrendSpider alerts with PickMyTrade?",
+    "answer": "Yes. TrendSpider is an accepted signal source alongside TradingView strategy and indicator alerts. It is worth knowing because SignalStack is a TrendSpider company, so a TrendSpider user can send the same alert to either tool and compare the result on a demo account before committing."
+  },
+  {
+    "question": "Does my computer need to stay on?",
+    "answer": "Not for Tradovate, Rithmic, ProjectX or the other cloud routes, where alerts execute with your machine off and no VPS to rent. Interactive Brokers is the exception, because TWS or IB Gateway and the PickMyTrade IB application have to keep running for orders to reach the account."
+  }
+];
+const faqs = faqsEn.map((f) => ({ question: tr(f.question), answer: tr(f.answer) }));
+
+const ld = [
+  { "@context": "https://schema.org", ...{
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "PickMyTrade",
+      "item": "https://pickmytrade.io/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://pickmytrade.io/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "PickMyTrade vs SignalStack",
+      "item": "https://pickmytrade.io/compare/pickmytrade-vs-signalstack/"
+    }
+  ]
+} },
+  { "@context": "https://schema.org", ...{
+  "@type": "WebPage",
+  "@id": "https://pickmytrade.io/compare/pickmytrade-vs-signalstack/#webpage",
+  "url": "https://pickmytrade.io/compare/pickmytrade-vs-signalstack/",
+  "name": "PickMyTrade vs SignalStack",
+  "datePublished": "2026-09-23",
+  "dateModified": "2026-09-23",
+  "publisher": {
+    "@id": "https://pickmytrade.io/#organization"
+  }
+} },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "https://pickmytrade.io/compare/pickmytrade-vs-signalstack/#faq",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  },
+];
+const ldLocalized = localizeLd(ld, locale, tr);
+---
+<BaseLayout locale={locale} title={title} description={description} structuredData={ldLocalized}>
+<Localize locale={locale}>
+<div class="ed">
+<header class="hero">
+<div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/compare/">Compare</a><span aria-hidden="true">›</span><span aria-current="page">PickMyTrade vs SignalStack</span></nav>
+<div class="hero-grid">
+<div class="hero-copy">
+<p class="eyebrow">Head-to-head comparison · 2026</p>
+
+<h1>PickMyTrade vs SignalStack</h1>
+<p class="lede">{description}</p>
+<p class="meta"><span>Last reviewed: <time datetime={lastUpdated}>September 23, 2026</time></span></p>
+<div class="actions"><a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start free trial</a><a class="btn btn-quiet" href="#side-by-side">Skip to the comparison table <span aria-hidden="true">→</span></a></div>
+</div>
+<div class="hero-visual"><div class="vs" role="group" aria-label="PickMyTrade compared with SignalStack"><div class="vs-row"><div class="vs-side vs-own"><div class="vs-mark" aria-hidden="true">P</div><div class="vs-name">PickMyTrade</div><div class="vs-note">$50/month · one plan</div></div><div class="vs-mid"><span>vs</span></div><div class="vs-side"><div class="vs-mark" aria-hidden="true">S</div><div class="vs-name">SignalStack</div><div class="vs-note">Compared on its own published pages</div></div></div></div></div>
+</div>
+<ul class="standards in-hero">
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>50,000+ traders served</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>7-day free trial, no credit card</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Runs in the cloud — your computer can be off</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Tradovate connects by OAuth, with no API fee</span></li>
+</ul>
+</div>
+</header>
+
+<nav class="secnav" aria-label="On this page">
+<div class="wrap secnav-inner">
+<ul>
+<li><a href="#the-price-matched-like-for-like" data-target="the-price-matched-like-for-like">Price</a></li>
+<li><a href="#side-by-side" data-target="side-by-side">Side by side</a></li>
+<li><a href="#why-traders-choose-pickmytrade" data-target="why-traders-choose-pickmytrade">Why PickMyTrade</a></li>
+<li><a href="#moving-from-signalstack" data-target="moving-from-signalstack">Switching</a></li>
+<li><a href="#frequently-asked-questions" data-target="frequently-asked-questions">FAQ</a></li>
+</ul>
+<a class="btn btn-primary btn-sm" href="https://app.pickmytrade.trade/?register=true">Start free trial</a>
+</div>
+</nav>
+
+<section id="the-price-matched-like-for-like" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Price</p>
+<h2>The price, matched like for like</h2>
+</div>
+<div class="stats3">
+<div class="stat"><span class="v">$50</span><span class="l">per month, one plan</span></div>
+<div class="stat"><span class="v">$500</span><span class="l">per year</span></div>
+<div class="stat"><span class="v">7 days</span><span class="l">free trial, no card</span></div>
+</div>
+        <p class="prose">These two products do not bill for the same thing. SignalStack sells signals, and its pricing page defines a Signal as "a trade order successfully sent to a linked broker account". Broker connections themselves cost nothing there. PickMyTrade sells one subscription — <span class="pr">$50</span> a month or <span class="pr">$500</span> a year — with no order cap and every feature in the plan.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Comparison table">
+<table>
+<caption>SignalStack plans as published on signalstack.com/pricing, checked 22 September 2026.</caption>
+<thead><tr><th scope="col">SignalStack plan</th><th scope="col">Per month</th><th scope="col">Per year</th><th scope="col">Live signals included each month</th></tr></thead>
+<tbody>
+<tr><th scope="row">Free</th><td><span class="pr">$0</span></td><td><span class="pr">$0</span></td><td>5</td></tr>
+<tr><th scope="row">Basic</th><td><span class="pr">$27</span></td><td><span class="pr">$270</span></td><td>50</td></tr>
+<tr><th scope="row">Premium</th><td><span class="pr">$97</span></td><td><span class="pr">$970</span></td><td>250</td></tr>
+<tr><th scope="row">Pro</th><td><span class="pr">$340</span></td><td><span class="pr">$3,470</span></td><td>1,000</td></tr>
+</tbody>
+</table>
+</div>
+        <p class="prose">Three details matter when you budget. Unused signals do not accumulate, so an allowance you do not spend is gone at month end. The yearly toggle is pre-selected, so the first prices you see are the annual ones. And SignalStack provides no refunds; its free route is the Free plan rather than a trial clock, with no card either way.</p>
+        <p class="prose">If you arrived from TrendSpider: SignalStack is a TrendSpider company, and TrendSpider alerts are an accepted source on both tools, so you can price the same alert either way.</p>
+        <h3 class="sub-h">What your volume actually costs</h3>
+        <p class="prose">A signal is one order to one account, so the bill is orders multiplied by accounts. The table runs one strategy at four sizes over 21 trading days, counting a round trip as two orders.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Comparison table">
+<table>
+<caption>Worked example. The order counts are ours; SignalStack plan prices come from its pricing page, checked 22 September 2026.</caption>
+<thead><tr><th scope="col">Your setup</th><th scope="col">Orders a month</th><th scope="col">SignalStack plan</th><th scope="col">SignalStack</th><th scope="col" class="own">PickMyTrade</th></tr></thead>
+<tbody>
+<tr><th scope="row">1 account, 1 round trip a day</th><td>about 42</td><td>Basic (50)</td><td><span class="pr">$27</span></td><td class="own"><span class="pr">$50</span></td></tr>
+<tr><th scope="row">1 account, 2 round trips a day</th><td>about 84</td><td>Premium (250)</td><td><span class="pr">$97</span></td><td class="own"><span class="pr">$50</span></td></tr>
+<tr><th scope="row">5 accounts, 1 round trip a day</th><td>about 210</td><td>Premium (250)</td><td><span class="pr">$97</span></td><td class="own"><span class="pr">$50</span></td></tr>
+<tr><th scope="row">5 accounts, 2 round trips a day</th><td>about 420</td><td>Pro (1,000)</td><td><span class="pr">$340</span></td><td class="own"><span class="pr">$50</span></td></tr>
+</tbody>
+</table>
+</div>
+        <p class="prose">The line falls at 50 orders a month. At or below it, Basic at <span class="pr">$27</span> is genuinely cheaper than our <span class="pr">$50,</span> and at five orders or fewer SignalStack costs nothing. Above it, its next step is <span class="pr">$97</span> while PickMyTrade stays at <span class="pr">$50</span>. Across five accounts the allowance divides five ways: 50 signals is ten orders each, about five round trips a month per account.</p>
+        <p class="prose">One caveat we cannot settle for you. SignalStack does not state whether a stop or take-profit sent as its own order counts as another signal, and its Tradovate documentation lists single orders rather than brackets. If your exits are separate orders, halve the round trips above.</p>
+        <p class="prose">On our side, one subscription covers unlimited accounts under one broker login: five Apex accounts under a single Tradovate login all run on one <span class="pr">$50</span> subscription. If those five accounts sit under five separate broker logins, that is five subscriptions, and at low volume SignalStack, which does not charge for connections, is the cheaper bill. Check how your accounts are grouped before you compare totals.</p>
+        <p class="prose"><a href="/pricing/">PickMyTrade pricing</a> · <a href="https://signalstack.com/pricing" target="_blank" rel="noopener noreferrer">SignalStack pricing</a></p>
+</div>
+</section>
+
+<section id="side-by-side" class="sec band">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Side by side</p>
+<h2>Side by side</h2>
+</div>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Comparison table">
+<table>
+<caption>What each product does, from each company's own pages. SignalStack checked 22 September 2026.</caption>
+<thead><tr><th scope="col">Decision</th><th scope="col" class="own">PickMyTrade</th><th scope="col">SignalStack</th></tr></thead>
+<tbody>
+<tr><th scope="row">What you pay for</th><td class="own">One subscription, <span class="pr">$50</span> a month or <span class="pr">$500</span> a year. No order cap</td><td>A monthly signal allowance of 5, 50, 250 or 1,000 orders. Broker connections are not charged. <a href="https://signalstack.com/pricing" target="_blank" rel="noopener noreferrer">Source</a></td></tr>
+<tr><th scope="row">Brokers and platforms</th><td class="own">Tradovate, Rithmic, ProjectX, Interactive Brokers, TradeStation, Tradier, TradeLocker, Match-Trader. <a href="/broker/">Broker guides</a></td><td>32 broker and venue integrations, wider than ours. Rithmic, ProjectX, TradeLocker and Match-Trader are not among them. <a href="https://signalstack.com/brokers" target="_blank" rel="noopener noreferrer">Source</a></td></tr>
+<tr><th scope="row">Markets</th><td class="own">Futures; stocks and options through Interactive Brokers, TradeStation and Tradier; forex and CFDs through TradeLocker and Match-Trader. No crypto</td><td>Stocks, options, futures, forex and crypto across its directory</td></tr>
+<tr><th scope="row">Signal sources</th><td class="own">TradingView strategy and indicator alerts, and TrendSpider. <a href="https://docs.pickmytrade.trade/docs/tradingview-json-alert-configuration/" target="_blank" rel="noopener noreferrer">Alert setup</a></td><td>Any platform that can send a webhook, including TradingView and TrendSpider</td></tr>
+<tr><th scope="row">One alert to several accounts</th><td class="own">Yes, each account with its own size, on one subscription. <a href="https://docs.pickmytrade.trade/docs/place-trades-in-multiple-accounts/" target="_blank" rel="noopener noreferrer">Guide</a></td><td>Webhooks are created per connected account, and each account's order is its own signal, so fan-out multiplies the allowance</td></tr>
+<tr><th scope="row">Trade copier</th><td class="own">Tradovate admin account to follower accounts, with a quantity multiplier per follower. <a href="https://docs.pickmytrade.trade/docs/tradingview-to-tradovate-trade-copier/" target="_blank" rel="noopener noreferrer">Guide</a></td><td>None documented in its help center</td></tr>
+<tr><th scope="row">Order tools on Tradovate</th><td class="own">Stop loss and take profit five ways, brackets and OCO, trailing stop, breakeven with offset, SL/TP changes on an open trade, partial close, reverse. <a href="https://docs.pickmytrade.trade/docs/configure-trailing-stop-loss/" target="_blank" rel="noopener noreferrer">Trailing</a> · <a href="https://docs.pickmytrade.trade/docs/breakeven-offset-tradovate-automation-pickmytrade/" target="_blank" rel="noopener noreferrer">Breakeven</a></td><td>Its Tradovate documentation lists Market, Limit, Stop and Stop-Limit orders. <a href="https://signalstack.com/integrations/brokers-and-exchanges/tradovate/" target="_blank" rel="noopener noreferrer">Source</a></td></tr>
+<tr><th scope="row">Account risk limits</th><td class="own">Daily and weekly profit and loss limits per account, trading-time windows, pause automation. <a href="https://docs.pickmytrade.trade/docs/trading-risk-settings/" target="_blank" rel="noopener noreferrer">Guide</a></td><td>Not documented on its pricing page or in its help center</td></tr>
+<tr><th scope="row">Futures contract rollover</th><td class="own">Automatic rollover, plus symbol mapping so an NQ alert can trade MNQ</td><td>The contract month and year go in the payload, so alerts are edited by hand at each roll</td></tr>
+<tr><th scope="row">Published API</th><td class="own">Not offered</td><td>SignalStack Connect, with its own developer price list from <span class="pr">$195</span> a month for 1,000 signals. <a href="https://signalstack.com/developers-pricing" target="_blank" rel="noopener noreferrer">Source</a></td></tr>
+<tr><th scope="row">Free way in</th><td class="own">7-day trial, full access, no credit card</td><td>A Free plan with 5 signals a month and no credit card. Paid plans carry no refunds</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section id="why-traders-choose-pickmytrade" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Why PickMyTrade</p>
+<h2>Why traders choose PickMyTrade</h2>
+</div>
+<div class="cards">
+<article class="card"><h3>The brokers its directory does not list</h3><p>Rithmic, ProjectX including TopstepX, TradeLocker and Match-Trader are not among SignalStack's 32 integrations. If your prop-firm account or your forex account lives on one of those platforms, breadth elsewhere does not help you. <a href="/broker/">See the broker guides</a>.</p></article>
+<article class="card"><h3>Fan-out that does not raise the bill</h3><p>One alert reaches every account you have connected, each with its own quantity. The fourth and fifth account change the sizing, not the invoice, as long as they sit under the same broker login. <a href="https://docs.pickmytrade.trade/docs/place-trades-in-multiple-accounts/" target="_blank" rel="noopener noreferrer">Multi-account guide</a>.</p></article>
+<article class="card"><h3>The copier is in the same $50</h3><p>Trade an admin account on Tradovate and the follower accounts copy it, each with its own quantity multiplier. There is no higher tier to reach for it. <a href="https://docs.pickmytrade.trade/docs/tradingview-to-tradovate-trade-copier/" target="_blank" rel="noopener noreferrer">Copier guide</a>.</p></article>
+<article class="card"><h3>Limits that hold when you step away</h3><p>Daily and weekly profit and loss limits on each connected account, plus the hours automation may trade. They are settings you configure, not promises, so match them to your firm's rules. <a href="https://docs.pickmytrade.trade/docs/trading-risk-settings/" target="_blank" rel="noopener noreferrer">Risk settings</a>.</p></article>
+<article class="card"><h3>Managing the trade after entry</h3><p>Stop loss and take profit by points, percentage, price, ticks or total P/L. Brackets and OCO, trailing stops on Tradovate and ProjectX, breakeven with an offset, SL/TP changes on an open position, partial closes and reversals, all from the alert. <a href="https://docs.pickmytrade.trade/docs/tradingview-json-alert-configuration/" target="_blank" rel="noopener noreferrer">Alert setup</a>.</p></article>
+<article class="card"><h3>No hand-edited contract codes</h3><p>Rollover is automatic, and symbol mapping lets an alert written on NQ place the trade on MNQ. Nothing has to be rewritten on roll week.</p></article>
+</div>
+</div>
+</section>
+
+<section id="moving-from-signalstack" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Switching</p>
+<h2>Moving from SignalStack</h2>
+</div>
+<div class="measure">
+<ol class="steps">
+<li><span class="n">1</span><p><strong>Start the 7-day trial and connect your broker.</strong> Sign in to Tradovate with OAuth, or follow the guide for Rithmic, ProjectX, Interactive Brokers, TradeStation, Tradier, TradeLocker or Match-Trader.</p></li>
+<li><span class="n">2</span><p><strong>Rebuild the alert message.</strong> Generate the JSON in the dashboard and paste it into your TradingView or TrendSpider alert with our webhook URL. SignalStack payloads do not carry across unchanged, and the hand-typed contract month goes away here.</p></li>
+<li><span class="n">3</span><p><strong>Set the accounts, the sizing and the exits.</strong> Choose which accounts receive the alert and at what quantity, then the stop loss, take profit, trailing or breakeven behaviour and your loss limits.</p></li>
+<li><span class="n">4</span><p><strong>Test on a demo account, then switch one account at a time.</strong> Check the order at the broker before going live, and turn SignalStack off for that account first, so only one tool is sending it orders.</p></li>
+</ol>
+</div>
+</div>
+</section>
+
+<section id="frequently-asked-questions" class="sec band">
+<div class="wrap">
+<div class="faq-wrap">
+<p class="eyebrow">FAQ</p>
+<h2>Frequently asked questions</h2>
+<div class="faq">
+{faqs.map((f) => (
+<details>
+<summary><span>{f.question}</span><i aria-hidden="true"></i></summary>
+<div class="ans"><p>{f.answer}</p></div>
+</details>
+))}
+</div>
+</div>
+</div>
+</section>
+
+<section id="sources" class="sec sec-quiet" aria-label="Sources and disclosure">
+<div class="wrap">
+<div class="measure">
+<p class="eyebrow">Sources</p>
+<h2 class="h-sm">Sources and disclosure</h2>
+<p class="src-p">Prepared by PickMyTrade. SignalStack details come from its own pages, checked 22 September 2026: <a href="https://signalstack.com/pricing" target="_blank" rel="noopener noreferrer">pricing</a>, <a href="https://signalstack.com/brokers" target="_blank" rel="noopener noreferrer">broker directory</a>, <a href="https://signalstack.com/integrations/brokers-and-exchanges/tradovate/" target="_blank" rel="noopener noreferrer">Tradovate integration</a>, <a href="https://signalstack.com/developers-pricing" target="_blank" rel="noopener noreferrer">developer pricing</a> and its help center. PickMyTrade figures are our own published terms. Prices and features change on both sides, so check the live pages before you buy.</p>
+<p class="src-p risk"><strong>Risk disclosure.</strong> Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. The content on this page is for educational and informational purposes only and does not constitute financial, investment, or trading advice. Only trade with capital you can afford to lose.</p>
+</div>
+</div>
+</section>
+
+<section class="cta-sec">
+<div class="wrap">
+<div class="cta">
+<div>
+<h2 class="h-sm">Ready to get started?</h2>
+<p>Connect your broker and run one of your own alerts on a 7-day free trial. No credit card.</p>
+</div>
+<div class="cta-actions">
+<a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start your 7-day free trial <span aria-hidden="true">→</span></a>
+<a class="btn btn-quiet" href="/pricing/">See pricing <span aria-hidden="true">→</span></a>
+</div>
+</div>
+</div>
+</section>
+</div>
+</Localize>
+
+<CompareSpy />
+</BaseLayout>

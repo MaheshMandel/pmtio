@@ -1,0 +1,129 @@
+---
+// Summer End Sale banner — beach theme (sky gradient, clouds, palm trees,
+// lifebuoys, script sale text + pricing card + Save Now button).
+// Decorative elements are inline SVG/CSS (no raster assets) so the theme is
+// easy to swap for the next seasonal sale.
+//
+// The cutover date is the single source of truth in src/data/sale.ts. BaseLayout only
+// renders this component while the sale is live at BUILD time — once it's over the
+// markup ships nowhere, so there's no banner to flash and hide.
+// The date is also exposed to the client as window.SALE_END (epoch ms) so a sale
+// that expires between the build and the visit still disappears: the guard at the
+// bottom fails open and hides the banner the moment it ends.
+
+import pricingConfig from "../../pricing-config.json";
+import { localizedPath } from "../i18n/utils";
+import type { Locale } from "../i18n/config";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+// Point at the home page's pricing section so clicking the banner from ANY page
+// navigates home and lands on the price cards (BaseLayout's on-load hash
+// correction handles the precise scroll).
+const pricingHref = `${localizedPath(locale)}#pricing`;
+
+// Banner pricing is derived from the annual plan in pricing-config.json (the /yr
+// deal) so the headline never drifts from the actual pricing.
+const annual = Object.values(pricingConfig.plans).find(
+  (p: any) => p.enabled && p.period === "year" && p.originalPrice != null
+) as { price: number; originalPrice: number } | undefined;
+
+const oldPrice = annual?.originalPrice ?? 500;
+const newPrice = annual?.price ?? 350;
+---
+
+<a id="sale-banner" href={pricingHref} class="eb-root fixed top-0 w-full z-[60]" aria-label="Summer End Sale - Click to view pricing">
+  <div class="eb-banner">
+
+    <!-- Sky decor: clouds top corners -->
+    <div class="eb-cloud eb-cloud-left" aria-hidden="true"></div>
+    <div class="eb-cloud eb-cloud-right" aria-hidden="true"></div>
+
+    <!-- Palm trees — bottom-left / bottom-right -->
+    <svg class="eb-palm eb-palm-left" viewBox="0 0 100 120" aria-hidden="true">
+      <path d="M46 120 C44 80 40 55 30 40" fill="none" stroke="#5B3A21" stroke-width="6" stroke-linecap="round" />
+      <g fill="#1E6F46">
+        <path d="M30 40 C10 28 2 30 -4 22 C10 20 22 24 32 34 Z" />
+        <path d="M30 40 C14 18 16 6 8 -2 C24 2 32 16 36 32 Z" />
+        <path d="M30 40 C28 14 34 4 30 -6 C42 0 44 18 40 34 Z" />
+        <path d="M30 40 C42 20 52 16 56 6 C56 22 48 32 38 40 Z" />
+        <path d="M30 40 C46 32 56 34 64 26 C60 40 48 44 36 44 Z" />
+      </g>
+    </svg>
+    <svg class="eb-palm eb-palm-right" viewBox="0 0 100 120" aria-hidden="true">
+      <path d="M46 120 C44 80 40 55 30 40" fill="none" stroke="#5B3A21" stroke-width="6" stroke-linecap="round" />
+      <g fill="#1E6F46">
+        <path d="M30 40 C10 28 2 30 -4 22 C10 20 22 24 32 34 Z" />
+        <path d="M30 40 C14 18 16 6 8 -2 C24 2 32 16 36 32 Z" />
+        <path d="M30 40 C28 14 34 4 30 -6 C42 0 44 18 40 34 Z" />
+        <path d="M30 40 C42 20 52 16 56 6 C56 22 48 32 38 40 Z" />
+        <path d="M30 40 C46 32 56 34 64 26 C60 40 48 44 36 44 Z" />
+      </g>
+    </svg>
+
+    <!-- Lifebuoys -->
+    <span class="eb-lifebuoy eb-lifebuoy-left" aria-hidden="true"></span>
+    <span class="eb-lifebuoy eb-lifebuoy-right" aria-hidden="true"></span>
+
+    <!-- Two-column grid -->
+    <div class="eb-grid">
+
+      <!-- LEFT: sale text -->
+      <div class="eb-col-left">
+        <p class="eb-sale-text">
+          <span class="eb-sale-text-main">Summer End</span>
+          <span class="eb-sale-text-script">Sale</span>
+        </p>
+      </div>
+
+      <!-- CENTER: pricing -->
+      <div class="eb-col-center">
+        <div class="eb-price-card">
+          <span class="eb-price-old"><span class="eb-curr-sm">$</span>{oldPrice}</span>
+          <span class="eb-price-new">
+            <span class="eb-curr-lg">$</span>{newPrice}
+            <span class="eb-per-yr">/yr</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- RIGHT: countdown + CTA -->
+      <div class="eb-col-right">
+        <span class="eb-countdown" aria-label="Sale ends in">
+          <span class="eb-cd-label">Ends in</span>
+          <span class="eb-cd-unit"><span id="countdown-days" class="eb-timer-value">00</span><span class="eb-cd-unit-label">Days</span></span>
+          <span class="eb-cd-sep" aria-hidden="true">:</span>
+          <span class="eb-cd-unit"><span id="countdown-hours" class="eb-timer-value">00</span><span class="eb-cd-unit-label">Hrs</span></span>
+          <span class="eb-cd-sep" aria-hidden="true">:</span>
+          <span class="eb-cd-unit"><span id="countdown-minutes" class="eb-timer-value">00</span><span class="eb-cd-unit-label">Mins</span></span>
+          <span class="eb-cd-sep" aria-hidden="true">:</span>
+          <span class="eb-cd-unit"><span id="countdown-seconds" class="eb-timer-value">00</span><span class="eb-cd-unit-label">Secs</span></span>
+        </span>
+        <span class="eb-save-btn">
+          <i class="fas fa-bolt" aria-hidden="true"></i> Save Now
+        </span>
+      </div>
+
+    </div>
+  </div>
+</a>
+
+<!-- Self-contained visibility guard: fail-open (shown by default), hide only once
+     the sale has actually ended. Runs on every page independently of BaseLayout. -->
+<script is:inline>
+  (function () {
+    var el = document.getElementById('sale-banner');
+    if (!el) return;
+    // SALE_END comes from the shared global set by BaseLayout (src/data/sale.ts).
+    // If it's missing, fail open (NaN comparison is false) and keep the banner shown.
+    if (Date.now() >= window.SALE_END) {
+      el.style.display = 'none';
+      var navBar = document.getElementById('nav-bar');
+      if (navBar) navBar.style.top = '0px';
+    }
+  })();
+</script>

@@ -1,0 +1,113 @@
+---
+// Index page for the /broker/* family (11 broker integration pages).
+// This URL used to return 404 — see src/components/HubGrid.astro.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HubGrid from '../../../components/HubGrid.astro';
+import type { HubItem } from '../../../components/HubGrid.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../../i18n/config';
+import brokersData from '../../../../config/brokers.json';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const canonical = absoluteLocalizedPath(locale, 'broker');
+
+const items: HubItem[] = brokersData.brokers.map((broker) => ({
+  href: `broker/${broker.slug}`,
+  name: broker.name,
+  meta: broker.assetPill,
+}));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t('hub.breadcrumb_home'), item: absoluteLocalizedPath(locale) },
+    { '@type': 'ListItem', position: 2, name: t('hub.broker_breadcrumb'), item: canonical },
+  ],
+};
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${canonical}#page`,
+  name: t('hub.broker_h1'),
+  description: t('hub.broker_meta_description'),
+  url: canonical,
+  inLanguage: LOCALE_BCP47[locale],
+  mainEntity: {
+    '@type': 'ItemList',
+    name: t('hub.broker_h1'),
+    itemListOrder: 'https://schema.org/ItemListUnordered',
+    numberOfItems: items.length,
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      url: absoluteLocalizedPath(locale, item.href),
+    })),
+  },
+};
+---
+
+<BaseLayout
+  locale={locale}
+  title={t('hub.broker_meta_title')}
+  description={t('hub.broker_meta_description')}
+  canonical={canonical}
+  structuredData={[itemListSchema, breadcrumbSchema]}
+>
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-24 pb-3">
+    <div class="max-w-6xl mx-auto px-4">
+      <ol class="flex items-center gap-2 text-sm text-gray-400">
+        <li><a href={localizedPath(locale)} class="hover:text-[#2B77EE]">{t('hub.breadcrumb_home')}</a></li>
+        <li>/</li>
+        <li class="text-white font-semibold">{t('hub.broker_breadcrumb')}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-b from-[#001429] to-[#002040] pb-12 pt-6 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">{t('hub.broker_h1')}</h1>
+      <p class="text-gray-300 max-w-3xl text-lg">{t('hub.broker_intro')}</p>
+      <p class="text-gray-500 text-sm mt-3">{t('hub.firms_count', { count: items.length })}</p>
+    </div>
+  </header>
+
+  <section class="bg-[#002040] py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+      <HubGrid locale={locale} items={items} ctaLabel={t('hub.card_cta')} />
+
+      <p class="text-center mt-10">
+        <a href="https://pickmytrade.trade/tradingview-to-tradovate/" class="text-[#2B77EE] hover:underline font-medium">
+          {t('footer.link_tradovate_hub')} <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
+        </a>
+      </p>
+
+      <p class="text-center mt-6">
+        <a href={localizedPath(locale, 'broker-faq')} class="text-[#2B77EE] hover:underline font-medium">
+          {t('broker_faq_hub.breadcrumb_current')} <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-[#001429] py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('hub.cta_title')}</h2>
+      <p class="text-gray-300 mb-6">{t('hub.cta_body')}</p>
+      <a href="https://app.pickmytrade.io/?register=true" class="inline-block px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors">
+        {t('hub.cta_button')}
+      </a>
+      <p class="mt-5">
+        <a href={localizedPath(locale, 'pricing')} class="text-blue-300 hover:text-white underline underline-offset-4">
+          {t('hub.see_pricing')}
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

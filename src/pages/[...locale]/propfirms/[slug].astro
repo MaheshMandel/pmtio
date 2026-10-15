@@ -1,0 +1,592 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqAccordion from '../../../components/FaqAccordion.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../../i18n/utils';
+import { localizedSeo } from '../../../i18n/seo';
+import type { Locale } from '../../../i18n/config';
+import propfirmsData from '../../../../config/propfirms.json';
+import { firmHasSupportedPlatform, toOrList, hasAutomationCaveat } from '../../../lib/firmSupport';
+
+export function getStaticPaths() {
+  return getLocalePaths().flatMap(({ params, props }) =>
+    propfirmsData.propfirms.map(firm => ({
+      params: { locale: params.locale, slug: firm.slug },
+      props: { firm, locale: props.locale },
+    }))
+  );
+}
+
+const { locale, firm } = Astro.props as { locale: Locale; firm: typeof propfirmsData.propfirms[0] };
+const t = useTranslations(locale);
+
+// Topstep (slug "topstep") carries firm-specific compliance-reviewed copy (see
+// UPDATE_c30-topstep-trade-copier.html work order) that must not be applied to the
+// other prop-firm entries sharing this template, so it is gated behind isTopstep.
+const isTopstep = firm.slug === 'topstep';
+const isSupported = firmHasSupportedPlatform(firm.platforms);
+const unsupportedPlatforms = toOrList(firm.platforms, locale);
+
+const canonical = absoluteLocalizedPath(locale, `propfirms/${firm.slug}`);
+
+const topstepFaqItems = [
+  { question: "Can you use TradingView with Topstep?", answer: "Yes. Topstep does not place TradingView orders for you on its own, but you can route your TradingView alerts to your Topstep account with a tool like PickMyTrade. Your TradingView strategy or indicator fires an alert, PickMyTrade reads it, and it places the matching order on your connected Topstep account. This works whether your account is on the TopstepX (ProjectX) platform or on a legacy Rithmic or Tradovate connection, where applicable. Webhook alerts require a paid TradingView plan (Pro, Pro+, or Premium)." },
+  { question: "Can I use Topstep on TradingView, or automate a TradingView strategy on Topstep?", answer: "You can automate a TradingView strategy on Topstep through PickMyTrade rather than placing orders inside TradingView itself. Connect your Topstep account to PickMyTrade, generate the alert message and webhook URL, and paste them into your TradingView alert. When the strategy triggers, PickMyTrade executes the trade on Topstep for you, 24/7, with no coding and no plugin to install." },
+  { question: "Does Topstep allow automated trading and trade copiers?", answer: "PickMyTrade connects to accounts on ProjectX (which powers TopstepX), Rithmic, and Tradovate, which many prop firms including Topstep run on. Copy trading and automation rules vary by prop firm and change over time, so always confirm Topstep's current policy before you go live. As a general guide, Topstep permits routing your own strategy alerts to accounts you personally own, while fully hands-off systems designed to game the evaluation, and letting a third party trade your account, are treated differently. Check the current Topstep rules for your account stage." },
+  { question: "How do I get a Topstep / TopstepX API key and connect it to PickMyTrade?", answer: "In TopstepX, open Settings, then the API tab, and use the ProjectX Linking option to create or sign in to a ProjectX Dashboard account and subscribe to ProjectX API access. Back in TopstepX Settings, open the API tab and click Add API Key to generate your key. Copy that key into PickMyTrade when you add your Topstep (TopstepX) account. TopstepX API access is a separate ProjectX subscription billed by ProjectX, not by PickMyTrade, so check the current price in your TopstepX settings." },
+  { question: "What is the difference between Topstep and TopstepX for automation?", answer: "Topstep is the prop firm; TopstepX is its trading platform, built on the ProjectX infrastructure. Topstep moved new accounts onto TopstepX (ProjectX) as of mid-2025, stepping back from the older Tradovate and other legacy connections for new sign-ups. For automation this matters because a TopstepX account connects to PickMyTrade using a ProjectX API key, while an older Rithmic-era or Tradovate-linked Topstep account, where you still have one, connects through those broker paths instead. If you are not sure which you have, check whether you log in through TopstepX." },
+  { question: "How do I copy trades across multiple Topstep accounts?", answer: "Connect each Topstep account to PickMyTrade, choose one as the master (source) account, and set a quantity multiplier for each of the others. When your master account trades, whether from a TradingView alert or a manual order, PickMyTrade places the same trade on every connected account, sized by its multiplier, with identical stop-loss and take-profit prices. Topstep limits how many accounts you can hold and how they can be traded together, so confirm your current account limits and copy rules with Topstep." },
+  { question: "What is the Topstep consistency rule and does using a trade copier break it?", answer: "Topstep's consistency target asks that no single trading day makes up too large a share of your total profit before a payout, so one lucky day does not carry the whole account. A trade copier does not break this rule on its own, because every copied account runs the same trades as your master, so a consistency-friendly strategy stays consistency-friendly across all of them. Spread your profit across multiple days to stay inside the target. Topstep can change these thresholds, so confirm the current figures in your dashboard." },
+  { question: "Which account must be the Lead / master when copying on TopstepX?", answer: "With PickMyTrade you pick one account as the master (source) and the others follow it, so make your primary account, usually the one you trade or signal first, the master. TopstepX's own built-in copy feature uses the same idea and calls the source account the Lead account. Whichever tool you use, the follower accounts mirror the Lead or master, sized by the multiplier you set. Only copy between accounts you personally own." },
+  { question: "Does the copier work on Combine, Express Funded, and Live Funded accounts?", answer: "Yes. PickMyTrade can connect to Topstep accounts at each stage, the Trading Combine (evaluation), the Express Funded Account, and a Live Funded Account, as long as the account is on a platform PickMyTrade supports (TopstepX via ProjectX, or a legacy Rithmic or Tradovate connection where applicable). A common setup is to test a strategy on a Combine account, then apply the same setup to your funded accounts. Always keep each account inside Topstep's rules for its stage." },
+  { question: "Do I need a VPS or plugin to run the Topstep trade copier?", answer: "No. PickMyTrade runs in the cloud, so there is no plugin to install and no VPS to rent. Once your Topstep account is connected and your alert is live, trades copy automatically even when your computer is switched off." },
+  { question: "How much does the PickMyTrade Topstep trade copier cost, and is there a free trial?", answer: "PickMyTrade is $50 per month or $500 per year, with a 7-day free trial and no credit card required. Your PickMyTrade subscription covers copying across the accounts you connect. Topstep separately limits how many accounts you can hold, and if your account uses TopstepX the ProjectX API access is billed separately by ProjectX." },
+];
+
+const genericFaqItems = [
+  { question: t('propfirm_guide.faq_q1', { name: firm.name }), answer: t('propfirm_guide.faq_a1', { name: firm.name }) },
+  { question: t('propfirm_guide.faq_q2', { name: firm.name }), answer: t('propfirm_guide.faq_a2', { name: firm.name }) },
+  { question: t('propfirm_guide.faq_q3', { name: firm.name }), answer: t('propfirm_guide.faq_a3', { name: firm.name }) },
+  { question: t('propfirm_guide.faq_q4', { name: firm.name }), answer: t('propfirm_guide.faq_a4') },
+  { question: t('propfirm_guide.faq_q5', { name: firm.name }), answer: t('propfirm_guide.faq_a5', { name: firm.name }) },
+];
+
+// firm.platforms are all brokers PickMyTrade doesn't connect to — none of the
+// generic FAQ answers above are true for it (they assume a live connection),
+// so swap the whole block for one honest Q&A instead of patching each line.
+const unsupportedFaqItems = [
+  { question: t('firm_unsupported.faq_trial_q', { name: firm.name }), answer: t('firm_unsupported.faq_trial_a', { name: firm.name, platforms: unsupportedPlatforms }) },
+];
+
+const faqItems = isTopstep ? topstepFaqItems : isSupported ? genericFaqItems : unsupportedFaqItems;
+
+const topstepFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1","h2",".faq-question",".faq-answer"] },
+  "mainEntity": topstepFaqItems.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+  }))
+};
+
+// TechArticle, not HowTo — Google retired HowTo rich results in Sept 2023, so
+// the markup produced no SERP feature. Mirrors the homepage's TechArticle shape.
+const topstepHowToSchema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "How to set up the Topstep trade copier with PickMyTrade",
+  "name": "How to set up the Topstep trade copier with PickMyTrade",
+  "description": "Copy and automate a TradingView strategy to your Topstep and TopstepX accounts with PickMyTrade. Connect your account, generate a webhook, map contracts and accounts, and test in sim. No plugin or VPS required.",
+  "timeRequired": "PT10M",
+  "proficiencyLevel": "Beginner",
+  "dependencies": "PickMyTrade account; Topstep or TopstepX account (Combine, Express Funded, or Live Funded); TopstepX ProjectX API key, or a legacy Tradovate or Rithmic connection; TradingView account (Pro, Pro+, or Premium for webhooks)",
+  "articleSection": [
+    "Create a PickMyTrade account — Sign up and start the 7-day free trial. No credit card is required.",
+    "Connect your Topstep or TopstepX account — For a TopstepX account, generate a ProjectX API key in TopstepX (Settings, API tab, ProjectX Linking, then Add API Key) and paste it into PickMyTrade. For a legacy Tradovate-linked account, authorize through Tradovate; for a Rithmic-era account, use the Rithmic path.",
+    "Generate your TradingView webhook — In PickMyTrade, click Generate Alert to get your webhook URL and the JSON message for your buy and sell signals.",
+    "Map contracts and accounts — Choose your master account, add the follower accounts you own, set a quantity multiplier for each, and confirm the contract maps to the instrument you trade.",
+    "Paste into TradingView — Create a TradingView alert, delete the default message, paste the PickMyTrade JSON, and set the webhook URL in the alert's notifications tab. Webhooks require TradingView Pro, Pro+, or Premium.",
+    "Test in sim — Put the alert on a 1-minute chart or fire a manual test, check the PickMyTrade Alert Log, and confirm the order landed on each connected Topstep account before trading a live account."
+  ],
+  "mainEntityOfPage": `${canonical}#setup`,
+  "author": { "@id": "https://pickmytrade.io/#organization" },
+  "publisher": { "@id": "https://pickmytrade.io/#organization" }
+};
+
+// Modelled as SoftwareApplication, not Product. This is a SaaS subscription, and
+// the Product+Brand+InStock shape previously used here was the site's third
+// competing schema strategy for one identical product — it also pulled the page
+// into Google's Merchant Listing checks for return/shipping data that cannot
+// apply. Matches the type used by /automation/*, /copier/*, /broker/* and the
+// standalone copier pages.
+const topstepSoftwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PickMyTrade - Topstep Trade Copier",
+  "image": "https://pickmytrade.io/assets/logo.png",
+  "description": "Copy and automate TradingView strategies to your Topstep and TopstepX accounts with PickMyTrade. Under 200ms order processing on our side, per-account multipliers, multi-account copy trading, and a 7-day free trial. Connects via the TopstepX ProjectX API key or legacy Tradovate and Rithmic paths.",
+  "url": canonical,
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based",
+  "offers": {
+    "@type": "Offer",
+    "price": "50.00",
+    "priceCurrency": "USD",
+    "priceValidUntil": "2026-12-31",
+    "availability": "https://schema.org/InStock",
+    "url": canonical,
+    "description": "7-day free trial, no credit card required. $50/month or $500/year."
+  }
+};
+
+const genericFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1","h2",".faq-question",".faq-answer"] },
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `How do I connect ${firm.name} to PickMyTrade?`,
+      "acceptedAnswer": { "@type": "Answer", "text": `Simply sign up for PickMyTrade, navigate to the integrations page, and follow the step-by-step guide to connect your ${firm.name} account. The process takes less than 5 minutes and requires your ${firm.name} account credentials.` }
+    },
+    {
+      "@type": "Question",
+      "name": `Can I automate both evaluation and funded ${firm.name} accounts?`,
+      "acceptedAnswer": { "@type": "Answer", "text": `Yes! PickMyTrade supports both evaluation and funded ${firm.name} accounts. You can manage multiple accounts simultaneously with individual risk settings for each.` }
+    },
+    {
+      "@type": "Question",
+      "name": `Does PickMyTrade respect ${firm.name} trading rules?`,
+      "acceptedAnswer": { "@type": "Answer", "text": `Absolutely. Our risk management system is configured to respect ${firm.name}'s specific trading rules, including daily loss limits, maximum position sizes, and profit targets.` }
+    },
+    {
+      "@type": "Question",
+      "name": `How fast are trades executed on ${firm.name}?`,
+      "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade executes trades within milliseconds of receiving the TradingView webhook. Our ultra-low latency infrastructure ensures minimal slippage and maximum fill quality." }
+    },
+    {
+      "@type": "Question",
+      "name": `Is there a free trial for ${firm.name} automation?`,
+      "acceptedAnswer": { "@type": "Answer", "text": `Yes! PickMyTrade offers a 7-day free trial with full access to all ${firm.name} automation features. No credit card required to start your trial.` }
+    }
+  ]
+};
+
+const unsupportedFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1","h2",".faq-question",".faq-answer"] },
+  "mainEntity": unsupportedFaqItems.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+  }))
+};
+
+const faqSchema = isTopstep ? topstepFaqSchema : isSupported ? genericFaqSchema : unsupportedFaqSchema;
+
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PickMyTrade",
+  "url": "https://pickmytrade.io",
+  "logo": "https://pickmytrade.io/assets/logo.png",
+  "description": "TradingView automation platform for brokers and prop firms. Execute trades automatically from TradingView alerts with ultra-low latency.",
+  "sameAs": [
+    "https://x.com/pickmytrade",
+    "https://discord.gg/FkJ7g7498S",
+    "https://www.instagram.com/pickmytrade",
+    "https://www.youtube.com/@PickMyTrade",
+    "https://www.linkedin.com/company/pickmytrade",
+    "https://sourceforge.net/software/product/PickMyTrade/",
+    "https://www.trustpilot.com/review/pickmytrade.trade",
+    "https://blog.pickmytrade.io",
+    "https://docs.pickmytrade.io"
+  ]
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": absoluteLocalizedPath(locale) },
+    // /propfirms has no index page and returns 404 — /supported-propfirms is the
+    // page that actually functions as this family's hub, and is what the visible
+    // breadcrumb below already links to.
+    { "@type": "ListItem", "position": 2, "name": "Prop Firms", "item": absoluteLocalizedPath(locale, "supported-propfirms") },
+    // Short trail label, not the full <title> tag (which repeated the brand suffix).
+    { "@type": "ListItem", "position": 3, "name": firm.name, "item": canonical }
+  ]
+};
+// Localized title/description for non-English locales; English keeps the
+// bespoke per-page copy in config. See src/i18n/seo.ts.
+const seo = isSupported
+  ? localizedSeo(locale, t, 'propfirm', firm.name, firm.seo)
+  : localizedSeo(locale, t, 'propfirm', firm.name, firm.seo, 'unsupported', { name: firm.name, platforms: unsupportedPlatforms });
+
+---
+<BaseLayout
+  locale={locale}
+  title={seo.title}
+  description={seo.description}
+  keywords={firm.seo.keywords}
+  canonical={canonical}
+  structuredData={[faqSchema, orgSchema, breadcrumbSchema, ...(isTopstep ? [topstepHowToSchema, topstepSoftwareSchema] : [])]}
+>
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-4">
+    <div class="max-w-7xl mx-auto px-4">
+      <ol class="flex items-center gap-2 text-sm text-gray-400">
+        <li><a href={localizedPath(locale)} class="hover:text-blue-400">{t('propfirm_guide.breadcrumb_home')}</a></li>
+        <li>/</li>
+        <li><a href={localizedPath(locale, 'supported-propfirms')} class="hover:text-blue-400">{t('propfirm_guide.breadcrumb_propfirms')}</a></li>
+        <li>/</li>
+        <li class="text-white font-semibold">{firm.name}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] py-16 sm:py-24">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-1/4 w-96 h-96 bg-orange-500 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-1/4 w-80 h-80 bg-yellow-500 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center gap-2 mb-6 bg-orange-500/20 border border-orange-500/30 rounded-full px-5 py-2" data-aos="fade-down">
+        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+        <span class="text-sm font-semibold text-orange-400 uppercase tracking-wider">{isSupported ? t('propfirm_guide.hero_badge', { name: firm.name }) : t('firm_unsupported.hero_badge')}</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" data-aos="fade-up">
+        <span class="text-white">{t('propfirm_guide.hero_title_main', { name: firm.name })}</span><br>
+        <span class="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">{t('propfirm_guide.hero_title_sub')}</span>
+      </h1>
+
+      <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+        {firm.tagline}
+      </p>
+
+      {isSupported && hasAutomationCaveat(firm.slug) && (
+        <div class="max-w-2xl mx-auto mb-8 text-left bg-amber-500/10 border border-amber-500/30 rounded-xl p-5" data-aos="fade-up" data-aos-delay="150">
+          <h2 class="text-white font-bold mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-400" aria-hidden="true"></i>
+            {t('firm_automation_rules_box.heading')}
+          </h2>
+          <p class="text-gray-300 text-sm leading-relaxed mb-3">{t('firm_automation_rules_box.body')}</p>
+          <a href={localizedPath(locale, 'faq/prop-firm-automation')} class="text-amber-400 hover:text-amber-300 text-sm font-semibold">
+            {t('firm_automation_rules_box.link_text')} <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      )}
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10" data-aos="fade-up" data-aos-delay="200">
+        {isSupported ? (
+          <>
+            <a href="https://app.pickmytrade.io/?register=true"
+              class="px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl font-semibold text-white shadow-lg hover:shadow-orange-500/50 transition-all duration-300 electrolize-regular">
+              {t('propfirm_guide.hero_cta_trial')}
+            </a>
+            <a href={localizedPath(locale, `automation/tradingview-to-${firm.slug}-automation`)}
+              class="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl font-semibold text-white hover:bg-white/20 transition-all duration-300 electrolize-regular">
+              {t('propfirm_guide.hero_cta_automation')}
+            </a>
+          </>
+        ) : (
+          <a href={localizedPath(locale, 'supported-propfirms')}
+            class="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl font-semibold text-white hover:bg-white/20 transition-all duration-300 electrolize-regular">
+            {t('firm_unsupported.cta_button')}
+          </a>
+        )}
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-clock text-green-400"></i>
+          <span class="text-gray-300">{t('propfirm_guide.hero_stat_setup')}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-blue-400"></i>
+          <span class="text-gray-300">{t('propfirm_guide.hero_stat_risk')}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Integration Overview -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('propfirm_guide.overview_title')} <span class="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">{t('propfirm_guide.overview_title_highlight')}</span>
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-[#001429] border border-orange-500/30 rounded-xl p-8" data-aos="fade-right">
+          <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-robot text-orange-400 text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">{t('propfirm_guide.overview_card1_title')}</h3>
+          <p class="text-gray-400 mb-4">{t('propfirm_guide.overview_card1_desc', { name: firm.name })}</p>
+          <a href={localizedPath(locale, `automation/tradingview-to-${firm.slug}-automation`)} class="text-orange-400 hover:text-orange-300 font-semibold">
+            {t('propfirm_guide.learn_more')} <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+
+        <div class="bg-[#001429] border border-yellow-500/30 rounded-xl p-8" data-aos="fade-up">
+          <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-copy text-yellow-400 text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">{t('propfirm_guide.overview_card2_title')}</h3>
+          <p class="text-gray-400 mb-4">{t('propfirm_guide.overview_card2_desc', { name: firm.name })}</p>
+          <a href={localizedPath(locale, `copier/tradingview-to-${firm.slug}-copier`)} class="text-yellow-400 hover:text-yellow-300 font-semibold">
+            {t('propfirm_guide.learn_more')} <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+
+        <div class="bg-[#001429] border border-[#2B77EE]/30 rounded-xl p-8" data-aos="fade-left">
+          <div class="w-12 h-12 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-circle-question text-[#2B77EE] text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">{t('propfirm_guide.overview_card3_title', { name: firm.name })}</h3>
+          <p class="text-gray-400 mb-4">{t('propfirm_guide.overview_card3_desc', { name: firm.name })}</p>
+          <a href={localizedPath(locale, `prop-firm-faq/${firm.slug}`)} class="text-[#2B77EE] hover:text-blue-300 font-semibold">
+            {t('propfirm_guide.learn_more')} <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup Guide -->
+  <section class="bg-[#001429] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('propfirm_guide.setup_title')} <span class="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">{t('propfirm_guide.setup_title_highlight')}</span>
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center" data-aos="fade-up">
+          <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold electrolize-regular">1</div>
+          <h3 class="text-xl font-bold mb-3">{t('propfirm_guide.setup_step1_title', { name: firm.name })}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.setup_step1_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold electrolize-regular">2</div>
+          <h3 class="text-xl font-bold mb-3">{t('propfirm_guide.setup_step2_title')}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.setup_step2_desc')}</p>
+        </div>
+
+        <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold electrolize-regular">3</div>
+          <h3 class="text-xl font-bold mb-3">{t('propfirm_guide.setup_step3_title')}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.setup_step3_desc', { name: firm.name })}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('propfirm_guide.features_title', { name: firm.name })} <span class="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">{t('propfirm_guide.features_title_highlight')}</span>
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-[#001429] border border-orange-500/20 rounded-xl p-6" data-aos="fade-up">
+          <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-layer-group text-orange-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('propfirm_guide.feature1_title')}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.feature1_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-[#001429] border border-yellow-500/20 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-shield-halved text-yellow-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('propfirm_guide.feature2_title')}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.feature2_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-[#001429] border border-green-500/20 rounded-xl p-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-bolt text-green-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{isTopstep ? 'Fast Cloud Execution' : t('propfirm_guide.feature3_title')}</h3>
+          <p class="text-gray-400">{isTopstep ? "PickMyTrade processes your order in under 200ms on our side. Total fill time also depends on Topstep's execution, network latency, and how quickly TradingView sends the alert. Everything runs in the cloud, so there is no plugin to install and no VPS to rent." : t('propfirm_guide.feature3_desc')}</p>
+        </div>
+
+        <div class="bg-[#001429] border border-blue-500/20 rounded-xl p-6" data-aos="fade-up">
+          <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-chart-line text-blue-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('propfirm_guide.feature4_title')}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.feature4_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-[#001429] border border-purple-500/20 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-clock text-purple-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('propfirm_guide.feature5_title')}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.feature5_desc', { name: firm.name })}</p>
+        </div>
+
+        <div class="bg-[#001429] border border-cyan-500/20 rounded-xl p-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4">
+            <i class="fa-solid fa-mobile-screen text-cyan-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{t('propfirm_guide.feature6_title')}</h3>
+          <p class="text-gray-400">{t('propfirm_guide.feature6_desc', { name: firm.name })}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prop Firm Details -->
+  <section class="bg-[#001429] py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('propfirm_guide.details_title')} <span class="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">{firm.name}</span>
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-gradient-to-br from-[#002040] to-[#001429] border border-orange-500/30 rounded-xl p-8" data-aos="fade-right">
+          <h3 class="text-2xl font-bold mb-6 text-orange-300">{t('propfirm_guide.details_account_title')}</h3>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center border-b border-white/10 pb-3">
+              <span class="text-gray-400">{t('propfirm_guide.details_account_sizes_label')}</span>
+              <span class="text-white font-semibold">{firm.account_sizes}</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-white/10 pb-3">
+              <span class="text-gray-400">{t('propfirm_guide.details_profit_split_label')}</span>
+              <span class="text-white font-semibold">{firm.profit_split}</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-white/10 pb-3">
+              <span class="text-gray-400">{t('propfirm_guide.details_profit_target_label')}</span>
+              <span class="text-white font-semibold">{firm.profit_target}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">{t('propfirm_guide.details_platforms_label')}</span>
+              <span class="text-white font-semibold">{firm.platforms}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#002040] to-[#001429] border border-yellow-500/30 rounded-xl p-8" data-aos="fade-left">
+          <h3 class="text-2xl font-bold mb-6 text-yellow-300">{t('propfirm_guide.details_why_title')}</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+              <span class="text-gray-300">{t('propfirm_guide.details_why_1')}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+              <span class="text-gray-300">{t('propfirm_guide.details_why_2')}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+              <span class="text-gray-300">{t('propfirm_guide.details_why_3')}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-green-400 mt-1"></i>
+              <span class="text-gray-300">{t('propfirm_guide.details_why_4')}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {isTopstep && (
+    <>
+      <!-- Topstep: What the copier does + Topstep vs TopstepX -->
+      <section class="bg-[#002040] py-16">
+        <div class="max-w-4xl mx-auto px-4">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">What the PickMyTrade Topstep trade copier does</h2>
+          <p class="text-gray-300 mb-4" data-aos="fade-up">PickMyTrade is a trade copier and automation tool for Topstep. It takes one signal, either an alert from your TradingView strategy or a trade you place by hand on a master account, and places the same trade across one or many of your Topstep accounts at the same time. Entries, exits, stop-loss and take-profit prices stay identical on every account, and you can size each account differently with a per-account multiplier.</p>
+          <p class="text-gray-300 mb-4" data-aos="fade-up">The model is simple: one master, many followers. You choose a master (source) account, connect the other accounts you own, and PickMyTrade mirrors every master trade out to the followers. There is no code to write, no plugin to install, and no VPS to run, because the whole flow lives in the cloud and works 24/7 whether your computer is on or off.</p>
+          <p class="text-gray-300 mb-10" data-aos="fade-up">This works with Topstep accounts on the current TopstepX platform (which runs on ProjectX) and, where you still have them, with older Rithmic-era or Tradovate-linked Topstep accounts.</p>
+
+          <h3 class="text-2xl font-bold mb-4 text-orange-300" data-aos="fade-up">Topstep vs TopstepX: which platform are you on?</h3>
+          <p class="text-gray-300 mb-4" data-aos="fade-up">Topstep is the prop firm. TopstepX is its trading platform, built on the ProjectX infrastructure. As of mid-2025, Topstep moved new accounts onto TopstepX (ProjectX) and stepped back from the older Tradovate and other legacy connections for new sign-ups. For automation this matters, because the way PickMyTrade connects depends on which platform your account uses.</p>
+          <ul class="list-disc list-inside text-gray-300 space-y-2 mb-4" data-aos="fade-up">
+            <li>New Topstep accounts generally live on TopstepX and connect to PickMyTrade with a ProjectX API key.</li>
+            <li>Older Topstep accounts that you still hold on a Rithmic or Tradovate connection connect through those broker paths instead, where applicable.</li>
+          </ul>
+          <p class="text-gray-300 mb-10" data-aos="fade-up">If you are not sure which you have, check whether you log in and trade through the TopstepX platform. If you do, use the API-key path below. See our <a href={localizedPath(locale, 'broker/tradingview-to-topstepx')} class="text-orange-400 hover:text-orange-300 font-semibold">TopstepX connection guide</a> for the full walkthrough, our <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-orange-400 hover:text-orange-300 font-semibold">ProjectX connection guide</a> for API-key details, and our <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-orange-400 hover:text-orange-300 font-semibold">Rithmic connection guide</a> for legacy Rithmic-era accounts.</p>
+
+          <div class="bg-[#001429] border border-blue-500/30 rounded-xl p-6" data-aos="fade-up">
+            <p class="text-gray-300"><strong class="text-white">Which page applies to you?</strong> If your Topstep account is on TopstepX (ProjectX), you are in the right place; follow the API-key setup below. If you still trade a Topstep account through a Tradovate connection, use our <a href="https://pickmytrade.trade/copier/tradovate-to-topstep-copier/" class="text-orange-400 hover:text-orange-300 font-semibold">Tradovate-to-Topstep copier guide</a> instead. Both copy one master account to many followers with the same PickMyTrade subscription.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Topstep: Connecting + step-by-step setup -->
+      <section id="setup" class="bg-[#001429] py-16">
+        <div class="max-w-4xl mx-auto px-4">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">Connecting your Topstep account</h2>
+          <h3 class="text-xl font-bold mb-2 text-orange-300" data-aos="fade-up">Connecting via the TopstepX (ProjectX) API key</h3>
+          <p class="text-gray-300 mb-6" data-aos="fade-up">In TopstepX, open Settings, then the API tab, and use the ProjectX Linking option to create or sign in to a ProjectX Dashboard account and subscribe to ProjectX API access. Back in TopstepX Settings, open the API tab again and click Add API Key to generate your key. Copy that key into PickMyTrade when you add your Topstep (TopstepX) account. TopstepX API access is a separate ProjectX subscription, billed by ProjectX rather than by PickMyTrade, so check the current price and terms in your TopstepX settings before you subscribe. For a full walkthrough of the underlying connection, see our <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-orange-400 hover:text-orange-300 font-semibold">ProjectX integration guide</a>.</p>
+
+          <h3 class="text-xl font-bold mb-2 text-orange-300" data-aos="fade-up">Connecting a Tradovate-linked or Rithmic-era Topstep account</h3>
+          <p class="text-gray-300 mb-10" data-aos="fade-up">If you still hold an older Topstep account on a Tradovate connection, you connect it to PickMyTrade the same way you connect any Tradovate account, by authorizing through Tradovate's secure login; there is no API key to generate on this path. Rithmic-era Topstep accounts follow our <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-orange-400 hover:text-orange-300 font-semibold">Rithmic connection path</a>. If you are opening a new Topstep account today, expect the TopstepX (ProjectX) API-key path above.</p>
+
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">Step-by-step setup</h2>
+          <ol class="list-decimal list-inside text-gray-300 space-y-3" data-aos="fade-up">
+            <li><strong class="text-white">Create a PickMyTrade account.</strong> Sign up and start the 7-day free trial (no credit card required).</li>
+            <li><strong class="text-white">Connect your Topstep / TopstepX account.</strong> For a TopstepX account, generate a ProjectX API key (Settings, API tab, ProjectX Linking, then Add API Key) and paste it into PickMyTrade. For a legacy Tradovate-linked account, authorize through Tradovate instead; for a Rithmic-era account, use the Rithmic path.</li>
+            <li><strong class="text-white">Generate your TradingView webhook.</strong> In PickMyTrade, click Generate Alert to get your webhook URL and the JSON message for your buy and sell signals.</li>
+            <li><strong class="text-white">Map your contracts and accounts.</strong> Choose your master (source) account, add the follower accounts you own, and set a quantity multiplier for each based on account size.</li>
+            <li><strong class="text-white">Paste into TradingView.</strong> Create an alert on your strategy or indicator, delete the default message, paste the PickMyTrade JSON, and set the webhook URL in the alert's notifications tab. Webhook alerts require a paid TradingView plan (Pro, Pro+, or Premium).</li>
+            <li><strong class="text-white">Test in sim first.</strong> Put the alert on a 1-minute chart or fire a manual test, check the PickMyTrade Alert Log, and confirm the order landed on each connected Topstep account before you trade a live evaluation or funded account.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Topstep: multi-account copy trading + rules -->
+      <section class="bg-[#002040] py-16">
+        <div class="max-w-4xl mx-auto px-4">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">Multi-account copy trading across Topstep Combine accounts</h2>
+          <p class="text-gray-300 mb-4" data-aos="fade-up">Running several Trading Combine or funded accounts is the main reason traders reach for a Topstep trade copier. PickMyTrade copies one master signal to every connected account at once, so you are not clicking through account after account and missing fills while you switch.</p>
+          <p class="text-gray-300 mb-10" data-aos="fade-up"><strong class="text-white">Per-account sizing:</strong> every account gets its own quantity multiplier. Client position equals master position times the multiplier, and decimal multipliers like 0.5, 1.5 and 2.5 are supported, with the final quantity rounding to a whole number. That lets you run a smaller Combine at 0.5x, a mid-size account at 1x and a larger one at 2x from the same signal, while each account stays inside its own contract limit. Topstep sets its own limits on how many accounts you can hold and how they can be traded together, and Topstep's scaling plan caps the maximum contracts you can trade at a given account balance, so confirm your current account limits and copy rules with Topstep before you scale up.</p>
+
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">Topstep trade copier rules and compliance</h2>
+          <p class="text-gray-300 mb-4" data-aos="fade-up">A copier does not change the rules on your Topstep accounts, and it will not keep you compliant for you. Because every copied account trades the same signal, a setup that is compliant on the master is compliant on the copies, but you still have to keep your strategy inside Topstep's limits. The points below reflect Topstep's published rules as of 2026. Rules change, so confirm the current policy in your Topstep or TopstepX dashboard before you rely on any of them.</p>
+          <ul class="list-disc list-inside text-gray-300 space-y-2 mb-4" data-aos="fade-up">
+            <li><strong class="text-white">Consistency target:</strong> Topstep asks that no single trading day makes up too large a share of your total profit before a payout. A copier does not break this, because the same trades run on every account.</li>
+            <li><strong class="text-white">Maximum position size / scaling plan:</strong> Topstep caps how many contracts you can trade based on your account balance and stage. Set your master size and per-account multipliers so no follower account exceeds its own contract cap.</li>
+            <li><strong class="text-white">Daily loss limit:</strong> Topstep enforces a Maximum Loss Limit (a trailing drawdown) on each account. Since the copier mirrors your master exactly, a losing run hits every account at once, so size conservatively.</li>
+            <li><strong class="text-white">Lead / master account:</strong> designate one account as the master (source). TopstepX's own built-in copy feature calls the source account the Lead account. Only copy between accounts you personally own.</li>
+            <li><strong class="text-white">What the copier will and will not do:</strong> it will place the same trade on every connected account with identical stop-loss and take-profit prices, sized by each multiplier, and it will let you stop copying instantly. It will not police Topstep's rules for you, cancel a trade that would breach a limit, or manage anyone else's account.</li>
+          </ul>
+          <p class="text-gray-300" data-aos="fade-up">PickMyTrade connects to accounts on ProjectX (which powers TopstepX), Rithmic, and Tradovate, which many prop firms including Topstep run on. Copy trading and automation rules vary by prop firm and change over time, so always confirm Topstep's current policy before you go live.</p>
+        </div>
+      </section>
+
+      <!-- Topstep: latency, cloud execution, pricing -->
+      <section class="bg-[#001429] py-16">
+        <div class="max-w-4xl mx-auto px-4">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">Latency, cloud execution and no-VPS setup</h2>
+          <p class="text-gray-300 mb-4" data-aos="fade-up">PickMyTrade processes your order in under 200ms on our side. When one signal fans out to several Topstep accounts, all connected accounts receive the trade within seconds. Your total fill time also depends on Topstep's execution, network latency, and how quickly TradingView sends the alert, as it does with any copier, so we do not promise a guaranteed end-to-end speed.</p>
+          <p class="text-gray-300 mb-10" data-aos="fade-up">Everything runs in the cloud. There is no desktop app to babysit, no plugin to install, and no VPS to rent or keep online. Once your accounts are connected and your alert is live, trades copy automatically even when your computer is switched off.</p>
+
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6" data-aos="fade-up">Pricing and free trial</h2>
+          <p class="text-gray-300 mb-4" data-aos="fade-up">PickMyTrade is $50/month or $500/year, and every plan starts with a 7-day free trial (no credit card required). More than 50,000 traders use PickMyTrade, and the platform has processed over 28 million trades. If your Topstep account uses TopstepX, the ProjectX API access needed to connect is billed separately by ProjectX, not by PickMyTrade, so budget for that as well. Topstep separately sets how many accounts you can hold. See our <a href={localizedPath(locale, 'pricing')} class="text-orange-400 hover:text-orange-300 font-semibold">pricing page</a> for full plan details, or the <a href={localizedPath(locale, 'prop-firm-trade-copier')} class="text-orange-400 hover:text-orange-300 font-semibold">prop firm trade copier hub</a> for other supported firms.</p>
+        </div>
+      </section>
+    </>
+  )}
+
+  <!-- FAQ -->
+  <section class="bg-[#002040] py-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12" data-aos="fade-up">
+        {t('propfirm_guide.faq_title')} <span class="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">{t('propfirm_guide.faq_title_highlight')}</span>
+      </h2>
+
+      <FaqAccordion items={faqItems} />
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="bg-gradient-to-r from-orange-600 to-yellow-600 py-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6 electrolize-regular" data-aos="fade-up">
+        {isSupported ? t('propfirm_guide.cta_title', { name: firm.name }) : t('firm_unsupported.cta_title', { name: firm.name })}
+      </h2>
+      <p class="text-xl text-orange-100 mb-8" data-aos="fade-up" data-aos-delay="100">
+        {isSupported ? t('propfirm_guide.cta_subtitle', { name: firm.name }) : t('firm_unsupported.cta_subtitle', { platforms: unsupportedPlatforms })}
+      </p>
+      <a href={isSupported ? 'https://app.pickmytrade.io/?register=true' : localizedPath(locale, 'supported-propfirms')}
+        class="inline-block px-8 py-4 bg-white text-orange-600 rounded-xl font-semibold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 electrolize-regular"
+        data-aos="fade-up" data-aos-delay="200">
+        {isSupported ? t('propfirm_guide.cta_button') : t('firm_unsupported.cta_button')}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

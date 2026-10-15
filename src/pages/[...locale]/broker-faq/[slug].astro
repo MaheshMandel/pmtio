@@ -1,0 +1,1063 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../../i18n/utils';
+import type { TranslationKey } from '../../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../../i18n/config';
+import enDict from '../../../i18n/locales/en.json';
+
+// ──────────────────────────────────────────────────────────────
+// Broker data catalogue
+// ──────────────────────────────────────────────────────────────
+const brokerFaqs = [
+  {
+    slug: 'ctrader-faq',
+    name: 'cTrader',
+    disclaimerBroker: 'cTrader',
+    relatedBrokers: [
+      { slug: 'matchtrader-faq', name: 'MatchTrader' },
+      { slug: 'tradelocker-faq', name: 'TradeLocker' },
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'ib-faq',
+    name: 'Interactive Brokers',
+    disclaimerBroker: 'Interactive Brokers',
+    relatedBrokers: [
+      { slug: 'tradestation-faq', name: 'TradeStation' },
+      { slug: 'tradier-faq', name: 'Tradier' },
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'ironbeam-faq',
+    name: 'Ironbeam',
+    disclaimerBroker: 'Ironbeam',
+    relatedBrokers: [
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+      { slug: 'projectx-faq', name: 'ProjectX' },
+      { slug: 'ib-faq', name: 'Interactive Brokers' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'matchtrader-faq',
+    name: 'MatchTrader',
+    disclaimerBroker: 'MatchTrader',
+    relatedBrokers: [
+      { slug: 'ctrader-faq', name: 'cTrader' },
+      { slug: 'tradelocker-faq', name: 'TradeLocker' },
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'projectx-faq',
+    name: 'ProjectX',
+    disclaimerBroker: 'ProjectX',
+    relatedBrokers: [
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+      { slug: 'tradestation-faq', name: 'TradeStation' },
+      { slug: 'ib-faq', name: 'Interactive Brokers' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'propfirm' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'rithmic-faq',
+    name: 'Rithmic',
+    disclaimerBroker: 'Rithmic',
+    relatedBrokers: [
+      { slug: 'projectx-faq', name: 'ProjectX' },
+      { slug: 'tradestation-faq', name: 'TradeStation' },
+      { slug: 'ctrader-faq', name: 'cTrader' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'propfirm' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'tradelocker-faq',
+    name: 'TradeLocker',
+    disclaimerBroker: 'TradeLocker',
+    relatedBrokers: [
+      { slug: 'ctrader-faq', name: 'cTrader' },
+      { slug: 'matchtrader-faq', name: 'MatchTrader' },
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'tradestation-faq',
+    name: 'TradeStation',
+    disclaimerBroker: 'TradeStation',
+    relatedBrokers: [
+      { slug: 'ib-faq', name: 'Interactive Brokers' },
+      { slug: 'tradier-faq', name: 'Tradier' },
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+  {
+    slug: 'tradier-faq',
+    name: 'Tradier',
+    disclaimerBroker: 'Tradier',
+    relatedBrokers: [
+      { slug: 'ib-faq', name: 'Interactive Brokers' },
+      { slug: 'tradestation-faq', name: 'TradeStation' },
+      { slug: 'rithmic-faq', name: 'Rithmic' },
+    ],
+    tocSections: [
+      { id: 'automation' },
+      { id: 'account' },
+      { id: 'fees' },
+      { id: 'features' },
+      { id: 'funding' },
+      { id: 'security' },
+      { id: 'troubleshooting' },
+      { id: 'comparisons' },
+    ],
+  },
+] as const;
+
+export function getStaticPaths() {
+  const BROKER_SLUGS = [
+    'ctrader-faq', 'ib-faq', 'ironbeam-faq',
+    'matchtrader-faq', 'projectx-faq', 'rithmic-faq', 'tradelocker-faq',
+    'tradestation-faq', 'tradier-faq',
+  ];
+  return getLocalePaths().flatMap(({ params, props }) =>
+    BROKER_SLUGS.map((slug) => ({
+      params: { locale: params.locale, slug },
+      props: { locale: props.locale, slug },
+    }))
+  );
+}
+
+const { locale, slug } = Astro.props as { locale: Locale; slug: string };
+const faq = brokerFaqs.find((f) => f.slug === slug)!;
+const t = useTranslations(locale);
+// Per-broker translatable copy lives under broker_faq_detail.brokers.<slug>.*
+const bk = (field: string) => t(`broker_faq_detail.brokers.${faq.slug}.${field}` as TranslationKey);
+
+const pageUrl = absoluteLocalizedPath(locale, `broker-faq/${faq.slug}`);
+
+// Build FAQPage schema from the exact Q&A rendered for this broker.
+// Sections render in this fixed order; `propfirm` only when present in this broker's TOC.
+const FAQ_SECTIONS = ['automation', 'account', 'fees', 'features', 'funding', 'security', 'propfirm', 'troubleshooting', 'comparisons'];
+const hasPropfirm = faq.tocSections.some((s) => s.id === 'propfirm');
+const bfd = enDict.broker_faq_detail as unknown as Record<string, string>;
+const qCount = (id: string) => { let n = 0; while (bfd[`${id}_q${n + 1}`] !== undefined) n++; return n; };
+
+// Derive the table of contents from the sections this page actually renders,
+// rather than a hand-maintained per-broker list. That list had drifted: the
+// TradingView entry linked to #pinescript, #alerts and #brokers (no such
+// sections exist — three dead anchors) while omitting the funding and security
+// sections that do render, and every broker's hand-written `count` overstated
+// the real number of answers (e.g. "21 answers" on a section holding 10).
+const tocSections = FAQ_SECTIONS
+  .filter((id) => id !== 'propfirm' || hasPropfirm)
+  .map((id) => ({ id, count: String(qCount(id)) }));
+
+// Real number of answers on a related broker's page. The hardcoded values these
+// replace ("68", "70", "72", "300") were several times the number of Q&As the
+// template actually renders.
+function relatedAnswerCount(slug: string): number {
+  const related = brokerFaqs.find((f) => f.slug === slug);
+  const withPropfirm = related?.tocSections.some((s) => s.id === 'propfirm') ?? false;
+  return FAQ_SECTIONS
+    .filter((id) => id !== 'propfirm' || withPropfirm)
+    .reduce((total, id) => total + qCount(id), 0);
+}
+
+// The schema builder must pass the SAME interpolation params as the visible
+// render, or a template token ships un-resolved into machine-readable JSON-LD.
+// `tagline` is used by features_a3 and was previously omitted here, which left a
+// literal "{tagline}" in the Answer text.
+const faqParams = { name: faq.name, tagline: bk('tagline') };
+
+// comparisons_a5 is rendered visibly as three fragments wrapped around an inline
+// link (_pre / _link / _post). There is no flat `comparisons_a5` key, so asking
+// for one made t() fall through to returning the key itself — publishing the
+// literal string "broker_faq_detail.comparisons_a5" as a FAQ answer.
+const answerText = (id: string, n: number): string => {
+  if (id === 'comparisons' && n === 5) {
+    return [
+      t('broker_faq_detail.comparisons_a5_pre', faqParams),
+      t('broker_faq_detail.comparisons_a5_link', faqParams),
+      t('broker_faq_detail.comparisons_a5_post', faqParams),
+    ].join(' ').replace(/\s+/g, ' ').replace(/\s+([.,])/g, '$1').trim();
+  }
+  return t(`broker_faq_detail.${id}_a${n}` as TranslationKey, faqParams);
+};
+
+const faqEntities = FAQ_SECTIONS.filter((id) => id !== 'propfirm' || hasPropfirm).flatMap((id) =>
+  Array.from({ length: qCount(id) }, (_, i) => ({
+    '@type': 'Question',
+    name: t(`broker_faq_detail.${id}_q${i + 1}` as TranslationKey, faqParams),
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: answerText(id, i + 1),
+    },
+  })),
+);
+
+// Fail the build rather than publish a broken placeholder again: no Q&A may
+// contain an unresolved {token} or a leaked i18n key path.
+for (const entity of faqEntities) {
+  for (const field of [entity.name, entity.acceptedAnswer.text]) {
+    if (/\{[a-zA-Z_]\w*\}/.test(field) || /\bbroker_faq_detail\.[a-z_]/.test(field)) {
+      throw new Error(
+        `[broker-faq/${faq.slug}] unresolved placeholder in FAQ schema: ${JSON.stringify(field)}`,
+      );
+    }
+  }
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  url: pageUrl,
+  inLanguage: LOCALE_BCP47[locale],
+  name: bk('meta_title'),
+  mainEntity: faqEntities,
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t('broker_faq_hub.breadcrumb_home'), item: absoluteLocalizedPath(locale) },
+    { '@type': 'ListItem', position: 2, name: t('broker_faq_hub.breadcrumb_current'), item: absoluteLocalizedPath(locale, 'broker-faq') },
+    { '@type': 'ListItem', position: 3, name: faq.name, item: pageUrl },
+  ],
+};
+
+const structuredData = [faqSchema, breadcrumbSchema];
+---
+
+<BaseLayout
+  locale={locale}
+  title={bk('meta_title')}
+  description={bk('meta_description')}
+  canonical={pageUrl}
+  keywords={bk('meta_keywords')}
+  structuredData={structuredData}
+>
+  <Fragment slot="head">
+<style>
+  body { font-family: ui-sans-serif, system-ui, sans-serif; background:#001429; color:#fff; }
+  .electrolize { font-family: 'Electrolize', sans-serif; }
+  details[open] .fa-chevron-down { transform: rotate(180deg); }
+  .fa-chevron-down { transition: transform .2s ease; }
+  .badge-pill { background:#D4EBFE; color:#082072; font-weight:700; }
+  .cta-btn { background:linear-gradient(90deg,#0F3EC3,#2B77EE); transition: box-shadow .3s; }
+  .cta-btn:hover { box-shadow: 0 0 30px 5px rgba(43,119,238,0.5); }
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+</style>
+  </Fragment>
+
+<main id="main-content" role="main">
+    <!-- Hero -->
+    <section class="bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] pt-28 pb-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+        <nav aria-label="Breadcrumb" class="flex justify-center mb-6">
+          <ol class="flex items-center space-x-2 text-sm text-gray-400">
+            <li><a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition-colors">{t('broker_faq_detail.breadcrumb_home')}</a></li>
+            <li><i class="fa-solid fa-chevron-right text-xs text-gray-600"></i></li>
+            <li><a href={localizedPath(locale, 'broker-faq')} class="hover:text-[#2B77EE] transition-colors">{t('broker_faq_detail.breadcrumb_hub')}</a></li>
+            <li><i class="fa-solid fa-chevron-right text-xs text-gray-600"></i></li>
+            <li class="text-[#2B77EE]">{faq.name}</li>
+          </ol>
+        </nav>
+        <h1 class="text-3xl md:text-5xl font-bold mb-6 leading-tight" set:html={bk('hero_title')} />
+        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-8">
+          {bk('hero_subtitle')}
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25">
+            {t('broker_faq_detail.hero_cta_trial')} <i class="fa-solid fa-arrow-right ml-2"></i>
+          </a>
+          <a href="#automation" class="px-8 py-3 border border-white/20 hover:border-[#2B77EE]/50 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/5">
+            {t('broker_faq_detail.hero_cta_browse')} <i class="fa-solid fa-chevron-down ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Bar -->
+    <section id="search-section" class="bg-[#001a33] py-10 px-4 border-y border-white/5">
+      <div class="max-w-3xl mx-auto">
+        <label for="faq-search" class="block text-white/80 text-sm font-semibold electrolize mb-3 text-center">
+          <i class="fa-solid fa-magnifying-glass text-[#2B77EE] mr-2"></i>{t('broker_faq_detail.search_label')}
+        </label>
+        <div class="relative">
+          <input
+            id="faq-search"
+            type="search"
+            placeholder={t('broker_faq_detail.search_placeholder')}
+            class="w-full bg-[#001429] border border-[#2B77EE]/30 focus:border-[#2B77EE] focus:outline-none text-white placeholder-gray-500 rounded-xl px-12 py-4 text-base transition-colors"
+            autocomplete="off"
+            role="combobox"
+            aria-controls="faq-search-results"
+            aria-expanded="false"
+            aria-autocomplete="list"
+          />
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#2B77EE] pointer-events-none"></i>
+          <button
+            id="faq-search-clear"
+            type="button"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white hidden"
+            aria-label="Clear search"
+          >
+            <i class="fa-solid fa-circle-xmark text-lg"></i>
+          </button>
+          <div
+            id="faq-search-results"
+            style="display:none"
+            role="listbox"
+            aria-label="Search results"
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table of Contents -->
+    <section class="bg-[#002040] py-16" aria-label="FAQ Table of Contents">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+          <i class="fa-solid fa-list text-[#2B77EE] mr-3" aria-hidden="true"></i>{t('broker_faq_detail.toc_title')}
+        </h2>
+        <nav class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" aria-label="FAQ categories">
+          {tocSections.map((section, index) => (
+            <a href={`#${section.id}`} class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">{index + 1}</div>
+                <div>
+                  <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{bk('toc_' + section.id)}</h3>
+                  <span class="text-gray-500 text-xs">{section.count} {t('broker_faq_detail.toc_questions_suffix')}</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </nav>
+      </div>
+    </section>
+
+    <!-- FAQ Sections placeholder — broker-specific content is loaded via the FAQ sections -->
+    <section class="bg-gradient-to-b from-[#002040] to-[#001429] py-16 px-4" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="max-w-4xl mx-auto">
+
+        {/* Automation section */}
+        <section id="automation" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-bolt text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_automation_title', { name: faq.name })}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'automation')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a1', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q2', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a2', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q3', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a3', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q4')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a4', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q5', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a5', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q6', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a6', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q7', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a7')}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q8', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a8', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q9', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a9')}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.automation_q10', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.automation_a10')}</div>
+            </details>
+          </div>
+        </section>
+
+        {/* Account Setup section */}
+        <section id="account" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-user-plus text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_account_title')}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'account')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.account_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.account_a1', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.account_q2', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.account_a2', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.account_q3')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.account_a3', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.account_q4')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.account_a4', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.account_q5', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.account_a5', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.account_q6', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.account_a6', { name: faq.name })}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.account_q7', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.account_a7', { name: faq.name })}</div>
+            </details>
+          </div>
+        </section>
+
+        {/* Fees section */}
+        <section id="fees" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-dollar-sign text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_fees_title')}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'fees')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.fees_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.fees_a1', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.fees_q2', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.fees_a2', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.fees_q3', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.fees_a3', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.fees_q4', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.fees_a4', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.fees_q5', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.fees_a5', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.fees_q6', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.fees_a6', { name: faq.name })}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.fees_q7', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.fees_a7', { name: faq.name })}</div>
+            </details>
+          </div>
+        </section>
+
+        {/* Platform Features section */}
+        <section id="features" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-chart-line text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_features_title')}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'features')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.features_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.features_a1', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.features_q2', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.features_a2', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.features_q3', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.features_a3', { name: faq.name, tagline: bk('tagline') })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.features_q4', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.features_a4', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.features_q5', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.features_a5', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.features_q6', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.features_a6', { name: faq.name })}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.features_q7', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.features_a7', { name: faq.name })}</div>
+            </details>
+          </div>
+        </section>
+
+        {/* Funding section */}
+        <section id="funding" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-wallet text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_funding_title')}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'funding')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.funding_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.funding_a1', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.funding_q2', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.funding_a2', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.funding_q3', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.funding_a3', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.funding_q4', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.funding_a4', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.funding_q5', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.funding_a5', { name: faq.name })}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.funding_q6', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.funding_a6')}</div>
+            </details>
+          </div>
+        </section>
+
+        {/* Security section */}
+        <section id="security" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-shield-halved text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_security_title')}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'security')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.security_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.security_a1', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.security_q2', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.security_a2', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.security_q3', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.security_a3')}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.security_q4', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.security_a4', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.security_q5', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.security_a5', { name: faq.name })}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.security_q6', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.security_a6', { name: faq.name })}</div>
+            </details>
+          </div>
+        </section>
+
+        {/* Prop Firm section (only shown for brokers that have it) */}
+        {hasPropfirm && (
+          <section id="propfirm" class="mb-16">
+            <div class="flex items-center gap-3 mb-6">
+              <i class="fa-solid fa-building-columns text-3xl text-[#0084d1]"></i>
+              <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_propfirm_title')}</h2>
+              <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'propfirm')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+            </div>
+            <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+              <details class="group border-b border-white/10 py-4">
+                <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                  <span class="font-semibold text-white flex-1">{t('broker_faq_detail.propfirm_q1', { name: faq.name })}</span>
+                  <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+                </summary>
+                <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.propfirm_a1', { name: faq.name })}</div>
+              </details>
+              <details class="group border-b border-white/10 py-4">
+                <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                  <span class="font-semibold text-white flex-1">{t('broker_faq_detail.propfirm_q2', { name: faq.name })}</span>
+                  <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+                </summary>
+                <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.propfirm_a2', { name: faq.name })}</div>
+              </details>
+              <details class="group border-b border-white/10 py-4">
+                <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                  <span class="font-semibold text-white flex-1">{t('broker_faq_detail.propfirm_q3', { name: faq.name })}</span>
+                  <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+                </summary>
+                <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.propfirm_a3')}</div>
+              </details>
+              <details class="group border-b border-white/10 py-4">
+                <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                  <span class="font-semibold text-white flex-1">{t('broker_faq_detail.propfirm_q4')}</span>
+                  <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+                </summary>
+                <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.propfirm_a4')}</div>
+              </details>
+              <details class="group py-4">
+                <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                  <span class="font-semibold text-white flex-1">{t('broker_faq_detail.propfirm_q5', { name: faq.name })}</span>
+                  <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+                </summary>
+                <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.propfirm_a5', { name: faq.name })}</div>
+              </details>
+            </div>
+          </section>
+        )}
+
+        {/* Troubleshooting section */}
+        <section id="troubleshooting" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-triangle-exclamation text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_troubleshooting_title')}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'troubleshooting')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.troubleshooting_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.troubleshooting_a1')}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.troubleshooting_q2')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.troubleshooting_a2', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.troubleshooting_q3', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.troubleshooting_a3', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.troubleshooting_q4')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.troubleshooting_a4')}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.troubleshooting_q5')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.troubleshooting_a5', { name: faq.name })}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.troubleshooting_q6', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.troubleshooting_a6', { name: faq.name })}</div>
+            </details>
+          </div>
+        </section>
+
+        {/* Comparisons section */}
+        <section id="comparisons" class="mb-16">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fa-solid fa-scale-balanced text-3xl text-[#0084d1]"></i>
+            <h2 class="text-2xl md:text-3xl font-bold text-white electrolize">{t('broker_faq_detail.section_comparisons_title', { name: faq.name })}</h2>
+            <span class="ml-auto bg-[#D4EBFE] text-[#082072] text-sm font-bold px-3 py-1 rounded-full">{tocSections.find(s => s.id === 'comparisons')?.count ?? ''} {t('broker_faq_detail.section_answers_suffix')}</span>
+          </div>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.comparisons_q1', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.comparisons_a1', { name: faq.name })}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.comparisons_q2')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.comparisons_a2')}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.comparisons_q3', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.comparisons_a3')}</div>
+            </details>
+            <details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.comparisons_q4', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.comparisons_a4', { name: faq.name })}</div>
+            </details>
+            <details class="group py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('broker_faq_detail.comparisons_q5', { name: faq.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('broker_faq_detail.comparisons_a5_pre')} <a href={localizedPath(locale, 'broker-faq')} class="text-[#2B77EE] hover:underline">{t('broker_faq_detail.comparisons_a5_link')}</a>{t('broker_faq_detail.comparisons_a5_post')}</div>
+            </details>
+          </div>
+        </section>
+
+      </div>
+    </section>
+  </main>
+
+<!-- AUTOMATION CTA -->
+<section class="bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] py-20 px-4">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-bold text-white electrolize mb-4">{bk('cta_section')}</h2>
+    <p class="text-white/90 text-lg mb-8 max-w-2xl mx-auto">{bk('cta_body')}</p>
+    <a href="https://pickmytrade.io/signup" class="bg-white text-[#0F3EC3] px-10 py-4 rounded-xl font-bold electrolize hover:shadow-[0_0_30px_5px_rgba(255,255,255,0.4)] transition-all">{t('broker_faq_detail.cta_button')}</a>
+  </div>
+</section>
+
+<!-- RELATED BROKERS -->
+<section class="bg-[#001429] py-16 px-4">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-2xl font-bold text-white electrolize mb-8 text-center">{t('broker_faq_detail.related_title')}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {faq.relatedBrokers.map((related) => (
+        <a href={localizedPath(locale, `broker-faq/${related.slug}`)} class="block bg-gradient-to-br from-[#001a33] to-[#002040] rounded-xl p-6 border border-white/5 hover:border-[#2B77EE]/50 transition">
+          <h3 class="text-xl font-bold text-[#2B77EE] electrolize mb-2">{related.name}</h3>
+          <p class="text-white/70 text-sm mb-3">{relatedAnswerCount(related.slug)} {t('broker_faq_detail.related_faqs_answered')}</p>
+          <span class="text-white text-sm">{t('broker_faq_detail.related_read')} <i class="fa-solid fa-arrow-right ml-1"></i></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- DISCLAIMER -->
+<section class="bg-[#000a15] py-12 px-4 border-t border-white/10">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-lg font-bold text-white/80 electrolize mb-4">{t('broker_faq_detail.disclaimer_title')}</h2>
+    <div class="text-sm text-white/60 leading-relaxed space-y-3">
+      <p set:html={t('broker_faq_detail.disclaimer_p1')} />
+      <p set:html={t('broker_faq_detail.disclaimer_p2', { broker: faq.disclaimerBroker })} />
+      <p>{t('broker_faq_detail.disclaimer_p3')}</p>
+      <p set:html={t('broker_faq_detail.disclaimer_p4')} />
+      <p class="text-white/50 text-xs mt-4">{t('broker_faq_detail.disclaimer_updated')}</p>
+    </div>
+  </div>
+</section>
+
+  <Fragment slot="scripts">
+    <script is:inline define:vars={{ i18nSearch: {
+      noResults: t('broker_faq_detail.search_no_results'),
+      resultsOne: t('broker_faq_detail.search_results_one'),
+      resultsMany: t('broker_faq_detail.search_results_many'),
+      viewQuestion: t('broker_faq_detail.search_view_question'),
+    } }}>
+      document.addEventListener('DOMContentLoaded', function () {
+        var searchInput = document.getElementById('faq-search');
+        var searchClear = document.getElementById('faq-search-clear');
+        var searchResults = document.getElementById('faq-search-results');
+        if (!searchInput || !searchClear || !searchResults) return;
+
+        var allDetails = Array.from(document.querySelectorAll('details'));
+
+        function closeResults() {
+          searchResults.style.display = 'none';
+          searchResults.innerHTML = '';
+        }
+
+        function runSearch() {
+          var query = searchInput.value.trim().toLowerCase();
+          searchClear.classList.toggle('hidden', query.length === 0);
+
+          if (query.length < 2) { closeResults(); return; }
+
+          var matches = allDetails.filter(function (d) {
+            return (d.textContent || '').toLowerCase().includes(query);
+          });
+
+          searchResults.style.display = 'block';
+
+          if (matches.length === 0) {
+            searchResults.innerHTML = '<div class="bg-[#001429] border border-white/10 rounded-xl p-4 mt-2 text-gray-400 text-sm">' + i18nSearch.noResults + '</div>';
+            return;
+          }
+
+          var countLabel = (matches.length === 1 ? i18nSearch.resultsOne : i18nSearch.resultsMany).replace('{count}', matches.length);
+          var html = '<div class="mt-2 rounded-xl overflow-hidden border border-[#2B77EE]/20 bg-[#001a33]">'
+            + '<div class="px-4 py-2 text-xs text-[#2B77EE] border-b border-white/10">' + countLabel + '</div>';
+
+          matches.slice(0, 8).forEach(function (d, i) {
+            var span = d.querySelector('summary span');
+            var q = span ? (span.textContent || '').trim() : i18nSearch.viewQuestion;
+            html += '<button data-ridx="' + i + '" class="w-full text-left px-4 py-3 text-sm text-white/90 hover:bg-[#2B77EE]/20 border-b border-white/5 last:border-0 transition-colors">' + q + '</button>';
+          });
+          html += '</div>';
+          searchResults.innerHTML = html;
+
+          searchResults.querySelectorAll('button[data-ridx]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var idx = parseInt(btn.getAttribute('data-ridx') || '0', 10);
+              var target = matches[idx];
+              if (target) {
+                target.open = true;
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+              closeResults();
+              searchInput.value = '';
+              searchClear.classList.add('hidden');
+            });
+          });
+        }
+
+        searchInput.addEventListener('input', runSearch);
+
+        searchClear.addEventListener('click', function () {
+          searchInput.value = '';
+          searchClear.classList.add('hidden');
+          closeResults();
+          searchInput.focus();
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            closeResults();
+          }
+        });
+      });
+    </script>
+  </Fragment>
+</BaseLayout>

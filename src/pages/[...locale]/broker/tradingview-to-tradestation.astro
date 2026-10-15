@@ -1,0 +1,1263 @@
+﻿---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AnswerBlock from '../../../components/AnswerBlock.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "image": "https://pickmytrade.io/assets/logo.png",
+    "name": "PickMyTrade - TradingView to TradeStation Automation",
+    "alternateName": "TradeStation Algorithmic Trading Platform",
+    "description": "Automated trading platform connecting TradingView alerts to the TradeStation trading platform. Features TradeStation algorithmic trading, quick trade TradeStation options, TradeStation futures trading, and automated trading strategies for micro futures contracts. Comprehensive trading station platform integration for retail algorithmic trading.",
+    "url": absoluteLocalizedPath(locale, 'broker/tradingview-to-tradestation'),
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web-based, Windows, Mac, Linux",
+    "keywords": "tradestation algorithmic trading, tradestation trading platform, trading station platform, tradestation futures trading, quick trade tradestation options, tradestation retail algorithmic trading features, automated trading strategies micro futures contracts",
+    "offers": {
+      "@type": "Offer",
+      "price": "50.00",
+      "priceCurrency": "USD",
+      "priceValidUntil": "2026-12-31",
+      "availability": "https://schema.org/InStock",
+      "description": "7-day free trial, no credit card required"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "support@pickmytrade.com",
+        "contactType": "Customer Support",
+        "availableLanguage": "English"
+      },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade",
+      "https://blog.pickmytrade.io",
+      "https://docs.pickmytrade.io"
+    ]
+  },
+    "featureList": [
+      "TradingView Alert Integration",
+      "TradeStation Trading Platform Integration",
+      "TradeStation Algorithmic Trading Support",
+      "Quick Trade TradeStation Options",
+      "TradeStation Futures Trading Automation",
+      "Automated Trading Strategies for Micro Futures Contracts",
+      "TradeStation Retail Algorithmic Trading Features",
+      "Trading Station Platform Connectivity",
+      "Stocks Trading Automation",
+      "Forex Trading Automation",
+      "Multi-Account Management",
+      "Risk Management Tools",
+      "Stop Loss & Take Profit Automation",
+      "No Coding Required"
+    ]
+  };
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does TradeStation support webhook automation?",
+        "acceptedAnswer": { "@type": "Answer", "text": "TradeStation does not turn a raw TradingView webhook into a trade on its own. PickMyTrade sits between them: it receives the TradingView webhook and connects to your TradeStation account to place the order for you. So the practical answer is yes, you can run webhook-driven automation on TradeStation through PickMyTrade." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you need to code to automate TradeStation?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade generates the webhook URL and the alert message for you, so there is nothing to program. You copy, paste, and trade. If you can create an alert in TradingView, you can automate TradeStation." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is a Webhook URL, and where do I find it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A Webhook URL is the connection point for TradingView to send alerts to PickMyTrade. You can find it in PickMyTrade after generating an alert." }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the difference between an Indicator and a Strategy alert type?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Indicator: Triggers from specific chart conditions (manual/semi-automated use). Strategy: Triggers from a full Pine Script strategy with entry and exit automation." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do the Buy, Sell, and Close alerts work?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Buy Alert: Opens or adds to a long position; closes any open short position first. Sell Alert: Opens or adds to a short position; closes any open long position first. Close Alert: Closes all open positions and cancels pending orders." }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the different ways I can configure Stop Loss and Take Profit?",
+        "acceptedAnswer": { "@type": "Answer", "text": "You can configure Stop Loss and Take Profit using Point/Dollar, Percentage, Price (using TradingView plot variables), Ticks, or Total Profit/Loss per contract." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I set the trade size (quantity) for my alerts?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Quantity: Fixed contracts/shares per trade. Risk Percentage: Auto-sized based on account balance and stop-loss distance." }
+      },
+      {
+        "@type": "Question",
+        "name": "What settings do I need to configure for options alerts?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Option type (Call/Put), strike price logic (ATM, ITM, OTM, Strike Away), and expiry date." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I practice with paper trading before going live?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Absolutely! PickMyTrade supports both paper trading practice accounts and live trading accounts on TradeStation. This gives you the confidence to test your automated trading strategies thoroughly before risking real capital. Simply connect your TradeStation account and choose between Sim (paper trading) or Live mode during setup." }
+      },
+      {
+        "@type": "Question",
+        "name": "TradingView vs TradeStation - which should I choose?",
+        "acceptedAnswer": { "@type": "Answer", "text": "When comparing TradingView vs TradeStation, consider that TradingView excels at charting and technical analysis with a social trading community, while TradeStation provides a comprehensive all-in-one platform with direct broker integration, advanced order execution, and powerful algorithmic trading capabilities. With PickMyTrade, you can leverage the best of both worlds — use TradingView's superior charting for signal generation while executing trades through TradeStation's robust trading infrastructure." }
+      }
+    ]
+  };
+const schema3 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io/" },
+      { "@type": "ListItem", "position": 2, "name": "Brokers", "item": absoluteLocalizedPath(locale, 'tradingview-automation') },
+      { "@type": "ListItem", "position": 3, "name": "TradingView to TradeStation Automation", "item": absoluteLocalizedPath(locale, 'broker/tradingview-to-tradestation') }
+    ]
+  };
+const schema4 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to automate TradeStation with a TradingView webhook",
+                  "name": "How to automate TradeStation with a TradingView webhook",
+                  "description": "Connect TradingView alerts to TradeStation through PickMyTrade to auto-execute stock, options, futures, and forex orders. No coding required.",
+                  "timeRequired": "PT10M",
+                  "dependencies": "PickMyTrade account; TradeStation account (live or paper); TradingView Pro, Pro+, or Premium (for webhook alerts)",
+                  "articleSection": [
+                    "Connect your TradeStation account — Create a PickMyTrade account and connect your TradeStation account, live or paper. Set your default risk controls such as stop-loss, take-profit, and position size.",
+                    "Generate your webhook URL and alert message — In PickMyTrade, generate the webhook URL and the alert message for your buy, sell, and close signals. There is no code to write.",
+                    "Format the alert in TradingView — In TradingView, create an alert, delete the default text, paste the PickMyTrade message, and set the webhook URL in the alert's Notifications tab. Webhook alerts require a paid TradingView plan.",
+                    "Go live — Fire a test alert, confirm the order in your PickMyTrade alert log and in TradeStation, then enable the alert. Every TradingView alert now routes to TradeStation automatically."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+---
+<BaseLayout
+  locale={locale}
+  title={t('broker_tradestation.page_title')}
+  description={t('broker_tradestation.page_description')}
+  keywords={t('broker_tradestation.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4]}
+>
+<!-- Spacer for fixed navbar -->
+  <!-- <div class="h-16"></div> -->
+
+  <!-- BREADCRUMB NAVIGATION -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_tradestation.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('broker_tradestation.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION - REDESIGNED -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040]">
+    <!-- Animated Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <canvas id="tradingCanvas" class="w-full h-full" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#001429]/30 to-[#002040]"></div>
+
+    <!-- Content Container -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-20 sm:pb-28">
+      <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+
+        <!-- Top Badge -->
+        <div
+          class="inline-flex items-center gap-2 mb-6 sm:mb-8 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 sm:px-6 py-2 sm:py-3"
+          data-aos="fade-down" data-aos-delay="100">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B77EE] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#2B77EE]"></span>
+          </span>
+          <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+            {t('broker_tradestation.hero_badge')}
+          </span>
+          <i class="fa-solid fa-check-circle text-[#2B77EE]" aria-hidden="true"></i>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight"
+          data-aos="fade-up" data-aos-delay="200">
+          <span class="block text-white mb-2">{t('broker_tradestation.hero_title_line1')}</span>
+          <span class="block bg-gradient-to-r from-[#2B77EE] via-[#4B94FF] to-[#7FB8F9] bg-clip-text text-transparent">
+            {t('broker_tradestation.hero_title_line2')}
+          </span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="max-w-3xl mx-auto text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 sm:mb-10 leading-relaxed px-4"
+          data-aos="fade-up" data-aos-delay="300">
+          {t('broker_tradestation.hero_subtitle_1')}<strong class="text-white">{t('broker_tradestation.hero_subtitle_alerts')}</strong>{t('broker_tradestation.hero_subtitle_2')}<strong
+            class="text-white">{t('broker_tradestation.hero_subtitle_platform')}</strong>{t('broker_tradestation.hero_subtitle_3')}
+          <span class="block mt-2 text-[#7FB8F9]">{t('broker_tradestation.hero_subtitle_span')}</span>
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10 sm:mb-12 px-4" data-aos="fade-up"
+          data-aos-delay="400">
+          <a href="https://app.pickmytrade.io/?register=true" rel="noopener" aria-label={t('broker_tradestation.hero_aria_signup')}
+            class="group relative inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl overflow-hidden shadow-lg hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span
+              class="absolute inset-0 w-full h-full bg-gradient-to-r from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <span class="relative flex items-center gap-2">
+              <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+              {t('broker_tradestation.hero_cta_start')}
+            </span>
+          </a>
+
+          <a href="https://app.pickmytrade.io" rel="noopener" aria-label={t('broker_tradestation.hero_aria_login')}
+            class="group inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-[#2B77EE] bg-white/10 backdrop-blur-sm border-2 border-[#2B77EE]/50 rounded-xl hover:bg-white/20 hover:border-[#2B77EE] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i>
+              {t('broker_tradestation.hero_cta_login')}
+            </span>
+          </a>
+        </div>
+
+        <!-- Feature Pills -->
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 text-sm sm:text-base" data-aos="fade-up"
+          data-aos-delay="500">
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradestation.hero_pill_trial')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-credit-card text-blue-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradestation.hero_pill_nocard')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-infinity text-purple-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradestation.hero_pill_unlimited')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradestation.hero_pill_instant')}</span>
+          </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-12 sm:mt-16 pt-8 border-t border-white/10" data-aos="fade-up" data-aos-delay="600">
+          <p class="text-xs sm:text-sm text-gray-400 mb-4 uppercase tracking-wider">{t('broker_tradestation.hero_trust_label')}</p>
+          <div class="flex flex-wrap justify-center items-center gap-8 sm:gap-12">
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_tradestation.hero_trust_rating_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_tradestation.hero_trust_rating_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_tradestation.hero_trust_uptime_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_tradestation.hero_trust_uptime_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_tradestation.hero_trust_setup_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_tradestation.hero_trust_setup_label')}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Smooth Wave Transition -->
+    <div class="absolute bottom-0 left-0 right-0 z-20">
+      <svg class="w-full h-16 sm:h-20 md:h-24" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none">
+        <path
+          d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+          fill="url(#wave-gradient)" />
+        <defs>
+          <linearGradient id="wave-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#002040" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#002040" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </header>
+
+  <AnswerBlock
+    locale={locale}
+    answer={t('broker_tradestation.answer_block')}
+    factsHeading={t('broker_tradestation.facts_heading')}
+    asOfLabel={t('broker_tradestation.facts_as_of')}
+    asOfDate="2026-10-01"
+    facts={[
+      { label: t('broker_tradestation.facts_connection_label'), value: t('broker_tradestation.facts_connection_value') },
+      { label: t('broker_tradestation.facts_accounts_label'), value: t('broker_tradestation.facts_accounts_value') },
+      { label: t('broker_tradestation.facts_assets_label'), value: t('broker_tradestation.facts_assets_value') },
+      { label: t('broker_tradestation.facts_tv_plan_label'), value: t('broker_tradestation.facts_tv_plan_value') },
+      { label: t('broker_tradestation.facts_speed_label'), value: t('broker_tradestation.facts_speed_value') },
+      { label: t('broker_tradestation.facts_price_label'), value: t('broker_tradestation.facts_price_value') },
+    ]}
+    notSupportedHeading={t('broker_tradestation.not_supported_heading')}
+    notSupported={[t('broker_tradestation.not_supported_1'), t('broker_tradestation.not_supported_2'), t('broker_tradestation.not_supported_3')]}
+    reviewedBy={t('broker_tradestation.reviewed_by')}
+    updatedLabel={t('broker_tradestation.updated_label')}
+  />
+
+  <!-- SETUP + WEBHOOK EXAMPLE + AUTOMATE + FAQ + PRICING + RELATED -->
+  <section class="relative py-16 sm:py-20 px-4 sm:px-5 bg-[#001429] overflow-hidden">
+    <div class="relative z-10 max-w-5xl mx-auto space-y-16 sm:space-y-20">
+
+      <!-- 3.2 Step-by-step setup -->
+      <div id="setup" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-white">{t('broker_tradestation.setup4_h2')}</h2>
+        <ol class="space-y-5">
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">1</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_tradestation.setup4_step1_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_tradestation.setup4_step1_body')}</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">2</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_tradestation.setup4_step2_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_tradestation.setup4_step2_body')}</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">3</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_tradestation.setup4_step3_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_tradestation.setup4_step3_body')}</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2B77EE] text-white font-bold flex items-center justify-center">4</span>
+            <div>
+              <h3 class="font-semibold text-white mb-1">{t('broker_tradestation.setup4_step4_title')}</h3>
+              <p class="text-gray-300 leading-relaxed">{t('broker_tradestation.setup4_step4_body')}</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- 3.3 Webhook / alert example -->
+      <div data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-5 text-white">{t('broker_tradestation.webhook_h2')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-5">{t('broker_tradestation.webhook_intro')}</p>
+        <div class="bg-[#000d1f] border border-[#2B77EE]/30 rounded-xl p-5 overflow-x-auto">
+          <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">{t('broker_tradestation.webhook_url_label')}</p>
+          <code class="block text-sm text-[#7FB8F9] mb-4 break-all">https://pickmytrade.io/webhook/... (use the exact URL PickMyTrade shows for your account)</code>
+          <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">{t('broker_tradestation.webhook_msg_label')}</p>
+          <pre class="text-sm text-gray-200 whitespace-pre-wrap">{`{
+  "symbol": "AAPL",
+  "action": "buy",
+  "quantity": 10,
+  "order_type": "market",
+  "token": "your-pickmytrade-token"
+}`}</pre>
+        </div>
+        <p class="text-gray-300 leading-relaxed mt-5">{t('broker_tradestation.webhook_outro')}</p>
+      </div>
+
+      <!-- 3.4 What you can automate -->
+      <div data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-5 text-white">{t('broker_tradestation.automate_h2')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('broker_tradestation.automate_intro')}</p>
+        <ul class="space-y-3 mb-5">
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_tradestation.automate_item1')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_tradestation.automate_item2')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_tradestation.automate_item3')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_tradestation.automate_item4')}</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5 flex-shrink-0"></i>
+            <span class="text-gray-300">{t('broker_tradestation.automate_item5')}</span>
+          </li>
+        </ul>
+        <p class="text-gray-300 leading-relaxed">{t('broker_tradestation.automate_outro')}</p>
+      </div>
+
+      <!-- 3.5 TradeStation automation FAQ (quick answers, matches FAQPage schema 1:1) -->
+      <div data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-white">{t('broker_tradestation.tsfaq_h2')}</h2>
+        <div class="space-y-3">
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q3')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a3')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q4')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a4')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q6')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a6')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q7')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a7')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q8')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a8')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q9')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a9')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q10')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a10')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q11')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a11')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q12')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a12')}</p>
+          </details>
+          <details class="group bg-[#0a1c3a] border border-[#2B77EE]/30 rounded-xl">
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-semibold text-white">
+              {t('broker_tradestation.tsfaq_q13')}
+              <i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform duration-300"></i>
+            </summary>
+            <p class="px-4 pb-4 text-gray-300 leading-relaxed">{t('broker_tradestation.tsfaq_a13')}</p>
+          </details>
+        </div>
+      </div>
+
+      <!-- 3.6 Pricing and free trial -->
+      <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-10 text-center" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-white">{t('broker_tradestation.pricing2_h2')}</h2>
+        <p class="text-gray-300 leading-relaxed max-w-3xl mx-auto mb-6">{t('broker_tradestation.pricing2_body')}</p>
+        <a href="https://app.pickmytrade.io/?register=true" rel="noopener"
+          class="inline-flex items-center gap-2 px-8 py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300 electrolize-regular">
+          <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+          {t('broker_tradestation.pricing2_cta')}
+        </a>
+      </div>
+
+      <!-- 3.7 Related guides and next steps -->
+      <div data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-5 text-white">{t('broker_tradestation.related_h2')}</h2>
+        <p class="text-gray-300 leading-relaxed">
+          {t('broker_tradestation.related_p1_1')}<a href={localizedPath(locale, 'tradingview-automation')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradestation.related_link_hub')}</a>{t('broker_tradestation.related_p1_2')}<a href={localizedPath(locale, 'broker/tradingview-to-ib')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradestation.related_link_ib')}</a>{t('broker_tradestation.related_p1_3')}<a href="https://blog.pickmytrade.io/interactive-brokers-vs-tradestation-2025/" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradestation.related_link_compare')}</a>{t('broker_tradestation.related_p1_4')}<a href={localizedPath(locale, 'broker-faq/tradestation-faq')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradestation.related_link_faq')}</a>{t('broker_tradestation.related_p1_5')}<a href={localizedPath(locale, 'assets/stocks')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradestation.related_link_stocks')}</a>{t('broker_tradestation.related_p1_6')}
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SEO CONTENT SECTION - REDESIGNED -->
+  <article
+    class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-info-circle text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradestation.seo_badge')}</span>
+        </div>
+        <h2
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-[#7FB8F9] to-white bg-clip-text text-transparent">
+          {t('broker_tradestation.seo_title')}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-400 max-w-3xl mx-auto">{t('broker_tradestation.seo_subtitle')}</p>
+      </div>
+
+      <!-- Supported Platforms Card -->
+      <div
+        class="relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/30 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-10 overflow-hidden"
+        data-aos="fade-up" data-aos-delay="300">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent">
+        </div>
+
+        <div class="text-center mb-8">
+          <h3 class="text-2xl sm:text-3xl font-bold text-white mb-2">{t('broker_tradestation.platforms_title')}</h3>
+          <p class="text-gray-400">{t('broker_tradestation.platforms_subtitle')}</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <!-- Signal Generation -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bell text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_tradestation.platforms_signal_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_signal_1')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_signal_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_signal_3')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_signal_4')}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Execution Platform -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_tradestation.platforms_exec_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_exec_1')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_exec_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_exec_3')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_exec_4')}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Asset Classes -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80 sm:col-span-2 lg:col-span-1">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-coins text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_tradestation.platforms_asset_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_asset_1')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_asset_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_asset_3')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradestation.platforms_asset_4')}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- INTERNAL LINKING SECTION - REDESIGNED -->
+  <section class="relative py-12 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] overflow-hidden">
+    <!-- Decorative Elements -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-10 right-20 w-64 h-64 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-5">
+      <!-- Section Header -->
+      <div class="text-center mb-10 sm:mb-12" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-link text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradestation.links_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_tradestation.links_title')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">
+          {t('broker_tradestation.links_subtitle')}
+        </p>
+      </div>
+
+      <!-- Integration Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8 sm:mb-10">
+        <!-- Rithmic -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="100">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradestation.links_rithmic_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradestation.links_rithmic_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradestation.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- ProjectX -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-projectx')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="200">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-rocket text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradestation.links_projectx_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradestation.links_projectx_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradestation.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- Interactive Brokers -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="300">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-globe text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradestation.links_ib_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradestation.links_ib_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradestation.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- TradeLocker -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="400">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-coins text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradestation.links_tradelocker_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradestation.links_tradelocker_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradestation.links_learnmore')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+      </div>
+
+      <!-- View All Link -->
+      <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+        <a href={localizedPath(locale)}
+          class="group inline-flex items-center gap-3 bg-gradient-to-r from-[#122B75]/40 to-[#0F3EC3]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-full px-6 py-3 text-sm sm:text-base text-[#7FB8F9] hover:border-[#2B77EE] hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20">
+          <i class="fa-solid fa-arrow-left transform group-hover:-translate-x-1 transition-transform"></i>
+          <span class="font-semibold">{t('broker_tradestation.links_viewall')}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO TUTORIALS SECTION -->
+  <section class="relative py-16 sm:py-20 bg-gradient-to-b from-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-circle-play text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradestation.video_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_tradestation.video_title')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">
+          {t('broker_tradestation.video_subtitle')}
+        </p>
+      </div>
+
+      <!-- Video Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8" data-aos="fade-up" data-aos-delay="100">
+        <!-- Video Player (Left Side - Takes 2 columns) -->
+        <div class="lg:col-span-2">
+          <div
+            class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl overflow-hidden">
+            <!-- Video Container -->
+            <div class="relative aspect-video bg-black/50">
+              <iframe id="videoPlayer" class="w-full h-full"
+                src="https://www.youtube.com/embed/T_G4Gi8HAwo?si=h_bucNBxEwzcu7Nq" title={t('broker_tradestation.video_iframe_title')}
+                style="border:0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+            </div>
+            <!-- Video Info -->
+            <div class="p-5 sm:p-6">
+              <h3 id="currentVideoTitle" class="text-lg sm:text-xl font-bold text-white mb-2">{t('broker_tradestation.video_current_title')}</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video List (Right Side - Takes 1 column) -->
+        <div class="lg:col-span-1">
+          <div
+            class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-4 sm:p-5 max-h-[600px] overflow-y-auto custom-scrollbar">
+            <h4 class="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-list text-[#2B77EE]"></i>
+              {t('broker_tradestation.video_playlist')}
+            </h4>
+
+            <!-- Video List Items -->
+            <div class="space-y-3">
+              <!-- Video 1 -->
+              <div
+                class="video-item active group cursor-pointer p-3 bg-[#2B77EE]/20 border border-[#2B77EE]/50 rounded-lg hover:bg-[#2B77EE]/30 transition-all duration-300"
+                data-video-id="T_G4Gi8HAwo?si=h_bucNBxEwzcu7Nq" data-title="TradeStation Setup">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0 w-20 h-12 bg-black/30 rounded overflow-hidden relative">
+                    <img src="/assets/tradestation/tradestation_1.png" alt={t('broker_tradestation.video_1_alt')}
+                      class="w-full h-full object-cover" width="800" height="533" loading="lazy" decoding="async">
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <i class="fa-solid fa-play text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h5
+                      class="text-sm font-semibold text-white group-hover:text-[#7FB8F9] transition-colors line-clamp-2">
+                      {t('broker_tradestation.video_1_title')}</h5>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video 2 -->
+              <div
+                class="video-item group cursor-pointer p-3 bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-lg hover:bg-[#2B77EE]/20 hover:border-[#2B77EE]/50 transition-all duration-300"
+                data-video-id="T_G4Gi8HAwo?si=cj4G_IRuLk3DXAcI&amp;start=59"
+                data-title="Generating Alert for TradeStation Indicator ( Stocks)">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0 w-20 h-12 bg-black/30 rounded overflow-hidden relative">
+                    <img src="/assets/tradestation/tradestation_2.png" alt={t('broker_tradestation.video_2_alt')}
+                      class="w-full h-full object-cover" width="800" height="533" loading="lazy" decoding="async">
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <i class="fa-solid fa-play text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h5
+                      class="text-sm font-semibold text-white group-hover:text-[#7FB8F9] transition-colors line-clamp-2">
+                      {t('broker_tradestation.video_2_title')}</h5>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video 3 -->
+              <div
+                class="video-item group cursor-pointer p-3 bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-lg hover:bg-[#2B77EE]/50 transition-all duration-300"
+                data-video-id="T_G4Gi8HAwo?si=il_4DQNvaZCT_lpg&amp;start=575"
+                data-title="Generating Alert for TradeStation Strategy( Stocks)">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0 w-20 h-12 bg-black/30 rounded overflow-hidden relative">
+                    <img src="/assets/tradestation/tradestation_3.png" alt={t('broker_tradestation.video_3_alt')}
+                      class="w-full h-full object-cover" width="800" height="533" loading="lazy" decoding="async">
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <i class="fa-solid fa-play text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h5
+                      class="text-sm font-semibold text-white group-hover:text-[#7FB8F9] transition-colors line-clamp-2">
+                      {t('broker_tradestation.video_3_title')}</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS - REDESIGNED -->
+  <section
+    class="relative py-20 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#001429] via-[#002040] to-[#001429] overflow-hidden"
+    id="benefits">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-80 h-80 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-16 sm:mb-20" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-star text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradestation.benefits_badge')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4">
+          {t('broker_tradestation.benefits_title_1')}<span
+            class="bg-gradient-to-r from-[#2B77EE] to-[#7FB8F9] bg-clip-text text-transparent electrolize-regular">{t('broker_tradestation.benefits_title_span')}</span>{t('broker_tradestation.benefits_title_2')}
+        </h2>
+        <p class="max-w-3xl mx-auto text-gray-400 text-base sm:text-lg leading-relaxed">
+          {t('broker_tradestation.benefits_subtitle_1')}<strong class="text-[#7FB8F9]">{t('broker_tradestation.benefits_subtitle_strong1')}</strong>{t('broker_tradestation.benefits_subtitle_2')}<strong class="text-[#7FB8F9]">{t('broker_tradestation.benefits_subtitle_strong2')}</strong>{t('broker_tradestation.benefits_subtitle_3')}
+        </p>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Feature 1: Multiple Alert Types -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="100">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-bell text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit1_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradestation.benefit1_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit1_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit1_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit1_tag3')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 2: Flexible Symbol Mapping -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="200">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-exchange-alt text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit2_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradestation.benefit2_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit2_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit2_tag2')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 3: Smart Quantity Settings -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="300">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-sliders-h text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit3_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradestation.benefit3_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit3_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit3_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit3_tag3')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 4: Advanced SL & TP Options -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="100">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-shield-alt text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit4_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradestation.benefit4_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit4_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit4_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit4_tag3')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit4_tag4')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 5: Multiple Account Support -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full md:col-span-2 lg:col-span-1"
+          data-aos="fade-up" data-aos-delay="200">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-users text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit5_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradestation.benefit5_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit5_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit5_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradestation.benefit5_tag3')}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXEMPLES Completed -->
+  <section id="examples" class="bg-[#001429] flex justify-center md:px-8 py-20">
+    <div
+      class="bg-zinc-950 md:max-w-7xl md:px-8 flex flex-col gap-y-10 md:gap-y-0 md:flex-row justify-between md:border-4 border-zinc-800 rounded-2xl shadow-xl md:shadow-[#2B77EE] py-20">
+      <div class="flex-1 flex flex-col items-center justify-center px-10">
+        <p
+          class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide">
+          {t('broker_tradestation.example_label')}</p>
+        <h2 class="text-4xl font-bold text-center mb-12 text-[#2B77EE]">{t('broker_tradestation.example_title')}</h2>
+        <p class="text-justify text-lg">
+          {t('broker_tradestation.example_p1')}
+          <br /> <br />
+          {t('broker_tradestation.example_p2_1')}<span
+            class="font-bold electrolize-regular text-xl text-[#2B77EE]">{t('broker_tradestation.example_p2_span')}</span>{t('broker_tradestation.example_p2_2')}
+        </p>
+      </div>
+      <div
+        class="bg-slate-900 border border-slate-700/50 rounded-2xl shadow-2xl p-8 max-w-2xl mx-auto text-white relative overflow-hidden flex-1"
+        data-aos="fade-left">
+        <div class="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 pointer-events-none">
+        </div>
+        <div
+          class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-black/5 to-transparent rounded-full blur-3xl">
+        </div>
+
+        <div class="relative grid grid-cols-2 gap-4 mb-8">
+          <div
+            class="bg-slate-800/40 hover:bg-slate-800/60 transition-all duration-300 backdrop-blur-sm border border-slate-700/30 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradestation.example_entry_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              {t('broker_tradestation.example_entry_buy')}<span class="text-emerald-400 font-mono" id="entry-price">{t('broker_tradestation.example_entry_price')}</span>
+            </p>
+            <p class="text-xs text-slate-500">{t('broker_tradestation.example_entry_sub')}</p>
+          </div>
+
+          <div
+            class="bg-slate-800/40 hover:bg-slate-800/60 transition-all duration-300 backdrop-blur-sm border border-slate-700/30 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-[#2B77EE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="6" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradestation.example_position_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1" id="position-size">{t('broker_tradestation.example_position_value')}</p>
+            <p class="text-xs text-slate-500">{t('broker_tradestation.example_position_sub')}</p>
+          </div>
+
+          <div
+            class="bg-red-950/20 hover:bg-red-950/30 transition-all duration-300 backdrop-blur-sm border border-red-500/20 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradestation.example_sl_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              <span class="text-red-400 font-mono" id="stop-loss">{t('broker_tradestation.example_sl_value')}</span>
+            </p>
+            <p class="text-xs text-red-300/70">{t('broker_tradestation.example_sl_sub')}</p>
+          </div>
+
+          <div
+            class="bg-emerald-950/20 hover:bg-emerald-950/30 transition-all duration-300 backdrop-blur-sm border border-emerald-500/20 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradestation.example_tp_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              <span class="text-emerald-400 font-mono" id="take-profit">{t('broker_tradestation.example_tp_value')}</span>
+            </p>
+            <p class="text-xs text-emerald-300/70">{t('broker_tradestation.example_tp_sub')}</p>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            </svg>
+            <h3 class="text-lg font-semibold text-white">{t('broker_tradestation.example_risk_title')}</h3>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div
+              class="bg-gradient-to-br from-red-950/30 to-red-900/20 hover:from-red-950/40 hover:to-red-900/30 transition-all duration-300 border border-red-500/30 rounded-xl p-6 relative overflow-hidden cursor-pointer"
+              onclick="updateRiskMetrics()">
+              <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/5 rounded-full blur-2xl"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-red-300/80 text-sm font-medium uppercase tracking-wide">{t('broker_tradestation.example_maxrisk_label')}</p>
+                  <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p class="text-3xl font-bold text-red-400 mb-1 font-mono" id="max-risk">{t('broker_tradestation.example_maxrisk_value')}</p>
+                <p class="text-xs text-red-300/60">{t('broker_tradestation.example_maxrisk_calc')}</p>
+                <div class="mt-3 pt-3 border-t border-red-500/20">
+                  <p class="text-xs text-red-300/80" id="risk-per-contract">{t('broker_tradestation.example_maxrisk_percontract')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-emerald-950/30 to-emerald-900/20 hover:from-emerald-950/40 hover:to-emerald-900/30 transition-all duration-300 border border-emerald-500/30 rounded-xl p-6 relative overflow-hidden cursor-pointer"
+              onclick="updateProfitMetrics()">
+              <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-2xl"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-emerald-300/80 text-sm font-medium uppercase tracking-wide">{t('broker_tradestation.example_maxprofit_label')}</p>
+                  <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+                  </svg>
+                </div>
+                <p class="text-3xl font-bold text-emerald-400 mb-1 font-mono" id="max-profit">{t('broker_tradestation.example_maxprofit_value')}</p>
+                <p class="text-xs text-emerald-300/60">{t('broker_tradestation.example_maxprofit_calc')}</p>
+                <div class="mt-3 pt-3 border-t border-emerald-500/20">
+                  <p class="text-xs text-emerald-300/80" id="risk-reward-ratio">{t('broker_tradestation.example_maxprofit_ratio')}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="py-20 bg-[#001429] text-center flex flex-col items-center">
+    <p class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide"
+      data-aos="fade-up">
+      {t('broker_tradestation.contact_label')}
+    </p>
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-4xl font-bold mb-6 text-[#2B77EE]" data-aos="fade-up" data-aos-delay="100">
+        {t('broker_tradestation.contact_title')}
+      </h2>
+
+      <p class="text-lg text-zinc-400 mb-8" data-aos="fade-up" data-aos-delay="200">
+        {t('broker_tradestation.contact_subtitle')}
+      </p>
+
+      <div class="flex flex-col md:flex-row gap-6 justify-center items-center" data-aos="fade-up" data-aos-delay="300">
+        <a href="https://discord.gg/FkJ7g7498S" target="_blank"
+          class="px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]">
+          <i class="fab fa-discord text-xl mr-2"></i> {t('broker_tradestation.contact_discord')}
+        </a>
+
+        <a href="mailto:support@pickmytrade.com"
+          class="px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]">
+          <i class="fa-solid fa-envelope text-xl mr-2"></i> {t('broker_tradestation.contact_email')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+</BaseLayout>

@@ -1,0 +1,602 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Futures Trading Bot for TradingView Strategies",
+  "url": absoluteLocalizedPath(locale, 'futures-trading-bot'),
+  "description": "PickMyTrade is a futures trading bot that executes your own TradingView strategy on Tradovate, Rithmic, Interactive Brokers, TradeStation, ProjectX and supported prop firms. No coding, no VPS.",
+  "inLanguage": LOCALE_BCP47[locale],
+  "isPartOf": { "@type": "WebSite", "name": "PickMyTrade", "url": "https://pickmytrade.io" },
+  "primaryImageOfPage": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" },
+  "about": { "@type": "Thing", "name": "Automated futures trading" }
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PickMyTrade",
+  "url": "https://pickmytrade.io",
+  "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "support@pickmytrade.com",
+    "contactType": "Customer Support",
+    "availableLanguage": "English"
+  },
+  "sameAs": [
+    "https://x.com/pickmytrade",
+    "https://discord.gg/FkJ7g7498S",
+    "https://www.instagram.com/pickmytrade",
+    "https://www.youtube.com/@PickMyTrade",
+    "https://www.linkedin.com/company/pickmytrade",
+    "https://sourceforge.net/software/product/PickMyTrade/",
+    "https://www.trustpilot.com/review/pickmytrade.trade"
+  ]
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "image": "https://pickmytrade.io/assets/logo.png",
+  "name": "PickMyTrade - Futures Trading Bot",
+  "description": "A futures trading bot that auto-executes your own TradingView strategy on futures brokers and prop firms. Connect Tradovate, Rithmic, Interactive Brokers, TradeStation or ProjectX, keep your Pine Script alerts and indicators, and PickMyTrade places the orders server-side with no VPS. Not a black-box profit bot; you bring your own signal.",
+  "url": absoluteLocalizedPath(locale, 'futures-trading-bot'),
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based, Windows, Mac, Linux",
+  "offers": {
+    "@type": "Offer",
+    "price": "50.00",
+    "priceCurrency": "USD",
+    "priceValidUntil": "2026-12-31",
+    "availability": "https://schema.org/InStock",
+    "description": "$50 per month or $500 per year. 7-day free trial, no credit card required."
+  }
+};
+
+// NOTE: a competing Product+Brand+Offer block used to sit here describing the
+// same $50/mo subscription already modelled as SoftwareApplication in schema3.
+// See futures-trade-copier.astro for the full rationale — in short, one URL must
+// declare one primary entity type, and Product pulls SaaS into Google's
+// Merchant Listing checks (return policy, shipping) that can never be satisfied.
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": ["h1", "h2", ".faq-question", ".faq-answer", "summary", "details > div", "details > p"]
+  },
+  "mainEntity": [
+    { "@type": "Question", "name": "What is a futures trading bot and how does it work?", "acceptedAnswer": { "@type": "Answer", "text": "A futures trading bot is software that executes a rules-based trading strategy on futures contracts automatically, so you do not have to place each order by hand. With PickMyTrade, the rules come from your own TradingView strategy or indicator. When your alert fires, TradingView sends a webhook to PickMyTrade, and PickMyTrade places the matching order, including entry, stop-loss and take-profit, on your connected futures broker. It runs in the cloud, so trades execute even when your computer is off." } },
+    { "@type": "Question", "name": "Does PickMyTrade provide the trading strategy or do I bring my own?", "acceptedAnswer": { "@type": "Answer", "text": "You bring your own. PickMyTrade is an execution engine, not a black-box profit bot and not a signal-selling service. It runs the strategy you already have, whether that is a Pine Script strategy, a TradingView indicator, a manual chart alert or a webhook from another tool. PickMyTrade never promises returns or a win rate, and it does not bundle a money-making algorithm. You stay in control of every rule." } },
+    { "@type": "Question", "name": "Which futures brokers and platforms does the bot support?", "acceptedAnswer": { "@type": "Answer", "text": "For futures, PickMyTrade connects to Tradovate, Rithmic, Interactive Brokers, TradeStation and ProjectX, so you can automate contracts like ES, NQ, CL, MES and MNQ. The same platform also supports TradeLocker, Match-Trader, Tradier, cTrader and Ironbeam, including forex on TradeLocker. It does not support MT4, MT5 or DXtrade." } },
+    { "@type": "Question", "name": "Can I run a futures trading bot on a prop firm account like Topstep or Apex?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. PickMyTrade works with demo, live and prop-firm accounts, and supports major futures prop firms including Apex, Topstep, Alpha Futures, Take Profit Trader, FundedNext Futures, MyFundedFutures, TradeDay and Tradeify. You connect your own funded or evaluation accounts and automate your own strategy across them. Each firm sets its own rules on automation, copy trading and consistency, so always follow your firm's current policy. PickMyTrade does not offer any way around a firm's rules." } },
+    { "@type": "Question", "name": "Is a VPS required to run the bot 24/7?", "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade runs server-side in the cloud, so there is no VPS to rent and nothing to keep running on your computer. Once your broker is connected and your alert is live, the bot executes trades around the clock, even when your machine and the broker platform are closed." } },
+    { "@type": "Question", "name": "How fast is order execution?", "acceptedAnswer": { "@type": "Answer", "text": "Execution is server-side, not from your laptop. PickMyTrade processes your order in under 200ms on our side. Your total fill time also depends on your broker, prop firm, network conditions and how quickly TradingView sends the alert, as it does with any automated system." } },
+    { "@type": "Question", "name": "Can the bot manage stop-loss, take-profit, and daily loss limits?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. On the webhook path you can attach stop-loss and take-profit using five methods (points or dollar value, percentage, price levels, ticks, or total profit and loss), add a trailing stop, and size positions by fixed quantity or risk percentage. You can also set risk controls and use a stop button to halt trading. These tools help you manage risk, but they do not guarantee a profit or prevent every loss." } },
+    { "@type": "Question", "name": "Is a futures trading bot legal / allowed by my broker and prop firm?", "acceptedAnswer": { "@type": "Answer", "text": "Automating your own strategy on your own account is legal and is supported by regulated futures brokers such as Tradovate, Rithmic, Interactive Brokers and TradeStation. Prop firms set their own rules, which vary by firm and change over time: many treat routing your own alerts across accounts you own (internal automation) differently from external copy trading or letting someone else manage your account. Confirm your specific broker and prop-firm rules before going live." } },
+    { "@type": "Question", "name": "How much does it cost and is there a free trial?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade is $50 per month or $500 per year, and every account starts with a 7-day free trial that needs no credit card. The subscription includes the automation engine, risk tools and 24/7 live support. You can test your strategy on a demo or evaluation account during the trial before you pay." } },
+    { "@type": "Question", "name": "Does it work with MT4/MT5?", "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade does not support MetaTrader 4, MetaTrader 5 or DXtrade. For automated execution it connects to Tradovate, Rithmic, Interactive Brokers, TradeStation and ProjectX for futures, plus TradeLocker, Match-Trader, Tradier, cTrader and Ironbeam for other markets. If your broker is on that list, you can automate your TradingView strategy with PickMyTrade." } },
+    { "@type": "Question", "name": "How do I set up my TradingView strategy as a bot?", "acceptedAnswer": { "@type": "Answer", "text": "Create a PickMyTrade account and connect your futures broker, set your risk settings (stop-loss, take-profit, position size), then generate the alert message and webhook URL in PickMyTrade. In TradingView, create an alert on your strategy or indicator, delete the default text, paste the PickMyTrade message and add the webhook URL. Test it on a 1-minute chart, confirm the fill in your alert log, then enable it. Webhook alerts require a paid TradingView plan (Pro, Pro+ or Premium)." } }
+  ]
+};
+
+const schema5 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+    { "@type": "ListItem", "position": 2, "name": "Futures Automation", "item": "https://pickmytrade.io/assets/futures/" },
+    { "@type": "ListItem", "position": 3, "name": "Futures Trading Bot", "item": absoluteLocalizedPath(locale, 'futures-trading-bot') }
+  ]
+};
+
+const schema6 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to set up your futures trading bot with PickMyTrade",
+                  "name": "How to set up your futures trading bot with PickMyTrade",
+                  "description": "Turn your TradingView strategy into a futures trading bot by connecting your futures broker to PickMyTrade and pasting a webhook alert. No coding required.",
+                  "image": "https://pickmytrade.io/assets/logo.png",
+                  "timeRequired": "PT10M",
+                  "dependencies": "PickMyTrade account; A futures broker account (Tradovate, Rithmic, Interactive Brokers, TradeStation or ProjectX); TradingView Pro, Pro+ or Premium (for webhook alerts)",
+                  "articleSection": [
+                    "Connect your futures broker — Create a PickMyTrade account and connect your futures broker or prop-firm account, whether live, demo or an evaluation.",
+                    "Set your risk settings — Configure stop-loss, take-profit, position sizing and any risk limits so the bot trades the size and risk you want.",
+                    "Generate the alert and webhook URL — In PickMyTrade, generate the alert message and webhook URL for your buy and sell signals. There is nothing to code.",
+                    "Paste them into a TradingView alert — Create an alert on your strategy or indicator, delete the default text, paste the PickMyTrade message and set the webhook URL in the alert's notifications tab. Webhooks need a paid TradingView plan.",
+                    "Test and go live — Fire a test alert, confirm the fill in your PickMyTrade alert log and in your broker, then enable the alert. Your futures trading bot now runs automatically."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+---
+<BaseLayout
+  locale={locale}
+  title={t('futures_trading_bot.page_title')}
+  description={t('futures_trading_bot.page_description')}
+  keywords={t('futures_trading_bot.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4, schema5, schema6]}
+>
+  <!-- BREADCRUMB -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('futures_trading_bot.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, 'assets/futures')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('futures_trading_bot.breadcrumb_futures')}</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-[#7FB8F9]" itemprop="name">{t('futures_trading_bot.breadcrumb_current')}</span>
+          <meta itemprop="position" content="3" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- (1) HERO -->
+  <section class="relative py-14 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 right-16 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-10 w-56 h-56 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-5 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-robot text-[#2B77EE]"></i>
+        <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('futures_trading_bot.hero_badge')}</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white leading-tight">{t('futures_trading_bot.hero_h1')}</h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl mx-auto">{t('futures_trading_bot.hero_subtitle')}</p>
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('futures_trading_bot.hero_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="#how-it-works" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('futures_trading_bot.hero_cta_secondary')}
+        </a>
+      </div>
+      <p class="mt-3 text-xs text-gray-400">{t('futures_trading_bot.hero_note')}</p>
+
+      <!-- Trust bar (VERIFIED numbers only) -->
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm">
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-users text-[#2B77EE]"></i> {t('futures_trading_bot.trust_traders')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-gauge-high text-[#2B77EE]"></i> {t('futures_trading_bot.trust_latency')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-chart-line text-[#2B77EE]"></i> {t('futures_trading_bot.trust_trades')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-cloud text-[#2B77EE]"></i> {t('futures_trading_bot.trust_cloud')}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- (2) WHAT IS A FUTURES TRADING BOT -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('futures_trading_bot.s2_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s2_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s2_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('futures_trading_bot.s2_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (3) HOW PMT TURNS YOUR STRATEGY INTO A BOT -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('futures_trading_bot.s3_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('futures_trading_bot.s3_subtitle')}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-chart-line text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-2">{t('futures_trading_bot.s3_step1_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s3_step1_desc')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-bolt text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-2">{t('futures_trading_bot.s3_step2_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s3_step2_desc')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-circle-check text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-2">{t('futures_trading_bot.s3_step3_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s3_step3_desc')}</p>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto mt-10" data-aos="fade-up">
+        <h3 class="text-xl sm:text-2xl font-bold text-white mb-4">{t('futures_trading_bot.s3_byos_h3')}</h3>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s3_byos_p1')}</p>
+        <p class="text-gray-300 leading-relaxed">{t('futures_trading_bot.s3_byos_p2')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (4) SUPPORTED FUTURES BROKERS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="max-w-4xl mx-auto" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('futures_trading_bot.s4_h2')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s4_p1')}</p>
+        <p class="text-gray-300 leading-relaxed mb-6">{t('futures_trading_bot.s4_p2')}</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" data-aos="fade-up">
+        <a href="https://pickmytrade.trade/tradingview-to-tradovate/" class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.broker_tradovate')}</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.broker_rithmic')}</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.broker_ib')}</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.broker_tradestation')}</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.broker_projectx')}</a>
+      </div>
+      <p class="text-gray-400 text-sm mt-6 max-w-4xl mx-auto"><strong class="text-gray-300">{t('futures_trading_bot.s4_note_label')}</strong> {t('futures_trading_bot.s4_note')}</p>
+    </div>
+  </section>
+
+  <!-- (5) FUTURES BOT FOR PROP FIRMS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('futures_trading_bot.s5_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s5_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s5_p2')}</p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6 mb-8" data-aos="fade-up">
+        <a href={localizedPath(locale, 'propfirms/apex-trader-funding')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_apex')}</a>
+        <a href={localizedPath(locale, 'propfirms/topstep')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_topstep')}</a>
+        <a href={localizedPath(locale, 'supported-propfirms')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_alpha')}</a>
+        <a href={localizedPath(locale, 'propfirms/take-profit-trader')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_tpt')}</a>
+        <a href={localizedPath(locale, 'propfirms/fundednext')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_fundednext')}</a>
+        <a href={localizedPath(locale, 'supported-propfirms')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_myfundedfutures')}</a>
+        <a href={localizedPath(locale, 'supported-propfirms')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_tradeday')}</a>
+        <a href={localizedPath(locale, 'propfirms/tradeify')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-3 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('futures_trading_bot.propfirm_tradeify')}</a>
+      </div>
+      <p class="text-gray-400 text-sm mb-8">
+        {t('futures_trading_bot.s5_seeall')} <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#7FB8F9] hover:text-white underline">{t('futures_trading_bot.s5_seeall_link')}</a> {t('futures_trading_bot.s5_seeall_end')}
+      </p>
+
+      <h3 class="text-xl sm:text-2xl font-bold text-white mb-4">{t('futures_trading_bot.s5_topstep_h3')}</h3>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s5_topstep_p1')}</p>
+      <p class="text-gray-300 leading-relaxed">
+        {t('futures_trading_bot.s5_topstep_p2')} <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-[#7FB8F9] hover:text-white underline">{t('futures_trading_bot.s5_topstep_link')}</a> {t('futures_trading_bot.s5_topstep_end')}
+      </p>
+    </div>
+  </section>
+
+  <!-- (6) FEATURES THAT MATTER FOR FUTURES -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('futures_trading_bot.s6_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('futures_trading_bot.s6_subtitle')}</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-gauge-high text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f1_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f1_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up" data-aos-delay="50">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-cloud text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f2_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f2_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-shield-halved text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f3_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f3_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-arrow-trend-down text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f4_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f4_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up" data-aos-delay="50">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-layer-group text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f5_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f5_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-rotate text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f6_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f6_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-sliders text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f7_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f7_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up" data-aos-delay="50">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-building-columns text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f8_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f8_desc')}</p>
+        </div>
+        <div class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-code text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-base mb-2">{t('futures_trading_bot.s6_f9_title')}</h3>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('futures_trading_bot.s6_f9_desc')}</p>
+        </div>
+      </div>
+      <!-- [IMG PLACEHOLDER] Real product screenshot to be added: dashboard showing stop-loss, take-profit and multi-account settings -->
+      <div class="mt-8 flex items-center justify-center gap-3 border-2 border-dashed border-[#2B77EE]/30 rounded-xl py-10 px-4 text-center" data-aos="fade-up">
+        <i class="fa-solid fa-image text-2xl text-[#2B77EE]/50"></i>
+        <span class="text-sm text-gray-500">{t('futures_trading_bot.s6_img_placeholder')}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- (7) RISK CONTROLS AND SAFETY -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('futures_trading_bot.s7_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s7_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('futures_trading_bot.s7_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('futures_trading_bot.s7_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (9) PRICING -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('futures_trading_bot.s9_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-8 max-w-2xl mx-auto">{t('futures_trading_bot.s9_p1')}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-7">
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('futures_trading_bot.s9_monthly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('futures_trading_bot.s9_monthly_price')}<span class="text-base font-normal text-gray-400">{t('futures_trading_bot.s9_monthly_suffix')}</span></p>
+          <p class="text-sm text-gray-400">{t('futures_trading_bot.s9_monthly_desc')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#0F3EC3]/30 via-[#2B77EE]/20 to-[#0F3EC3]/30 border border-[#2B77EE] rounded-xl p-7 relative">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F3EC3] text-white text-xs font-semibold px-3 py-1 rounded-full">{t('futures_trading_bot.s9_yearly_badge')}</span>
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('futures_trading_bot.s9_yearly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">{t('futures_trading_bot.s9_yearly_price')}<span class="text-base font-normal text-gray-400">{t('futures_trading_bot.s9_yearly_suffix')}</span></p>
+          <p class="text-sm text-gray-400">{t('futures_trading_bot.s9_yearly_desc')}</p>
+        </div>
+      </div>
+      <div class="mt-8">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('futures_trading_bot.s9_cta')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <p class="mt-3 text-xs text-gray-400">{t('futures_trading_bot.s9_note')} <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white underline">{t('futures_trading_bot.s9_note_link')}</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (10) HOW TO SET UP (HowTo) -->
+  <section id="how-it-works" class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] scroll-mt-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('futures_trading_bot.s10_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('futures_trading_bot.s10_subtitle')}</p>
+      </div>
+      <ol class="space-y-4">
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">1</span>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">{t('futures_trading_bot.s10_step1_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s10_step1_desc')}</p>
+            <p class="mt-2 text-xs text-gray-500 italic">[{t('futures_trading_bot.s10_step1_img')}]</p>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="50">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">2</span>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">{t('futures_trading_bot.s10_step2_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s10_step2_desc')}</p>
+            <p class="mt-2 text-xs text-gray-500 italic">[{t('futures_trading_bot.s10_step2_img')}]</p>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="100">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">3</span>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">{t('futures_trading_bot.s10_step3_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s10_step3_desc')}</p>
+            <p class="mt-2 text-xs text-gray-500 italic">[{t('futures_trading_bot.s10_step3_img')}]</p>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="150">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">4</span>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">{t('futures_trading_bot.s10_step4_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s10_step4_desc')}</p>
+            <p class="mt-2 text-xs text-gray-500 italic">[{t('futures_trading_bot.s10_step4_img')}]</p>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="200">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">5</span>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">{t('futures_trading_bot.s10_step5_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.s10_step5_desc')}</p>
+          </div>
+        </li>
+      </ol>
+      <p class="text-center mt-8 text-sm"><a href="https://docs.pickmytrade.io/docs/" class="text-[#7FB8F9] hover:text-white underline">{t('futures_trading_bot.s10_docs_link')}</a></p>
+    </div>
+  </section>
+
+  <!-- (11) WHY TRADERS CHOOSE PICKMYTRADE (PROOF) -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('futures_trading_bot.s11_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">{t('futures_trading_bot.s11_subtitle')}</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5" data-aos="fade-up">
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('futures_trading_bot.s11_stat1_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('futures_trading_bot.s11_stat1_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('futures_trading_bot.s11_stat2_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('futures_trading_bot.s11_stat2_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('futures_trading_bot.s11_stat3_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('futures_trading_bot.s11_stat3_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('futures_trading_bot.s11_stat4_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('futures_trading_bot.s11_stat4_label')}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (12) FAQ -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('futures_trading_bot.faq_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('futures_trading_bot.faq_subtitle')}</p>
+      </div>
+      <div class="space-y-3" data-aos="fade-up">
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q1')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a1')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q2')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a2')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q3')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a3')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q4')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a4')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q5')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a5')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q6')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a6')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q7')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a7')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q8')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a8')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q10')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a10')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q11')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a11')}</p>
+        </details>
+
+        <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t('futures_trading_bot.faq_q12')}</span>
+            <i class="fa-solid fa-chevron-down text-[#7FB8F9] text-sm shrink-0 transform group-open:rotate-180 transition-transform duration-300"></i>
+          </summary>
+          <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t('futures_trading_bot.faq_a12')}</p>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- (13) FINAL CTA -->
+  <section class="relative py-16 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 right-24 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">{t('futures_trading_bot.cta_h2')}</h2>
+      <p class="text-gray-300 mb-8 max-w-2xl mx-auto">{t('futures_trading_bot.cta_p1')}</p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('futures_trading_bot.cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href={localizedPath(locale, 'assets/futures')} class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('futures_trading_bot.cta_secondary')}
+        </a>
+      </div>
+
+      <!-- Related pages / internal-link mesh -->
+      <div class="mt-12 pt-8 border-t border-white/10">
+        <p class="text-xs uppercase tracking-widest text-gray-400 mb-4 electrolize-regular">{t('futures_trading_bot.cta_related_label')}</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+          <a href={localizedPath(locale, 'assets/futures')} class="text-[#7FB8F9] hover:text-white transition">{t('futures_trading_bot.cta_related_hub')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'tradingview-automation')} class="text-[#7FB8F9] hover:text-white transition">{t('futures_trading_bot.cta_related_tv')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#7FB8F9] hover:text-white transition">{t('futures_trading_bot.cta_related_propfirms')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-[#7FB8F9] hover:text-white transition">{t('futures_trading_bot.cta_related_projectx')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white transition">{t('futures_trading_bot.cta_related_pricing')}</a>
+        </div>
+        <p class="mt-4 text-xs text-gray-500">
+          {t('futures_trading_bot.cta_compare_pre')} <a href={`https://pickmytrade.trade${localizedPath(locale, 'compare/pickmytrade-vs-traderspost')}`} class="text-[#7FB8F9] hover:text-white underline">{t('futures_trading_bot.cta_compare_link')}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,1294 @@
+﻿---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AnswerBlock from '../../../components/AnswerBlock.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "PickMyTrade - TradingView to TradeLocker Automation & Copier",
+    "image": "https://pickmytrade.io/assets/logo.png",
+    "description": "Connect TradingView to TradeLocker with PickMyTrade. Automate TradingView alerts to TradeLocker and copy one signal to multiple TradeLocker accounts, no coding. PickMyTrade processes your order in under 200ms on our side; total fill time also depends on your broker, network, and TradingView alert speed.",
+    "url": absoluteLocalizedPath(locale, 'broker/tradingview-to-tradelocker'),
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web-based, Windows, Mac, Linux",
+    "offers": {
+      "@type": "Offer",
+      "price": "50.00",
+      "priceCurrency": "USD",
+      "priceValidUntil": "2026-12-31",
+      "availability": "https://schema.org/InStock",
+      "description": "$50 per month or $500 per year. 7-day free trial, no credit card required."
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "support@pickmytrade.com",
+        "contactType": "Customer Support",
+        "availableLanguage": "English"
+      },
+      "sameAs": [
+        "https://x.com/pickmytrade",
+        "https://discord.gg/FkJ7g7498S",
+        "https://www.instagram.com/pickmytrade",
+        "https://www.youtube.com/@PickMyTrade",
+        "https://www.linkedin.com/company/pickmytrade",
+        "https://sourceforge.net/software/product/PickMyTrade/",
+        "https://www.trustpilot.com/review/pickmytrade.trade"
+      ]
+    },
+    "featureList": [
+      "TradingView Alert Integration",
+      "TradeLocker API Connectivity",
+      "TradeLocker Trade Copier",
+      "Forex Trading Automation",
+      "CFD Trading Automation",
+      "Automated Order Execution",
+      "Multi-Account Management",
+      "Risk Management Tools",
+      "Stop Loss & Take Profit Automation",
+      "No Coding Required"
+    ]
+  };
+// NOTE: a Product+Brand+Offer block used to sit here restating the same $50/mo
+// subscription that schema1 already models as SoftwareApplication. One URL, one
+// primary entity type — Product also drags SaaS into Google's Merchant Listing
+// checks for return/shipping data that cannot apply.
+const schema3 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "TradingView to TradeLocker",
+        "item": absoluteLocalizedPath(locale, 'broker/tradingview-to-tradelocker')
+      }
+    ]
+  };
+const schema4 = {
+                  "@context": "https://schema.org",
+                  "@type": "TechArticle",
+                  "headline": "How to Connect TradingView to TradeLocker with PickMyTrade",
+                  "name": "How to Connect TradingView to TradeLocker with PickMyTrade",
+                  "description": "Connect TradingView to TradeLocker using PickMyTrade webhook alerts, with no coding. Set up automation and trade copying in about five minutes.",
+                  "image": "https://pickmytrade.io/assets/logo.png",
+                  "timeRequired": "PT5M",
+                  "dependencies": "PickMyTrade account; TradeLocker account (demo or live); TradingView Pro, Pro+ or Premium (for webhook alerts)",
+                  "articleSection": [
+                    "Create your PickMyTrade account and get your webhook URL — Sign up for PickMyTrade and start the 7-day free trial. Generate your alert to get a unique webhook URL that TradingView will send signals to.",
+                    "Add your TradeLocker credentials — Open the TradeLocker connection screen in PickMyTrade and enter your email, password, and server or broker environment. Choose demo or live.",
+                    "Build the TradingView alert with the PMT JSON message — Generate the alert message in PickMyTrade, paste it into a TradingView alert, and set your PickMyTrade webhook URL in the alert's Notifications tab. Webhook alerts need a paid TradingView plan.",
+                    "Fire a test alert and confirm the order in TradeLocker — Send one test alert, check the PickMyTrade alert log, and confirm the order landed in TradeLocker before enabling your live strategy."
+                  ],
+                  "proficiencyLevel": "Beginner",
+                  "author": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  },
+                  "publisher": {
+                    "@id": "https://pickmytrade.io/#organization"
+                  }
+                };
+const schema5 = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Can you connect TradingView to TradeLocker?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. TradingView cannot place orders in TradeLocker on its own, but PickMyTrade connects the two using webhook alerts. When your TradingView alert fires, PickMyTrade receives it and places the matching order in your TradeLocker account automatically, with no coding and no computer left running. Most traders are live in about five minutes." } },
+      { "@type": "Question", "name": "How do I connect TradeLocker to PickMyTrade / TradingView?", "acceptedAnswer": { "@type": "Answer", "text": "Create a PickMyTrade account, open the TradeLocker connection screen and enter your TradeLocker email, password, and server or broker environment, choosing demo or live. Then generate your alert message and webhook URL in PickMyTrade, create an alert in TradingView, paste the message into the alert box and the webhook URL into the alert's Notifications tab. Fire a test alert to confirm it works." } },
+      { "@type": "Question", "name": "What credentials and information does TradeLocker require to connect?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade needs the same details you use to log in to TradeLocker: your email, your password, and your server or broker environment name. You also tell PickMyTrade whether the account is a demo or a live account. Because TradeLocker is offered through many brokers, the server value is what points PickMyTrade at the correct broker environment." } },
+      { "@type": "Question", "name": "Where do I find my TradeLocker server name / broker environment?", "acceptedAnswer": { "@type": "Answer", "text": "Your server or environment name appears on the TradeLocker login screen, next to the email and password fields, on both the web and mobile apps. It is set by the broker that gave you the TradeLocker account. If you are not sure which one to use, open your broker's TradeLocker login page and copy the server value exactly as shown, or ask your broker's support which environment your account uses." } },
+      { "@type": "Question", "name": "Do I need to know how to code to automate TradingView to TradeLocker?", "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade is a no-code tool. It generates the alert message and webhook URL for you, and all you do is paste them into a TradingView alert. There is nothing to program, no API keys to write, and no plugin to install." } },
+      { "@type": "Question", "name": "Can I copy one TradingView signal to multiple TradeLocker accounts?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. PickMyTrade works as a TradeLocker trade copier, so a single TradingView alert can place the same trade across several TradeLocker accounts at once. Each account can have its own quantity multiplier (for example 0.5x, 1x and 2x from the same alert) or use risk-percentage sizing, so you can scale size up or down per account while keeping the same entry, stop-loss, and take-profit." } },
+      { "@type": "Question", "name": "Can I test on a TradeLocker demo account before going live?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. When you add your TradeLocker credentials you choose demo or live, so you can connect a demo account and run your whole setup on paper first. Testing on demo is the safest way to confirm your alerts, symbol mapping, and sizing behave the way you expect before you risk real money." } },
+      { "@type": "Question", "name": "What order types, stop loss and take profit options are supported?", "acceptedAnswer": { "@type": "Answer", "text": "On the webhook path PickMyTrade supports market and limit orders and lets you attach a stop-loss and a take-profit to the entry. You can also reverse or flip a position and send a close-all command. If your TradingView strategy manages its own exits, including multiple take-profits such as TP1 and TP2, let the strategy handle them and do not add extra stop-loss or take-profit settings in PickMyTrade; if it does not, set them once in PickMyTrade and every alert follows them." } },
+      { "@type": "Question", "name": "Can I trade a different symbol than the one in my alert (symbol mapping)?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. PickMyTrade includes symbol mapping, so the symbol in your TradingView alert can be different from the symbol executed in TradeLocker. This is useful when your chart symbol and your broker's instrument name do not match exactly, and it lets you point one alert at the correct TradeLocker instrument. You can enter the symbol to trade directly in PickMyTrade; it is mandatory for stop-loss types such as Ticks or Total Profit/Loss, and if you leave it blank PickMyTrade uses the symbol from your TradingView chart." } },
+      { "@type": "Question", "name": "Why did my trade fail to place / get rejected, and how do I fix it?", "acceptedAnswer": { "@type": "Answer", "text": "The most common causes are a symbol that does not match a symbol your broker lists, a position size larger than your account or broker allows, a closed market, or not enough margin. Connection issues are usually a wrong password or a server or environment value that does not match your TradeLocker login. Open the PickMyTrade alert log to see exactly what arrived and what the broker returned; that tells you whether the fix is in the TradingView alert, the PickMyTrade settings, or your broker account. If a trade never appears at all, confirm your TradingView plan is Pro or higher (free plans cannot send webhooks), that the webhook URL and the alert message are pasted into the right fields, that your TradeLocker connection is active, and that your strategy is actually generating signals. If you push trades to a different PickMyTrade account, also check its token." } },
+      { "@type": "Question", "name": "Which assets and brokers on TradeLocker are supported?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade works with whatever instruments your TradeLocker broker offers, which usually means forex pairs (for example EUR/USD, GBP/USD, USD/JPY), CFDs, indices, commodities, and metals. Because TradeLocker is white-labelled by many brokers, your exact symbols, spreads, and hours come from your specific broker, and PickMyTrade routes the orders your alerts create to that account." } },
+      { "@type": "Question", "name": "Does this work with prop firms that use TradeLocker, and what are the rules?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade can connect to a TradeLocker account whether it is personal, demo, or funded, and some prop firms do run on TradeLocker. Copy trading and automation rules vary by prop firm and change over time, so always confirm your firm's current policy before you automate. Firms differ on whether they allow webhook automation, how many accounts you may copy across, and how identical fills can be. PickMyTrade copies your own alerts across your own accounts, but staying inside each firm's rules is your responsibility." } },
+      { "@type": "Question", "name": "How much does it cost and is there a free trial?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade is $50 per month or $500 per year, and every plan starts with a 7-day free trial with no credit card required. One subscription covers both single-account automation and the multi-account trade copier, plus 24/7 live support." } }
+    ]
+  };
+---
+<BaseLayout
+  locale={locale}
+  title={t('broker_tradelocker.page_title')}
+  description={t('broker_tradelocker.page_description')}
+  keywords={t('broker_tradelocker.page_keywords')}
+  structuredData={[schema1, schema3, schema4, schema5]}
+>
+<!-- BREADCRUMB NAVIGATION -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('broker_tradelocker.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('broker_tradelocker.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION - REDESIGNED -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040]">
+    <!-- Animated Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <canvas id="tradingCanvas" class="w-full h-full" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#001429]/30 to-[#002040]"></div>
+
+    <!-- Content Container -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-20 sm:pb-28">
+      <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+
+        <!-- Top Badge -->
+        <div
+          class="inline-flex items-center gap-2 mb-6 sm:mb-8 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 sm:px-6 py-2 sm:py-3"
+          data-aos="fade-down" data-aos-delay="100">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B77EE] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#2B77EE]"></span>
+          </span>
+          <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+            {t('broker_tradelocker.hero_badge')}
+          </span>
+          <i class="fa-solid fa-check-circle text-[#2B77EE]" aria-hidden="true"></i>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight"
+          data-aos="fade-up" data-aos-delay="200">
+          <span class="block text-white mb-2">{t('broker_tradelocker.hero_title_line1')}</span>
+          <span class="block bg-gradient-to-r from-[#2B77EE] via-[#4B94FF] to-[#7FB8F9] bg-clip-text text-transparent">
+            {t('broker_tradelocker.hero_title_line2')}
+          </span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="max-w-3xl mx-auto text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 sm:mb-10 leading-relaxed px-4"
+          data-aos="fade-up" data-aos-delay="300">
+          {t('broker_tradelocker.hero_subtitle_1')} <strong class="text-white">{t('broker_tradelocker.hero_subtitle_strong1')}</strong> {t('broker_tradelocker.hero_subtitle_2')} <strong
+            class="text-white">{t('broker_tradelocker.hero_subtitle_strong2')}</strong> {t('broker_tradelocker.hero_subtitle_3')}
+          <span class="block mt-2 text-[#7FB8F9]">{t('broker_tradelocker.hero_subtitle_span')}</span>
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10 sm:mb-12 px-4" data-aos="fade-up"
+          data-aos-delay="400">
+          <a href="https://app.pickmytrade.io/?register=true" rel="noopener" aria-label={t('broker_tradelocker.hero_cta_start_aria')}
+            class="group relative inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl overflow-hidden shadow-lg hover:shadow-[0_0_30px_5px_rgba(43,119,238,0.5)] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span
+              class="absolute inset-0 w-full h-full bg-gradient-to-r from-[#2B77EE] to-[#0F3EC3] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <span class="relative flex items-center gap-2">
+              <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+              {t('broker_tradelocker.hero_cta_start')}
+            </span>
+          </a>
+
+          <a href="https://app.pickmytrade.io" rel="noopener" aria-label={t('broker_tradelocker.hero_cta_login_aria')}
+            class="group inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-[#2B77EE] bg-white/10 backdrop-blur-sm border-2 border-[#2B77EE]/50 rounded-xl hover:bg-white/20 hover:border-[#2B77EE] transition-all duration-300 w-full sm:w-auto electrolize-regular">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i>
+              {t('broker_tradelocker.hero_cta_login')}
+            </span>
+          </a>
+        </div>
+
+        <!-- Feature Pills -->
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 text-sm sm:text-base" data-aos="fade-up"
+          data-aos-delay="500">
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradelocker.hero_pill_trial')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-credit-card text-blue-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradelocker.hero_pill_card')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-infinity text-purple-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradelocker.hero_pill_unlimited')}</span>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+            <span class="text-gray-300">{t('broker_tradelocker.hero_pill_instant')}</span>
+          </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-12 sm:mt-16 pt-8 border-t border-white/10" data-aos="fade-up" data-aos-delay="600">
+          <p class="text-xs sm:text-sm text-gray-400 mb-4 uppercase tracking-wider">{t('broker_tradelocker.hero_trust_label')}</p>
+          <div class="flex flex-wrap justify-center items-center gap-8 sm:gap-12">
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_tradelocker.hero_trust_rating_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_tradelocker.hero_trust_rating_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_tradelocker.hero_trust_uptime_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_tradelocker.hero_trust_uptime_label')}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2B77EE] electrolize-regular">{t('broker_tradelocker.hero_trust_setup_value')}</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">{t('broker_tradelocker.hero_trust_setup_label')}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Smooth Wave Transition -->
+    <div class="absolute bottom-0 left-0 right-0 z-20">
+      <svg class="w-full h-16 sm:h-20 md:h-24" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none">
+        <path
+          d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+          fill="url(#wave-gradient)" />
+        <defs>
+          <linearGradient id="wave-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#002040" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#002040" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </header>
+
+  <AnswerBlock
+    locale={locale}
+    answer={t('broker_tradelocker.answer_block')}
+    factsHeading={t('broker_tradelocker.facts_heading')}
+    asOfLabel={t('broker_tradelocker.facts_as_of')}
+    asOfDate="2026-10-01"
+    facts={[
+      { label: t('broker_tradelocker.facts_connection_label'), value: t('broker_tradelocker.facts_connection_value') },
+      { label: t('broker_tradelocker.facts_brokers_label'), value: t('broker_tradelocker.facts_brokers_value') },
+      { label: t('broker_tradelocker.facts_accounts_label'), value: t('broker_tradelocker.facts_accounts_value') },
+      { label: t('broker_tradelocker.facts_instruments_label'), value: t('broker_tradelocker.facts_instruments_value') },
+      { label: t('broker_tradelocker.facts_orders_label'), value: t('broker_tradelocker.facts_orders_value') },
+      { label: t('broker_tradelocker.facts_copier_label'), value: t('broker_tradelocker.facts_copier_value') },
+      { label: t('broker_tradelocker.facts_tv_plan_label'), value: t('broker_tradelocker.facts_tv_plan_value') },
+      { label: t('broker_tradelocker.facts_speed_label'), value: t('broker_tradelocker.facts_speed_value') },
+      { label: t('broker_tradelocker.facts_price_label'), value: t('broker_tradelocker.facts_price_value') },
+    ]}
+    notSupportedHeading={t('broker_tradelocker.not_supported_heading')}
+    notSupported={[t('broker_tradelocker.not_supported_1'), t('broker_tradelocker.not_supported_2'), t('broker_tradelocker.not_supported_3')]}
+    reviewedBy={t('broker_tradelocker.reviewed_by')}
+    updatedLabel={t('broker_tradelocker.updated_label')}
+  />
+
+  <!-- SEO CONTENT SECTION - MODERN -->
+  <article
+    class="relative py-16 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#002040] via-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-info-circle text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradelocker.seo_badge')}</span>
+        </div>
+        <h2
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-[#7FB8F9] to-white bg-clip-text text-transparent">
+          {t('broker_tradelocker.seo_title')}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-400 max-w-3xl mx-auto">{t('broker_tradelocker.seo_subtitle')}</p>
+      </div>
+
+      <!-- Main Content Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
+        <!-- Card 1: What is it? -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/30 via-[#0F3EC3]/20 to-[#122B75]/30 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20"
+          data-aos="fade-right" data-aos-delay="100">
+          <div
+            class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#2B77EE]/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-start gap-4 mb-4">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-rocket text-white text-xl"></i>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold text-white pt-2">{t('broker_tradelocker.card1_title')}
+            </h3>
+          </div>
+
+          <p class="text-gray-300 leading-relaxed mb-4">
+            {t('broker_tradelocker.card1_p1_1')} <strong class="text-[#7FB8F9]">{t('broker_tradelocker.card1_p1_strong1')}</strong> {t('broker_tradelocker.card1_p1_2')} <strong class="text-[#7FB8F9]">{t('broker_tradelocker.card1_p1_strong2')}</strong>{t('broker_tradelocker.card1_p1_3')}
+          </p>
+          <p class="text-gray-300 leading-relaxed">
+            {t('broker_tradelocker.card1_p2_1')} <strong class="text-[#7FB8F9]">{t('broker_tradelocker.card1_p2_strong')}</strong> {t('broker_tradelocker.card1_p2_2')}
+          </p>
+        </div>
+
+        <!-- Card 2: Why Choose? -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/30 via-[#0F3EC3]/20 to-[#122B75]/30 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20"
+          data-aos="fade-left" data-aos-delay="200">
+          <div
+            class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#2B77EE]/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-start gap-4 mb-4">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-chart-line text-white text-xl"></i>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold text-white pt-2">{t('broker_tradelocker.card2_title')}</h3>
+          </div>
+
+          <p class="text-gray-300 leading-relaxed mb-4">
+            <strong class="text-[#7FB8F9]">{t('broker_tradelocker.card2_p1_strong1')}</strong> {t('broker_tradelocker.card2_p1_1')} <strong class="text-[#7FB8F9]">{t('broker_tradelocker.card2_p1_strong2')}</strong>{t('broker_tradelocker.card2_p1_2')}
+          </p>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_tradelocker.card2_benefit1_strong')}</strong> {t('broker_tradelocker.card2_benefit1_text')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_tradelocker.card2_benefit2_strong')}</strong> {t('broker_tradelocker.card2_benefit2_text')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_tradelocker.card2_benefit3_strong')}</strong> {t('broker_tradelocker.card2_benefit3_text')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_tradelocker.card2_benefit4_strong')}</strong> {t('broker_tradelocker.card2_benefit4_text')}</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-[#2B77EE] text-lg mt-0.5"></i>
+              <span class="text-gray-300"><strong class="text-white">{t('broker_tradelocker.card2_benefit5_strong')}</strong> {t('broker_tradelocker.card2_benefit5_text')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supported Platforms Card -->
+      <div
+        class="relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/30 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-10 overflow-hidden"
+        data-aos="fade-up" data-aos-delay="300">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent">
+        </div>
+
+        <div class="text-center mb-8">
+          <h3 class="text-2xl sm:text-3xl font-bold text-white mb-2">{t('broker_tradelocker.platforms_title')}</h3>
+          <p class="text-gray-400">{t('broker_tradelocker.platforms_subtitle')}</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <!-- Signal Generation -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bell text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_tradelocker.platforms_signal_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_signal_1')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_signal_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_signal_3')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_signal_4')}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Execution Platform -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_tradelocker.platforms_exec_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_exec_1')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_exec_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_exec_3')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_exec_4')}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Trading Instruments -->
+          <div
+            class="group bg-[#001429]/50 rounded-xl p-6 border border-[#2B77EE]/30 hover:border-[#2B77EE] transition-all duration-300 hover:bg-[#001429]/80 sm:col-span-2 lg:col-span-1">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+                <i class="fa-solid fa-coins text-[#2B77EE] group-hover:text-white text-lg"></i>
+              </div>
+              <h4 class="font-bold text-[#7FB8F9] text-lg">{t('broker_tradelocker.platforms_inst_title')}</h4>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_inst_2')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_inst_3')}
+              </li>
+              <li class="flex items-center gap-2 text-gray-300 text-sm">
+                <i class="fa-solid fa-angle-right text-[#2B77EE]"></i>
+                {t('broker_tradelocker.platforms_inst_4')}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- INTERNAL LINKING SECTION - MODERN -->
+  <section class="relative py-12 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] overflow-hidden">
+    <!-- Decorative Elements -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-10 right-20 w-64 h-64 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-5">
+      <!-- Section Header -->
+      <div class="text-center mb-10 sm:mb-12" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-link text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradelocker.integrations_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_tradelocker.integrations_title')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">
+          {t('broker_tradelocker.integrations_subtitle')}
+        </p>
+      </div>
+
+      <!-- Integration Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8 sm:mb-10">
+        <!-- Rithmic -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="100">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-bolt text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradelocker.integration_rithmic_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradelocker.integration_rithmic_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradelocker.integration_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- TradeStation -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="200">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-chart-line text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradelocker.integration_tradestation_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradelocker.integration_tradestation_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradelocker.integration_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- Interactive Brokers -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="300">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-globe text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradelocker.integration_ib_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradelocker.integration_ib_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradelocker.integration_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+
+        <!-- ProjectX -->
+        <a href={localizedPath(locale, 'broker/tradingview-to-projectx')}
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-5 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/30 hover:-translate-y-1"
+          data-aos="fade-up" data-aos-delay="400">
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2B77EE] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center group-hover:from-[#2B77EE] group-hover:to-[#0F3EC3] transition-all duration-300">
+              <i class="fa-solid fa-rocket text-[#2B77EE] group-hover:text-white"></i>
+            </div>
+            <h3 class="font-bold text-white text-base group-hover:text-[#7FB8F9] transition-colors">{t('broker_tradelocker.integration_projectx_title')}</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">{t('broker_tradelocker.integration_projectx_desc')}</p>
+          <div
+            class="mt-4 flex items-center text-[#2B77EE] text-sm font-semibold group-hover:text-[#7FB8F9] transition-colors">
+            <span>{t('broker_tradelocker.integration_learn_more')}</span>
+            <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </a>
+      </div>
+
+      <!-- View All Link -->
+      <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+        <a href={localizedPath(locale)}
+          class="group inline-flex items-center gap-3 bg-gradient-to-r from-[#122B75]/40 to-[#0F3EC3]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-full px-6 py-3 text-sm sm:text-base text-[#7FB8F9] hover:border-[#2B77EE] hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20">
+          <i class="fa-solid fa-arrow-left transform group-hover:-translate-x-1 transition-transform"></i>
+          <span class="font-semibold">{t('broker_tradelocker.integrations_view_all')}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO TUTORIALS SECTION -->
+  <section class="relative py-16 sm:py-20 bg-gradient-to-b from-[#001429] to-[#002040] overflow-hidden">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-96 h-96 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-80 h-80 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-circle-play text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradelocker.video_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_tradelocker.video_title')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">
+          {t('broker_tradelocker.video_subtitle')}
+        </p>
+      </div>
+
+      <!-- Video Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8" data-aos="fade-up" data-aos-delay="100">
+        <!-- Video Player (Left Side - Takes 2 columns) -->
+        <div class="lg:col-span-2">
+          <div
+            class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl overflow-hidden">
+            <!-- Video Container -->
+            <div class="relative aspect-video bg-black/50">
+              <iframe id="videoPlayer" class="w-full h-full" src="https://www.youtube.com/embed/ouitja0VOlU"
+                title={t('broker_tradelocker.video_iframe_title')} style="border:0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+            </div>
+            <!-- Video Info -->
+            <div class="p-5 sm:p-6">
+              <h3 id="currentVideoTitle" class="text-lg sm:text-xl font-bold text-white mb-2">{t('broker_tradelocker.video1_title')}</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video List (Right Side - Takes 1 column) -->
+        <div class="lg:col-span-1">
+          <div
+            class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-xl p-4 sm:p-5 max-h-[600px] overflow-y-auto custom-scrollbar">
+            <h4 class="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-list text-[#2B77EE]"></i>
+              {t('broker_tradelocker.video_playlist_title')}
+            </h4>
+
+            <!-- Video List Items -->
+            <div class="space-y-3">
+              <!-- Video 1 -->
+              <div
+                class="video-item active group cursor-pointer p-3 bg-[#2B77EE]/20 border border-[#2B77EE]/50 rounded-lg hover:bg-[#2B77EE]/30 transition-all duration-300"
+                data-video-id="ouitja0VOlU" data-title="Tradelocker Setup">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0 w-20 h-12 bg-black/30 rounded overflow-hidden relative">
+                    <img src="/assets/tradelocker/tradelocker_1.jpg" alt={t('broker_tradelocker.video1_alt')}
+                      class="w-full h-full object-cover" width="1280" height="720" loading="lazy" decoding="async">
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <i class="fa-solid fa-play text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h5
+                      class="text-sm font-semibold text-white group-hover:text-[#7FB8F9] transition-colors line-clamp-2">
+                      {t('broker_tradelocker.video1_title')}</h5>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video 2 -->
+              <div
+                class="video-item group cursor-pointer p-3 bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-lg hover:bg-[#2B77EE]/20 hover:border-[#2B77EE]/50 transition-all duration-300"
+                data-video-id="ou6JhG2dvxk" data-title="Generating Alert for Tradingview Strategy">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0 w-20 h-12 bg-black/30 rounded overflow-hidden relative">
+                    <img src="/assets/tradelocker/tradelocker_2.jpg" alt={t('broker_tradelocker.video2_alt')}
+                      class="w-full h-full object-cover" width="1280" height="720" loading="lazy" decoding="async">
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <i class="fa-solid fa-play text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h5
+                      class="text-sm font-semibold text-white group-hover:text-[#7FB8F9] transition-colors line-clamp-2">
+                      {t('broker_tradelocker.video2_title')}</h5>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video 3 -->
+              <div
+                class="video-item group cursor-pointer p-3 bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-lg hover:bg-[#2B77EE]/50 transition-all duration-300"
+                data-video-id="_04w1vdKuDw" data-title="Generating Alert for Tradingview Indicator">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0 w-20 h-12 bg-black/30 rounded overflow-hidden relative">
+                    <img src="/assets/tradelocker/tradelocker_3.jpg" alt={t('broker_tradelocker.video3_alt')}
+                      class="w-full h-full object-cover" width="1280" height="720" loading="lazy" decoding="async">
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+                      <i class="fa-solid fa-play text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h5
+                      class="text-sm font-semibold text-white group-hover:text-[#7FB8F9] transition-colors line-clamp-2">
+                      {t('broker_tradelocker.video3_title')}</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW AUTOMATION WORKS + STEP-BY-STEP + SUPPORTING SECTIONS -->
+  <section class="relative py-16 sm:py-20 px-4 sm:px-5 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto space-y-14 sm:space-y-16">
+
+      <!-- How it works chain -->
+      <div id="howitworks" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('broker_tradelocker.new_works_title')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-5">{t('broker_tradelocker.new_works_intro')}</p>
+        <div class="overflow-x-auto rounded-xl border border-[#2B77EE]/30 mb-5">
+          <table class="w-full text-sm text-left text-gray-300">
+            <thead class="bg-[#122B75]/40 text-[#7FB8F9] uppercase text-xs">
+              <tr>
+                <th class="px-4 py-3">Step</th>
+                <th class="px-4 py-3">What happens</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t border-[#2B77EE]/20"><td class="px-4 py-3 font-semibold text-white">{t('broker_tradelocker.new_works_row1_step')}</td><td class="px-4 py-3">{t('broker_tradelocker.new_works_row1_text')}</td></tr>
+              <tr class="border-t border-[#2B77EE]/20"><td class="px-4 py-3 font-semibold text-white">{t('broker_tradelocker.new_works_row2_step')}</td><td class="px-4 py-3">{t('broker_tradelocker.new_works_row2_text')}</td></tr>
+              <tr class="border-t border-[#2B77EE]/20"><td class="px-4 py-3 font-semibold text-white">{t('broker_tradelocker.new_works_row3_step')}</td><td class="px-4 py-3">{t('broker_tradelocker.new_works_row3_text')}</td></tr>
+              <tr class="border-t border-[#2B77EE]/20"><td class="px-4 py-3 font-semibold text-white">{t('broker_tradelocker.new_works_row4_step')}</td><td class="px-4 py-3">{t('broker_tradelocker.new_works_row4_text')}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center text-xs sm:text-sm font-mono text-[#7FB8F9] bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl px-4 py-3 mb-5">
+          {t('broker_tradelocker.new_works_diagram')}
+        </div>
+        <p class="text-gray-300 leading-relaxed">{t('broker_tradelocker.new_works_outro')}</p>
+        <p class="text-sm text-gray-400 mt-3">{t('broker_tradelocker.new_works_further_reading')} <a href="https://blog.pickmytrade.io/automate-tradingview-indicator-tradelocker/" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.new_works_further_reading_link')}</a></p>
+      </div>
+
+      <!-- Step by step -->
+      <div id="setup" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('broker_tradelocker.new_steps_title')}</h2>
+        <p class="text-gray-300 leading-relaxed mb-6">{t('broker_tradelocker.new_steps_intro')}</p>
+        <div class="space-y-5">
+          <div class="bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl p-5">
+            <h3 class="text-lg font-bold text-[#7FB8F9] mb-2">{t('broker_tradelocker.new_steps_1_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">{t('broker_tradelocker.new_steps_1_text')}</p>
+          </div>
+          <div class="bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl p-5">
+            <h3 class="text-lg font-bold text-[#7FB8F9] mb-2">{t('broker_tradelocker.new_steps_2_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">{t('broker_tradelocker.new_steps_2_text')} <a href="https://docs.pickmytrade.io/docs/connect-tradelocker-with-pickmytrade/" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.new_steps_2_link_text')}</a>.</p>
+          </div>
+          <div class="bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl p-5">
+            <h3 class="text-lg font-bold text-[#7FB8F9] mb-2">{t('broker_tradelocker.new_steps_3_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">{t('broker_tradelocker.new_steps_3_text')}</p>
+          </div>
+          <div class="bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl p-5">
+            <h3 class="text-lg font-bold text-[#7FB8F9] mb-2">{t('broker_tradelocker.new_steps_4_title')}</h3>
+            <p class="text-gray-300 leading-relaxed">{t('broker_tradelocker.new_steps_4_text')} <a href="https://blog.pickmytrade.io/automate-tradingview-alerts-tradelocker-demo/" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.new_steps_4_link_text')}</a>.</p>
+          </div>
+        </div>
+        <div class="text-center mt-8">
+          <a href="https://app.pickmytrade.io/?register=true" rel="noopener"
+            class="group inline-flex items-center gap-3 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl px-8 py-4 text-base sm:text-lg font-semibold text-white shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300 hover:scale-105 electrolize-regular">
+            <i class="fa-solid fa-play text-lg"></i>
+            <span>{t('broker_tradelocker.how_cta')}</span>
+            <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- vs other tools -->
+      <div data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('broker_tradelocker.new_vs_title')}</h2>
+        <p class="text-gray-300 leading-relaxed">{t('broker_tradelocker.new_vs_text')} <a href={localizedPath(locale, 'compare')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.new_vs_link_text')}</a> — {t('broker_tradelocker.new_works_further_reading')} <a href={'https://pickmytrade.trade/compare/pickmytrade-vs-copygram/'} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.new_vs_copygram_link_text')}</a>.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BENEFITS - MODERN -->
+  <section
+    class="relative py-20 sm:py-24 px-4 sm:px-5 bg-gradient-to-b from-[#001429] via-[#002040] to-[#001429] overflow-hidden"
+    id="benefits">
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-1/3 right-20 w-80 h-80 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 left-20 w-96 h-96 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-16 sm:mb-20" data-aos="fade-up">
+        <div
+          class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <i class="fa-solid fa-star text-[#2B77EE]"></i>
+          <span
+            class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradelocker.benefits_badge')}</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4">
+          {t('broker_tradelocker.benefits_title_1')} <span
+            class="bg-gradient-to-r from-[#2B77EE] to-[#7FB8F9] bg-clip-text text-transparent electrolize-regular">{t('broker_tradelocker.benefits_title_brand')}</span>
+          {t('broker_tradelocker.benefits_title_2')}
+        </h2>
+        <p class="max-w-3xl mx-auto text-gray-400 text-base sm:text-lg leading-relaxed">
+          {t('broker_tradelocker.benefits_subtitle_1')} <strong class="text-[#7FB8F9]">{t('broker_tradelocker.benefits_subtitle_strong1')}</strong> {t('broker_tradelocker.benefits_subtitle_2')}
+          <strong class="text-[#7FB8F9]">{t('broker_tradelocker.benefits_subtitle_strong2')}</strong>{t('broker_tradelocker.benefits_subtitle_3')}
+        </p>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Feature 1: Multiple Alert Types -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="100">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-bell text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit1_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradelocker.benefit1_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit1_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit1_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit1_tag3')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 2: Flexible Symbol Mapping -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="200">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-exchange-alt text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit2_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradelocker.benefit2_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit2_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit2_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit2_tag3')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 3: Smart Quantity Settings -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="300">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-sliders-h text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit3_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradelocker.benefit3_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit3_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit3_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit3_tag3')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit3_tag4')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 4: Advanced SL & TP Options -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full"
+          data-aos="fade-up" data-aos-delay="100">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-shield-alt text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit4_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradelocker.benefit4_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit4_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit4_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit4_tag3')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit4_tag4')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit4_tag5')}</span>
+          </div>
+        </div>
+
+        <!-- Feature 5: Multiple Account Support -->
+        <div
+          class="group relative bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl p-6 sm:p-8 hover:border-[#2B77EE] transition-all duration-300 hover:shadow-lg hover:shadow-[#2B77EE]/20 h-full md:col-span-2 lg:col-span-1"
+          data-aos="fade-up" data-aos-delay="200">
+          <!-- Icon -->
+          <div class="flex justify-center mb-4">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-[#2B77EE] to-[#0F3EC3] rounded-xl flex items-center justify-center shadow-lg shadow-[#2B77EE]/30">
+              <i class="fa-solid fa-users text-2xl text-white"></i>
+            </div>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-center mb-4 text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit5_title')}</h3>
+          <p class="text-gray-300 leading-relaxed mb-6 text-center">
+            {t('broker_tradelocker.benefit5_desc')}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-2">
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit5_tag1')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit5_tag2')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit5_tag3')}</span>
+            <span
+              class="px-3 py-1.5 bg-gradient-to-r from-[#2B77EE]/20 to-[#0F3EC3]/20 border border-[#2B77EE]/30 rounded-full text-xs font-semibold text-[#7FB8F9] electrolize-regular">{t('broker_tradelocker.benefit5_tag4')}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXEMPLES Completed -->
+  <section id="examples" class="bg-[#001429] flex justify-center md:px-8 py-20">
+    <div
+      class="bg-zinc-950 md:max-w-7xl md:px-8 flex flex-col gap-y-10 md:gap-y-0 md:flex-row justify-between md:border-4 border-zinc-800 rounded-2xl shadow-xl md:shadow-[#2B77EE] py-20">
+      <div class="flex-1 flex flex-col items-center justify-center px-10">
+        <p
+          class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide">
+          {t('broker_tradelocker.example_badge')}</p>
+        <h2 class="text-4xl font-bold text-center mb-12 text-[#2B77EE]">{t('broker_tradelocker.example_title')}</h2>
+        <p class="text-justify text-lg">
+          {t('broker_tradelocker.example_desc_1')}
+          <br /> <br />
+          {t('broker_tradelocker.example_desc_2a')} <span
+            class="font-bold electrolize-regular text-xl text-[#2B77EE]">{t('broker_tradelocker.example_brand')}</span> {t('broker_tradelocker.example_desc_2b')}
+        </p>
+      </div>
+      <div
+        class="bg-slate-900 border border-slate-700/50 rounded-2xl shadow-2xl p-8 max-w-2xl mx-auto text-white relative overflow-hidden flex-1"
+        data-aos="fade-left">
+        <div class="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 pointer-events-none">
+        </div>
+        <div
+          class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-black/5 to-transparent rounded-full blur-3xl">
+        </div>
+
+        <div class="relative grid grid-cols-2 gap-4 mb-8">
+          <div
+            class="bg-slate-800/40 hover:bg-slate-800/60 transition-all duration-300 backdrop-blur-sm border border-slate-700/30 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradelocker.example_card_entry_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              {t('broker_tradelocker.example_card_buy_prefix')} <span class="text-emerald-400 font-mono" id="entry-price">21,891.00</span>
+            </p>
+            <p class="text-xs text-slate-500">{t('broker_tradelocker.example_card_entry_sub')}</p>
+          </div>
+
+          <div
+            class="bg-slate-800/40 hover:bg-slate-800/60 transition-all duration-300 backdrop-blur-sm border border-slate-700/30 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-[#2B77EE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="6" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradelocker.example_card_size_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1" id="position-size">{t('broker_tradelocker.example_card_size_value')}</p>
+            <p class="text-xs text-slate-500">{t('broker_tradelocker.example_card_size_sub')}</p>
+          </div>
+
+          <div
+            class="bg-red-950/20 hover:bg-red-950/30 transition-all duration-300 backdrop-blur-sm border border-red-500/20 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradelocker.example_card_sl_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              <span class="text-red-400 font-mono" id="stop-loss">21,841.00</span>
+            </p>
+            <p class="text-xs text-red-300/70">{t('broker_tradelocker.example_card_sl_sub')}</p>
+          </div>
+
+          <div
+            class="bg-emerald-950/20 hover:bg-emerald-950/30 transition-all duration-300 backdrop-blur-sm border border-emerald-500/20 rounded-xl p-5 group cursor-pointer"
+            onclick="highlightCard(this)">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+              </svg>
+              <p class="text-slate-400 text-sm font-medium uppercase tracking-wide">{t('broker_tradelocker.example_card_tp_label')}</p>
+            </div>
+            <p class="text-xl font-bold text-white mb-1">
+              <span class="text-emerald-400 font-mono" id="take-profit">21,991.00</span>
+            </p>
+            <p class="text-xs text-emerald-300/70">{t('broker_tradelocker.example_card_tp_sub')}</p>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            </svg>
+            <h3 class="text-lg font-semibold text-white">{t('broker_tradelocker.example_card_risk_analysis')}</h3>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div
+              class="bg-gradient-to-br from-red-950/30 to-red-900/20 hover:from-red-950/40 hover:to-red-900/30 transition-all duration-300 border border-red-500/30 rounded-xl p-6 relative overflow-hidden cursor-pointer"
+              onclick="updateRiskMetrics()">
+              <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/5 rounded-full blur-2xl"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-red-300/80 text-sm font-medium uppercase tracking-wide">{t('broker_tradelocker.example_card_max_risk_label')}</p>
+                  <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p class="text-3xl font-bold text-red-400 mb-1 font-mono" id="max-risk">$10,000</p>
+                <p class="text-xs text-red-300/60">{t('broker_tradelocker.example_card_max_risk_sub')}</p>
+                <div class="mt-3 pt-3 border-t border-red-500/20">
+                  <p class="text-xs text-red-300/80" id="risk-per-contract">{t('broker_tradelocker.example_card_risk_per_contract')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-emerald-950/30 to-emerald-900/20 hover:from-emerald-950/40 hover:to-emerald-900/30 transition-all duration-300 border border-emerald-500/30 rounded-xl p-6 relative overflow-hidden cursor-pointer"
+              onclick="updateProfitMetrics()">
+              <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-2xl"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-emerald-300/80 text-sm font-medium uppercase tracking-wide">{t('broker_tradelocker.example_card_max_profit_label')}</p>
+                  <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7" />
+                  </svg>
+                </div>
+                <p class="text-3xl font-bold text-emerald-400 mb-1 font-mono" id="max-profit">$20,000</p>
+                <p class="text-xs text-emerald-300/60">{t('broker_tradelocker.example_card_max_profit_sub')}</p>
+                <div class="mt-3 pt-3 border-t border-emerald-500/20">
+                  <p class="text-xs text-emerald-300/80" id="risk-reward-ratio">{t('broker_tradelocker.example_card_rr_ratio')}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW TRADELOCKER FAQ (matches FAQPage schema 1:1) -->
+  <section id="tradelocker-faq" class="relative py-16 sm:py-20 px-4 sm:px-5 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-10 sm:mb-12" data-aos="fade-up">
+        <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+          <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('broker_tradelocker.new_faq_badge')}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-white">{t('broker_tradelocker.new_faq_title')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('broker_tradelocker.new_faq_subtitle')}</p>
+      </div>
+      <div class="space-y-3" data-aos="fade-up">
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q1_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q1_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q2_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q2_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q3_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q3_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q4_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q4_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q5_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q5_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q6_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q6_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q7_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q7_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q8_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q8_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q9_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q9_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q10_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q10_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q11_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q11_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q12_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q12_a')}</div>
+        </details>
+        <details class="group bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl">
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none"><span class="faq-question font-semibold text-white">{t('broker_tradelocker.new_faq_q13_q')}</span><i class="fa-solid fa-chevron-down text-[#2B77EE] transform group-open:rotate-180 transition-transform"></i></summary>
+          <div class="faq-answer px-5 pb-5 text-gray-300 leading-relaxed">{t('broker_tradelocker.new_faq_q13_a')}</div>
+        </details>
+      </div>
+      <div class="text-center mt-8" data-aos="fade-up">
+        <a href={localizedPath(locale, 'general-faq')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline text-sm">{t('broker_tradelocker.general_faq_link_text')}</a>
+        <p class="text-gray-400 text-sm mt-3">{t('broker_tradelocker.faq_cta_text')} <a href={localizedPath(locale, 'broker-faq/tradelocker-faq/')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.faq_cta_button')}</a></p>
+        <p class="text-gray-400 text-sm mt-3">{t('broker_tradelocker.more_links_label')} <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.new_propfirm_link_text')}</a> · <a href={localizedPath(locale, 'pricing')} class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.new_pricing_link_text')}</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL SEO CONTENT SECTION -->
+  <section class="py-16 px-5 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <article class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-[#2B77EE] text-center">{t('broker_tradelocker.final_title')}</h2>
+
+      <div class="max-w-2xl mx-auto">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xl font-semibold mb-3 text-white">{t('broker_tradelocker.final_right_title')}</h3>
+            <p class="text-gray-300 leading-relaxed mb-4">
+              {t('broker_tradelocker.final_right_p')}
+            </p>
+            <div class="space-y-4">
+              <a href="https://app.pickmytrade.io/?register=true"
+                class="block w-full text-center px-6 py-3 bg-gradient-to-r from-[#0F3EC3] to-[#2B77EE] rounded-xl text-white font-semibold hover:shadow-lg hover:shadow-[#2B77EE]/50 transition-all duration-300">
+                {t('broker_tradelocker.final_right_cta')}
+              </a>
+              <p class="text-center text-sm text-gray-400">
+                {t('broker_tradelocker.final_right_links_label')}
+                <a href="https://docs.pickmytrade.io/docs/connect-tradelocker-with-pickmytrade/" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.final_right_link_doc')}</a>
+                {t('broker_tradelocker.final_right_link_and')}
+                <a href="https://blog.pickmytrade.io/automate-tradingview-alerts-tradelocker-demo/" rel="noopener" class="text-[#2B77EE] hover:text-[#7FB8F9] underline">{t('broker_tradelocker.final_right_link_video')}</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="py-20 bg-[#001429] text-center flex flex-col items-center">
+    <p class="mb-3 text-zinc-300 electrolize-regular bg-zinc-800 px-4 py-1 rounded-full font-bold uppercase text-xs tracking-wide"
+      data-aos="fade-up">
+      {t('broker_tradelocker.contact_badge')}
+    </p>
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-4xl font-bold mb-6 text-[#2B77EE]" data-aos="fade-up" data-aos-delay="100">
+        {t('broker_tradelocker.contact_title')}
+      </h2>
+
+      <p class="text-lg text-zinc-400 mb-8" data-aos="fade-up" data-aos-delay="200">
+        {t('broker_tradelocker.contact_subtitle')}
+      </p>
+
+      <div class="flex flex-col md:flex-row gap-6 justify-center items-center" data-aos="fade-up" data-aos-delay="300">
+        <a href="https://discord.gg/FkJ7g7498S" target="_blank"
+          class="px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]">
+          <i class="fab fa-discord text-xl mr-2"></i> {t('broker_tradelocker.contact_discord')}
+        </a>
+
+        <a href="mailto:support@pickmytrade.com"
+          class="px-6 py-2 text-lg rounded-xl shadow-lg transition
+                         hover:shadow-[0_0_20px_4px_rgba(51,102,255,0.4)] h-max hover:cursor-pointer electrolize-regular bg-[#0F3EC3]">
+          <i class="fa-solid fa-envelope text-xl mr-2"></i> support@pickmytrade.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+</BaseLayout>

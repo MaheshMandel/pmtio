@@ -1,0 +1,270 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy",
+    "description": "Read PickMyTrade's Privacy Policy. Learn how we collect, use, and protect your personal information, including GDPR compliance for EU/EEA users.",
+    "url": absoluteLocalizedPath(locale, 'legal/privacy'),
+    "dateModified": "2026-07-27",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "PickMyTrade",
+      "url": "https://pickmytrade.io/"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PickMyTrade",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pickmytrade.io/assets/logo.png"
+      }
+    }
+  };
+
+const schema2 = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pickmytrade.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Privacy Policy",
+        "item": absoluteLocalizedPath(locale, 'legal/privacy')
+      }
+    ]
+  };
+---
+<BaseLayout
+  locale={locale}
+  title={t('privacy.meta_title')}
+  description={t('privacy.meta_description')}
+  keywords=""
+  structuredData={[schema1, schema2]}
+>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
+        style="background: linear-gradient(to right, #0055FE, #4A90E2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        {t('privacy.page_title')}
+      </h1>
+      <p class="text-gray-400 text-base md:text-lg">{t('privacy.last_updated_label')} July 2026</p>
+    </div>
+
+    <!-- Content Container -->
+    <div class="space-y-8 text-gray-300 leading-relaxed">
+
+      <div class="bg-blue-900/20 border border-blue-600/30 rounded-lg p-4">
+        <p class="font-semibold text-blue-400 mb-2">{t('privacy.important_notice_title')}</p>
+        <p class="text-sm">
+          {t('privacy.important_notice_body')}
+        </p>
+      </div>
+
+      <!-- Introduction -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.intro_title')}</h2>
+        <p class="mb-4">
+          {t('privacy.intro_p1')}
+        </p>
+        <p class="mb-4">
+          {t('privacy.intro_p2')}
+        </p>
+      </section>
+
+      <!-- When does this Policy apply -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.apply_title')}</h2>
+        <p>
+          {t('privacy.apply_body')}
+        </p>
+      </section>
+
+      <!-- EU/EEA Residents -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.eu_title')}</h2>
+        <p>
+          {t('privacy.eu_body')}
+        </p>
+      </section>
+
+      <!-- What Personal Information -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.collect_title')}</h2>
+        <p class="mb-4">{t('privacy.collect_intro')}</p>
+        <ul class="space-y-3 pl-4">
+          <li><strong class="text-white">{t('privacy.collect_contact_label')}</strong> {t('privacy.collect_contact_body')}</li>
+          <li><strong class="text-white">{t('privacy.collect_account_label')}</strong> {t('privacy.collect_account_body')}</li>
+          <li><strong class="text-white">{t('privacy.collect_transaction_label')}</strong> {t('privacy.collect_transaction_body')}</li>
+          <li><strong class="text-white">{t('privacy.collect_technical_label')}</strong> {t('privacy.collect_technical_body')}</li>
+          <li><strong class="text-white">{t('privacy.collect_usage_label')}</strong> {t('privacy.collect_usage_body')}</li>
+          <li><strong class="text-white">{t('privacy.collect_marketing_label')}</strong> {t('privacy.collect_marketing_body')}</li>
+          <li><strong class="text-white">{t('privacy.collect_sensitive_label')}</strong> {t('privacy.collect_sensitive_body')}</li>
+        </ul>
+      </section>
+
+      <!-- How Do We Collect -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.how_collect_title')}</h2>
+        <p class="mb-3">{t('privacy.how_collect_intro')}</p>
+        <ul class="list-disc list-inside space-y-2 pl-4 mb-4">
+          <li>{t('privacy.how_collect_item1')}</li>
+          <li>{t('privacy.how_collect_item2')}</li>
+          <li>{t('privacy.how_collect_item3')}</li>
+          <li>{t('privacy.how_collect_item4')}</li>
+          <li>{t('privacy.how_collect_item5')}</li>
+        </ul>
+        <p class="mb-3">{t('privacy.how_collect_auto_intro')}</p>
+        <ul class="space-y-3 pl-4">
+          <li><strong class="text-white">{t('privacy.how_collect_cookies_label')}</strong> {t('privacy.how_collect_cookies_body')}</li>
+          <li><strong class="text-white">{t('privacy.how_collect_beacons_label')}</strong> {t('privacy.how_collect_beacons_body')}</li>
+          <li><strong class="text-white">{t('privacy.how_collect_widgets_label')}</strong> {t('privacy.how_collect_widgets_body')}</li>
+          <li><strong class="text-white">{t('privacy.how_collect_analytics_label')}</strong> {t('privacy.how_collect_analytics_body')}</li>
+        </ul>
+      </section>
+
+      <!-- Is Entry Required -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.entry_required_title')}</h2>
+        <p>
+          {t('privacy.entry_required_body')}
+        </p>
+      </section>
+
+      <!-- How Do We Use -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.use_title')}</h2>
+        <p class="mb-4">{t('privacy.use_intro')}</p>
+        <ul class="space-y-3 pl-4">
+          <li><strong class="text-white">{t('privacy.use_service_label')}</strong> {t('privacy.use_service_body')}</li>
+          <li><strong class="text-white">{t('privacy.use_support_label')}</strong> {t('privacy.use_support_body')}</li>
+          <li><strong class="text-white">{t('privacy.use_personalization_label')}</strong> {t('privacy.use_personalization_body')}</li>
+          <li><strong class="text-white">{t('privacy.use_marketing_label')}</strong> {t('privacy.use_marketing_body')}</li>
+          <li><strong class="text-white">{t('privacy.use_legal_label')}</strong> {t('privacy.use_legal_body')}</li>
+          <li><strong class="text-white">{t('privacy.use_security_label')}</strong> {t('privacy.use_security_body')}</li>
+        </ul>
+        <p class="mt-4">{t('privacy.use_additional')}</p>
+      </section>
+
+      <!-- Legal Basis -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.legal_basis_title')}</h2>
+        <p class="mb-4">{t('privacy.legal_basis_intro')}</p>
+        <ul class="space-y-3 pl-4">
+          <li><strong class="text-white">{t('privacy.legal_basis_contract_label')}</strong> {t('privacy.legal_basis_contract_body')}</li>
+          <li><strong class="text-white">{t('privacy.legal_basis_interests_label')}</strong> {t('privacy.legal_basis_interests_body')}</li>
+          <li><strong class="text-white">{t('privacy.legal_basis_consent_label')}</strong> {t('privacy.legal_basis_consent_body')}</li>
+          <li><strong class="text-white">{t('privacy.legal_basis_compliance_label')}</strong> {t('privacy.legal_basis_compliance_body')}</li>
+        </ul>
+      </section>
+
+      <!-- Cookies -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.cookies_title')}</h2>
+        <p class="mb-4">{t('privacy.cookies_intro')}</p>
+        <p class="mb-3"><strong class="text-white">{t('privacy.cookies_types_label')}</strong></p>
+        <ul class="space-y-3 pl-4 mb-4">
+          <li><strong class="text-white">{t('privacy.cookies_session_label')}</strong> {t('privacy.cookies_session_body')}</li>
+          <li><strong class="text-white">{t('privacy.cookies_persistent_label')}</strong> {t('privacy.cookies_persistent_body')}</li>
+          <li><strong class="text-white">{t('privacy.cookies_first_party_label')}</strong> {t('privacy.cookies_first_party_body')}</li>
+          <li><strong class="text-white">{t('privacy.cookies_third_party_label')}</strong> {t('privacy.cookies_third_party_body')}</li>
+        </ul>
+        <p>{t('privacy.cookies_control')}</p>
+      </section>
+
+      <!-- How Do We Share -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.share_title')}</h2>
+        <p class="mb-4">{t('privacy.share_intro')}</p>
+        <ul class="space-y-3 pl-4">
+          <li><strong class="text-white">{t('privacy.share_affiliates_label')}</strong> {t('privacy.share_affiliates_body')}</li>
+          <li><strong class="text-white">{t('privacy.share_providers_label')}</strong> {t('privacy.share_providers_body')}</li>
+          <li><strong class="text-white">{t('privacy.share_legal_label')}</strong> {t('privacy.share_legal_body')}</li>
+          <li><strong class="text-white">{t('privacy.share_transactions_label')}</strong> {t('privacy.share_transactions_body')}</li>
+          <li><strong class="text-white">{t('privacy.share_consent_label')}</strong> {t('privacy.share_consent_body')}</li>
+        </ul>
+      </section>
+
+      <!-- Data Retention -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.retention_title')}</h2>
+        <p>
+          {t('privacy.retention_body')}
+        </p>
+      </section>
+
+      <!-- Protection -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.protect_title')}</h2>
+        <p>
+          {t('privacy.protect_body')}
+        </p>
+      </section>
+
+      <!-- Your Rights -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.rights_title')}</h2>
+        <p class="mb-4">{t('privacy.rights_intro')}</p>
+        <ul class="space-y-3 pl-4 mb-4">
+          <li><strong class="text-white">{t('privacy.rights_access_label')}</strong> {t('privacy.rights_access_body')}</li>
+          <li><strong class="text-white">{t('privacy.rights_rectification_label')}</strong> {t('privacy.rights_rectification_body')}</li>
+          <li><strong class="text-white">{t('privacy.rights_erasure_label')}</strong> {t('privacy.rights_erasure_body')}</li>
+          <li><strong class="text-white">{t('privacy.rights_restrict_label')}</strong> {t('privacy.rights_restrict_body')}</li>
+          <li><strong class="text-white">{t('privacy.rights_object_label')}</strong> {t('privacy.rights_object_body')}</li>
+          <li><strong class="text-white">{t('privacy.rights_withdraw_label')}</strong> {t('privacy.rights_withdraw_body')}</li>
+        </ul>
+        <p>{t('privacy.rights_complaint')}</p>
+      </section>
+
+      <!-- International Data Transfers -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.transfers_title')}</h2>
+        <p>
+          {t('privacy.transfers_body')}
+        </p>
+      </section>
+
+      <!-- Children's Privacy -->
+      <section>
+        <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{t('privacy.children_title')}</h2>
+        <p>
+          {t('privacy.children_body')}
+        </p>
+      </section>
+
+      <!-- Contact -->
+      <section class="text-center pt-8">
+        <p class="text-gray-400 mb-3">
+          {t('privacy.contact_text')}
+        </p>
+        <p class="mb-2">
+          <a href="mailto:support@pickmytrade.com" class="text-blue-400 hover:text-blue-300 transition-colors font-medium">support@pickmytrade.com</a>
+        </p>
+      </section>
+
+    </div>
+
+    <!-- Back Link -->
+    <div class="text-center mt-12 pt-8 border-t border-gray-800">
+      <a href={localizedPath(locale, '')} class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors font-medium">
+        <span>{t('privacy.back_home')}</span>
+      </a>
+    </div>
+  </div>
+</BaseLayout>

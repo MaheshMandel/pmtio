@@ -1,0 +1,544 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+// ============================================================================
+// JSON-LD SCHEMA (5 blocks, mirrors the source spec 1:1): SoftwareApplication
+// +Offer, FAQPage (matches the on-page FAQ), BreadcrumbList, WebPage,
+// Organization. No AggregateRating/Review schema (content policy: no
+// unverified ratings on-site). Price is $50/mo, $500/yr, verified.
+// ============================================================================
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "image": "https://pickmytrade.io/assets/logo.png",
+  "name": "PickMyTrade - Trade Copier",
+  "description": "Cloud trade copier that mirrors one TradingView alert or one master trade across multiple futures and prop firm accounts in real time, with per-account multipliers and under 200ms order processing on our side (total fill time varies with your broker, network, and TradingView alert speed). No VPS and no desktop install required.",
+  "url": absoluteLocalizedPath(locale, 'trade-copier'),
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web-based, Windows, macOS, Linux, iOS, Android",
+  "offers": {
+    "@type": "Offer",
+    "price": "50.00",
+    "priceCurrency": "USD",
+    "priceValidUntil": "2026-12-31",
+    "availability": "https://schema.org/InStock",
+    "description": "$50 per month or $500 per year. 7-day free trial, no credit card required. Unlimited accounts under one broker login."
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "url": "https://pickmytrade.io",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@pickmytrade.com",
+      "contactType": "Customer Support",
+      "availableLanguage": "English"
+    },
+    "sameAs": [
+      "https://x.com/pickmytrade",
+      "https://discord.gg/FkJ7g7498S",
+      "https://www.instagram.com/pickmytrade",
+      "https://www.youtube.com/@PickMyTrade",
+      "https://www.linkedin.com/company/pickmytrade",
+      "https://sourceforge.net/software/product/PickMyTrade/",
+      "https://www.trustpilot.com/review/pickmytrade.trade"
+    ]
+  }
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": ["h1", "h2", ".faq-question", ".faq-answer", "summary", "details > div", "details > p"]
+  },
+  "mainEntity": [
+    { "@type": "Question", "name": "What is a trade copier and how does it work?", "acceptedAnswer": { "@type": "Answer", "text": "A trade copier is software that takes one trade and replicates it across other trading accounts automatically. One account acts as the leader, or you use a signal such as a TradingView alert, and every follower account places the same order in real time. PickMyTrade reads the symbol, side, size and risk settings, then copies the entry, exit, stop-loss and take-profit to each connected account, so you make one decision instead of repeating clicks account by account." } },
+    { "@type": "Question", "name": "Which brokers and platforms does PickMyTrade's trade copier support?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade supports Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX (including TopstepX), Match-Trader, Tradier, cTrader and Ironbeam. It does not support MT4, MT5, NinjaTrader, DXtrade or OANDA, and it does not copy from Telegram signals. The master-account Manual Trade Copier is a Tradovate feature; across all supported brokers you copy by routing one TradingView alert to the accounts you connect." } },
+    { "@type": "Question", "name": "Can I copy trades across multiple prop firm accounts, and is it allowed by the firm's rules?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade connects to accounts on Tradovate, Rithmic and ProjectX, which many prop firms run on, so you can route your own TradingView alerts across your own funded and evaluation accounts. Copy trading and automation rules vary by prop firm and change over time, so always confirm your firm's current policy before you go live. PickMyTrade copies your own trades across your own accounts; it is not a signal-selling or account-management service." } },
+    { "@type": "Question", "name": "Do I need a VPS or desktop install to run the copier?", "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade runs in the cloud 24/7, so there is no VPS to rent and nothing to install on your computer. Once your accounts are connected and your alert is live, trades copy automatically even when your machine and your broker's app are switched off." } },
+    { "@type": "Question", "name": "How much does the trade copier cost, and is there a free trial?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade is a flat $50 per month or $500 per year, and every account starts with a 7-day free trial that needs no credit card. One subscription covers unlimited accounts under a single broker login, with no per-account and no per-connection fees. If you use multiple broker logins, each login needs its own subscription." } },
+    { "@type": "Question", "name": "Can I copy from a TradingView alert or strategy instead of a master broker account?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, and for most traders that is the main path. When your TradingView strategy, indicator or manual chart alert fires, TradingView sends a webhook to PickMyTrade, which places the matching order on every connected account at once. Webhook alerts need a paid TradingView plan (Pro, Pro+ or Premium). On Tradovate you can also mirror trades you place by hand using the Manual Trade Copier." } },
+    { "@type": "Question", "name": "Does it work on Windows, macOS and mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. PickMyTrade is browser-based and runs the copying in the cloud, so it is operating-system agnostic. You can set it up and monitor it from Windows, macOS, Linux, or a phone or tablet browser. Because the copier runs in the cloud rather than on your device, your trades keep copying even when your computer is closed." } },
+    { "@type": "Question", "name": "How do I set different position sizes or multipliers per account?", "acceptedAnswer": { "@type": "Answer", "text": "Each account gets its own quantity multiplier, so client position equals master position times the multiplier. A 2-contract signal becomes 1 contract at 0.5x, 2 at 1x, 4 at 2x and 6 at 3x. Decimal multipliers like 0.5, 1.5 and 2.5 are supported, and the final quantity rounds to a whole number. You can also turn copying on or off per account, so you decide exactly which accounts a signal reaches." } },
+    { "@type": "Question", "name": "What is the copying latency?", "acceptedAnswer": { "@type": "Answer", "text": "PickMyTrade processes your order in under 200ms on our side, and when one signal fans out to many accounts they receive the trade within seconds. Your total fill time also depends on your broker's execution, network latency, and how quickly TradingView sends the alert, as it does with any copier. We do not claim a guaranteed end-to-end fill speed." } },
+    { "@type": "Question", "name": "Does PickMyTrade support MT4/MT5 or NinjaTrader trade copying?", "acceptedAnswer": { "@type": "Answer", "text": "No. PickMyTrade does not support MT4, MT5, NinjaTrader, DXtrade or OANDA, and it does not copy from Telegram signals. It is a copier and automation platform for futures and multi-asset brokers such as Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader and Ironbeam. If your broker is on that list, you are covered." } },
+    { "@type": "Question", "name": "How is a cloud trade copier different from a local or VPS copier?", "acceptedAnswer": { "@type": "Answer", "text": "A local or VPS copier runs as a program on a machine you keep online, and native desktop copiers can be faster on raw latency because there is no cloud hop. A cloud trade copier like PickMyTrade runs on hosted servers, so there is nothing to install, no VPS bill, and it keeps copying when your computer is off. You trade a little raw latency for no-install convenience, mobile access, multi-broker reach and a flat price." } },
+    { "@type": "Question", "name": "Can I reverse or flip a position?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on the TradingView webhook path. PickMyTrade can reverse or flip a position, meaning it closes the current position and opens the opposite one on the next signal, and it can scale into an existing position on a same-direction signal. These run alongside Market, Limit and Stop orders and five stop-loss and take-profit methods." } }
+  ]
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+    { "@type": "ListItem", "position": 2, "name": "Trade Copier", "item": absoluteLocalizedPath(locale, 'trade-copier') }
+  ]
+};
+
+const schema4 = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Trade Copier Software for Futures & Prop Firms",
+  "url": absoluteLocalizedPath(locale, 'trade-copier'),
+  "description": "PickMyTrade is a cloud trade copier that mirrors your trades across futures and prop firm accounts in real time. No VPS, no install. Flat $50/mo, 7-day free trial.",
+  "inLanguage": LOCALE_BCP47[locale],
+  "isPartOf": { "@type": "WebSite", "name": "PickMyTrade", "url": "https://pickmytrade.io" },
+  "primaryImageOfPage": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" },
+  "about": { "@type": "SoftwareApplication", "name": "PickMyTrade Trade Copier", "applicationCategory": "FinanceApplication" }
+};
+
+const schema5 = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PickMyTrade",
+  "url": "https://pickmytrade.io",
+  "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "support@pickmytrade.com",
+    "contactType": "Customer Support",
+    "availableLanguage": "English"
+  },
+  "sameAs": [
+    "https://x.com/pickmytrade",
+    "https://discord.gg/FkJ7g7498S",
+    "https://www.instagram.com/pickmytrade",
+    "https://www.youtube.com/@PickMyTrade",
+    "https://www.linkedin.com/company/pickmytrade",
+    "https://sourceforge.net/software/product/PickMyTrade/",
+    "https://www.trustpilot.com/review/pickmytrade.trade"
+  ]
+};
+
+const faqItems = [
+  ['s13_q1', 's13_a1'], ['s13_q2', 's13_a2'], ['s13_q3', 's13_a3'], ['s13_q4', 's13_a4'],
+  ['s13_q5', 's13_a5'], ['s13_q6', 's13_a6'], ['s13_q7', 's13_a7'], ['s13_q8', 's13_a8'],
+  ['s13_q9', 's13_a9'], ['s13_q10', 's13_a10'], ['s13_q11', 's13_a11'], ['s13_q12', 's13_a12'],
+] as const;
+
+const brokerLinks = [
+  { name: 'Tradovate', href: 'https://pickmytrade.trade/tradingview-to-tradovate/', external: true },
+  { name: 'Rithmic', href: localizedPath(locale, 'broker/tradingview-to-rithmic') },
+  { name: 'Interactive Brokers', href: localizedPath(locale, 'broker/tradingview-to-ib') },
+  { name: 'TradeLocker', href: localizedPath(locale, 'broker/tradingview-to-tradelocker') },
+  { name: 'ProjectX / TopstepX', href: localizedPath(locale, 'broker/tradingview-to-projectx') },
+  { name: 'Match-Trader', href: localizedPath(locale, 'broker/tradingview-to-matchtrader') },
+];
+---
+<BaseLayout
+  locale={locale}
+  title={t('trade_copier.page_title')}
+  description={t('trade_copier.page_description')}
+  keywords={t('trade_copier.page_keywords')}
+  structuredData={[schema1, schema2, schema3, schema4, schema5]}
+>
+
+  <!-- BREADCRUMB (visible, matches schema) -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale)} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('trade_copier.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('trade_copier.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- (1) HERO -->
+  <section class="relative py-14 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 right-16 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-10 w-56 h-56 bg-[#0F3EC3] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-5 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-copy text-[#2B77EE]"></i>
+        <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('trade_copier.hero_badge')}</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white leading-tight">{t('trade_copier.hero_title')}</h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl mx-auto">{t('trade_copier.hero_subtitle')}</p>
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('trade_copier.hero_cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="#how-it-works" class="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('trade_copier.hero_cta_secondary')}
+        </a>
+      </div>
+      <p class="mt-3 text-xs text-gray-400">{t('trade_copier.hero_note')}</p>
+
+      <!-- Trust bar (owned stats + correctly caveated speed; NO guaranteed end-to-end claim) -->
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm">
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-users text-[#2B77EE]"></i> {t('trade_copier.hero_stat_traders')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-chart-line text-[#2B77EE]"></i> {t('trade_copier.hero_stat_trades')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-plug text-[#2B77EE]"></i> {t('trade_copier.hero_stat_brokers')}</span>
+        <span class="flex items-center gap-2 text-gray-200"><i class="fa-solid fa-cloud text-[#2B77EE]"></i> {t('trade_copier.hero_stat_cloud')}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- (2) WHAT IS A TRADE COPIER -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('trade_copier.s2_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s2_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s2_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('trade_copier.s2_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (3) HOW PICKMYTRADE'S TRADE COPIER WORKS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('trade_copier.s3_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('trade_copier.s3_intro')}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-bolt text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-2">{t('trade_copier.s3_mode1_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s3_mode1_desc')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-hand-pointer text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-2">{t('trade_copier.s3_mode2_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s3_mode2_desc')}</p>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto mt-8" data-aos="fade-up">
+        <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">{t('trade_copier.s3_cloud_title')}</h3>
+        <p class="text-gray-300 leading-relaxed">{t('trade_copier.s3_cloud_desc')}</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto mt-6" data-aos="fade-up">
+        <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">{t('trade_copier.s3_realtime_title')}</h3>
+        <p class="text-gray-300 leading-relaxed">{t('trade_copier.s3_realtime_desc')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (4) SUPPORTED BROKERS AND PLATFORMS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="max-w-3xl mx-auto text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('trade_copier.s4_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('trade_copier.s4_intro')}</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" data-aos="fade-up">
+        <a href="https://pickmytrade.trade/tradingview-to-tradovate/" class="text-center bg-[#0F3EC3]/25 border border-[#2B77EE]/60 rounded-lg px-3 py-4 text-sm text-white hover:border-[#2B77EE] transition font-semibold">Tradovate</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-rithmic')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Rithmic</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ib')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Interactive Brokers</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradestation')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">TradeStation</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradelocker')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">TradeLocker</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-projectx')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">ProjectX / TopstepX</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-matchtrader')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Match-Trader</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-tradier')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Tradier</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ctrader')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">cTrader</a>
+        <a href={localizedPath(locale, 'broker/tradingview-to-ironbeam')} class="text-center bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3 py-4 text-sm text-gray-200 hover:text-white hover:border-[#2B77EE] transition">Ironbeam</a>
+      </div>
+      <div class="max-w-3xl mx-auto mt-7 bg-[#122B75]/20 border border-[#2B77EE]/30 rounded-xl p-5" data-aos="fade-up">
+        <p class="text-sm text-gray-300 leading-relaxed"><i class="fa-solid fa-circle-info text-[#7FB8F9] mr-2"></i>{t('trade_copier.s4_note')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (5) COPY ACROSS PROP FIRM ACCOUNTS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('trade_copier.s5_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s5_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s5_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">
+        {t('trade_copier.s5_p3_pre')} <a href={localizedPath(locale, 'prop-firm-trade-copier')} class="text-[#7FB8F9] hover:text-white underline">{t('trade_copier.s5_p3_hub_link')}</a> {t('trade_copier.s5_p3_mid')} <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#7FB8F9] hover:text-white underline">{t('trade_copier.s5_p3_propfirms_link')}</a>. {t('trade_copier.s5_p3_post')}
+      </p>
+    </div>
+  </section>
+
+  <!-- (6) SET UP IN MINUTES (steps) -->
+  <section id="how-it-works" class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429] scroll-mt-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-10" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('trade_copier.s6_h2')}</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">{t('trade_copier.s6_intro')}</p>
+      </div>
+      <ol class="space-y-4">
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">1</span>
+          <div class="flex-1">
+            <h3 class="font-bold text-white text-base mb-1">{t('trade_copier.s6_step1_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s6_step1_desc')}</p>
+            <!-- [IMG] placeholder: real product screenshot -->
+            <div class="mt-3 rounded-lg border border-dashed border-[#2B77EE]/40 bg-[#001429]/60 h-32 flex items-center justify-center text-xs text-gray-500">
+              <!-- Dev: drop screenshot here — alt="Connecting multiple futures and prop firm accounts in the PickMyTrade trade copier dashboard" -->
+              {t('trade_copier.s6_step1_title')}
+            </div>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="50">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">2</span>
+          <div class="flex-1">
+            <h3 class="font-bold text-white text-base mb-1">{t('trade_copier.s6_step2_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s6_step2_desc')}</p>
+            <!-- [IMG] placeholder: real product screenshot -->
+            <div class="mt-3 rounded-lg border border-dashed border-[#2B77EE]/40 bg-[#001429]/60 h-32 flex items-center justify-center text-xs text-gray-500">
+              <!-- Dev: drop screenshot here — alt="Setting per-account quantity multipliers for copy trading in PickMyTrade" -->
+              {t('trade_copier.s6_step2_title')}
+            </div>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="100">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">3</span>
+          <div class="flex-1">
+            <h3 class="font-bold text-white text-base mb-1">{t('trade_copier.s6_step3_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s6_step3_desc')}</p>
+            <!-- [IMG] placeholder: real product screenshot -->
+            <div class="mt-3 rounded-lg border border-dashed border-[#2B77EE]/40 bg-[#001429]/60 h-32 flex items-center justify-center text-xs text-gray-500">
+              <!-- Dev: drop screenshot here — alt="PickMyTrade generating the alert message and webhook URL for the copier" -->
+              {t('trade_copier.s6_step3_title')}
+            </div>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="150">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">4</span>
+          <div class="flex-1">
+            <h3 class="font-bold text-white text-base mb-1">{t('trade_copier.s6_step4_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s6_step4_desc')}</p>
+            <!-- [IMG] placeholder: real product screenshot -->
+            <div class="mt-3 rounded-lg border border-dashed border-[#2B77EE]/40 bg-[#001429]/60 h-32 flex items-center justify-center text-xs text-gray-500">
+              <!-- Dev: drop screenshot here — alt="Pasting the PickMyTrade alert message and webhook URL into a TradingView alert" -->
+              {t('trade_copier.s6_step4_title')}
+            </div>
+          </div>
+        </li>
+        <li class="flex gap-4 bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-5" data-aos="fade-up" data-aos-delay="200">
+          <span class="shrink-0 w-9 h-9 rounded-lg bg-[#0F3EC3] text-white font-bold flex items-center justify-center">5</span>
+          <div class="flex-1">
+            <h3 class="font-bold text-white text-base mb-1">{t('trade_copier.s6_step5_title')}</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s6_step5_desc')}</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- (7) PER-ACCOUNT RISK AND POSITION SIZING -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('trade_copier.s7_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s7_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s7_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('trade_copier.s7_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (8) CLOUD VS LOCAL / VPS -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('trade_copier.s8_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s8_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s8_p2')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('trade_copier.s8_p3')}</p>
+    </div>
+  </section>
+
+  <!-- (9) WINDOWS, MACOS AND MOBILE -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5">{t('trade_copier.s9_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('trade_copier.s9_p1')}</p>
+      <p class="text-gray-300 leading-relaxed">{t('trade_copier.s9_p2')}</p>
+    </div>
+  </section>
+
+  <!-- (10) PRICING -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">{t('trade_copier.s10_h2')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-8 max-w-2xl mx-auto">{t('trade_copier.s10_intro')}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-7">
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('trade_copier.s10_monthly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">$50<span class="text-base font-normal text-gray-400">/mo</span></p>
+          <p class="text-sm text-gray-400">{t('trade_copier.s10_monthly_note')}</p>
+        </div>
+        <div class="bg-gradient-to-br from-[#0F3EC3]/30 via-[#2B77EE]/20 to-[#0F3EC3]/30 border border-[#2B77EE] rounded-xl p-7 relative">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F3EC3] text-white text-xs font-semibold px-3 py-1 rounded-full">{t('trade_copier.s10_yearly_badge')}</span>
+          <p class="text-sm text-[#7FB8F9] uppercase tracking-wider electrolize-regular mb-2">{t('trade_copier.s10_yearly_label')}</p>
+          <p class="text-4xl font-bold text-white mb-1">$500<span class="text-base font-normal text-gray-400">/yr</span></p>
+          <p class="text-sm text-gray-400">{t('trade_copier.s10_yearly_note')}</p>
+        </div>
+      </div>
+      <div class="mt-8">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('trade_copier.s10_cta')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <p class="mt-3 text-xs text-gray-400">{t('trade_copier.s10_footnote_pre')} <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white underline">{t('trade_copier.s10_footnote_link')}</a> {t('trade_copier.s10_footnote_post')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- (11) PROOF / WHY TRADERS CHOOSE PICKMYTRADE -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('trade_copier.s11_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">{t('trade_copier.s11_intro')}</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5" data-aos="fade-up">
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('trade_copier.s11_stat1_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('trade_copier.s11_stat1_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('trade_copier.s11_stat2_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('trade_copier.s11_stat2_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('trade_copier.s11_stat3_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('trade_copier.s11_stat3_label')}</div>
+        </div>
+        <div class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl p-6 text-center">
+          <div class="text-2xl sm:text-3xl font-bold text-white">{t('trade_copier.s11_stat4_value')}</div>
+          <div class="mt-1 text-xs text-gray-400">{t('trade_copier.s11_stat4_label')}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (12) TRADE COPIER BY PLATFORM AND FIRM (HUB LINKS) -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#002040] to-[#001429]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5">
+      <div class="max-w-3xl mx-auto text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('trade_copier.s12_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('trade_copier.s12_intro')}</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" data-aos="fade-up">
+        <a href="https://pickmytrade.trade/tradingview-trade-copier/" target="_blank" rel="noopener" class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-chart-line text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-1">{t('trade_copier.s12_hub1_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s12_hub1_desc')}</p>
+        </a>
+        <a href="https://pickmytrade.trade/tradovate-trade-copier/" target="_blank" rel="noopener" class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-layer-group text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-1">{t('trade_copier.s12_hub2_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s12_hub2_desc')}</p>
+        </a>
+        <a href={localizedPath(locale, 'futures-trade-copier')} class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-arrow-trend-up text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-1">{t('trade_copier.s12_hub3_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s12_hub3_desc')}</p>
+        </a>
+        <a href={localizedPath(locale, 'prop-firm-trade-copier')} class="group bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 border border-[#2B77EE]/50 rounded-xl p-6 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#2B77EE]/30 transition-all duration-300">
+          <div class="w-10 h-10 bg-gradient-to-br from-[#2B77EE]/20 to-[#0F3EC3]/20 rounded-lg flex items-center justify-center mb-3"><i class="fa-solid fa-building-columns text-[#2B77EE]"></i></div>
+          <h3 class="font-bold text-white text-lg mb-1">{t('trade_copier.s12_hub4_title')}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">{t('trade_copier.s12_hub4_desc')}</p>
+        </a>
+      </div>
+
+      <div class="mt-8" data-aos="fade-up">
+        <p class="text-xs uppercase tracking-widest text-gray-400 mb-3 electrolize-regular">{t('trade_copier.s12_by_broker_label')}</p>
+        <div class="flex flex-wrap gap-2.5 text-sm">
+          {brokerLinks.map((b) => (
+            <a href={b.href} target={b.external ? '_blank' : undefined} rel={b.external ? 'noopener' : undefined}
+              class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3.5 py-2 text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{b.name}</a>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-6" data-aos="fade-up">
+        <p class="text-xs uppercase tracking-widest text-gray-400 mb-3 electrolize-regular">{t('trade_copier.s12_by_firm_label')}</p>
+        <div class="flex flex-wrap gap-2.5 text-sm">
+          <a href={localizedPath(locale, 'supported-propfirms')} class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3.5 py-2 text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('trade_copier.cta_link_propfirms')}</a>
+          <a href={localizedPath(locale, 'pricing')} class="bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-lg px-3.5 py-2 text-gray-200 hover:text-white hover:border-[#2B77EE] transition">{t('trade_copier.cta_link_pricing')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (13) FAQ -->
+  <section class="relative py-14 sm:py-16 bg-gradient-to-b from-[#001429] to-[#002040]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-5">
+      <div class="text-center mb-9" data-aos="fade-up">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{t('trade_copier.s13_h2')}</h2>
+        <p class="text-gray-400 text-sm sm:text-base">{t('trade_copier.s13_intro')}</p>
+      </div>
+      <div class="space-y-3" data-aos="fade-up">
+        {faqItems.map(([qKey, aKey]) => (
+          <details class="group bg-[#122B75]/30 border border-[#2B77EE]/40 rounded-xl px-5 py-4">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="faq-question font-semibold text-white text-sm sm:text-base pr-4">{t(`trade_copier.${qKey}`)}</span>
+              <i class="fa-solid fa-chevron-down faq-chevron text-[#7FB8F9] text-sm shrink-0"></i>
+            </summary>
+            <p class="faq-answer mt-3 text-sm text-gray-300 leading-relaxed">{t(`trade_copier.${aKey}`)}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- (14) FINAL CTA -->
+  <section class="relative py-16 sm:py-20 overflow-hidden" style="background:linear-gradient(160deg,#04091f,#0c1a4a 38%,#0f2270 68%,#162e7a);">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 right-24 w-72 h-72 bg-[#2B77EE] rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-5 text-center" data-aos="fade-up">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">{t('trade_copier.cta_h2')}</h2>
+      <p class="text-gray-300 mb-8 max-w-2xl mx-auto">{t('trade_copier.cta_p')}</p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href="https://app.pickmytrade.io/?register=true" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-[#0F3EC3] border border-[#2B77EE] hover:bg-[#0d35a8] transition-all duration-200 active:scale-95 electrolize-regular">
+          {t('trade_copier.cta_primary')} <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="https://docs.pickmytrade.io/docs/" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-semibold text-[#7FB8F9] bg-white/5 border border-[#2B77EE]/40 hover:bg-white/10 transition-all duration-200">
+          {t('trade_copier.cta_secondary')}
+        </a>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-white/10">
+        <p class="text-xs uppercase tracking-widest text-gray-400 mb-4 electrolize-regular">{t('trade_copier.cta_explore_label')}</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+          <a href="https://pickmytrade.trade/tradingview-trade-copier/" target="_blank" rel="noopener" class="text-[#7FB8F9] hover:text-white transition">{t('trade_copier.cta_link_tv_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href="https://pickmytrade.trade/tradovate-trade-copier/" target="_blank" rel="noopener" class="text-[#7FB8F9] hover:text-white transition">{t('trade_copier.cta_link_tradovate_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'futures-trade-copier')} class="text-[#7FB8F9] hover:text-white transition">{t('trade_copier.cta_link_futures_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'prop-firm-trade-copier')} class="text-[#7FB8F9] hover:text-white transition">{t('trade_copier.cta_link_propfirm_copier')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'supported-propfirms')} class="text-[#7FB8F9] hover:text-white transition">{t('trade_copier.cta_link_propfirms')}</a>
+          <span class="text-gray-700">|</span>
+          <a href={localizedPath(locale, 'pricing')} class="text-[#7FB8F9] hover:text-white transition">{t('trade_copier.cta_link_pricing')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  details[open] .faq-chevron { transform: rotate(180deg); }
+  .faq-chevron { transition: transform .2s ease; }
+</style>

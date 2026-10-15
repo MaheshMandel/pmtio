@@ -1,0 +1,2985 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqAccordion from '../../../components/FaqAccordion.astro';
+import ReadingMotion from '../../../components/ReadingMotion.astro';
+import { getLocalePaths, localizedPath, useTranslations } from '../../../i18n/utils';
+import { LOCALE_BCP47, type Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+// All copy lives in the `tp_sl_calculator` namespace of src/i18n/locales/*.json.
+const tt = (key: string) => t(`tp_sl_calculator.${key}` as any);
+
+// TODO(pre-launch): swap the generic /logo.png for a page-specific 1200x630 social card.
+const OG_IMAGE = '/logo.png';
+
+const pageUrl = new URL(Astro.url.pathname, 'https://pickmytrade.io').href.replace(/[/]$/, '');
+
+const faqItems = Array.from({ length: 15 }, (_, i) => ({ question: tt(`faq_q${i + 1}`), answer: tt(`faq_a${i + 1}`) }));
+
+// Strings used by the calculator script (window.TPSL_MSG).
+const jsMsgKeys = ["j_this_distance","j_unit_ticks","j_unit_points","j_dist_empty","j_dist_nan","j_dist_zero","j_dist_negative","j_dist_note_ticks","j_dist_note_grid","j_num_empty","j_num_nan","j_num_above","j_num_atleast","j_num_atmost","j_num_integer","j_closes_empty","j_closes_nan","j_closes_few_one","j_closes_few_other","j_closes_many","j_closes_note","j_s_convert_ticks","j_s_convert_cost","j_s_write_formula","j_s_put_distances","j_s_add_bottom","j_s_divide","j_s_short_flip","j_s_long_keep","j_s_work_k","j_s_k_zero","j_s_huge","j_s_top_power","j_s_bottom_power","j_s_put_formula","j_s_compare_f1_trend","j_s_breakeven_put","j_s_never_breakeven","j_s_ev_at","j_s_multiply_subtract","j_s_check_ev_zero","j_s_vol_bar","j_s_vol_total","j_timeout_word","j_s_unreachable","j_s_decay_x","j_more_term_one","j_more_term_other","j_s_f4_tp_terms","j_s_f4_tp_terms_more","j_s_f4_tp_none","j_s_f4_sl","j_s_f4_timeout","j_s_shift","j_s_move_orders","j_s_compare_f1_cont","j_s_est_changes","j_s_est_trend_prices","j_today","j_n_days_ago","j_s_est_trend_closes","j_s_est_trend_zero","j_s_est_vol_atr","j_s_est_vol_iv","j_s_est_avg_change","j_s_est_vol_closes","j_custom_contract_err","j_echo_fix_custom","j_hint_generic","j_echo_generic","j_hint_inst","j_echo_inst","j_your_custom_contract","j_change_units","j_conv_pts","j_conv_ticks","j_conv_money","j_pts","j_money_for_qty","j_money_per_contract","j_one_in","j_n_in_100","j_lbl_tp","j_lbl_sl","j_lbl_trend","j_lbl_vol","j_lbl_cost","j_lbl_wr","j_lbl_qty","j_lbl_atr","j_lbl_time","j_lbl_maxhold","j_lbl_past","j_lbl_now","j_lbl_days","j_lbl_datr","j_lbl_price","j_lbl_iv","j_f1_sub","j_f2_sub_long","j_f2_sub_short","j_pts_short","j_v_never","j_v_need","j_v_even","j_v_above","j_v_below","j_fix_input","j_never","j_f3_ev_user","j_hyp_tpsl","j_f3_ev_nouser","j_add_wr","j_leg_tp","j_leg_to","j_leg_sl","j_f4_cmp","j_ev_noedge","j_ev_f2","j_check_inputs","j_hero_waiting","j_one_note","j_inputs_ok","j_inputs_ok_grid","j_inputs_ok_plain","j_bigcap_f4","j_bigcap_f2","j_bigcap_f1","j_with_no_time","j_with_no_trend","j_leg_tp_first","j_leg_sl_first","j_hyp_f4","j_hyp","j_ev_user_main","j_hyp_assumes","j_ev_nouser_main","j_for_qty","j_side_long","j_side_short","j_hero_cap","j_with_your_trend","j_no_edge","j_bar_limit","j_tp_first","j_hero_ev_f2","j_hero_ev_noedge","j_eqp_mine","j_eqp_mine_unset","j_eqp_f2","j_eqp_f1","j_iv_note","j_flat_closes","j_est_hour","j_est_done","j_of_100","j_waiting","j_fix_sim","j_formula_says","j_running","j_running_note","j_gap_noise","j_pill_agree","j_pill_gap_real","j_pill_gap_noise","j_big_note","j_big_note_to","j_dist_ticks","j_canvas_tp","j_canvas_sl","j_canvas_entry_short","j_canvas_entry_long","j_canvas_time_bars","j_canvas_time","j_canvas_aria","j_eq_never","j_streak_small","j_eq_note","j_eq_src_user","j_eq_src_f2","j_eq_src_f1","j_eq_pick_inst","j_eq_timeouts","j_axis_trade","j_axis_trade_pts","j_tip_after","j_tip_p95","j_tip_median","j_tip_p5","j_tip_example"];
+const jsMsg = Object.fromEntries(jsMsgKeys.map((k) => [k, tt(k)]));
+const jsMsgScript = 'window.TPSL_MSG=' + JSON.stringify(jsMsg).replace(/</g, String.fromCharCode(92) + 'u003c') + ';';
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": pageUrl + '#webpage',
+      "url": pageUrl,
+      "name": tt('schema_page_name'),
+      "description": tt('meta_description'),
+      "inLanguage": LOCALE_BCP47[locale],
+      "datePublished": "2026-09-23",
+      "dateModified": "2026-09-23",
+      "publisher": {
+        "@id": "https://pickmytrade.io/#organization"
+      },
+      "breadcrumb": {
+        "@id": pageUrl + '#breadcrumb'
+      },
+      "mainEntity": {
+        "@id": pageUrl + '#app'
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "#answer",
+          "#takeaways"
+        ]
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": pageUrl + '#app',
+      "name": tt('schema_app_name'),
+      "url": pageUrl,
+      "description": tt('schema_app_description'),
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any (web browser)",
+      "browserRequirements": tt('schema_app_browser'),
+      "featureList": Array.from({ length: 9 }, (_, i) => tt(`schema_feature_${i + 1}`)),
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "dateModified": "2026-09-23",
+      "inLanguage": LOCALE_BCP47[locale],
+      "publisher": {
+        "@id": "https://pickmytrade.io/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": pageUrl + '#breadcrumb',
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": tt('breadcrumb_home'),
+          "item": "https://pickmytrade.io/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": tt('breadcrumb_current'),
+          "item": pageUrl
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": pageUrl + '#faq',
+      "mainEntity": faqItems.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } }))
+    }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={tt('meta_title')}
+  description={tt('meta_description')}
+  keywords={tt('meta_keywords')}
+  ogImage={OG_IMAGE}
+  structuredData={structuredData}
+>
+  <script is:inline slot="head">document.documentElement.className += ' js';</script>
+  <ReadingMotion />
+
+  <div class="tpsl">
+  <!-- Top disclaimer banner -->
+  <div class="bg-[#001429] pt-20 text-center px-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-blue-500/20 pb-3">
+      <p class="text-xs sm:text-sm text-gray-400">
+        <Fragment set:html={tt('s001')} /></p>
+    </div>
+  </div>
+
+
+  <!-- Hero -->
+  <section class="hero relative pt-8 pb-12 overflow-hidden bg-[#001429]">
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-orange-600/10"></div>
+      <div class="absolute top-0 left-[12%] w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-0 right-[8%] w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+      <div class="absolute inset-0 opacity-[0.02]" style="background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 50px 50px;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-start">
+        <div data-aos="fade-up">
+          <Fragment set:html={tt('s002')} />
+          <h1 class="text-3xl sm:text-5xl font-bold leading-tight tracking-tight mb-6">
+            <Fragment set:html={tt('s003')} />
+          </h1>
+
+          <div class="flex flex-col sm:flex-row gap-4 mb-8">
+            <Fragment set:html={tt('s004')} />
+          </div>
+
+          <div class="flex flex-wrap gap-3 sm:gap-4 text-sm">
+            <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2">
+              <Fragment set:html={tt('s005')} />
+            </div>
+            <div class="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2">
+              <Fragment set:html={tt('s006')} />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-5" data-aos="fade-up" data-aos-delay="100">
+        <aside class="odds-card" aria-label={tt('s007')}>
+        <p class="cap" id="heroCap">{tt('s008')}</p>
+        <p class="big num" id="heroBig"><Fragment set:html={tt('s009')} /></p>
+        <div class="bar" aria-hidden="true"><i class="tp" id="heroBarTp" style="flex:0 0 33.3%"></i><i class="to" id="heroBarTo" style="flex:0 0 0%" hidden></i><i class="sl" id="heroBarSl" style="flex:1 1 auto"></i></div>
+        <div class="legend"><Fragment set:html={tt('s010')} /></div>
+        <div class="sub">
+          <Fragment set:html={tt('s011')} />
+        </div>
+        <p class="jump"><Fragment set:html={tt('s012')} /></p>
+      </aside>
+          <aside class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm border border-gray-700/50 border-l-4 border-l-orange-500 rounded-2xl p-6" aria-label={tt('s013')}>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-blue-400 mb-3 flex items-center gap-2"><Fragment set:html={tt('s014')} /></h2>
+            <p class="answer" id="answer"><Fragment set:html={tt('s015')} /></p>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-[#001429]"><div class="max-w-[1500px] mx-auto px-2 sm:px-4 xl:grid xl:grid-cols-[250px_minmax(0,1fr)] xl:gap-6">
+    <aside class="hidden xl:block pt-6">
+      <nav aria-label={tt('s016')} class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-3">
+        <p class="px-2.5 pt-1 pb-2 text-xs font-bold uppercase tracking-wider text-blue-400 electrolize-regular">{tt('s017')}</p>
+        <ul class="space-y-0.5">
+          <li><Fragment set:html={tt('s018')} /></li>
+          <li><Fragment set:html={tt('s019')} /></li>
+          <li><Fragment set:html={tt('s020')} /></li>
+          <li><Fragment set:html={tt('s021')} /></li>
+          <li><Fragment set:html={tt('s022')} /></li>
+          <li><Fragment set:html={tt('s023')} /></li>
+          <li><Fragment set:html={tt('s024')} /></li>
+          <li><Fragment set:html={tt('s025')} /></li>
+          <li><Fragment set:html={tt('s026')} /></li>
+          <li><Fragment set:html={tt('s027')} /></li>
+          <li><Fragment set:html={tt('s028')} /></li>
+          <li><Fragment set:html={tt('s029')} /></li>
+          <li><Fragment set:html={tt('s030')} /></li>
+          <li><Fragment set:html={tt('s031')} /></li>
+          <li><Fragment set:html={tt('s032')} /></li>
+          <li><Fragment set:html={tt('s033')} /></li>
+        </ul>
+      </nav>
+    </aside>
+    <div class="min-w-0">
+<section class="relative py-10 scroll-mt-28 " aria-labelledby="takeaways-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="takeaways" id="takeaways">
+      <h2 id="takeaways-h">{tt('s034')}</h2>
+      <ul>
+        <li>{tt('s035')}</li>
+        <li>{tt('s036')}</li>
+        <li>{tt('s037')}</li>
+        <li>{tt('s038')}</li>
+        <li>{tt('s039')}</li>
+        <li>{tt('s040')}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="contents" class="py-8 scroll-mt-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-6 xl:hidden" data-aos="fade-up">
+        <Fragment set:html={tt('s041')} />
+      </div>
+      <nav aria-label={tt('s042')} class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10 xl:hidden" data-aos="fade-up">
+          <Fragment set:html={tt('s043')} />
+      </nav>
+      <div class="settings needs-js" id="settings" role="group" aria-labelledby="settings-h">
+      <div class="field">
+        <h2 id="settings-h" style="font-size:1.2rem">{tt('s044')}</h2>
+        <p class="hint">{tt('s045')}</p>
+        <p class="hint" id="settingsHint">{tt('s046')}</p>
+      </div>
+      <div class="group">
+        <div class="row">
+          <div class="field">
+            <label for="inst">{tt('s047')}</label>
+            <select id="inst" name="inst">
+              <option value="GEN" selected>{tt('s048')}</option>
+              <option value="ES">{tt('s049')}</option>
+              <option value="MES">{tt('s050')}</option>
+              <option value="NQ">{tt('s051')}</option>
+              <option value="MNQ">{tt('s052')}</option>
+              <option value="YM">{tt('s053')}</option>
+              <option value="MYM">{tt('s054')}</option>
+              <option value="RTY">{tt('s055')}</option>
+              <option value="M2K">{tt('s056')}</option>
+              <option value="CL">{tt('s057')}</option>
+              <option value="MCL">{tt('s058')}</option>
+              <option value="GC">{tt('s059')}</option>
+              <option value="MGC">{tt('s060')}</option>
+              <option value="SI">{tt('s061')}</option>
+              <option value="6E">{tt('s062')}</option>
+              <option value="ZN">{tt('s063')}</option>
+              <option value="CUSTOM">{tt('s064')}</option>
+            </select>
+          </div>
+          <div class="field">
+            <Fragment set:html={tt('s065')} />
+            <div class="seg" role="radiogroup" aria-labelledby="unit-l">
+              <label><input type="radio" name="unit" id="unitPoints" value="points" checked><Fragment set:html={tt('s066')} /></label>
+              <label><input type="radio" name="unit" id="unitTicks" value="ticks" disabled><Fragment set:html={tt('s067')} /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="customRow" hidden>
+          <div class="field"><label for="cTick">{tt('s068')}</label><input type="number" id="cTick" inputmode="decimal" step="any" min="0" value="0.25"></div>
+          <div class="field"><label for="cTv">{tt('s069')}</label><input type="number" id="cTv" inputmode="decimal" step="any" min="0" value="12.5"></div>
+        </div>
+        <p class="fmsg err" id="settingsMsg" hidden></p>
+        <p class="hint" id="znHint" hidden>{tt('s070')}</p>
+      </div>
+    </div>
+  
+    </div>
+  </section>
+
+<section id="f1" class="relative py-10 scroll-mt-28  fsec" aria-labelledby="f1-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">F1</span>
+        <h2 id="f1-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s071')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s072')}</p>
+      </div>
+
+    <div class="plate" role="group" aria-label={tt('s073')}>
+      <p class="cap">{tt('s074')}</p>
+      <div class="mx"><math display="block"><mrow><mi>P</mi><mo>=</mo><mfrac><mi>SL</mi><mrow><mi>TP</mi><mo>+</mo><mi>SL</mi></mrow></mfrac></mrow></math></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s075')}</h3>
+      <div class="tw letters"><table>
+        <thead><tr><th>{tt('s076')}</th><th>{tt('s077')}</th><th>{tt('s078')}</th><th class="n">{tt('s079')}</th></tr></thead>
+        <tbody>
+          <tr><td>P</td><td>{tt('s080')}</td><td>0 to 1 (or 0% to 100%)</td><td class="n">0.333</td></tr>
+          <tr><td>TP</td><td>{tt('s081')}</td><td>{tt('s082')}</td><td class="n">20</td></tr>
+          <tr><td>SL</td><td>{tt('s083')}</td><td>{tt('s082')}</td><td class="n">10</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s084')}</h3>
+      <p>{tt('s085')}</p>
+      <div class="analogy"><Fragment set:html={tt('s086')} /></div>
+      <div class="fit">
+        <div><h4>{tt('s087')}</h4><ul><li>{tt('s088')}</li><li>{tt('s089')}</li><li>{tt('s090')}</li><li>{tt('s091')}</li></ul></div>
+        <div><h4>{tt('s092')}</h4><ul><li>{tt('s093')}</li><li>{tt('s094')}</li><li>{tt('s095')}</li><li>{tt('s096')}</li><li>{tt('s097')}</li></ul></div>
+      </div>
+      <div class="tw">
+        <table>
+          <caption>{tt('s098')}</caption>
+          <thead><tr><th>{tt('s099')}</th><th class="n">{tt('s100')}</th><th class="n">{tt('s101')}</th></tr></thead>
+          <tbody>
+            <tr><td>1 : 1</td><td class="n">50.0%</td><td class="n">50</td></tr>
+            <tr><td>1.5 : 1</td><td class="n">40.0%</td><td class="n">40</td></tr>
+            <tr><td>2 : 1</td><td class="n">33.3%</td><td class="n">33</td></tr>
+            <tr><td>3 : 1</td><td class="n">25.0%</td><td class="n">25</td></tr>
+            <tr><td>4 : 1</td><td class="n">20.0%</td><td class="n">20</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s102')}</h3>
+      <div class="example">
+        <p class="given">{tt('s103')}</p>
+        <ol class="steps"><li><p class="st-l">{tt('s104')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mfrac><mi>SL</mi><mrow><mi>TP</mi><mo>+</mo><mi>SL</mi></mrow></mfrac></mrow></mrow></math></div></li><li><p class="st-l">{tt('s105')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mfrac><mn data-k="sl">10</mn><mrow><mn data-k="tp">20</mn><mo>+</mo><mn>10</mn></mrow></mfrac></mrow></mrow></math></div></li><li><p class="st-l">{tt('s106')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mfrac><mn>10</mn><mn data-k="L">30</mn></mfrac></mrow></mrow></math></div></li><li><p class="st-l">{tt('s107')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mn data-k="p">0.3333</mn><mo>=</mo><mn data-k="pct">33.3%</mn></mrow></mrow></math></div></li></ol>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s108')}</h3>
+      <p class="nojs">{tt('s109')}</p>
+      <div class="mini needs-js">
+        <form class="panel" id="f1form" novalidate aria-label={tt('s110')}>
+          <p class="echo" data-echo></p>
+          <div class="row">
+            <div class="field"><label for="f1tp"><Fragment set:html={tt('s111')} /></label><input type="text" id="f1tp" inputmode="decimal" value="30" autocomplete="off"><p class="fmsg" id="f1tpMsg" hidden></p></div>
+            <div class="field"><label for="f1sl"><Fragment set:html={tt('s112')} /></label><input type="text" id="f1sl" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="f1slMsg" hidden></p></div>
+          </div>
+          <p class="conv" id="f1conv" aria-live="polite"></p>
+          <p class="hint">{tt('s113')}</p>
+        </form>
+        <div class="work" aria-live="polite">
+          <p class="work-h">{tt('s114')}</p>
+          <ol class="steps" id="f1work"></ol>
+          <div class="result-line"><Fragment set:html={tt('s115')} />
+            <div class="bar" aria-hidden="true"><i class="tp" id="f1barTp"></i><i class="to" id="f1barTo" hidden></i><i class="sl" id="f1barSl"></i></div></div>
+          <div class="disclosure compact" role="note"><Fragment set:html={tt('s116')} /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source">
+      <Fragment set:html={tt('s117')} />
+      <ul>
+        <li><Fragment set:html={tt('s118')} /></li>
+        <li><Fragment set:html={tt('s119')} /></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="f2" class="relative py-10 scroll-mt-28  fsec" aria-labelledby="f2-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">F2</span>
+        <h2 id="f2-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s120')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s121')}</p>
+      </div>
+
+    <div class="plate" role="group" aria-label={tt('s122')}>
+      <p class="cap">{tt('s123')}</p>
+      <div class="mx"><math display="block"><mrow><mi>P</mi><mo>=</mo><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mn>2</mn><mi>μ</mi><mi>B</mi><mo>/</mo><msup><mi>σ</mi><mn>2</mn></msup></mrow></msup></mrow><mrow><msup><mi>e</mi><mrow><mo>−</mo><mn>2</mn><mi>μ</mi><mi>A</mi><mo>/</mo><msup><mi>σ</mi><mn>2</mn></msup></mrow></msup><mo>−</mo><msup><mi>e</mi><mrow><mn>2</mn><mi>μ</mi><mi>B</mi><mo>/</mo><msup><mi>σ</mi><mn>2</mn></msup></mrow></msup></mrow></mfrac></mrow></math></div>
+      <div class="sub">
+        <p>{tt('s124')}</p>
+        <div class="mx"><math display="block"><mrow><mi>k</mi><mo>=</mo><mfrac><mrow><mn>2</mn><mi>μ</mi></mrow><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mo>,</mo><mspace width="1.2em"/><mi>P</mi><mo>=</mo><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>k</mi><mi>B</mi></mrow></msup></mrow><mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>A</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><mrow><mi>k</mi><mi>B</mi></mrow></msup></mrow></mfrac></mrow></math></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s075')}</h3>
+      <div class="tw letters"><table>
+        <thead><tr><th>{tt('s076')}</th><th>{tt('s077')}</th><th>{tt('s078')}</th><th class="n">{tt('s079')}</th></tr></thead>
+        <tbody>
+          <tr><td>P</td><td>{tt('s080')}</td><td>0 to 1</td><td class="n">0.347</td></tr>
+          <tr><td>A</td><td>{tt('s125')}</td><td>{tt('s082')}</td><td class="n">20</td></tr>
+          <tr><td>B</td><td>{tt('s126')}</td><td>{tt('s082')}</td><td class="n">10</td></tr>
+          <tr><td>μ</td><td><Fragment set:html={tt('s127')} /></td><td>{tt('s128')}</td><td class="n">5</td></tr>
+          <tr><td>σ</td><td><Fragment set:html={tt('s129')} /></td><td>{tt('s130')}</td><td class="n">50</td></tr>
+          <tr><td>k</td><td>{tt('s131')}</td><td>{tt('s132')}</td><td class="n">0.004</td></tr>
+          <tr><td>e</td><td><Fragment set:html={tt('s133')} /></td><td>{tt('s134')}</td><td class="n">2.718</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><Fragment set:html={tt('s135')} /></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s084')}</h3>
+      <p>{tt('s136')}</p>
+      <div class="analogy"><Fragment set:html={tt('s137')} /></div>
+      <div class="fit">
+        <div><h4>{tt('s138')}</h4><ul><li>{tt('s139')}</li><li>{tt('s140')}</li><li>{tt('s141')}</li></ul></div>
+        <div><h4>{tt('s092')}</h4><ul><li>{tt('s142')}</li><li>{tt('s143')}</li><li>{tt('s144')}</li></ul></div>
+      </div>
+      <details class="more">
+        <summary>{tt('s145')}</summary>
+        <div>
+          <p><Fragment set:html={tt('s146')} /></p>
+          <div class="mx"><math display="block"><mrow><mi>P</mi><mo>≈</mo><mfrac><mrow><mn>1</mn><mo>−</mo><mo>(</mo><mn>1</mn><mo>+</mo><mi>k</mi><mi>B</mi><mo>)</mo></mrow><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>k</mi><mi>A</mi><mo>)</mo><mo>−</mo><mo>(</mo><mn>1</mn><mo>+</mo><mi>k</mi><mi>B</mi><mo>)</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mo>−</mo><mi>k</mi><mi>B</mi></mrow><mrow><mo>−</mo><mi>k</mi><mo>(</mo><mi>A</mi><mo>+</mo><mi>B</mi><mo>)</mo></mrow></mfrac><mo>=</mo><mfrac><mi>B</mi><mrow><mi>A</mi><mo>+</mo><mi>B</mi></mrow></mfrac></mrow></math></div>
+          <p>{tt('s147')}</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s102')}</h3>
+      <div class="example">
+        <p class="given">{tt('s148')}</p>
+        <ol class="steps"><li><p class="st-l">{tt('s149')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>μ</mi><mi>fav</mi></msub><mo>=</mo><mi>μ</mi><mo>=</mo><mn data-k="mu">5</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="muFav">5</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s150')}</p><div class="mx"><math display="block"><mrow><mrow><mi>k</mi><mo>=</mo><mfrac><mrow><mn>2</mn><mo>×</mo><mn>5</mn></mrow><msup><mn data-k="sigma">50</mn><mn>2</mn></msup></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="k">0.004</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s151')}</p><div class="mx"><math display="block"><mrow><mrow><msup><mi>e</mi><mrow><mi>k</mi><mi>B</mi></mrow></msup><mo>=</mo><msup><mi>e</mi><mrow><mn>0.004</mn><mo>×</mo><mn>10</mn></mrow></msup></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><msup><mi>e</mi><mn data-k="kB">0.04</mn></msup><mo>=</mo><mn data-k="eB">1.04081</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s152')}</p><div class="mx"><math display="block"><mrow><mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>A</mi></mrow></msup><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mn data-k="kA">0.08</mn></mrow></msup></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="eA">0.923116</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s153')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mfrac><mrow><mn>1</mn><mo>−</mo><mn>1.04081</mn></mrow><mrow><mn>0.923116</mn><mo>−</mo><mn>1.04081</mn></mrow></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mfrac><mrow><mo>−</mo><mn data-k="num">0.0408108</mn></mrow><mrow><mo>−</mo><mn data-k="den">0.117694</mn></mrow></mfrac></mrow></mrow></math></div></li><li><p class="st-l">{tt('s107')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mn data-k="p">0.3468</mn><mo>=</mo><mn data-k="pct">34.7%</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s154')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>P</mi><mi>F1</mi></msub><mo>=</mo><mn data-k="p1">33.3%</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>−</mo><msub><mi>P</mi><mi>F1</mi></msub><mo>=</mo><mn data-k="diff">+1.34</mn></mrow></mrow></math></div></li></ol>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s155')}</h3>
+      <p class="nojs">{tt('s109')}</p>
+      <div class="mini needs-js">
+        <form class="panel" id="f2form" novalidate aria-label={tt('s156')}>
+          <p class="echo" data-echo></p>
+          <div class="field">
+            <Fragment set:html={tt('s157')} />
+            <div class="seg" role="radiogroup" aria-labelledby="f2side-l">
+              <label><input type="radio" name="f2side" id="f2long" value="long"><Fragment set:html={tt('s158')} /></label>
+              <label><input type="radio" name="f2side" id="f2short" value="short" checked><Fragment set:html={tt('s159')} /></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="f2tp"><Fragment set:html={tt('s160')} /></label><input type="text" id="f2tp" inputmode="decimal" value="20" autocomplete="off"><p class="fmsg" id="f2tpMsg" hidden></p></div>
+            <div class="field"><label for="f2sl"><Fragment set:html={tt('s161')} /></label><input type="text" id="f2sl" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="f2slMsg" hidden></p></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="f2mu">{tt('s162')}</label><input type="text" id="f2mu" inputmode="decimal" value="-5" autocomplete="off"><p class="hint">{tt('s163')}</p><p class="fmsg" id="f2muMsg" hidden></p></div>
+            <div class="field"><label for="f2sigma">{tt('s164')}</label><input type="text" id="f2sigma" inputmode="decimal" value="30" autocomplete="off"><p class="hint">{tt('s165')}</p><p class="fmsg" id="f2sigmaMsg" hidden></p></div>
+          </div>
+          <p class="hint">{tt('s166')}</p>
+          <p class="hint"><Fragment set:html={tt('s167')} /></p>
+        </form>
+        <div class="work" aria-live="polite">
+          <p class="work-h">{tt('s114')}</p>
+          <ol class="steps" id="f2work"></ol>
+          <div class="result-line"><Fragment set:html={tt('s168')} /></div>
+          <div class="cmp">
+            <div class="tile"><div class="t">{tt('s169')}</div><div class="v" id="f2cmpP">–</div></div>
+            <div class="tile"><div class="t">{tt('s170')}</div><div class="v" id="f2cmpP1">–</div></div>
+            <div class="tile"><div class="t">{tt('s171')}</div><div class="v" id="f2cmpD">–</div></div>
+          </div>
+          <div class="disclosure compact" role="note"><Fragment set:html={tt('s116')} /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block derive" id="f2-where">
+      <h3>{tt('s172')}</h3>
+      <p><Fragment set:html={tt('s173')} /></p>
+
+      <h4 id="f2-trend">{tt('s174')}</h4>
+      <p>{tt('s175')}</p>
+      <div class="formula"><div class="mx"><math display="block"><mrow><mi>μ</mi><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mtext set:html={tt('s176')}></mtext></msub><mo>−</mo><msub><mi>C</mi><mtext set:html={tt('s177')}></mtext></msub></mrow><mi>N</mi></mfrac></mrow></math></div></div>
+      <div class="example">
+        <p class="given">{tt('s178')}</p>
+        <ol class="steps"><li><p class="st-l">{tt('s179')}</p><div class="mx"><math display="block"><mrow><mrow><mi>μ</mi><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mtext set:html={tt('s176')}></mtext></msub><mo>−</mo><msub><mi>C</mi><mtext set:html={tt('s177')}></mtext></msub></mrow><mi>N</mi></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mfrac><mrow><mn data-k="now">5,100</mn><mo>−</mo><mn data-k="past">5,000</mn></mrow><mn data-k="days">20</mn></mfrac><mo>=</mo><mfrac><mn data-k="chg">100</mn><mn>20</mn></mfrac><mo>=</mo><mn data-k="mu">+5</mn></mrow></mrow></math></div></li></ol>
+        <p class="fine">{tt('s180')}</p>
+      </div>
+      <div class="callout"><Fragment set:html={tt('s181')} /></div>
+
+      <h4 id="f2-vol">{tt('s182')}</h4>
+      <p>{tt('s183')}</p>
+      <ol class="ways">
+        <li>
+          <h5>{tt('s184')}</h5>
+          <div class="mx"><math display="block"><mrow><mi>σ</mi><mo>≈</mo><mfrac><mi>ATR</mi><msqrt><mrow><mn>8</mn><mo>/</mo><mi>π</mi></mrow></msqrt></mfrac><mo>≈</mo><mfrac><mi>ATR</mi><mn>1.6</mn></mfrac></mrow></math></div>
+          <p><Fragment set:html={tt('s185')} /></p>
+          <p>{tt('s186')}</p>
+        </li>
+        <li>
+          <h5>{tt('s187')}</h5>
+          <div class="mx"><math display="block"><mrow><mi>d</mi><mo>=</mo><msub><mi>C</mi><mtext set:html={tt('s188')}></mtext></msub><mo>−</mo><msub><mi>C</mi><mtext set:html={tt('s189')}></mtext></msub><mo>,</mo><mspace width="1em"/><mi>σ</mi><mo>=</mo><msqrt><mfrac><mrow><mo>∑</mo><msup><mrow><mo>(</mo><mi>d</mi><mo>−</mo><mover accent="true"><mi>d</mi><mo>¯</mo></mover><mo>)</mo></mrow><mn>2</mn></msup></mrow><mrow><mi>K</mi><mo>−</mo><mn>1</mn></mrow></mfrac></msqrt></mrow></math></div>
+          <p>{tt('s190')}</p>
+          <div class="tw"><table>
+            <thead><tr><th>{tt('s191')}</th><th>{tt('s192')}</th></tr></thead>
+            <tbody>
+              <tr><td>{tt('s193')}</td><td><Fragment set:html={tt('s194')} /></td></tr>
+              <tr><td>{tt('s195')}</td><td><code class="cell">=STDEV.S(C3:C22-C2:C21)</code></td></tr>
+              <tr><td>{tt('s196')}</td><td>{tt('s197')}</td></tr>
+              <tr><td>{tt('s198')}</td><td><code class="cell">=ARRAYFORMULA(STDEV.S(C3:C22-C2:C21))</code></td></tr>
+            </tbody>
+          </table></div>
+          <p><Fragment set:html={tt('s199')} /></p>
+        </li>
+        <li>
+          <h5>{tt('s200')}</h5>
+          <div class="mx"><math display="block"><mrow><mi>σ</mi><mo>≈</mo><mfrac><mrow><mtext set:html={tt('s201')}></mtext><mo>×</mo><mi>IV</mi></mrow><msqrt><mn>252</mn></msqrt></mfrac></mrow></math></div>
+          <p><Fragment set:html={tt('s202')} /></p>
+          <p>{tt('s203')}</p>
+        </li>
+      </ol>
+
+      <h4 id="f2-sqrt">{tt('s204')}</h4>
+      <p>{tt('s205')}</p>
+      <div class="formula"><div class="mx"><math display="block"><mrow><msub><mi>σ</mi><mtext set:html={tt('s206')}></mtext></msub><mo>=</mo><mfrac><msub><mi>σ</mi><mtext set:html={tt('s188')}></mtext></msub><msqrt><mi>h</mi></msqrt></mfrac><mo>,</mo><mspace width="1.2em"/><msub><mi>μ</mi><mtext set:html={tt('s206')}></mtext></msub><mo>=</mo><mfrac><msub><mi>μ</mi><mtext set:html={tt('s188')}></mtext></msub><mi>h</mi></mfrac></mrow></math></div></div>
+      <p><Fragment set:html={tt('s207')} /></p>
+      <p><Fragment set:html={tt('s208')} /></p>
+      <div class="formula"><div class="mx"><math display="block"><mrow><msub><mi>k</mi><mtext set:html={tt('s206')}></mtext></msub><mo>=</mo><mfrac><mrow><mn>2</mn><mo>(</mo><msub><mi>μ</mi><mtext set:html={tt('s188')}></mtext></msub><mo>/</mo><mi>h</mi><mo>)</mo></mrow><mrow><msubsup><mi>σ</mi><mtext set:html={tt('s188')}></mtext><mn>2</mn></msubsup><mo>/</mo><mi>h</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mn>2</mn><msub><mi>μ</mi><mtext set:html={tt('s188')}></mtext></msub></mrow><msubsup><mi>σ</mi><mtext set:html={tt('s188')}></mtext><mn>2</mn></msubsup></mfrac><mo>=</mo><msub><mi>k</mi><mtext set:html={tt('s188')}></mtext></msub></mrow></math></div></div>
+      <p>{tt('s209')}</p>
+
+      <h4 id="f2-full-example">{tt('s210')}</h4>
+      <p>{tt('s211')}</p>
+      <div class="example">
+        <p class="given">{tt('s212')}</p>
+        <ol class="steps"><li><p class="st-l">{tt('s213')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>μ</mi><mi>fav</mi></msub><mo>=</mo><mo>−</mo><mi>μ</mi><mo>=</mo><mo>−</mo><mo>(</mo><mrow><mo>−</mo><mn data-k="mu">5</mn></mrow><mo>)</mo></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="muFav">5</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s150')}</p><div class="mx"><math display="block"><mrow><mrow><mi>k</mi><mo>=</mo><mfrac><mrow><mn>2</mn><mo>×</mo><mn>5</mn></mrow><msup><mn data-k="sigma">30</mn><mn>2</mn></msup></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="k">0.0111111</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s151')}</p><div class="mx"><math display="block"><mrow><mrow><msup><mi>e</mi><mrow><mi>k</mi><mi>B</mi></mrow></msup><mo>=</mo><msup><mi>e</mi><mrow><mn>0.0111111</mn><mo>×</mo><mn>10</mn></mrow></msup></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><msup><mi>e</mi><mn data-k="kB">0.111111</mn></msup><mo>=</mo><mn data-k="eB">1.11752</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s152')}</p><div class="mx"><math display="block"><mrow><mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>A</mi></mrow></msup><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mn data-k="kA">0.222222</mn></mrow></msup></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="eA">0.800737</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s153')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mfrac><mrow><mn>1</mn><mo>−</mo><mn>1.11752</mn></mrow><mrow><mn>0.800737</mn><mo>−</mo><mn>1.11752</mn></mrow></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mfrac><mrow><mo>−</mo><mn data-k="num">0.117519</mn></mrow><mrow><mo>−</mo><mn data-k="den">0.316782</mn></mrow></mfrac></mrow></mrow></math></div></li><li><p class="st-l">{tt('s107')}</p><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>=</mo><mn data-k="p">0.3710</mn><mo>=</mo><mn data-k="pct">37.1%</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s154')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>P</mi><mi>F1</mi></msub><mo>=</mo><mn data-k="p1">33.3%</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mi>P</mi><mo>−</mo><msub><mi>P</mi><mi>F1</mi></msub><mo>=</mo><mn data-k="diff">+3.76</mn></mrow></mrow></math></div></li></ol>
+      </div>
+      <p>{tt('s214')}</p>
+      <div class="tw"><table>
+        <caption>{tt('s215')}</caption>
+        <thead><tr><th>{tt('s164')}</th><th class="n">k = 2μ ÷ σ²</th><th class="n">{tt('s216')}</th><th class="n">{tt('s217')}</th><th class="n">{tt('s218')}</th></tr></thead>
+        <tbody>
+          <tr><td>30</td><td class="n">0.01111</td><td class="n">37.1%</td><td class="n">33.3%</td><td class="n">+3.76</td></tr>
+          <tr><td>50</td><td class="n">0.004</td><td class="n">34.7%</td><td class="n">33.3%</td><td class="n">+1.34</td></tr>
+        </tbody>
+      </table></div>
+      <div class="disclosure compact" role="note"><Fragment set:html={tt('s116')} /></div>
+    </div>
+
+    <div class="block" id="f2-helper">
+      <h3>{tt('s219')}</h3>
+      <p>{tt('s220')}</p>
+      <p class="nojs">{tt('s221')}</p>
+      <div class="mini needs-js">
+        <form class="panel" id="estForm" novalidate aria-label={tt('s222')}>
+          <fieldset class="group">
+            <legend class="group-title">{tt('s223')}</legend>
+            <div class="field">
+              <Fragment set:html={tt('s224')} />
+              <div class="seg" role="radiogroup" aria-labelledby="estMu-l">
+                <label><input type="radio" name="estMu" id="estMuPrices" value="prices" checked><Fragment set:html={tt('s225')} /></label>
+                <label><input type="radio" name="estMu" id="estMuCloses" value="closes"><Fragment set:html={tt('s226')} /></label>
+                <label><input type="radio" name="estMu" id="estMuZero" value="zero"><Fragment set:html={tt('s227')} /></label>
+              </div>
+            </div>
+            <div class="row" id="estPricesRow">
+              <div class="field"><label for="estPast">{tt('s228')}</label><input type="text" id="estPast" inputmode="decimal" value="5000" autocomplete="off"><p class="fmsg" id="estPastMsg" hidden></p></div>
+              <div class="field"><label for="estNow">{tt('s229')}</label><input type="text" id="estNow" inputmode="decimal" value="5100" autocomplete="off"><p class="fmsg" id="estNowMsg" hidden></p></div>
+              <div class="field"><label for="estDays">{tt('s230')}</label><input type="text" id="estDays" inputmode="numeric" value="20" autocomplete="off"><p class="fmsg" id="estDaysMsg" hidden></p></div>
+            </div>
+          </fieldset>
+          <fieldset class="group">
+            <legend class="group-title">{tt('s231')}</legend>
+            <div class="field">
+              <Fragment set:html={tt('s232')} />
+              <div class="seg" role="radiogroup" aria-labelledby="estSig-l">
+                <label><input type="radio" name="estSig" id="estSigAtr" value="atr" checked><Fragment set:html={tt('s233')} /></label>
+                <label><input type="radio" name="estSig" id="estSigIv" value="iv"><Fragment set:html={tt('s234')} /></label>
+                <label><input type="radio" name="estSig" id="estSigCloses" value="closes"><Fragment set:html={tt('s226')} /></label>
+              </div>
+            </div>
+            <div class="row" id="estAtrRow">
+              <div class="field"><label for="estAtr">{tt('s235')}</label><input type="text" id="estAtr" inputmode="decimal" value="80" autocomplete="off"><p class="hint">{tt('s236')}</p><p class="fmsg" id="estAtrMsg" hidden></p></div>
+            </div>
+            <div class="row" id="estIvRow" hidden>
+              <div class="field"><label for="estPrice">{tt('s201')}</label><input type="text" id="estPrice" inputmode="decimal" value="5000" autocomplete="off"><p class="fmsg" id="estPriceMsg" hidden></p></div>
+              <div class="field"><label for="estIv">{tt('s237')}</label><input type="text" id="estIv" inputmode="decimal" value="16" autocomplete="off"><p class="hint">{tt('s238')}</p><p class="fmsg" id="estIvMsg" hidden></p></div>
+            </div>
+          </fieldset>
+          <fieldset class="group" id="estClosesGroup" hidden>
+            <legend class="group-title">{tt('s239')}</legend>
+            <div class="field">
+              <label for="estCloses">{tt('s240')}</label>
+              <textarea id="estCloses" rows="4" spellcheck="false" autocomplete="off">5000, 5042, 5007, 5068, 5050, 4996, 5023, 5093, 5053, 5065, 5002, 5040, 5095, 5073, 5026, 5092, 5101, 5070, 5094, 5036, 5100</textarea>
+              <p class="hint">{tt('s241')}</p>
+              <p class="fmsg" id="estClosesMsg" hidden></p>
+            </div>
+          </fieldset>
+          <p class="hint">{tt('s242')}</p>
+        </form>
+        <div class="work" aria-live="polite">
+          <p class="work-h">{tt('s114')}</p>
+          <ol class="steps" id="estWork"></ol>
+          <div class="cmp">
+            <div class="tile"><div class="t">{tt('s243')}</div><div class="v" id="estMuOut">–</div></div>
+            <div class="tile"><div class="t">{tt('s164')}</div><div class="v" id="estSigOut">–</div></div>
+          </div>
+          <p class="note" id="estHour"></p>
+          <div class="est-actions">
+            <button type="button" class="btn" id="estUse">{tt('s244')}</button>
+            <span class="est-done" id="estDone" role="status"></span>
+          </div>
+          <p class="fine">{tt('s245')}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="source">
+      <Fragment set:html={tt('s117')} />
+      <ul>
+        <li><Fragment set:html={tt('s246')} /></li>
+        <li><Fragment set:html={tt('s247')} /></li>
+        <li><Fragment set:html={tt('s248')} /></li>
+        <li><Fragment set:html={tt('s249')} /></li>
+        <li><Fragment set:html={tt('s250')} /></li>
+        <li><Fragment set:html={tt('s251')} /></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="f3" class="relative py-10 scroll-mt-28  fsec" aria-labelledby="f3-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">F3</span>
+        <h2 id="f3-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s252')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s253')}</p>
+      </div>
+
+    <div class="plate" role="group" aria-label={tt('s254')}>
+      <p class="cap">{tt('s255')}</p>
+      <div class="mx"><math display="block"><mrow><msup><mi>p</mi><mo>*</mo></msup><mo>=</mo><mfrac><mrow><mi>SL</mi><mo>+</mo><mi>c</mi></mrow><mrow><mi>TP</mi><mo>+</mo><mi>SL</mi></mrow></mfrac></mrow></math></div>
+      <div class="sub"><div class="mx"><math display="block"><mrow><mi>EV</mi><mo>=</mo><mi>p</mi><mo>·</mo><mi>TP</mi><mo>−</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo><mo>·</mo><mi>SL</mi><mo>−</mo><mi>c</mi></mrow></math></div></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s075')}</h3>
+      <div class="tw letters"><table>
+        <thead><tr><th>{tt('s076')}</th><th>{tt('s077')}</th><th>{tt('s078')}</th><th class="n">{tt('s079')}</th></tr></thead>
+        <tbody>
+          <tr><td>p*</td><td>{tt('s256')}</td><td>0 to 1</td><td class="n">0.345</td></tr>
+          <tr><td>p</td><td>{tt('s257')}</td><td>0 to 1</td><td class="n">0.40</td></tr>
+          <tr><td>TP</td><td>{tt('s258')}</td><td>{tt('s082')}</td><td class="n">20</td></tr>
+          <tr><td>SL</td><td>{tt('s259')}</td><td>{tt('s082')}</td><td class="n">10</td></tr>
+          <tr><td>c</td><td>{tt('s260')}</td><td>{tt('s082')}</td><td class="n">0.34</td></tr>
+          <tr><td>EV</td><td>{tt('s261')}</td><td>{tt('s082')}</td><td class="n">+1.66</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><Fragment set:html={tt('s262')} /></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s084')}</h3>
+      <p>{tt('s263')}</p>
+      <div class="analogy"><Fragment set:html={tt('s264')} /></div>
+      <div class="fit">
+        <div><h4>{tt('s265')}</h4><ul><li>{tt('s266')}</li><li>{tt('s267')}</li><li>{tt('s268')}</li></ul></div>
+        <div><h4>{tt('s092')}</h4><ul><li>{tt('s269')}</li><li>{tt('s270')}</li><li>{tt('s271')}</li></ul></div>
+      </div>
+      <details class="more">
+        <summary>{tt('s272')}</summary>
+        <div>
+          <p>{tt('s273')}</p>
+          <div class="mx"><math display="block"><mrow><msup><mi>p</mi><mo>*</mo></msup><mo>(</mo><mi>TP</mi><mo>+</mo><mi>SL</mi><mo>)</mo><mo>−</mo><mi>SL</mi><mo>−</mo><mi>c</mi><mo>=</mo><mo>(</mo><mi>SL</mi><mo>+</mo><mi>c</mi><mo>)</mo><mo>−</mo><mi>SL</mi><mo>−</mo><mi>c</mi><mo>=</mo><mn>0</mn></mrow></math></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s102')}</h3>
+      <div class="example">
+        <p class="given">{tt('s274')}</p>
+        <ol class="steps"><li><p class="st-l">{tt('s275')}</p><div class="mx"><math display="block"><mrow><mrow><msup><mi>p</mi><mo>*</mo></msup><mo>=</mo><mfrac><mrow><mi>SL</mi><mo>+</mo><mi>c</mi></mrow><mrow><mi>TP</mi><mo>+</mo><mi>SL</mi></mrow></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mfrac><mrow><mn>10</mn><mo>+</mo><mn data-k="c">0.34</mn></mrow><mrow><mn>20</mn><mo>+</mo><mn>10</mn></mrow></mfrac><mo>=</mo><mfrac><mn data-k="beNum">10.34</mn><mn data-k="beDen">30</mn></mfrac></mrow></mrow></math></div></li><li><p class="st-l">{tt('s107')}</p><div class="mx"><math display="block"><mrow><mrow><msup><mi>p</mi><mo>*</mo></msup><mo>=</mo><mn data-k="be">0.3447</mn><mo>=</mo><mn data-k="bePct">34.5%</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s276')}</p><div class="mx"><math display="block"><mrow><mrow><mi>EV</mi><mo>=</mo><mi>p</mi><mo>·</mo><mi>TP</mi><mo>−</mo><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow><mo>)</mo><mo>·</mo><mi>SL</mi><mo>−</mo><mi>c</mi></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="pu">0.4</mn><mo>×</mo><mn>20</mn><mo>−</mo><mn data-k="q">0.6</mn><mo>×</mo><mn>10</mn><mo>−</mo><mn>0.34</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s277')}</p><div class="mx"><math display="block"><mrow><mrow><mi>EV</mi><mo>=</mo><mn data-k="evWin">8</mn><mo>−</mo><mn data-k="evLoss">6</mn><mo>−</mo><mn>0.34</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="ev">+1.66</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s278')}</p><div class="mx"><math display="block"><mrow><mrow><msup><mi>p</mi><mo>*</mo></msup><mo>·</mo><mi>TP</mi><mo>−</mo><mo>(</mo><mrow><mn>1</mn><mo>−</mo><msup><mi>p</mi><mo>*</mo></msup></mrow><mo>)</mo><mo>·</mo><mi>SL</mi><mo>−</mo><mi>c</mi></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="evAtBe">0</mn></mrow></mrow></math></div></li></ol>
+        <p class="fine">{tt('s279')}</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s280')}</h3>
+      <p class="nojs">{tt('s109')}</p>
+      <div class="mini needs-js">
+        <form class="panel" id="f3form" novalidate aria-label={tt('s281')}>
+          <p class="echo" data-echo></p>
+          <div class="row">
+            <div class="field"><label for="f3tp"><Fragment set:html={tt('s111')} /></label><input type="text" id="f3tp" inputmode="decimal" value="15" autocomplete="off"><p class="fmsg" id="f3tpMsg" hidden></p></div>
+            <div class="field"><label for="f3sl"><Fragment set:html={tt('s112')} /></label><input type="text" id="f3sl" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="f3slMsg" hidden></p></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="f3c"><Fragment set:html={tt('s282')} /></label><input type="text" id="f3c" inputmode="decimal" value="0.5" autocomplete="off"><p class="fmsg" id="f3cMsg" hidden></p></div>
+            <div class="field"><label for="f3wr">{tt('s283')}</label><input type="text" id="f3wr" inputmode="decimal" value="45" autocomplete="off"><p class="fmsg" id="f3wrMsg" hidden></p></div>
+          </div>
+          <div class="row" id="f3qtyRow" hidden>
+            <div class="field"><label for="f3qty">{tt('s284')}</label><input type="text" id="f3qty" inputmode="numeric" value="1" autocomplete="off"><p class="fmsg" id="f3qtyMsg" hidden></p></div>
+          </div>
+          <p class="conv" id="f3conv" aria-live="polite"></p>
+          <p class="hint">{tt('s285')}</p>
+        </form>
+        <div class="work" aria-live="polite">
+          <p class="work-h">{tt('s114')}</p>
+          <ol class="steps" id="f3work"></ol>
+          <dl class="kv">
+            <dt><Fragment set:html={tt('s286')} /></dt><dd id="f3be">–</dd>
+            <dt><Fragment set:html={tt('s287')} /></dt><dd id="f3ev0">–</dd>
+            <dt id="f3evUL"><Fragment set:html={tt('s288')} /></dt><dd id="f3evU">–</dd>
+          </dl>
+          <div class="verdict" id="f3verdict"><span>–</span></div>
+          <div class="disclosure" role="note"><Fragment set:html={tt('s116')} /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source">
+      <Fragment set:html={tt('s117')} />
+      <ul>
+        <li><Fragment set:html={tt('s289')} /></li>
+        <li><Fragment set:html={tt('s290')} /></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="f4" class="relative py-10 scroll-mt-28  fsec" aria-labelledby="f4-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">F4</span>
+        <h2 id="f4-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s291')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s292')}</p>
+      </div>
+
+    <div class="plate" role="group" aria-label={tt('s293')}>
+      <p class="cap">{tt('s294')}</p>
+      <div class="mx"><math display="block"><mrow><mi>P</mi><mo>(</mo><mi>TP</mi><mo>)</mo><mo>=</mo><mfrac><mi>B</mi><mi>L</mi></mfrac><mo>+</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>∞</mi></munderover><msub><mi>c</mi><mi>n</mi></msub><mi>sin</mi><mo>⁡</mo><mrow><mo>(</mo><mfrac><mrow><mi>n</mi><mi>π</mi><mi>B</mi></mrow><mi>L</mi></mfrac><mo>)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><msup><mi>n</mi><mn>2</mn></msup><mi>x</mi></mrow></msup></mrow></math></div>
+      <div class="mx"><math display="block"><mrow><mi>P</mi><mo>(</mo><mi>SL</mi><mo>)</mo><mo>=</mo><mfrac><mi>A</mi><mi>L</mi></mfrac><mo>+</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>∞</mi></munderover><msub><mi>c</mi><mi>n</mi></msub><mi>sin</mi><mo>⁡</mo><mrow><mo>(</mo><mfrac><mrow><mi>n</mi><mi>π</mi><mi>A</mi></mrow><mi>L</mi></mfrac><mo>)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><msup><mi>n</mi><mn>2</mn></msup><mi>x</mi></mrow></msup></mrow></math></div>
+      <div class="sub">
+        <div class="mx"><math display="block"><mrow><msub><mi>c</mi><mi>n</mi></msub><mo>=</mo><mfrac><mrow><mn>2</mn><msup><mrow><mo>(</mo><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mi>n</mi></msup></mrow><mrow><mi>n</mi><mi>π</mi></mrow></mfrac><mo>,</mo><mspace width="1.2em"/><mi>x</mi><mo>=</mo><mfrac><mrow><msup><mi>π</mi><mn>2</mn></msup><msubsup><mi>σ</mi><mi>T</mi><mn>2</mn></msubsup></mrow><mrow><mn>2</mn><msup><mi>L</mi><mn>2</mn></msup></mrow></mfrac></mrow></math></div>
+        <div class="mx"><math display="block"><mrow><msub><mi>σ</mi><mi>T</mi></msub><mo>=</mo><mfrac><mi>ATR</mi><msqrt><mrow><mn>8</mn><mo>/</mo><mi>π</mi></mrow></msqrt></mfrac><mo>·</mo><msqrt><mi>N</mi></msqrt><mo>,</mo><mspace width="1.2em"/><mi>L</mi><mo>=</mo><mi>A</mi><mo>+</mo><mi>B</mi></mrow></math></div>
+        <div class="mx"><math display="block"><mrow><mi>P</mi><mo>(</mo><mtext set:html={tt('s295')}></mtext><mo>)</mo><mo>=</mo><mn>1</mn><mo>−</mo><mi>P</mi><mo>(</mo><mi>TP</mi><mo>)</mo><mo>−</mo><mi>P</mi><mo>(</mo><mi>SL</mi><mo>)</mo></mrow></math></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s075')}</h3>
+      <div class="tw letters"><table>
+        <thead><tr><th>{tt('s076')}</th><th>{tt('s077')}</th><th>{tt('s078')}</th><th class="n">{tt('s079')}</th></tr></thead>
+        <tbody>
+          <tr><td>A, B</td><td>{tt('s296')}</td><td>{tt('s082')}</td><td class="n">20, 10</td></tr>
+          <tr><td>L</td><td>{tt('s297')}</td><td>{tt('s082')}</td><td class="n">30</td></tr>
+          <tr><td>N</td><td>{tt('s298')}</td><td>{tt('s299')}</td><td class="n">10</td></tr>
+          <tr><td>ATR</td><td>{tt('s300')}</td><td>{tt('s082')}</td><td class="n">10</td></tr>
+          <tr><td>σ<sub>T</sub></td><td>{tt('s301')}</td><td>{tt('s082')}</td><td class="n">19.82</td></tr>
+          <tr><td>x</td><td>{tt('s302')}</td><td>{tt('s134')}</td><td class="n">2.153</td></tr>
+          <tr><td>n, c<sub>n</sub></td><td><Fragment set:html={tt('s303')} /></td><td>{tt('s134')}</td><td class="n">1, 2, …</td></tr>
+          <tr><td>{tt('s304')}</td><td>{tt('s305')}</td><td>{tt('s134')}</td><td class="n"></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s084')}</h3>
+      <p><Fragment set:html={tt('s306')} /></p>
+      <div class="analogy"><Fragment set:html={tt('s307')} /></div>
+      <div class="fit">
+        <div><h4>{tt('s308')}</h4><ul><li>{tt('s309')}</li><li>{tt('s310')}</li><li>{tt('s311')}</li></ul></div>
+        <div><h4>{tt('s092')}</h4><ul><li>{tt('s312')}</li><li>{tt('s313')}</li><li>{tt('s314')}</li></ul></div>
+      </div>
+      <details class="more">
+        <summary>{tt('s315')}</summary>
+        <div>
+          <p><Fragment set:html={tt('s316')} /></p>
+          <p>{tt('s317')}</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s102')}</h3>
+      <div class="example">
+        <p class="given">{tt('s318')}</p>
+        <ol class="steps"><li><p class="st-l">{tt('s319')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>σ</mi><mi>bar</mi></msub><mo>=</mo><mfrac><mi>ATR</mi><msqrt><mrow><mn>8</mn><mo>/</mo><mi>π</mi></mrow></msqrt></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mfrac><mn data-k="atr">10</mn><mn>1.59577</mn></mfrac><mo>=</mo><mn data-k="sb">6.2666</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s320')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>σ</mi><mi>T</mi></msub><mo>=</mo><msub><mi>σ</mi><mi>bar</mi></msub><mo>×</mo><msqrt><mi>N</mi></msqrt></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn>6.2666</mn><mo>×</mo><msqrt><mn data-k="bars">10</mn></msqrt><mo>=</mo><mn data-k="sH">19.8166</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s321')}</p><div class="mx"><math display="block"><mrow><mrow><mi>x</mi><mo>=</mo><mfrac><mrow><msup><mi>π</mi><mn>2</mn></msup><msup><msub><mi>σ</mi><mi>T</mi></msub><mn>2</mn></msup></mrow><mrow><mn>2</mn><msup><mi>L</mi><mn>2</mn></msup></mrow></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mfrac><mrow><mn>9.8696</mn><mo>×</mo><msup><mn>19.8166</mn><mn>2</mn></msup></mrow><mrow><mn>2</mn><mo>×</mo><msup><mn data-k="L">30</mn><mn>2</mn></msup></mrow></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="x">2.1532</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s322')}</p><div class="mx"><math display="block"><mrow><mrow><mrow><mi>P</mi><mo>(</mo><mi>TP</mi><mo>)</mo><mo>=</mo></mrow><mn data-k="tp0">0.33333</mn><mo>−</mo><mn data-k="tpT1">0.06402</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mspace width="1.5em"/><mo>+</mo><mn data-k="tpT2">0.00005</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mspace width="1.5em"/><mrow><mo>+</mo><mtext set:html={tt('s323')}></mtext></mrow></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="tpPct">26.9%</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s324')}</p><div class="mx"><math display="block"><mrow><mrow><mrow><mi>P</mi><mo>(</mo><mi>SL</mi><mo>)</mo><mo>=</mo></mrow><mn data-k="sl0">0.66667</mn><mo>−</mo><mn data-k="slT1">0.06402</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mspace width="1.5em"/><mo>−</mo><mn data-k="slT2">0.00005</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mspace width="1.5em"/><mrow><mo>+</mo><mtext set:html={tt('s323')}></mtext></mrow></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="slPct">60.3%</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s325')}</p><div class="mx"><math display="block"><mrow><mrow><mn>1</mn><mo>−</mo><mn data-k="tpP">0.2694</mn><mo>−</mo><mn data-k="slP">0.6026</mn></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mn data-k="toPct">12.8%</mn></mrow></mrow></math></div></li></ol>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s326')}</h3>
+      <p class="nojs">{tt('s109')}</p>
+      <div class="mini needs-js">
+        <form class="panel" id="f4form" novalidate aria-label={tt('s327')}>
+          <p class="echo" data-echo></p>
+          <div class="row">
+            <div class="field"><label for="f4tp"><Fragment set:html={tt('s160')} /></label><input type="text" id="f4tp" inputmode="decimal" value="20" autocomplete="off"><p class="fmsg" id="f4tpMsg" hidden></p></div>
+            <div class="field"><label for="f4sl"><Fragment set:html={tt('s161')} /></label><input type="text" id="f4sl" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="f4slMsg" hidden></p></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="f4atr">{tt('s328')}</label><input type="text" id="f4atr" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="f4atrMsg" hidden></p></div>
+            <div class="field"><label for="f4bars">{tt('s329')}</label><input type="text" id="f4bars" inputmode="numeric" value="5" autocomplete="off"><p class="fmsg" id="f4barsMsg" hidden></p></div>
+          </div>
+          <p class="hint">{tt('s330')}</p>
+        </form>
+        <div class="work" aria-live="polite">
+          <p class="work-h">{tt('s114')}</p>
+          <ol class="steps" id="f4work"></ol>
+          <div class="result-line"><Fragment set:html={tt('s331')} />
+            <div class="bar" aria-hidden="true"><i class="tp" id="f4barTp"></i><i class="to" id="f4barTo"></i><i class="sl" id="f4barSl"></i></div>
+            <div class="legend"><Fragment set:html={tt('s332')} /></div></div>
+          <p class="note" id="f4cmp"></p>
+          <div class="disclosure compact" role="note"><Fragment set:html={tt('s116')} /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source">
+      <Fragment set:html={tt('s117')} />
+      <ul>
+        <li><Fragment set:html={tt('s333')} /></li>
+        <li><Fragment set:html={tt('s334')} /></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="f5" class="relative py-10 scroll-mt-28  fsec" aria-labelledby="f5-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">F5</span>
+        <h2 id="f5-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s335')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s336')}</p>
+      </div>
+
+    <div class="plate" role="group" aria-label={tt('s337')}>
+      <p class="cap">{tt('s338')}</p>
+      <div class="mx"><math display="block"><mrow><mi>s</mi><mo>=</mo><mi>β</mi><mi>σ</mi><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt><mo>≈</mo><mn>0.5826</mn><mo>·</mo><msub><mi>σ</mi><mi>bar</mi></msub></mrow></math></div>
+      <div class="mx"><math display="block"><mrow><msub><mi>P</mi><mi>bars</mi></msub><mo>≈</mo><mfrac><mrow><mi>B</mi><mo>+</mo><mi>s</mi></mrow><mrow><mi>A</mi><mo>+</mo><mi>B</mi><mo>+</mo><mn>2</mn><mi>s</mi></mrow></mfrac></mrow></math></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s075')}</h3>
+      <div class="tw letters"><table>
+        <thead><tr><th>{tt('s076')}</th><th>{tt('s077')}</th><th>{tt('s078')}</th><th class="n">{tt('s079')}</th></tr></thead>
+        <tbody>
+          <tr><td>s</td><td>{tt('s339')}</td><td>{tt('s082')}</td><td class="n">1.46</td></tr>
+          <tr><td>β</td><td>{tt('s340')}</td><td>{tt('s134')}</td><td class="n">0.5826</td></tr>
+          <tr><td><Fragment set:html={tt('s341')} /></td><td><Fragment set:html={tt('s342')} /></td><td>{tt('s082')}</td><td class="n">2.51</td></tr>
+          <tr><td>A, B</td><td>{tt('s296')}</td><td>{tt('s082')}</td><td class="n">20, 10</td></tr>
+          <tr><td><Fragment set:html={tt('s343')} /></td><td>{tt('s344')}</td><td>0 to 1</td><td class="n">0.348</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s084')}</h3>
+      <p>{tt('s345')}</p>
+      <div class="analogy"><Fragment set:html={tt('s346')} /></div>
+      <div class="fit">
+        <div><h4>{tt('s347')}</h4><ul><li>{tt('s348')}</li><li>{tt('s349')}</li></ul></div>
+        <div><h4>{tt('s092')}</h4><ul><li>{tt('s350')}</li><li>{tt('s351')}</li><li>{tt('s352')}</li></ul></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s102')}</h3>
+      <div class="example">
+        <p class="given">{tt('s353')}</p>
+        <ol class="steps"><li><p class="st-l">{tt('s319')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>σ</mi><mi>bar</mi></msub><mo>=</mo><mfrac><mn data-k="atr">4</mn><mn>1.59577</mn></mfrac><mo>=</mo><mn data-k="sb">2.5066</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s354')}</p><div class="mx"><math display="block"><mrow><mrow><mi>s</mi><mo>=</mo><mn>0.5826</mn><mo>×</mo><mn>2.5066</mn><mo>=</mo><mn data-k="s">1.4604</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s355')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>P</mi><mi>bars</mi></msub><mo>≈</mo><mfrac><mrow><mn>10</mn><mo>+</mo><mn>1.4604</mn></mrow><mrow><mn>20</mn><mo>+</mo><mn>10</mn><mo>+</mo><mn>2</mn><mo>×</mo><mn>1.4604</mn></mrow></mfrac></mrow></mrow></math></div><div class="mx"><math display="block"><mrow><mrow><mo>=</mo><mfrac><mn data-k="num">11.4604</mn><mn data-k="den">32.9207</mn></mfrac><mo>=</mo><mn data-k="pct">34.8%</mn></mrow></mrow></math></div></li><li><p class="st-l">{tt('s356')}</p><div class="mx"><math display="block"><mrow><mrow><msub><mi>P</mi><mi>F1</mi></msub><mo>=</mo><mn data-k="p1">33.3%</mn></mrow></mrow></math></div></li></ol>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>{tt('s357')}</h3>
+      <p class="nojs">{tt('s109')}</p>
+      <div class="mini needs-js">
+        <form class="panel" id="f5form" novalidate aria-label={tt('s358')}>
+          <p class="echo" data-echo></p>
+          <div class="row">
+            <div class="field"><label for="f5tp"><Fragment set:html={tt('s160')} /></label><input type="text" id="f5tp" inputmode="decimal" value="20" autocomplete="off"><p class="fmsg" id="f5tpMsg" hidden></p></div>
+            <div class="field"><label for="f5sl"><Fragment set:html={tt('s161')} /></label><input type="text" id="f5sl" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="f5slMsg" hidden></p></div>
+          </div>
+          <div class="field"><label for="f5atr">{tt('s359')}</label><input type="text" id="f5atr" inputmode="decimal" value="2" autocomplete="off"><p class="fmsg" id="f5atrMsg" hidden></p></div>
+          <p class="hint">{tt('s360')}</p>
+        </form>
+        <div class="work" aria-live="polite">
+          <p class="work-h">{tt('s114')}</p>
+          <ol class="steps" id="f5work"></ol>
+          <div class="cmp">
+            <div class="tile"><div class="t">{tt('s361')}</div><div class="v" id="f5res">–</div></div>
+            <div class="tile"><div class="t">{tt('s362')}</div><div class="v" id="f5p1">–</div></div>
+          </div>
+          <div class="disclosure compact" role="note"><Fragment set:html={tt('s116')} /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source">
+      <Fragment set:html={tt('s117')} />
+      <ul>
+        <li><Fragment set:html={tt('s363')} /></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="calculator" class="relative py-10 scroll-mt-28 " aria-labelledby="calc-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s364')} />
+        <h2 id="calc-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s365')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s366')}</p>
+      </div>
+    <p class="nojs">{tt('s367')}</p>
+
+    <div class="calc needs-js">
+      <form class="panel" id="calcForm" novalidate aria-label={tt('s368')}>
+        <p class="echo" data-echo></p>
+        <fieldset class="group">
+          <legend class="group-title">{tt('s369')}</legend>
+          <div class="field">
+            <Fragment set:html={tt('s370')} />
+            <div class="seg side" role="radiogroup" aria-labelledby="side-l">
+              <label><input type="radio" name="side" id="sideLong" value="long" checked><Fragment set:html={tt('s158')} /></label>
+              <label><input type="radio" name="side" id="sideShort" value="short"><Fragment set:html={tt('s159')} /></label>
+            </div>
+            <p class="hint">{tt('s371')}</p>
+          </div>
+          <div class="row">
+            <div class="field"><label for="tp"><Fragment set:html={tt('s111')} /></label><input type="text" id="tp" inputmode="decimal" value="20" autocomplete="off"><p class="fmsg" id="tpMsg" hidden></p></div>
+            <div class="field"><label for="sl"><Fragment set:html={tt('s112')} /></label><input type="text" id="sl" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="slMsg" hidden></p></div>
+          </div>
+          <p class="conv" id="convLine" aria-live="polite"></p>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="group-title">{tt('s372')}</legend>
+          <div class="row">
+            <div class="field"><label for="cost"><Fragment set:html={tt('s282')} /></label><input type="text" id="cost" inputmode="decimal" value="0.34" autocomplete="off"><p class="hint">{tt('s373')}</p><p class="fmsg" id="costMsg" hidden></p></div>
+            <div class="field" id="qtyField" hidden><label for="qty">{tt('s284')}</label><input type="text" id="qty" inputmode="numeric" value="1" autocomplete="off"><p class="fmsg" id="qtyMsg" hidden></p></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="group-title">{tt('s374')}</legend>
+          <label class="check"><input type="checkbox" id="useTrend">{tt('s375')}</label>
+          <div class="row" id="trendRow" hidden>
+            <div class="field"><label for="mu">{tt('s162')}</label><input type="text" id="mu" inputmode="decimal" value="5" autocomplete="off"><p class="hint">{tt('s376')}</p><p class="fmsg" id="muMsg" hidden></p></div>
+            <div class="field"><label for="sigma">{tt('s164')}</label><input type="text" id="sigma" inputmode="decimal" value="50" autocomplete="off"><p class="fmsg" id="sigmaMsg" hidden></p></div>
+          </div>
+          <p class="hint" id="trendOff" hidden>{tt('s377')}</p>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="group-title">{tt('s378')}</legend>
+          <label class="check"><input type="checkbox" id="useTime">{tt('s379')}</label>
+          <div class="row" id="timeRow" hidden>
+            <div class="field"><label for="atr">{tt('s328')}</label><input type="text" id="atr" inputmode="decimal" value="10" autocomplete="off"><p class="fmsg" id="atrMsg" hidden></p></div>
+            <div class="field"><label for="bars">{tt('s380')}</label><input type="text" id="bars" inputmode="numeric" value="10" autocomplete="off"><p class="fmsg" id="barsMsg" hidden></p></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="group-title">{tt('s381')}</legend>
+          <div class="field">
+            <label for="wr">{tt('s382')}</label>
+            <input type="text" id="wr" inputmode="decimal" value="40" autocomplete="off">
+            <p class="hint">{tt('s383')}</p>
+            <p class="fmsg" id="wrMsg" hidden></p>
+          </div>
+        </fieldset>
+      </form>
+
+      <div class="panel results" id="results" aria-live="polite" aria-atomic="false">
+        <div class="status ok" id="inStatus"><Fragment set:html={tt('s384')} /></div>
+        <div class="bigfig">
+          <p class="cap" id="bigCap">{tt('s385')}</p>
+          <p class="val num" id="bigVal"><Fragment set:html={tt('s386')} /></p>
+          <div class="bar" aria-hidden="true"><i class="tp" id="barTp" style="flex:0 0 33.3%"></i><i class="to" id="barTo" style="flex:0 0 0%" hidden></i><i class="sl" id="barSl" style="flex:1 1 auto"></i></div>
+          <div class="legend"><Fragment set:html={tt('s387')} /></div>
+        </div>
+        <dl class="kv">
+          <dt><Fragment set:html={tt('s388')} /></dt><dd id="oRR">2.00 : 1</dd>
+          <dt><Fragment set:html={tt('s389')} /></dt><dd id="oRisk">–</dd>
+          <dt><Fragment set:html={tt('s390')} /></dt><dd id="oReward">–</dd>
+          <dt><Fragment set:html={tt('s391')} /></dt><dd id="oBe">–</dd>
+          <dt id="oEv0L"><Fragment set:html={tt('s392')} /></dt><dd id="oEv0">–</dd>
+          <dt id="oEvUL"><Fragment set:html={tt('s393')} /></dt><dd id="oEvU">–</dd>
+        </dl>
+        <div class="verdict" id="verdict"><span>–</span></div>
+        <p class="fine">{tt('s394')}</p>
+        <div class="disclosure" role="note"><Fragment set:html={tt('s116')} /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="simulation" class="relative py-10 scroll-mt-28 " aria-labelledby="sim-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s395')} />
+        <h2 id="sim-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s396')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s397')}</p>
+      </div>
+    <div class="toolbar needs-js" role="group" aria-label={tt('s398')}>
+      <div class="field">
+        <Fragment set:html={tt('s399')} />
+        <div class="seg" role="radiogroup" aria-labelledby="model-l">
+          <label><input type="radio" name="model" id="modelIdeal" value="ideal" checked><Fragment set:html={tt('s400')} /></label>
+          <label><input type="radio" name="model" id="modelReal" value="real"><Fragment set:html={tt('s401')} /></label>
+        </div>
+      </div>
+      <div class="field"><label for="seed">{tt('s402')}</label><input type="number" id="seed" inputmode="numeric" step="1" value="2026"></div>
+      <button type="button" class="btn" id="rerun">{tt('s403')}</button>
+      <button type="button" class="btn ghost" id="replay">{tt('s404')}</button>
+    </div>
+    <p class="nojs">{tt('s405')}</p>
+    <div class="simbox needs-js">
+      <Fragment set:html={tt('s406')} />
+      <div class="canvas-wrap">
+        <canvas id="pathCanvas" role="img" aria-label="100 simulated price paths between the take profit and stop loss lines. Counts are listed below the chart."></canvas>
+      </div>
+      <div class="legend"><Fragment set:html={tt('s407')} /></div>
+      <div class="tally" aria-live="polite">
+        <div class="tile"><div class="t"><Fragment set:html={tt('s408')} /></div><div class="v num" id="cTp">–<small> of 100</small></div></div>
+        <div class="tile"><div class="t"><Fragment set:html={tt('s409')} /></div><div class="v num" id="cSl">–<small> of 100</small></div></div>
+        <div class="tile"><div class="t"><Fragment set:html={tt('s410')} /></div><div class="v num" id="cTo">–<small> of 100</small></div></div>
+      </div>
+      <div class="check-row" aria-live="polite">
+        <div class="tile"><div class="t" id="chkFormulaL">{tt('s411')}</div><div class="v num" id="chkFormula">–</div></div>
+        <div class="tile"><div class="t">{tt('s412')}</div><div class="v num" id="chkSim">–</div></div>
+        <div class="tile"><div class="t">{tt('s413')}</div><div class="v num" id="chkGap">–</div></div>
+        <div class="tile"><div class="t">{tt('s414')}</div><div id="chkPill"><Fragment set:html={tt('s415')} /></div></div>
+      </div>
+      <p class="note" id="bigRunNote">{tt('s416')}</p>
+      <p class="note"><Fragment set:html={tt('s417')} /></p>
+      <div class="disclosure" role="note"><Fragment set:html={tt('s116')} /></div>
+    </div>
+  </div>
+</section>
+
+<section id="streaks" class="relative py-10 scroll-mt-28 " aria-labelledby="eq-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s395')} />
+        <h2 id="eq-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s418')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s419')}</p>
+      </div>
+    <div class="toolbar needs-js" role="group" aria-label={tt('s420')}>
+      <div class="field">
+        <Fragment set:html={tt('s421')} />
+        <div class="seg" role="radiogroup" aria-labelledby="eqp-l">
+          <label><input type="radio" name="eqp" id="eqpUser" value="user" checked><Fragment set:html={tt('s422')} /></label>
+          <label><input type="radio" name="eqp" id="eqpZero" value="zero"><Fragment set:html={tt('s423')} /></label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="nTrades">{tt('s424')}</label>
+        <select id="nTrades"><option value="50">50</option><option value="100" selected>100</option><option value="250">250</option><option value="500">500</option></select>
+      </div>
+      <button type="button" class="btn" id="eqRerun">{tt('s425')}</button>
+    </div>
+    <p class="nojs">{tt('s405')}</p>
+    <div class="simbox needs-js">
+      <Fragment set:html={tt('s406')} />
+      <div id="eqWrap">
+        <svg id="eqSvg" role="img" aria-labelledby="eqTitle eqDesc" tabindex="0"><title id="eqTitle">{tt('s426')}</title><desc id="eqDesc">{tt('s427')}</desc></svg>
+        <div class="tip" id="eqTip" hidden></div>
+      </div>
+      <div class="legend"><Fragment set:html={tt('s428')} /></div>
+      <div class="tally" aria-live="polite">
+        <div class="tile"><div class="t">{tt('s429')}</div><div class="v num" id="eLoss">–</div></div>
+        <div class="tile"><div class="t">{tt('s430')}</div><div class="v num" id="eDD">–</div></div>
+        <div class="tile"><div class="t">{tt('s431')}</div><div class="v num" id="eDD95">–</div></div>
+        <div class="tile"><div class="t">{tt('s432')}</div><div class="v num" id="eStreak">–</div></div>
+      </div>
+      <p class="note" id="eqNote">{tt('s433')}</p>
+      <details class="table-view">
+        <summary>{tt('s434')}</summary>
+        <div class="tw"><table><thead><tr><th>{tt('s435')}</th><th class="n">{tt('s436')}</th><th class="n">{tt('s437')}</th><th class="n">{tt('s438')}</th></tr></thead><tbody id="eqTable"><tr><td colspan="4">{tt('s439')}</td></tr></tbody></table></div>
+      </details>
+      <div class="disclosure" role="note"><Fragment set:html={tt('s116')} /></div>
+    </div>
+  </div>
+</section>
+
+<section id="wider-tp" class="relative py-10 scroll-mt-28 " aria-labelledby="wide-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s440')} />
+        <h2 id="wide-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s441')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s442')}</p>
+      </div><div class="prose mx-auto">
+    <p>{tt('s443')}</p>
+    <p>{tt('s444')}</p>
+  </div></div>
+</section>
+
+<section id="costs" class="relative py-10 scroll-mt-28 " aria-labelledby="cost-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s445')} />
+        <h2 id="cost-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s446')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s447')}</p>
+      </div>
+    <div class="tw">
+      <table>
+        <caption>{tt('s448')}</caption>
+        <thead><tr><th>{tt('s449')}</th><th class="n">{tt('s450')}</th><th class="n">{tt('s451')}</th><th class="n">{tt('s452')}</th><th class="n">{tt('s453')}</th></tr></thead>
+        <tbody>
+          <tr><td>{tt('s454')}</td><td class="n">{tt('s455')}</td><td class="n">17.0%</td><td class="n">39.0%</td><td class="n">{tt('s456')}</td></tr>
+          <tr><td>{tt('s457')}</td><td class="n">{tt('s458')}</td><td class="n">8.5%</td><td class="n">36.2%</td><td class="n">{tt('s456')}</td></tr>
+          <tr><td>{tt('s459')}</td><td class="n">{tt('s460')}</td><td class="n">3.4%</td><td class="n">34.5%</td><td class="n">{tt('s456')}</td></tr>
+          <tr><td>{tt('s461')}</td><td class="n">{tt('s462')}</td><td class="n">1.7%</td><td class="n">33.9%</td><td class="n">{tt('s456')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">{tt('s463')}</p>
+  </div>
+</section>
+
+<section id="ai" class="relative py-10 scroll-mt-28 " aria-labelledby="ai-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s464')} />
+        <h2 id="ai-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s465')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s466')}</p>
+      </div><div class="prose mx-auto">
+    <p><Fragment set:html={tt('s467')} /></p>
+    <p><Fragment set:html={tt('s468')} /></p>
+    <p>{tt('s469')}</p>
+  </div></div>
+</section>
+
+<section id="improve" class="relative py-10 scroll-mt-28 " aria-labelledby="imp-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s470')} />
+        <h2 id="imp-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s471')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s472')}</p>
+      </div><div class="prose mx-auto">
+    <ul>
+      <li><Fragment set:html={tt('s473')} /></li>
+      <li><Fragment set:html={tt('s474')} /></li>
+      <li><Fragment set:html={tt('s475')} /></li>
+      <li><Fragment set:html={tt('s476')} /></li>
+      <li><Fragment set:html={tt('s477')} /></li>
+    </ul>
+  </div></div>
+</section>
+
+<section id="pickmytrade" class="relative py-10 scroll-mt-28 " aria-labelledby="pmt-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s478')} />
+        <h2 id="pmt-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s479')}</h2>
+        <p class="text-lg text-gray-300 leading-relaxed">{tt('s480')}</p>
+      </div><div class="split"><div class="prose">
+      <p>{tt('s481')}</p>
+      <p><Fragment set:html={tt('s482')} /></p>
+    </div>
+    <div>
+      <pre class="code" aria-label="Excerpt of a PickMyTrade alert message"><code>&#123;
+  "symbol": "NQ",
+  "data": "buy",
+  "quantity": 1,
+  "price": "&#123;&#123;close&#125;&#125;",
+  "tp": 0,
+  "dollar_tp": 10,
+  "sl": 0,
+  "dollar_sl": 5,
+  "token": "your_token_here"
+&#125;</code></pre>
+      <p class="src"><Fragment set:html={tt('s483')} /></p>
+    </div>
+  </div></div>
+</section>
+
+<section id="definitions" class="relative py-10 scroll-mt-28 " aria-labelledby="def-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s484')} />
+        <h2 id="def-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s485')}</h2>
+      </div>
+    <dl class="defs">
+      <div><dt>{tt('s486')}</dt><dd>{tt('s487')}</dd></div>
+      <div><dt>{tt('s488')}</dt><dd>{tt('s489')}</dd></div>
+      <div><dt>{tt('s490')}</dt><dd>{tt('s491')}</dd></div>
+      <div><dt>{tt('s492')}</dt><dd>{tt('s493')}</dd></div>
+      <div><dt>{tt('s494')}</dt><dd>{tt('s495')}</dd></div>
+      <div><dt>{tt('s496')}</dt><dd>{tt('s497')}</dd></div>
+      <div><dt>{tt('s498')}</dt><dd>{tt('s499')}</dd></div>
+      <div><dt>{tt('s500')}</dt><dd>{tt('s501')}</dd></div>
+      <div><dt>{tt('s502')}</dt><dd>{tt('s503')}</dd></div>
+      <div><dt>{tt('s504')}</dt><dd>{tt('s505')}</dd></div>
+      <div><dt>{tt('s506')}</dt><dd>{tt('s507')}</dd></div>
+      <div><dt>{tt('s508')}</dt><dd>{tt('s509')}</dd></div>
+      <div><dt>{tt('s510')}</dt><dd>{tt('s511')}</dd></div>
+      <div><dt>{tt('s512')}</dt><dd>{tt('s513')}</dd></div>
+      <div><dt>{tt('s514')}</dt><dd>{tt('s515')}</dd></div>
+      <div><dt>{tt('s516')}</dt><dd>{tt('s517')}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="faq" class="relative py-10 scroll-mt-28 " aria-labelledby="faq-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <span class="inline-block px-4 py-2 bg-blue-600/20 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/30 electrolize-regular mb-4">FAQ</span>
+        <h2 id="faq-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s518')}</h2>
+      </div>
+    <div class="lg:[&>div]:grid lg:[&>div]:grid-cols-2 lg:[&>div]:gap-x-8 lg:[&>div]:items-start" data-aos="fade-up"><FaqAccordion items={faqItems} /></div>
+
+    <details class="maths" id="maths">
+      <summary>{tt('s519')}</summary>
+      <div class="maths-body prose">
+        <h3>{tt('s520')}</h3>
+        <p>{tt('s521')}</p>
+
+        <h3>{tt('s522')}</h3>
+        <p><Fragment set:html={tt('s523')} /></p>
+
+        <h3>{tt('s524')}</h3>
+        <p>{tt('s525')}</p>
+        <div class="tw">
+          <table>
+            <thead><tr><th>{tt('s526')}</th><th>{tt('s527')}</th><th class="n">{tt('s068')}</th><th class="n">{tt('s528')}</th><th class="n">{tt('s529')}</th></tr></thead>
+            <tbody>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/sp/e-mini-sandp500.contractSpecs.html" rel="noopener">ES</a></td><td>{tt('s530')}</td><td class="n">0.25</td><td class="n">$12.50</td><td class="n">$50</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/sp/micro-e-mini-sandp-500.contractSpecs.html" rel="noopener">MES</a></td><td>{tt('s531')}</td><td class="n">0.25</td><td class="n">$1.25</td><td class="n">$5</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/nasdaq/e-mini-nasdaq-100.contractSpecs.html" rel="noopener">NQ</a></td><td>{tt('s532')}</td><td class="n">0.25</td><td class="n">$5.00</td><td class="n">$20</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/nasdaq/micro-e-mini-nasdaq-100.contractSpecs.html" rel="noopener">MNQ</a></td><td>{tt('s533')}</td><td class="n">0.25</td><td class="n">$0.50</td><td class="n">$2</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/dow-jones/e-mini-dow.contractSpecs.html" rel="noopener">YM</a></td><td>{tt('s534')}</td><td class="n">1</td><td class="n">$5.00</td><td class="n">$5</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/dow-jones/micro-e-mini-dow.contractSpecs.html" rel="noopener">MYM</a></td><td>{tt('s535')}</td><td class="n">1</td><td class="n">$0.50</td><td class="n">$0.50</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/russell/e-mini-russell-2000.contractSpecs.html" rel="noopener">RTY</a></td><td>{tt('s536')}</td><td class="n">0.10</td><td class="n">$5.00</td><td class="n">$50</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/equities/russell/micro-e-mini-russell-2000.contractSpecs.html" rel="noopener">M2K</a></td><td>{tt('s537')}</td><td class="n">0.10</td><td class="n">$0.50</td><td class="n">$5</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html" rel="noopener">CL</a></td><td>{tt('s538')}</td><td class="n">0.01</td><td class="n">$10.00</td><td class="n">$1,000</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/energy/crude-oil/micro-wti-crude-oil.contractSpecs.html" rel="noopener">MCL</a></td><td>{tt('s539')}</td><td class="n">0.01</td><td class="n">$1.00</td><td class="n">$100</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/metals/precious/gold.contractSpecs.html" rel="noopener">GC</a></td><td>{tt('s540')}</td><td class="n">0.10</td><td class="n">$10.00</td><td class="n">$100</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/metals/precious/e-micro-gold.contractSpecs.html" rel="noopener">MGC</a></td><td>{tt('s541')}</td><td class="n">0.10</td><td class="n">$1.00</td><td class="n">$10</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/metals/precious/silver.contractSpecs.html" rel="noopener">SI</a></td><td>{tt('s542')}</td><td class="n">0.005</td><td class="n">$25.00</td><td class="n">$5,000</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/fx/g10/euro-fx.contractSpecs.html" rel="noopener">6E</a></td><td>{tt('s543')}</td><td class="n">0.00005</td><td class="n">$6.25</td><td class="n">$125,000</td></tr>
+            <tr><td><a href="https://www.cmegroup.com/markets/interest-rates/us-treasury/10-year-us-treasury-note.contractSpecs.html" rel="noopener">ZN</a></td><td>{tt('s544')}</td><td class="n">1/2 of 1/32 (0.015625)</td><td class="n">$15.625</td><td class="n">$1,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>{tt('s545')}</h3>
+        <ol class="refs">
+          <li><Fragment set:html={tt('s546')} /></li>
+          <li><Fragment set:html={tt('s547')} /></li>
+          <li><Fragment set:html={tt('s548')} /></li>
+          <li><Fragment set:html={tt('s549')} /></li>
+          <li><Fragment set:html={tt('s550')} /></li>
+          <li><Fragment set:html={tt('s551')} /></li>
+          <li><Fragment set:html={tt('s552')} /></li>
+          <li><Fragment set:html={tt('s553')} /></li>
+          <li><Fragment set:html={tt('s554')} /></li>
+          <li><Fragment set:html={tt('s555')} /></li>
+          <li><Fragment set:html={tt('s556')} /></li>
+          <li><Fragment set:html={tt('s557')} /></li>
+          <li>{tt('s558')}</li>
+          <li><Fragment set:html={tt('s559')} /></li>
+        </ol>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="disclaimer" class="relative py-10 scroll-mt-28 " aria-labelledby="disc-h">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center max-w-4xl mx-auto mb-8" data-aos="fade-up">
+        <Fragment set:html={tt('s560')} />
+        <h2 id="disc-h" class="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-5">{tt('s561')}</h2>
+      </div>
+    <div class="legal">
+      <h3>{tt('s562')}</h3>
+      <p>{tt('s563')}</p>
+      <h3>{tt('s564')}</h3>
+      <p>{tt('s565')}</p>
+      <h3>{tt('s566')}</h3>
+      <p>{tt('s567')}</p>
+      <h3>{tt('s568')}</h3>
+      <p>{tt('s569')}</p>
+      <h3>{tt('s570')}</h3>
+      <p>{tt('s571')}</p>
+    </div>
+  </div>
+</section>
+    </div>
+  </div></div>
+
+  <!-- Final CTA -->
+  <section class="py-12 bg-gradient-to-b from-[#00182f] to-[#002040]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-aos="fade-up">
+      <div class="relative bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-blue-500/40 rounded-3xl p-10 sm:p-14 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10">
+          <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">{tt('s572')}</h2>
+          <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">{tt('s573')}</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Fragment set:html={tt('s574')} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <script is:inline set:html={jsMsgScript}></script>
+
+  <script is:inline>
+/* TPSL-CALC-START */
+/* Calculation and "show your work" functions. Pure and DOM-free, so they can be unit-tested outside the page.
+   Every distance is in POINTS (price units). Ticks and dollars are conversions only. */
+var TPSL = (function () {
+  'use strict';
+
+  /* Translated message templates ({0}, {1}, ... placeholders), supplied by the page as window.TPSL_MSG. */
+  var MSG = window.TPSL_MSG || {};
+  function TR(key) {
+    var s = MSG[key];
+    if (s == null) return key;
+    for (var i = 1; i < arguments.length; i++) s = s.split('{' + (i - 1) + '}').join(String(arguments[i]));
+    return s;
+  }
+
+  /* Contract specs: tick = minimum outright price increment in points; tv = US$ value of one tick per contract.
+     Checked against CME Group contract specifications (see the table on the page). */
+  var INSTRUMENTS = {
+    ES:   { name: 'E-mini S&P 500',            tick: 0.25,     tv: 12.5   },
+    MES:  { name: 'Micro E-mini S&P 500',      tick: 0.25,     tv: 1.25   },
+    NQ:   { name: 'E-mini Nasdaq-100',         tick: 0.25,     tv: 5      },
+    MNQ:  { name: 'Micro E-mini Nasdaq-100',   tick: 0.25,     tv: 0.5    },
+    YM:   { name: 'E-mini Dow ($5)',           tick: 1,        tv: 5      },
+    MYM:  { name: 'Micro E-mini Dow',          tick: 1,        tv: 0.5    },
+    RTY:  { name: 'E-mini Russell 2000',       tick: 0.1,      tv: 5      },
+    M2K:  { name: 'Micro E-mini Russell 2000', tick: 0.1,      tv: 0.5    },
+    CL:   { name: 'Crude oil (WTI)',           tick: 0.01,     tv: 10     },
+    MCL:  { name: 'Micro WTI crude oil',       tick: 0.01,     tv: 1      },
+    GC:   { name: 'Gold',                      tick: 0.1,      tv: 10     },
+    MGC:  { name: 'Micro gold',                tick: 0.1,      tv: 1      },
+    SI:   { name: 'Silver',                    tick: 0.005,    tv: 25     },
+    '6E': { name: 'Euro FX',                   tick: 0.00005,  tv: 6.25   },
+    ZN:   { name: '10-Year T-Note',            tick: 0.015625, tv: 15.625 }
+  };
+  var GENERIC = { key: 'GEN', name: 'Generic market', tick: NaN, tv: NaN };
+
+  /* E[high - low] of a Brownian bar = sqrt(8/pi) * sigma * sqrt(T). Used to turn ATR into sigma. */
+  var RANGE_TO_SIGMA = Math.sqrt(8 / Math.PI);
+  /* Broadie-Glasserman-Kou constant: beta = -zeta(1/2) / sqrt(2 pi), about 0.5826. */
+  var BGK_BETA = 1.4603545088095868 / Math.sqrt(2 * Math.PI);
+
+  function getInstrument(key, customTick, customTv) {
+    if (key === 'CUSTOM') return { key: 'CUSTOM', name: 'Custom contract', tick: +customTick, tv: +customTv };
+    if (INSTRUMENTS[key]) { var i = INSTRUMENTS[key]; return { key: key, name: i.name, tick: i.tick, tv: i.tv }; }
+    return { key: GENERIC.key, name: GENERIC.name, tick: NaN, tv: NaN };
+  }
+  function hasTicks(inst) { return !!inst && inst.tick > 0 && isFinite(inst.tick); }
+  function hasMoney(inst) { return hasTicks(inst) && inst.tv > 0 && isFinite(inst.tv); }
+  function dollarsPerPoint(inst) { return inst.tv / inst.tick; }
+  function pointsToTicks(points, inst) { return points / inst.tick; }
+  function ticksToPoints(ticks, inst) { return ticks * inst.tick; }
+  function pointsToDollars(points, inst) { return points / inst.tick * inst.tv; }
+  function ticksToDollars(ticks, inst) { return ticks * inst.tv; }
+  function onTickGrid(points, inst) {
+    var n = points / inst.tick;
+    return Math.abs(n - Math.round(n)) < 1e-7 * Math.max(1, Math.abs(n));
+  }
+
+  /* ---------- input validation ---------- */
+  function parseNum(raw) {
+    if (typeof raw === 'number') return raw;
+    var s = String(raw == null ? '' : raw).trim();
+    if (s === '') return NaN;
+    if (!/^[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$/.test(s)) return NaN;
+    return Number(s);
+  }
+  function isEmpty(raw) { return raw == null || String(raw).trim() === ''; }
+
+  /* A TP or SL distance. unit = 'points' | 'ticks'. Returns { ok, points, code, message, note }. */
+  function validateDistance(raw, inst, unit, label) {
+    label = label || TR('j_this_distance');
+    var useTicks = unit === 'ticks' && hasTicks(inst);
+    var unitWord = TR(useTicks ? 'j_unit_ticks' : 'j_unit_points');
+    if (isEmpty(raw)) return { ok: false, points: NaN, code: 'empty', message: TR('j_dist_empty', label, unitWord) };
+    var v = parseNum(raw);
+    if (!isFinite(v)) return { ok: false, points: NaN, code: 'nan', message: TR('j_dist_nan', label, unitWord) };
+    if (v === 0) return { ok: false, points: NaN, code: 'zero', message: TR('j_dist_zero', label) };
+    if (v < 0) return { ok: false, points: NaN, code: 'negative', message: TR('j_dist_negative', label, unitWord) };
+    var pts = useTicks ? ticksToPoints(v, inst) : v, note = null;
+    if (hasTicks(inst)) {
+      if (useTicks && Math.abs(v - Math.round(v)) > 1e-9) {
+        note = TR('j_dist_note_ticks', label, fmtNum(v), fmtNum(Math.floor(v)), fmtNum(Math.ceil(v)));
+      } else if (!useTicks && !onTickGrid(pts, inst)) {
+        var lo = Math.floor(pts / inst.tick + 1e-9) * inst.tick, hi = lo + inst.tick;
+        note = TR('j_dist_note_grid', label, fmtNum(pts), inst.key, fmtNum(inst.tick), fmtNum(lo), fmtNum(hi));
+      }
+    }
+    return { ok: true, points: pts, code: note ? 'off-grid' : 'ok', message: '', note: note };
+  }
+  /* Any other number. opts: { min, minExclusive, max, integer, allowEmpty } */
+  function validateNumber(raw, label, opts) {
+    opts = opts || {};
+    if (isEmpty(raw)) {
+      if (opts.allowEmpty) return { ok: true, value: NaN, code: 'blank', message: '' };
+      return { ok: false, value: NaN, code: 'empty', message: TR('j_num_empty', label) };
+    }
+    var v = parseNum(raw);
+    if (!isFinite(v)) return { ok: false, value: NaN, code: 'nan', message: TR('j_num_nan', label) };
+    if (opts.min != null && (opts.minExclusive ? v <= opts.min : v < opts.min)) {
+      return { ok: false, value: NaN, code: 'range', message: TR(opts.minExclusive ? 'j_num_above' : 'j_num_atleast', label, fmtNum(opts.min)) };
+    }
+    if (opts.max != null && v > opts.max) return { ok: false, value: NaN, code: 'range', message: TR('j_num_atmost', label, fmtNum(opts.max)) };
+    if (opts.integer && Math.abs(v - Math.round(v)) > 1e-9) return { ok: false, value: NaN, code: 'integer', message: TR('j_num_integer', label) };
+    return { ok: true, value: v, code: 'ok', message: '' };
+  }
+
+  /* ---------- F1: no edge ---------- */
+  function pNoEdge(tp, sl) { return sl / (tp + sl); }
+
+  /* ---------- F2: with drift ----------
+     Sign convention: mu is the MARKET's drift (points per unit time, + = price rising).
+     The drift in your favour is muFav = +mu for a long and -mu for a short, so a falling market helps a short.
+     sigma is the volatility in points per sqrt(unit time), in the same time unit as mu.
+     P = (1 - e^{k B}) / (e^{-k A} - e^{k B}), k = 2 muFav / sigma^2, A = TP distance, B = SL distance. */
+  function favourableDrift(side, mu) { return side === 'short' ? -mu : mu; }
+  function pDriftFav(tp, sl, muFav, sigma) {
+    var k = 2 * muFav / (sigma * sigma), A = tp, B = sl;
+    if (!isFinite(k) || Math.abs(k * (A + B)) < 1e-12) return B / (A + B);
+    /* Overflow-safe form, algebraically identical to the textbook one. */
+    if (k > 0) return Math.expm1(-k * B) / Math.expm1(-k * (A + B));
+    var j = -k;
+    return Math.exp(-j * A) * (-Math.expm1(-j * B)) / (-Math.expm1(-j * (A + B)));
+  }
+  function pDrift(side, tp, sl, mu, sigma) { return pDriftFav(tp, sl, favourableDrift(side, mu), sigma); }
+  /* The textbook form, kept for testing the safe form and for showing the working. */
+  function pDriftTextbook(side, tp, sl, mu, sigma) {
+    var k = 2 * favourableDrift(side, mu) / (sigma * sigma);
+    return (1 - Math.exp(k * sl)) / (Math.exp(-k * tp) - Math.exp(k * sl));
+  }
+
+  /* ---------- F3: break-even win rate and expected value (all in points) ---------- */
+  function breakEven(tp, sl, c) { return (sl + c) / (tp + sl); }
+  function expectedValue(p, tp, sl, c) { return p * tp - (1 - p) * sl - c; }
+
+  /* ---------- F4: driftless walk with a time limit ----------
+     sigmaH = standard deviation of the price change over the whole holding time (points).
+     P(TP by T) = B/L + sum_{n>=1} 2(-1)^n/(n pi) sin(n pi B / L) e^{-n^2 x},  x = pi^2 sigmaH^2 / (2 L^2), L = A + B.
+     P(SL by T) is the same with A in place of B inside the sine and the leading fraction A/L. */
+  function sigmaFromAtr(atr, bars) { return atr / RANGE_TO_SIGMA * Math.sqrt(bars); }
+  function timeSeriesX(tp, sl, sigmaH) { var L = tp + sl; return Math.PI * Math.PI * sigmaH * sigmaH / (2 * L * L); }
+  function timeTerm(n, tp, sl, x) {
+    var L = tp + sl, e = Math.exp(-x * n * n), coef = 2 * (n % 2 === 0 ? 1 : -1) / (n * Math.PI) * e;
+    return { n: n, e: e, tp: coef * Math.sin(n * Math.PI * sl / L), sl: coef * Math.sin(n * Math.PI * tp / L) };
+  }
+  function pWithTimeLimit(tp, sl, sigmaH) {
+    if (!(sigmaH > 0)) return { tp: 0, sl: 0, timeout: 1, terms: 0, unreachable: true };
+    /* With less than 1/40 of the nearer distance as total volatility, neither order can realistically be reached. */
+    if (sigmaH < Math.min(tp, sl) / 40) return { tp: 0, sl: 0, timeout: 1, terms: 0, unreachable: true };
+    var x = timeSeriesX(tp, sl, sigmaH), L = tp + sl;
+    var pt = sl / L, ps = tp / L, n;
+    for (n = 1; n < 400000; n++) {
+      var t = timeTerm(n, tp, sl, x);
+      if (t.e < 1e-16) break;
+      pt += t.tp; ps += t.sl;
+    }
+    pt = Math.min(1, Math.max(0, pt)); ps = Math.min(1, Math.max(0, ps));
+    return { tp: pt, sl: ps, timeout: Math.max(0, 1 - pt - ps), terms: n - 1, unreachable: false };
+  }
+
+  /* ---------- F5: checking only at bar closes (Broadie-Glasserman-Kou shift) ---------- */
+  function bgkShift(sigmaBar) { return BGK_BETA * sigmaBar; }
+  function pDiscrete(tp, sl, sigmaBar) { var s = bgkShift(sigmaBar); return (sl + s) / (tp + sl + 2 * s); }
+
+  /* ---------- Estimating F2's inputs from the trader's own numbers ----------
+     mu = average daily change (points per day). sigma = standard deviation of one day's change (points per sqrt(day)).
+     From ATR: E[range of a random-walk day] = sqrt(8/pi) * sigma (Parkinson 1980), so sigma = ATR / sqrt(8/pi) (exact, not 1.6).
+     From implied volatility (annual, in %): sigma per trading day = price * IV / sqrt(252). */
+  var TRADING_DAYS_PER_YEAR = 252;
+  function muFromPrices(pastPrice, priceNow, days) { return (priceNow - pastPrice) / days; }
+  function sigmaFromDailyAtr(atr) { return atr / RANGE_TO_SIGMA; }
+  function sigmaFromIv(price, ivPct) { return price * ivPct / 100 / Math.sqrt(TRADING_DAYS_PER_YEAR); }
+  /* Change the time unit: 'units' old units per new unit is 1/units, e.g. units = 23 turns per-day into per-hour of a 23-hour day. */
+  function rescaleToShorterUnit(mu, sigma, units) { return { mu: mu / units, sigma: sigma / Math.sqrt(units) }; }
+  function driftK(mu, sigma) { return 2 * mu / (sigma * sigma); }
+  /* Daily closes, oldest first, separated by commas, spaces, semicolons or new lines. At least 3 (2 changes). */
+  function parseCloses(text) {
+    var s = String(text == null ? '' : text).trim();
+    if (!s) return { ok: false, values: [], code: 'empty', message: TR('j_closes_empty') };
+    var toks = s.split(/[\s,;]+/).filter(function (t) { return t !== ''; }), vals = [];
+    for (var i = 0; i < toks.length; i++) {
+      var v = parseNum(toks[i]);
+      if (!isFinite(v)) return { ok: false, values: [], code: 'nan', message: TR('j_closes_nan', toks[i].slice(0, 24)) };
+      vals.push(v);
+    }
+    if (vals.length < 3) return { ok: false, values: vals, code: 'few', message: TR(vals.length === 1 ? 'j_closes_few_one' : 'j_closes_few_other', vals.length) };
+    if (vals.length > 5000) return { ok: false, values: [], code: 'many', message: TR('j_closes_many') };
+    var note = /\d,\d{3}(?![\d.])/.test(s) ? TR('j_closes_note') : null;
+    return { ok: true, values: vals, code: note ? 'note' : 'ok', message: '', note: note };
+  }
+  /* Daily changes and their average and sample standard deviation (divide by K - 1). */
+  function closeStats(closes) {
+    var d = [], i;
+    for (i = 1; i < closes.length; i++) d.push(closes[i] - closes[i - 1]);
+    var n = d.length, first = closes[0], lastC = closes[closes.length - 1];
+    var mean = (lastC - first) / n, ss = 0; /* the changes add up to last - first */
+    for (i = 0; i < n; i++) ss += (d[i] - mean) * (d[i] - mean);
+    var variance = n > 1 ? ss / (n - 1) : NaN;
+    return { diffs: d, n: n, first: first, last: lastC, mean: mean, ss: ss, variance: variance, sd: Math.sqrt(variance) };
+  }
+
+  /* ---------- simulation ---------- */
+  /* Seeded RNG (mulberry32) and a normal sampler (Marsaglia polar method). */
+  function rngFromSeed(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function normalFrom(rng) {
+    var spare = null;
+    return function () {
+      if (spare !== null) { var s = spare; spare = null; return s; }
+      var u, v, q;
+      do { u = rng() * 2 - 1; v = rng() * 2 - 1; q = u * u + v * v; } while (q >= 1 || q === 0);
+      var m = Math.sqrt(-2 * Math.log(q) / q);
+      spare = v * m;
+      return u * m;
+    };
+  }
+
+  /* "Realistic" mode: Student-t (4 degrees of freedom, scaled to unit variance) shocks with GARCH(1,1) volatility. */
+  var GARCH = { alpha: 0.08, beta: 0.90 };
+  GARCH.omega = 1 - GARCH.alpha - GARCH.beta; /* long-run variance = 1 */
+
+  /* One path in "favourable direction" coordinates: +x is toward the take profit.
+     o = { A, B, sigmaStep, maxSteps, mode: 'ideal'|'real', monitor: 'continuous'|'discrete', muStep }
+     Continuous monitoring uses a Brownian-bridge test between steps, like a resting exchange order. */
+  function simulatePath(o, rng, normal, record) {
+    var x = 0, h = 1, eps2 = 0, real = o.mode === 'real', cont = o.monitor !== 'discrete';
+    var mu = o.muStep || 0, pts = record ? [0] : null;
+    for (var i = 1; i <= o.maxSteps; i++) {
+      var sd = o.sigmaStep, z;
+      if (real) {
+        h = GARCH.omega + GARCH.alpha * eps2 + GARCH.beta * h;
+        var a1 = normal(), a2 = normal(), a3 = normal(), a4 = normal();
+        var chi = a1 * a1 + a2 * a2 + a3 * a3 + a4 * a4;
+        z = normal() / Math.sqrt(chi / 4) / Math.SQRT2;
+        eps2 = h * z * z;
+        sd = o.sigmaStep * Math.sqrt(h);
+      } else {
+        z = normal();
+      }
+      var nx = x + mu + sd * z, out = null;
+      if (nx >= o.A) out = 'tp';
+      else if (nx <= -o.B) out = 'sl';
+      else if (cont) {
+        var v = sd * sd;
+        var pUp = Math.exp(-2 * (o.A - x) * (o.A - nx) / v);
+        var pDn = Math.exp(-2 * (x + o.B) * (nx + o.B) / v);
+        var u = rng();
+        if (u < pUp) out = 'tp';
+        else if (u < pUp + pDn) out = 'sl';
+      }
+      if (out) {
+        if (record) pts.push(out === 'tp' ? o.A : -o.B);
+        return { outcome: out, steps: i, points: pts };
+      }
+      x = nx;
+      if (record) pts.push(x);
+    }
+    return { outcome: 'timeout', steps: o.maxSteps, points: pts, end: x };
+  }
+
+  function simulateMany(o, n, seed) {
+    var rng = rngFromSeed(seed), normal = normalFrom(rng);
+    var c = { tp: 0, sl: 0, timeout: 0, n: n, steps: 0 };
+    for (var i = 0; i < n; i++) {
+      var r = simulatePath(o, rng, normal, false);
+      c[r.outcome]++; c.steps += r.steps;
+    }
+    c.meanSteps = c.steps / n;
+    return c;
+  }
+
+  /* Maps calculator settings to simulation options, so the simulation models the same thing as the formula.
+     s = { tp, sl, side, mu, sigma, timed, sigmaH, mode }. Without a time limit, each step moves (TP + SL) / 40
+     points of standard deviation; with a trend, the step's drift is muFav * dt where dt = (step sd / sigma)^2. */
+  function simSettings(s) {
+    var L = s.tp + s.sl, mode = s.mode === 'real' ? 'real' : 'ideal';
+    if (s.timed) {
+      var steps = 300;
+      return { A: s.tp, B: s.sl, sigmaStep: s.sigmaH / Math.sqrt(steps), maxSteps: steps, mode: mode, monitor: 'continuous', muStep: 0, timed: true };
+    }
+    var sigmaStep = L / 40, muStep = 0;
+    if (s.sigma > 0 && isFinite(s.mu) && s.mu !== 0) {
+      var dt = Math.pow(sigmaStep / s.sigma, 2);
+      muStep = favourableDrift(s.side, s.mu) * dt;
+    }
+    return { A: s.tp, B: s.sl, sigmaStep: sigmaStep, maxSteps: 20000, mode: mode, monitor: 'continuous', muStep: muStep, timed: false };
+  }
+  /* 95% sampling noise for a simulated share p out of n trades. */
+  function noise95(p, n) { return 1.96 * Math.sqrt(p * (1 - p) / n); }
+
+  function percentile(sorted, q) {
+    if (!sorted.length) return NaN;
+    var pos = (sorted.length - 1) * q, lo = Math.floor(pos), hi = Math.ceil(pos);
+    return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+  }
+
+  /* Equity curves: nRuns accounts, nTrades trades each, win probability p, win pays winNet, loss costs lossNet. */
+  function simulateEquity(p, winNet, lossNet, nTrades, nRuns, seed) {
+    var rng = rngFromSeed(seed), cols = [], i, t;
+    for (t = 0; t <= nTrades; t++) cols.push(new Float64Array(nRuns));
+    var dds = [], streaks = [], finals = [], sample = [0], losers = 0;
+    for (i = 0; i < nRuns; i++) {
+      var eq = 0, peak = 0, dd = 0, run = 0, best = 0;
+      for (t = 1; t <= nTrades; t++) {
+        if (rng() < p) { eq += winNet; run = 0; }
+        else { eq -= lossNet; run++; if (run > best) best = run; }
+        if (eq > peak) peak = eq;
+        if (peak - eq > dd) dd = peak - eq;
+        cols[t][i] = eq;
+        if (i === 0) sample.push(eq);
+      }
+      dds.push(dd); streaks.push(best); finals.push(eq);
+      if (eq < 0) losers++;
+    }
+    var p5 = [0], p50 = [0], p95 = [0];
+    for (t = 1; t <= nTrades; t++) {
+      var s = Array.prototype.slice.call(cols[t]).sort(function (a, b) { return a - b; });
+      p5.push(percentile(s, 0.05)); p50.push(percentile(s, 0.5)); p95.push(percentile(s, 0.95));
+    }
+    var num = function (a, b) { return a - b; };
+    dds.sort(num); streaks.sort(num); finals.sort(num);
+    return {
+      p5: p5, p50: p50, p95: p95, sample: sample,
+      lossShare: losers / nRuns,
+      ddMedian: percentile(dds, 0.5), dd95: percentile(dds, 0.95),
+      streakMedian: percentile(streaks, 0.5), streakMax: streaks[streaks.length - 1],
+      finalMedian: percentile(finals, 0.5)
+    };
+  }
+
+  /* ---------- number formatting ---------- */
+  var MINUS = '−';
+  function fmtNum(x, dp) {
+    if (!isFinite(x)) return '–';
+    var r = Math.round(x * 1e8) / 1e8;
+    var s = Math.abs(r).toLocaleString('en-US', { maximumFractionDigits: dp == null ? 6 : dp });
+    return (r < 0 && s !== '0' ? MINUS : '') + s;
+  }
+  function fmtFixed(x, dp) {
+    if (!isFinite(x)) return '–';
+    var s = Math.abs(x).toFixed(dp);
+    return (x < 0 && Number(s) !== 0 ? MINUS : '') + s;
+  }
+  /* Significant figures, switching to "a x 10^b" outside 1e-4..1e7. Returns { text, mant, exp }. */
+  function sig(x, n) {
+    n = n || 6;
+    if (!isFinite(x)) return { text: '–', mant: '–', exp: 0 };
+    if (x === 0) return { text: '0', mant: '0', exp: 0 };
+    var a = Math.abs(x);
+    if (a >= 1e-4 && a < 1e7) {
+      var d = Math.max(0, n - 1 - Math.floor(Math.log10(a)));
+      var t = fmtNum(Number(x.toFixed(Math.min(d, 12))), Math.min(d, 12));
+      return { text: t, mant: t, exp: 0 };
+    }
+    var e = Math.floor(Math.log10(a)), m = x / Math.pow(10, e);
+    if (Math.abs(m) >= 9.999995) { m /= 10; e += 1; }
+    var mt = fmtNum(Number(m.toFixed(n - 1)), n - 1);
+    return { text: mt + ' × 10^' + e, mant: mt, exp: e };
+  }
+  function fmtPct(p, d) { return isFinite(p) ? fmtFixed(p * 100, d == null ? 1 : d) + '%' : '–'; }
+  function fmtMoney(x, signed) {
+    if (!isFinite(x)) return '–';
+    var s = Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (signed) return (x > 0.004 ? '+$' : x < -0.004 ? MINUS + '$' : '$') + s;
+    return (x < 0 && s !== '0.00' ? MINUS : '') + '$' + s;
+  }
+  function fmtSignedPts(x, dp) {
+    if (!isFinite(x)) return '–';
+    var s = fmtNum(Math.abs(x), dp == null ? 4 : dp);
+    return (x > 5e-9 && s !== '0' ? '+' : x < -5e-9 && s !== '0' ? MINUS : '') + s;
+  }
+
+  /* ---------- MathML builders for the typeset working ---------- */
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  /* A number, tagged with a data-k key so tests can read back exactly what is displayed. */
+  function N(text, key) {
+    var t = String(text), neg = t.charAt(0) === MINUS;
+    var body = '<mn' + (key ? ' data-k="' + key + '"' : '') + '>' + esc(neg ? t.slice(1) : t) + '</mn>';
+    return neg ? '<mrow><mo>' + MINUS + '</mo>' + body + '</mrow>' : body;
+  }
+  function NS(x, key, n) { /* significant-figure number, rendered with a power of ten when needed */
+    var s = sig(x, n);
+    if (!s.exp) return N(s.text, key);
+    return '<mrow' + (key ? ' data-k="' + key + '" data-v="' + esc(s.text) + '"' : '') + '>' + N(s.mant) + '<mo>×</mo><msup><mn>10</mn>' + N(fmtNum(s.exp)) + '</msup></mrow>';
+  }
+  function I(t) { return '<mi>' + esc(t) + '</mi>'; }
+  function O(t) { return '<mo>' + esc(t) + '</mo>'; }
+  function R() { return '<mrow>' + Array.prototype.join.call(arguments, '') + '</mrow>'; }
+  function F(a, b) { return '<mfrac>' + a + b + '</mfrac>'; }
+  function SUP(a, b) { return '<msup>' + a + b + '</msup>'; }
+  function SUB(a, b) { return '<msub>' + a + b + '</msub>'; }
+  function SQRT(a) { return '<msqrt>' + a + '</msqrt>'; }
+  function PAR(a) { return '<mo>(</mo>' + a + '<mo>)</mo>'; }
+  function M(content) { return '<div class="mx"><math display="block"><mrow>' + content + '</mrow></math></div>'; }
+  /* A step is a label plus one or more short equation lines, so nothing needs to scroll on a phone. */
+  function step(label) {
+    var lines = Array.prototype.slice.call(arguments, 1).filter(function (l) { return !!l; });
+    return { label: label, html: lines.map(M).join('') };
+  }
+  var EQ = '<mo>=</mo>', TIMES = '<mo>×</mo>', PLUS = '<mo>+</mo>', MIN = '<mo>' + MINUS + '</mo>', DOT = '<mo>·</mo>';
+
+  /* Shared first step when the user types ticks: convert to points. */
+  function unitSteps(inst, unit, tpIn, slIn, extra) {
+    if (!(unit === 'ticks' && hasTicks(inst))) return [];
+    var out = [
+      step(TR('j_s_convert_ticks', fmtNum(inst.tick)),
+        R(I('TP'), EQ, N(fmtNum(tpIn), 'tpTicks'), TIMES, N(fmtNum(inst.tick)), EQ, N(fmtNum(ticksToPoints(tpIn, inst)), 'tpPts')),
+        R(I('SL'), EQ, N(fmtNum(slIn), 'slTicks'), TIMES, N(fmtNum(inst.tick)), EQ, N(fmtNum(ticksToPoints(slIn, inst)), 'slPts')))
+    ];
+    if (extra != null) out.push(step(TR('j_s_convert_cost'), R(I('c'), EQ, N(fmtNum(extra), 'cTicks'), TIMES, N(fmtNum(inst.tick)), EQ, N(fmtNum(ticksToPoints(extra, inst)), 'cPts'))));
+    return out;
+  }
+
+  /* Each work function returns { steps: [{label, html}], values: {...raw numbers...} }.
+     tp, sl (and c) are in POINTS; tpIn/slIn/cIn are what the user typed in the chosen unit. */
+  var work = {
+    f1: function (tp, sl, u) {
+      u = u || {};
+      var L = tp + sl, p = pNoEdge(tp, sl);
+      var steps = unitSteps(u.inst, u.unit, u.tpIn, u.slIn).concat([
+        step(TR('j_s_write_formula'), R(I('P'), EQ, F(I('SL'), R(I('TP'), PLUS, I('SL'))))),
+        step(TR('j_s_put_distances'), R(I('P'), EQ, F(N(fmtNum(sl), 'sl'), R(N(fmtNum(tp), 'tp'), PLUS, N(fmtNum(sl)))))),
+        step(TR('j_s_add_bottom'), R(I('P'), EQ, F(N(fmtNum(sl)), N(fmtNum(L), 'L')))),
+        step(TR('j_s_divide'), R(I('P'), EQ, N(fmtFixed(p, 4), 'p'), EQ, N(fmtPct(p), 'pct')))
+      ]);
+      return { steps: steps, values: { tp: tp, sl: sl, L: L, p: p } };
+    },
+    f2: function (side, tp, sl, mu, sigma, u) {
+      u = u || {};
+      var muFav = favourableDrift(side, mu), k = 2 * muFav / (sigma * sigma);
+      var p = pDriftFav(tp, sl, muFav, sigma), p1 = pNoEdge(tp, sl);
+      var kB = k * sl, kA = -k * tp, eB = Math.exp(kB), eA = Math.exp(kA), num = 1 - eB, den = eA - eB;
+      var small = Math.abs(k * (tp + sl)) < 1e-12, huge = Math.abs(kB) > 700 || Math.abs(kA) > 700;
+      var steps = unitSteps(u.inst, u.unit, u.tpIn, u.slIn);
+      var mi = I('μ'), mf = SUB(I('μ'), I('fav'));
+      steps.push(side === 'short' ?
+        step(TR('j_s_short_flip'), R(mf, EQ, MIN, mi, EQ, MIN, PAR(N(fmtNum(mu), 'mu'))), R(EQ, N(fmtNum(muFav), 'muFav'))) :
+        step(TR('j_s_long_keep'), R(mf, EQ, mi, EQ, N(fmtNum(mu), 'mu')), R(EQ, N(fmtNum(muFav), 'muFav'))));
+      steps.push(step(TR('j_s_work_k'),
+        R(I('k'), EQ, F(R(N('2'), TIMES, N(fmtNum(muFav))), SUP(N(fmtNum(sigma), 'sigma'), N('2')))), R(EQ, NS(k, 'k'))));
+      if (small) {
+        steps.push(step(TR('j_s_k_zero'), R(I('P'), EQ, F(N(fmtNum(sl)), R(N(fmtNum(tp)), PLUS, N(fmtNum(sl))))), R(EQ, N(fmtFixed(p, 4), 'p'), EQ, N(fmtPct(p), 'pct'))));
+      } else if (huge) {
+        steps.push(step(TR('j_s_huge'),
+          R(I('P'), EQ, N(fmtFixed(p, 4), 'p'), EQ, N(fmtPct(p), 'pct'))));
+      } else {
+        steps.push(step(TR('j_s_top_power'), R(SUP(I('e'), R(I('k'), I('B'))), EQ, SUP(I('e'), R(NS(k), TIMES, N(fmtNum(sl))))), R(EQ, SUP(I('e'), NS(kB, 'kB')), EQ, NS(eB, 'eB'))));
+        steps.push(step(TR('j_s_bottom_power'), R(SUP(I('e'), R(MIN, I('k'), I('A'))), EQ, SUP(I('e'), NS(kA, 'kA'))), R(EQ, NS(eA, 'eA'))));
+        steps.push(step(TR('j_s_put_formula'), R(I('P'), EQ, F(R(N('1'), MIN, NS(eB)), R(NS(eA), MIN, NS(eB)))), R(EQ, F(NS(num, 'num'), NS(den, 'den')))));
+        steps.push(step(TR('j_s_divide'), R(I('P'), EQ, N(fmtFixed(p, 4), 'p'), EQ, N(fmtPct(p), 'pct'))));
+      }
+      steps.push(step(TR('j_s_compare_f1_trend'), R(SUB(I('P'), I('F1')), EQ, N(fmtPct(p1), 'p1')),
+        R(I('P'), MIN, SUB(I('P'), I('F1')), EQ, N(fmtSignedPts((p - p1) * 100, 2), 'diff'))));
+      return { steps: steps, values: { muFav: muFav, k: k, kB: kB, kA: kA, eB: eB, eA: eA, num: num, den: den, p: p, p1: p1, diff: (p - p1) * 100, small: small, huge: huge } };
+    },
+    f3: function (tp, sl, c, pUser, u) {
+      u = u || {};
+      var be = breakEven(tp, sl, c), p1 = pNoEdge(tp, sl), ps = SUP(I('p'), O('*'));
+      var steps = unitSteps(u.inst, u.unit, u.tpIn, u.slIn, u.unit === 'ticks' && hasTicks(u.inst) ? u.cIn : null);
+      steps.push(step(TR('j_s_breakeven_put'), R(ps, EQ, F(R(I('SL'), PLUS, I('c')), R(I('TP'), PLUS, I('SL')))),
+        R(EQ, F(R(N(fmtNum(sl)), PLUS, N(fmtNum(c), 'c')), R(N(fmtNum(tp)), PLUS, N(fmtNum(sl)))), EQ, F(N(fmtNum(sl + c), 'beNum'), N(fmtNum(tp + sl), 'beDen')))));
+      steps.push(step(TR('j_s_divide'), R(ps, EQ, N(fmtFixed(be, 4), 'be'), EQ, N(fmtPct(be), 'bePct'))));
+      var values = { be: be, beNum: sl + c, beDen: tp + sl, p1: p1, ev0: expectedValue(p1, tp, sl, c) };
+      if (be >= 1) {
+        steps.push(step(TR('j_s_never_breakeven'), R(ps, O('≥'), N('1'))));
+      }
+      if (isFinite(pUser)) {
+        var a = pUser * tp, b = (1 - pUser) * sl, ev = expectedValue(pUser, tp, sl, c);
+        values.ev = ev; values.evWin = a; values.evLoss = b; values.q = 1 - pUser;
+        steps.push(step(TR('j_s_ev_at', fmtPct(pUser)),
+          R(I('EV'), EQ, I('p'), DOT, I('TP'), MIN, PAR(R(N('1'), MIN, I('p'))), DOT, I('SL'), MIN, I('c')),
+          R(EQ, N(fmtNum(pUser, 4), 'pu'), TIMES, N(fmtNum(tp)), MIN, N(fmtNum(1 - pUser, 4), 'q'), TIMES, N(fmtNum(sl)), MIN, N(fmtNum(c)))));
+        steps.push(step(TR('j_s_multiply_subtract'), R(I('EV'), EQ, N(fmtNum(a, 4), 'evWin'), MIN, N(fmtNum(b, 4), 'evLoss'), MIN, N(fmtNum(c))), R(EQ, N(fmtSignedPts(ev, 4), 'ev'))));
+      }
+      steps.push(step(TR('j_s_check_ev_zero'), R(ps, DOT, I('TP'), MIN, PAR(R(N('1'), MIN, ps)), DOT, I('SL'), MIN, I('c')),
+        R(EQ, N(fmtNum(Math.abs(expectedValue(be, tp, sl, c)) < 1e-9 ? 0 : expectedValue(be, tp, sl, c), 6), 'evAtBe'))));
+      values.evAtBe = expectedValue(be, tp, sl, c);
+      return { steps: steps, values: values };
+    },
+    f4: function (tp, sl, atr, bars, u) {
+      u = u || {};
+      var sb = atr / RANGE_TO_SIGMA, sH = sigmaFromAtr(atr, bars), L = tp + sl, x = timeSeriesX(tp, sl, sH);
+      var r = pWithTimeLimit(tp, sl, sH), sg = I('σ');
+      var steps = unitSteps(u.inst, u.unit, u.tpIn, u.slIn);
+      steps.push(step(TR('j_s_vol_bar'), R(SUB(sg, I('bar')), EQ, F(I('ATR'), SQRT(R(N('8'), O('/'), I('π'))))),
+        R(EQ, F(N(fmtNum(atr), 'atr'), N('1.59577')), EQ, N(fmtNum(sb, 4), 'sb'))));
+      steps.push(step(TR('j_s_vol_total'), R(SUB(sg, I('T')), EQ, SUB(sg, I('bar')), TIMES, SQRT(I('N'))),
+        R(EQ, N(fmtNum(sb, 4)), TIMES, SQRT(N(fmtNum(bars), 'bars')), EQ, N(fmtNum(sH, 4), 'sH'))));
+      var terms = [], show = 0;
+      if (r.unreachable) {
+        steps.push(step(TR('j_s_unreachable'),
+          R(I('P'), O('('), I(TR('j_timeout_word')), O(')'), EQ, N('100.0%', 'toPct'))));
+        return { steps: steps, values: { sb: sb, sH: sH, L: L, x: x, tp: r.tp, sl: r.sl, timeout: r.timeout, terms: 0, shown: [], unreachable: true } };
+      }
+      steps.push(step(TR('j_s_decay_x'), R(I('x'), EQ, F(R(SUP(I('π'), N('2')), SUP(SUB(sg, I('T')), N('2'))), R(N('2'), SUP(I('L'), N('2'))))),
+        R(EQ, F(R(N('9.8696'), TIMES, SUP(N(fmtNum(sH, 4)), N('2'))), R(N('2'), TIMES, SUP(N(fmtNum(L), 'L'), N('2'))))), R(EQ, NS(x, 'x', 5))));
+      /* Show up to 3 terms that are big enough to print at 5 decimals; the rest are added but not printed. */
+      for (var n = 1; n <= r.terms && terms.length < 3; n++) {
+        var tt = timeTerm(n, tp, sl, x);
+        if (Math.max(Math.abs(tt.tp), Math.abs(tt.sl)) >= 5e-6) terms.push(tt);
+        else if (tt.e < 5e-6) break;
+      }
+      show = terms.length;
+      var sumTp = sl / L, sumSl = tp / L;
+      terms.forEach(function (t) { sumTp += t.tp; sumSl += t.sl; });
+      var restTp = r.tp - sumTp, restSl = r.sl - sumSl; /* everything not printed, so shown + rest = total */
+      var rowTp = [N(fmtFixed(sl / L, 5), 'tp0')], rowSl = [N(fmtFixed(tp / L, 5), 'sl0')];
+      terms.forEach(function (t, i) {
+        rowTp.push(t.tp < 0 ? MIN : PLUS, N(fmtFixed(Math.abs(t.tp), 5), 'tpT' + (i + 1)));
+        rowSl.push(t.sl < 0 ? MIN : PLUS, N(fmtFixed(Math.abs(t.sl), 5), 'slT' + (i + 1)));
+      });
+      var more = r.terms - show;
+      var tail = more > 0 ? R(PLUS, '<mtext> ' + esc(TR(more === 1 ? 'j_more_term_one' : 'j_more_term_other', more.toLocaleString('en-US'))) + '</mtext>') : '';
+      /* Lay a series out as short lines: "P(TP) = B/L +/- term1", then up to two more terms per line. */
+      function rowLines(head, row, total) {
+        var lines = [R(head, row[0], row[1] || '', row[2] || '')];
+        for (var j = 3; j < row.length; j += 4) lines.push(R('<mspace width="1.5em"/>', row[j], row[j + 1], row[j + 2] || '', row[j + 3] || ''));
+        if (tail) lines.push(R('<mspace width="1.5em"/>', tail));
+        lines.push(R(EQ, total));
+        return lines;
+      }
+      steps.push(step.apply(null, [terms.length ? TR('j_s_f4_tp_terms', terms.map(function (t) { return t.n; }).join(', '), more > 0 ? TR('j_s_f4_tp_terms_more', r.terms.toLocaleString('en-US')) : '') :
+        TR('j_s_f4_tp_none')]
+        .concat(rowLines(R(I('P'), O('('), I('TP'), O(')'), EQ), rowTp, N(fmtPct(r.tp), 'tpPct')))));
+      steps.push(step.apply(null, [TR('j_s_f4_sl')]
+        .concat(rowLines(R(I('P'), O('('), I('SL'), O(')'), EQ), rowSl, N(fmtPct(r.sl), 'slPct')))));
+      steps.push(step(TR('j_s_f4_timeout'), R(N('1'), MIN, N(fmtFixed(r.tp, 4), 'tpP'), MIN, N(fmtFixed(r.sl, 4), 'slP')), R(EQ, N(fmtPct(r.timeout), 'toPct'))));
+      return { steps: steps, values: { sb: sb, sH: sH, L: L, x: x, tp: r.tp, sl: r.sl, timeout: r.timeout, terms: r.terms, shown: terms, restTp: restTp, restSl: restSl, tp0: sl / L, sl0: tp / L } };
+    },
+    f5: function (tp, sl, atr, u) {
+      u = u || {};
+      var sb = atr / RANGE_TO_SIGMA, s = bgkShift(sb), p = pDiscrete(tp, sl, sb), p1 = pNoEdge(tp, sl);
+      var steps = unitSteps(u.inst, u.unit, u.tpIn, u.slIn);
+      steps.push(step(TR('j_s_vol_bar'), R(SUB(I('σ'), I('bar')), EQ, F(N(fmtNum(atr), 'atr'), N('1.59577')), EQ, N(fmtNum(sb, 4), 'sb'))));
+      steps.push(step(TR('j_s_shift'), R(I('s'), EQ, N('0.5826'), TIMES, N(fmtNum(sb, 4)), EQ, N(fmtNum(s, 4), 's'))));
+      steps.push(step(TR('j_s_move_orders'), R(SUB(I('P'), I('bars')), O('≈'), F(R(N(fmtNum(sl)), PLUS, N(fmtNum(s, 4))), R(N(fmtNum(tp)), PLUS, N(fmtNum(sl)), PLUS, N('2'), TIMES, N(fmtNum(s, 4))))),
+        R(EQ, F(N(fmtNum(sl + s, 4), 'num'), N(fmtNum(tp + sl + 2 * s, 4), 'den')), EQ, N(fmtPct(p), 'pct'))));
+      steps.push(step(TR('j_s_compare_f1_cont'), R(SUB(I('P'), I('F1')), EQ, N(fmtPct(p1), 'p1'))));
+      return { steps: steps, values: { sb: sb, s: s, num: sl + s, den: tp + sl + 2 * s, p: p, p1: p1 } };
+    },
+    /* F2's inputs. o = { muMethod: 'prices'|'closes'|'zero', sigmaMethod: 'atr'|'iv'|'closes',
+       past, now, days, atr, price, iv (percent), closes: [numbers] }. Inputs are already validated. */
+    est: function (o) {
+      var steps = [], mu, sigma, st = null, mi = I('μ'), sg = I('σ');
+      var dbar = '<mover accent="true"><mi>d</mi><mo>¯</mo></mover>';
+      if (o.muMethod === 'closes' || o.sigmaMethod === 'closes') {
+        st = closeStats(o.closes);
+        var shown = st.diffs.slice(0, 4), row = [I('d'), EQ];
+        shown.forEach(function (d, i) { if (i) row.push(O(',')); row.push(N(fmtNum(d, 4), i === 0 ? 'd1' : null)); });
+        if (st.n > shown.length) row.push(O(','), '<mi>…</mi>');
+        steps.push(step(TR('j_s_est_changes', st.n + 1, st.n), R.apply(null, row)));
+      }
+      if (o.muMethod === 'prices') {
+        mu = muFromPrices(o.past, o.now, o.days);
+        steps.push(step(TR('j_s_est_trend_prices'),
+          R(mi, EQ, F(R(SUB(I('C'), '<mtext>' + esc(TR('j_today')) + '</mtext>'), MIN, SUB(I('C'), '<mtext>' + esc(TR('j_n_days_ago')) + '</mtext>')), I('N'))),
+          R(EQ, F(R(N(fmtNum(o.now), 'now'), MIN, N(fmtNum(o.past), 'past')), N(fmtNum(o.days), 'days')), EQ, F(N(fmtNum(o.now - o.past, 4), 'chg'), N(fmtNum(o.days))), EQ, N(fmtSignedPts(mu, 4), 'mu'))));
+      } else if (o.muMethod === 'closes') {
+        mu = st.mean;
+        steps.push(step(TR('j_s_est_trend_closes', st.n),
+          R(mi, EQ, dbar, EQ, F(R(N(fmtNum(st.last), 'now'), MIN, N(fmtNum(st.first), 'past')), N(fmtNum(st.n), 'days'))),
+          R(EQ, N(fmtSignedPts(mu, 4), 'mu'))));
+      } else {
+        mu = 0;
+        steps.push(step(TR('j_s_est_trend_zero'), R(mi, EQ, N('0', 'mu'))));
+      }
+      if (o.sigmaMethod === 'atr') {
+        sigma = sigmaFromDailyAtr(o.atr);
+        steps.push(step(TR('j_s_est_vol_atr'),
+          R(sg, O('≈'), F(I('ATR'), SQRT(R(N('8'), O('/'), I('π'))))),
+          R(EQ, F(N(fmtNum(o.atr), 'atr'), N('1.59577')), EQ, N(fmtNum(sigma, 4), 'sigma'))));
+      } else if (o.sigmaMethod === 'iv') {
+        sigma = sigmaFromIv(o.price, o.iv);
+        steps.push(step(TR('j_s_est_vol_iv'),
+          R(sg, O('≈'), F(R(I('Price'), TIMES, I('IV')), SQRT(N('252')))),
+          R(EQ, F(R(N(fmtNum(o.price), 'price'), TIMES, N(fmtNum(o.iv / 100, 6), 'ivDec')), N('15.8745')), EQ, N(fmtNum(sigma, 4), 'sigma'))));
+      } else {
+        sigma = st.sd;
+        steps.push(step(TR('j_s_est_avg_change'), R(dbar, EQ, N(fmtSignedPts(st.mean, 4), 'dbar'))));
+        steps.push(step(TR('j_s_est_vol_closes', st.n),
+          R(sg, EQ, SQRT(F(R(O('∑'), SUP(R(PAR(R(I('d'), MIN, dbar))), N('2'))), R(I('K'), MIN, N('1'))))),
+          R(EQ, SQRT(F(N(fmtNum(st.ss, 4), 'ss'), N(fmtNum(st.n - 1), 'km1'))), EQ, SQRT(N(fmtNum(st.variance, 4), 'var'))),
+          R(EQ, N(fmtNum(sigma, 4), 'sigma'))));
+      }
+      return { steps: steps, values: { mu: mu, sigma: sigma, stats: st } };
+    }
+  };
+
+  return {
+    INSTRUMENTS: INSTRUMENTS, GENERIC: GENERIC, RANGE_TO_SIGMA: RANGE_TO_SIGMA, BGK_BETA: BGK_BETA, GARCH: GARCH,
+    getInstrument: getInstrument, hasTicks: hasTicks, hasMoney: hasMoney,
+    dollarsPerPoint: dollarsPerPoint, pointsToTicks: pointsToTicks, ticksToPoints: ticksToPoints,
+    pointsToDollars: pointsToDollars, ticksToDollars: ticksToDollars, onTickGrid: onTickGrid,
+    parseNum: parseNum, validateDistance: validateDistance, validateNumber: validateNumber,
+    pNoEdge: pNoEdge, favourableDrift: favourableDrift, pDriftFav: pDriftFav, pDrift: pDrift, pDriftTextbook: pDriftTextbook,
+    breakEven: breakEven, expectedValue: expectedValue,
+    sigmaFromAtr: sigmaFromAtr, timeSeriesX: timeSeriesX, timeTerm: timeTerm, pWithTimeLimit: pWithTimeLimit,
+    bgkShift: bgkShift, pDiscrete: pDiscrete,
+    TRADING_DAYS_PER_YEAR: TRADING_DAYS_PER_YEAR, muFromPrices: muFromPrices, sigmaFromDailyAtr: sigmaFromDailyAtr, sigmaFromIv: sigmaFromIv,
+    rescaleToShorterUnit: rescaleToShorterUnit, driftK: driftK, parseCloses: parseCloses, closeStats: closeStats,
+    rngFromSeed: rngFromSeed, normalFrom: normalFrom, simulatePath: simulatePath, simulateMany: simulateMany,
+    simSettings: simSettings, noise95: noise95, simulateEquity: simulateEquity, percentile: percentile,
+    fmtNum: fmtNum, fmtFixed: fmtFixed, fmtPct: fmtPct, fmtMoney: fmtMoney, fmtSignedPts: fmtSignedPts, sig: sig,
+    work: work, TR: TR
+  };
+})();
+/* TPSL-CALC-END */
+
+  </script>
+
+  <script is:inline>
+(function () {
+  'use strict';
+  var T = TPSL;
+  var $ = function (id) { return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var MINUS = '−';
+  var fmtNum = T.fmtNum, fmtPct = T.fmtPct, fmtMoney = T.fmtMoney, TR = T.TR;
+
+  var ICON_OK = '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m6 10.4 2.6 2.6L14.2 7.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_WARN = '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 19 18H1L10 2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14.8" r="1.1" fill="currentColor"/></svg>';
+  var ICON_UP = '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 14 8 9l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_DOWN = '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6l5 5 3-3 6 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_INFO = '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="6" r="1.1" fill="currentColor"/></svg>';
+
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function radio(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : null; }
+
+  /* ---------- units and instrument (shared by every calculator) ---------- */
+  var DIST_IDS = ['f1tp', 'f1sl', 'f2tp', 'f2sl', 'f3tp', 'f3sl', 'f3c', 'f4tp', 'f4sl', 'f5tp', 'f5sl', 'tp', 'sl', 'cost'];
+  function inst() { return T.getInstrument($('inst').value, $('cTick').value, $('cTv').value); }
+  function unit() { return (T.hasTicks(inst()) && radio('unit') === 'ticks') ? 'ticks' : 'points'; }
+  function settingsError() {
+    if ($('inst').value === 'CUSTOM' && !T.hasMoney(inst())) return TR('j_custom_contract_err');
+    return '';
+  }
+  var cur = { inst: inst(), unit: 'points' };
+  function convertFields(fromInst, fromUnit, toInst, toUnit) {
+    DIST_IDS.forEach(function (id) {
+      var el = $(id), v = T.parseNum(el.value);
+      if (!isFinite(v)) return;
+      var pts = (fromUnit === 'ticks' && T.hasTicks(fromInst)) ? T.ticksToPoints(v, fromInst) : v;
+      var out = (toUnit === 'ticks' && T.hasTicks(toInst)) ? T.pointsToTicks(pts, toInst) : pts;
+      el.value = String(+out.toFixed(8));
+    });
+  }
+  function unitWord() { return unit(); }
+  function applySettings(fromSelect) {
+    var i = inst(), ok = T.hasTicks(i);
+    $('customRow').hidden = $('inst').value !== 'CUSTOM';
+    $('unitTicks').disabled = !ok;
+    if (!ok && radio('unit') === 'ticks') $('unitPoints').checked = true;
+    var u = unit();
+    if (fromSelect && (u !== cur.unit || (u === 'ticks' && cur.inst.tick !== i.tick))) convertFields(cur.inst, cur.unit, i, u);
+    if (ok || u === 'points') cur = { inst: i, unit: u };
+    document.querySelectorAll('.u').forEach(function (el) { el.textContent = TR(u === 'ticks' ? 'j_unit_ticks' : 'j_unit_points'); });
+    $('znHint').hidden = i.key !== 'ZN';
+    var err = settingsError();
+    $('settingsMsg').hidden = !err; $('settingsMsg').textContent = err;
+    var echo, hint;
+    if (err) { echo = TR('j_echo_fix_custom'); hint = err; }
+    else if (!T.hasMoney(i)) {
+      hint = TR('j_hint_generic');
+      echo = TR('j_echo_generic');
+    } else {
+      hint = TR('j_hint_inst', i.key, fmtNum(i.tick), fmtMoney(i.tv), fmtMoney(T.dollarsPerPoint(i)));
+      echo = TR('j_echo_inst', TR(u === 'ticks' ? 'j_unit_ticks' : 'j_unit_points'), i.key === 'CUSTOM' ? TR('j_your_custom_contract') : i.key, fmtNum(i.tick), fmtMoney(i.tv));
+    }
+    $('settingsHint').textContent = hint;
+    document.querySelectorAll('[data-echo]').forEach(function (el) {
+      el.innerHTML = esc(echo) + ' <a href="#settings">' + esc(TR('j_change_units')) + '</a>';
+    });
+    var money = T.hasMoney(i) && !err;
+    $('f3qtyRow').hidden = !money;
+    $('qtyField').hidden = !money;
+    renderAll();
+  }
+
+  /* ---------- reading and validating inputs ---------- */
+  function showMsg(id, res) {
+    var el = $(id), m = $(id + 'Msg');
+    if (el) el.setAttribute('aria-invalid', String(!res.ok));
+    if (!m) return;
+    if (!res.ok) { m.textContent = res.message; m.className = 'fmsg err'; m.hidden = false; }
+    else if (res.note) { m.textContent = res.note; m.className = 'fmsg note'; m.hidden = false; }
+    else { m.textContent = ''; m.hidden = true; }
+  }
+  function readDist(id, label) {
+    var r = T.validateDistance($(id).value, inst(), unit(), label);
+    r.input = T.parseNum($(id).value);
+    showMsg(id, r); return r;
+  }
+  /* Costs may be zero; they follow the distance unit. */
+  function readCost(id, label) {
+    var r = T.validateNumber($(id).value, label, { min: 0 });
+    if (!r.ok) { showMsg(id, r); return r; }
+    var i = inst(), t = unit() === 'ticks';
+    r.input = r.value;
+    r.points = t ? T.ticksToPoints(r.value, i) : r.value;
+    showMsg(id, r); return r;
+  }
+  function readNum(id, label, opts) { var r = T.validateNumber($(id).value, label, opts); showMsg(id, r); return r; }
+  function uopts(a, b, c) { return { inst: inst(), unit: unit(), tpIn: a && a.input, slIn: b && b.input, cIn: c && c.input }; }
+
+  function money() { return T.hasMoney(inst()) && !settingsError(); }
+  function dollars(points, qty) { return T.pointsToDollars(points, inst()) * (qty || 1); }
+  function convLine(label, points) {
+    var i = inst(), s = TR('j_conv_pts', label, fmtNum(points));
+    if (T.hasTicks(i) && !settingsError()) s += TR('j_conv_ticks', fmtNum(T.pointsToTicks(points, i), 2));
+    if (money()) s += TR('j_conv_money', fmtMoney(dollars(points)));
+    return s;
+  }
+  function ptsText(x, signed, dp) {
+    return TR('j_pts', signed ? T.fmtSignedPts(x, dp == null ? 2 : dp) : fmtNum(x, dp == null ? 2 : dp));
+  }
+  function ptsMoney(x, qty, signed) {
+    var s = ptsText(x, signed);
+    if (money()) s += ' (' + (qty > 1 ? TR('j_money_for_qty', fmtMoney(dollars(x, qty), signed), qty) : TR('j_money_per_contract', fmtMoney(dollars(x, qty), signed))) + ')';
+    return s;
+  }
+  function renderWork(el, w) {
+    el.innerHTML = w.steps.map(function (s) { return '<li><p class="st-l">' + esc(s.label) + '</p>' + s.html + '</li>'; }).join('');
+  }
+  function workFail(el, msg) { el.innerHTML = '<li><p class="st-l">' + esc(msg) + '</p></li>'; }
+  function setBar(prefix, tp, to, sl) {
+    $(prefix + 'Tp').style.flex = '0 0 ' + (tp * 100).toFixed(2) + '%';
+    $(prefix + 'To').style.flex = '0 0 ' + (to * 100).toFixed(2) + '%';
+    $(prefix + 'To').hidden = !(to > 0);
+    $(prefix + 'Sl').style.flex = '1 1 auto';
+  }
+  function oneIn(p) {
+    if (!(p > 0)) return '';
+    var n = 1 / p;
+    if (Math.abs(n - Math.round(n)) < 0.08 && Math.round(n) >= 2) return TR('j_one_in', Math.round(n));
+    return TR('j_n_in_100', Math.round(p * 100));
+  }
+  function firstProblem(list) { for (var i = 0; i < list.length; i++) if (!list[i].ok) return list[i].message; return settingsError(); }
+
+  /* ---------- F1 ---------- */
+  function renderF1() {
+    var a = readDist('f1tp', TR('j_lbl_tp')), b = readDist('f1sl', TR('j_lbl_sl'));
+    var bad = firstProblem([a, b]);
+    if (bad) { workFail($('f1work'), bad); $('f1res').textContent = '–'; $('f1conv').textContent = ''; setBar('f1bar', 0, 0, 1); return; }
+    var w = T.work.f1(a.points, b.points, uopts(a, b));
+    renderWork($('f1work'), w);
+    $('f1res').textContent = fmtPct(w.values.p);
+    $('f1sub').textContent = TR('j_f1_sub', oneIn(w.values.p));
+    setBar('f1bar', w.values.p, 0, 1 - w.values.p);
+    $('f1conv').textContent = convLine('TP', a.points) + '. ' + convLine('SL', b.points) + '.';
+  }
+
+  /* ---------- F2 ---------- */
+  function renderF2() {
+    var a = readDist('f2tp', TR('j_lbl_tp')), b = readDist('f2sl', TR('j_lbl_sl'));
+    var mu = readNum('f2mu', TR('j_lbl_trend'), {}), sg = readNum('f2sigma', TR('j_lbl_vol'), { min: 0, minExclusive: true });
+    var bad = firstProblem([a, b, mu, sg]);
+    ['f2res', 'f2cmpP', 'f2cmpP1', 'f2cmpD'].forEach(function (id) { $(id).textContent = '–'; });
+    if (bad) { workFail($('f2work'), bad); return; }
+    var side = radio('f2side') || 'long';
+    var w = T.work.f2(side, a.points, b.points, mu.value, sg.value, uopts(a, b));
+    renderWork($('f2work'), w);
+    var v = w.values;
+    $('f2res').textContent = fmtPct(v.p);
+    $('f2sub').textContent = TR(side === 'long' ? 'j_f2_sub_long' : 'j_f2_sub_short');
+    $('f2cmpP').textContent = fmtPct(v.p);
+    $('f2cmpP1').textContent = fmtPct(v.p1);
+    $('f2cmpD').textContent = TR('j_pts_short', T.fmtSignedPts(v.diff, 2));
+  }
+
+  /* ---------- F3 ---------- */
+  function verdictHtml(wr, be, ev, qty) {
+    var evText = isFinite(ev) ? ptsMoney(ev, qty, true) : '', lossText = isFinite(ev) ? ptsMoney(Math.abs(ev), qty, false) : '';
+    if (!(be < 1)) return { cls: 'verdict bad', html: ICON_DOWN + '<span>' + esc(TR('j_v_never')) + '</span>' };
+    if (!isFinite(wr)) return { cls: 'verdict', html: ICON_INFO + '<span>' + esc(TR('j_v_need', fmtPct(be))) + '</span>' };
+    if (Math.abs(wr - be) < 0.0005) return { cls: 'verdict', html: ICON_INFO + '<span>' + esc(TR('j_v_even', fmtPct(be))) + '</span>' };
+    if (wr > be) return { cls: 'verdict good', html: ICON_UP + '<span>' + esc(TR('j_v_above', fmtNum(wr * 100, 1), fmtPct(be), evText)) + '</span>' };
+    return { cls: 'verdict bad', html: ICON_DOWN + '<span>' + esc(TR('j_v_below', fmtNum(wr * 100, 1), fmtPct(be), lossText)) + '</span>' };
+  }
+  function renderF3() {
+    var a = readDist('f3tp', TR('j_lbl_tp')), b = readDist('f3sl', TR('j_lbl_sl'));
+    var c = readCost('f3c', TR('j_lbl_cost'));
+    var wr = readNum('f3wr', TR('j_lbl_wr'), { min: 0, max: 100, allowEmpty: true });
+    var q = money() ? readNum('f3qty', TR('j_lbl_qty'), { min: 1, integer: true }) : { ok: true, value: 1 };
+    var bad = firstProblem([a, b, c, wr, q]);
+    ['f3be', 'f3ev0', 'f3evU'].forEach(function (id) { $(id).textContent = '–'; $(id).className = ''; });
+    if (bad) { workFail($('f3work'), bad); $('f3verdict').className = 'verdict'; $('f3verdict').innerHTML = ICON_INFO + '<span>' + esc(TR('j_fix_input')) + '</span>'; $('f3conv').textContent = ''; return; }
+    var p = isFinite(wr.value) ? wr.value / 100 : NaN, qty = q.value;
+    var w = T.work.f3(a.points, b.points, c.points, p, uopts(a, b, c));
+    renderWork($('f3work'), w);
+    var v = w.values;
+    $('f3be').textContent = v.be < 1 ? fmtPct(v.be) : TR('j_never');
+    $('f3ev0').innerHTML = esc(ptsMoney(v.ev0, qty, true)).replace(' (', '<small>(').replace(/\)$/, ')</small>');
+    $('f3ev0').className = v.ev0 < -5e-9 ? 'neg' : v.ev0 > 5e-9 ? 'pos' : '';
+    if (isFinite(p)) {
+      $('f3evUL').innerHTML = esc(TR('j_f3_ev_user', fmtNum(p * 100, 1))) + '<small>' + esc(TR('j_hyp_tpsl')) + '</small>';
+      $('f3evU').innerHTML = esc(ptsMoney(v.ev, qty, true)).replace(' (', '<small>(').replace(/\)$/, ')</small>');
+      $('f3evU').className = v.ev < -5e-9 ? 'neg' : v.ev > 5e-9 ? 'pos' : '';
+    } else {
+      $('f3evUL').innerHTML = esc(TR('j_f3_ev_nouser')) + '<small>' + esc(TR('j_add_wr')) + '</small>';
+    }
+    var vd = verdictHtml(p, v.be, isFinite(p) ? v.ev : NaN, qty);
+    $('f3verdict').className = vd.cls; $('f3verdict').innerHTML = vd.html;
+    $('f3conv').textContent = money() ? convLine('c', c.points) + '.' : '';
+  }
+
+  /* ---------- F4 ---------- */
+  function renderF4() {
+    var a = readDist('f4tp', TR('j_lbl_tp')), b = readDist('f4sl', TR('j_lbl_sl'));
+    var atr = readNum('f4atr', TR('j_lbl_atr'), { min: 0, minExclusive: true }), bars = readNum('f4bars', TR('j_lbl_time'), { min: 1, integer: true });
+    var bad = firstProblem([a, b, atr, bars]);
+    if (bad) { workFail($('f4work'), bad); $('f4res').textContent = '–'; $('f4cmp').textContent = ''; setBar('f4bar', 0, 0, 1); return; }
+    var w = T.work.f4(a.points, b.points, atr.value, bars.value, uopts(a, b));
+    renderWork($('f4work'), w);
+    var v = w.values, p1 = T.pNoEdge(a.points, b.points);
+    $('f4res').textContent = fmtPct(v.tp);
+    setBar('f4bar', v.tp, v.timeout, v.sl);
+    $('f4barTo').hidden = false;
+    $('f4legTp').textContent = TR('j_leg_tp', fmtPct(v.tp));
+    $('f4legTo').textContent = TR('j_leg_to', fmtPct(v.timeout));
+    $('f4legSl').textContent = TR('j_leg_sl', fmtPct(v.sl));
+    $('f4cmp').textContent = TR('j_f4_cmp', fmtPct(p1), v.tp + v.sl > 0 ? fmtPct(v.tp / (v.tp + v.sl)) : '–');
+  }
+
+  /* ---------- F5 ---------- */
+  function renderF5() {
+    var a = readDist('f5tp', TR('j_lbl_tp')), b = readDist('f5sl', TR('j_lbl_sl'));
+    var atr = readNum('f5atr', TR('j_lbl_atr'), { min: 0, minExclusive: true });
+    var bad = firstProblem([a, b, atr]);
+    if (bad) { workFail($('f5work'), bad); $('f5res').textContent = '–'; $('f5p1').textContent = '–'; return; }
+    var w = T.work.f5(a.points, b.points, atr.value, uopts(a, b));
+    renderWork($('f5work'), w);
+    $('f5res').textContent = fmtPct(w.values.p);
+    $('f5p1').textContent = fmtPct(w.values.p1);
+  }
+
+  /* ---------- all-in-one ---------- */
+  var last = null;
+  function readMain() {
+    var s = { side: radio('side') || 'long' };
+    s.a = readDist('tp', TR('j_lbl_tp')); s.b = readDist('sl', TR('j_lbl_sl'));
+    s.c = readCost('cost', TR('j_lbl_cost'));
+    s.useTime = $('useTime').checked;
+    s.useTrend = $('useTrend').checked && !s.useTime;
+    var list = [s.a, s.b, s.c];
+    if (s.useTrend) { s.mu = readNum('mu', TR('j_lbl_trend'), {}); s.sigma = readNum('sigma', TR('j_lbl_vol'), { min: 0, minExclusive: true }); list.push(s.mu, s.sigma); }
+    if (s.useTime) { s.atr = readNum('atr', TR('j_lbl_atr'), { min: 0, minExclusive: true }); s.bars = readNum('bars', TR('j_lbl_maxhold'), { min: 1, integer: true }); list.push(s.atr, s.bars); }
+    s.wr = readNum('wr', TR('j_lbl_wr'), { min: 0, max: 100, allowEmpty: true }); list.push(s.wr);
+    s.q = money() ? readNum('qty', TR('j_lbl_qty'), { min: 1, integer: true }) : { ok: true, value: 1 }; list.push(s.q);
+    s.problem = firstProblem(list);
+    s.notes = [s.a, s.b].filter(function (r) { return r.ok && r.note; }).map(function (r) { return r.note; });
+    return s;
+  }
+  function computeMain(s) {
+    var A = s.a.points, B = s.b.points, c = s.c.points, r = { A: A, B: B, c: c };
+    r.p1 = T.pNoEdge(A, B);
+    r.wr = isFinite(s.wr.value) ? s.wr.value / 100 : NaN;
+    r.qty = s.q.value;
+    if (s.useTime) {
+      r.sigmaH = T.sigmaFromAtr(s.atr.value, s.bars.value);
+      var t = T.pWithTimeLimit(A, B, r.sigmaH);
+      r.pTp = t.tp; r.pSl = t.sl; r.pTo = t.timeout; r.formula = 'F4'; r.pBase = r.p1;
+      r.evModel = -c; r.evModelLabel = TR('j_ev_noedge');
+    } else if (s.useTrend) {
+      r.pTp = T.pDrift(s.side, A, B, s.mu.value, s.sigma.value); r.pSl = 1 - r.pTp; r.pTo = 0; r.formula = 'F2'; r.pBase = r.pTp;
+      r.evModel = T.expectedValue(r.pTp, A, B, c); r.evModelLabel = TR('j_ev_f2');
+    } else {
+      r.pTp = r.p1; r.pSl = 1 - r.p1; r.pTo = 0; r.formula = 'F1'; r.pBase = r.p1;
+      r.evModel = -c; r.evModelLabel = TR('j_ev_noedge');
+    }
+    r.be = T.breakEven(A, B, c);
+    r.evU = isFinite(r.wr) ? T.expectedValue(r.wr, A, B, c) : NaN;
+    return r;
+  }
+  function kvMoney(id, x, qty, signed) {
+    $(id).innerHTML = esc(ptsText(x, signed)) + (money() ? '<small>' + esc(fmtMoney(dollars(x, qty), signed)) + (qty > 1 ? ' ' + esc(TR('j_for_qty', qty)) : '') + '</small>' : '');
+    $(id).className = signed ? (x > 5e-9 ? 'pos' : x < -5e-9 ? 'neg' : '') : '';
+  }
+  function renderMain() {
+    var s = readMain(), st = $('inStatus');
+    $('trendRow').hidden = !$('useTrend').checked || s.useTime;
+    $('timeRow').hidden = !s.useTime;
+    $('useTrend').disabled = s.useTime;
+    $('trendOff').hidden = !s.useTime;
+    if (s.problem) {
+      st.className = 'status warn';
+      st.innerHTML = ICON_WARN + '<span><b>' + esc(TR('j_check_inputs')) + '</b> ' + esc(s.problem) + '</span>';
+      ['bigVal', 'oRR', 'oRisk', 'oReward', 'oBe', 'oEv0', 'oEvU', 'heroBig', 'heroBe', 'heroEv'].forEach(function (id) { $(id).textContent = '–'; $(id).className = $(id).className.replace(/\b(pos|neg)\b/g, ''); });
+      $('convLine').textContent = '';
+      setBar('bar', 0, 0, 1); setBar('heroBar', 0, 0, 1);
+      $('verdict').className = 'verdict'; $('verdict').innerHTML = ICON_INFO + '<span>' + esc(TR('j_fix_input')) + '</span>';
+      $('heroCap').textContent = TR('j_hero_waiting');
+      last = null; simPending();
+      return;
+    }
+    var r = computeMain(s), q = r.qty;
+    if (s.notes.length) { st.className = 'status warn'; st.innerHTML = ICON_WARN + '<span><b>' + esc(TR('j_one_note')) + '</b> ' + esc(s.notes[0]) + '</span>'; }
+    else { st.className = 'status ok'; st.innerHTML = ICON_OK + '<span><b>' + esc(TR('j_inputs_ok')) + '</b> ' + esc(TR(T.hasTicks(inst()) ? 'j_inputs_ok_grid' : 'j_inputs_ok_plain')) + '</span>'; }
+    $('convLine').textContent = convLine('TP', r.A) + '. ' + convLine('SL', r.B) + '.';
+
+    $('bigCap').textContent = r.formula === 'F4' ? TR('j_bigcap_f4', s.bars.value) : r.formula === 'F2' ? TR('j_bigcap_f2') : TR('j_bigcap_f1');
+    $('bigVal').innerHTML = fmtPct(r.pTp) + '<small>' + esc(r.formula === 'F4' ? TR('j_with_no_time', fmtPct(r.p1)) : r.formula === 'F2' ? TR('j_with_no_trend', fmtPct(r.p1)) : oneIn(r.pTp)) + '</small>';
+    setBar('bar', r.pTp, r.pTo, r.pSl);
+    $('legTp').textContent = TR('j_leg_tp_first', fmtPct(r.pTp));
+    $('legSl').textContent = TR('j_leg_sl_first', fmtPct(r.pSl));
+    $('legToWrap').hidden = r.formula !== 'F4';
+    $('legTo').textContent = TR('j_leg_to', fmtPct(r.pTo));
+
+    $('oRR').textContent = fmtNum(r.A / r.B, 2) + ' : 1';
+    kvMoney('oRisk', r.B + r.c, q, false);
+    kvMoney('oReward', r.A - r.c, q, false);
+    $('oBe').textContent = r.be < 1 ? fmtPct(r.be) : TR('j_never');
+    $('oEv0L').innerHTML = esc(r.evModelLabel) + '<small>' + esc(TR(r.formula === 'F4' ? 'j_hyp_f4' : 'j_hyp')) + '</small>';
+    kvMoney('oEv0', r.evModel, q, true);
+    if (isFinite(r.wr)) {
+      $('oEvUL').innerHTML = esc(TR('j_ev_user_main', fmtNum(r.wr * 100, 1))) + '<small>' + esc(TR('j_hyp_assumes')) + '</small>';
+      kvMoney('oEvU', r.evU, q, true);
+    } else {
+      $('oEvUL').innerHTML = esc(TR('j_ev_nouser_main')) + '<small>' + esc(TR('j_add_wr')) + '</small>';
+      $('oEvU').textContent = '–'; $('oEvU').className = '';
+    }
+    var vd = verdictHtml(r.wr, r.be, r.evU, q);
+    $('verdict').className = vd.cls; $('verdict').innerHTML = vd.html;
+
+    /* hero card mirrors the calculator */
+    var sideWord = TR(s.side === 'long' ? 'j_side_long' : 'j_side_short');
+    $('heroCap').textContent = TR('j_hero_cap', r.formula === 'F2' ? sideWord + ', ' : '', fmtNum(r.B), fmtNum(r.A), fmtNum(r.A / r.B, 2),
+      TR(r.formula === 'F2' ? 'j_with_your_trend' : 'j_no_edge'), r.formula === 'F4' ? TR('j_bar_limit', s.bars.value) : '');
+    $('heroBig').innerHTML = fmtPct(r.pTp) + '<small>' + esc(TR('j_tp_first')) + '</small>';
+    setBar('heroBar', r.pTp, r.pTo, r.pSl);
+    $('heroLegTo').hidden = r.formula !== 'F4';
+    $('heroBe').textContent = r.be < 1 ? fmtPct(r.be) : TR('j_never');
+    $('heroEvL').textContent = TR(r.formula === 'F2' ? 'j_hero_ev_f2' : 'j_hero_ev_noedge');
+    $('heroEv').textContent = ptsText(r.evModel, true) + (money() ? ' (' + fmtMoney(dollars(r.evModel, q), true) + ')' : '');
+
+    $('eqpUserL').textContent = isFinite(r.wr) ? TR('j_eqp_mine', fmtNum(r.wr * 100, 1)) : TR('j_eqp_mine_unset');
+    $('eqpZeroL').textContent = TR(r.formula === 'F2' ? 'j_eqp_f2' : 'j_eqp_f1', fmtPct(r.pBase));
+    $('eqpUser').disabled = !isFinite(r.wr);
+    if (!isFinite(r.wr)) $('eqpZero').checked = true;
+
+    last = { s: s, r: r };
+    scheduleSims();
+  }
+
+  /* ---------- F2 input helper: estimate the trend and volatility ---------- */
+  var estLast = null;
+  function clearMsg(id) { var el = $(id), m = $(id + 'Msg'); if (el) el.removeAttribute('aria-invalid'); if (m) { m.textContent = ''; m.hidden = true; } }
+  function renderEst() {
+    var muM = radio('estMu') || 'prices', sgM = radio('estSig') || 'atr', useCloses = muM === 'closes' || sgM === 'closes';
+    $('estPricesRow').hidden = muM !== 'prices';
+    $('estAtrRow').hidden = sgM !== 'atr';
+    $('estIvRow').hidden = sgM !== 'iv';
+    $('estClosesGroup').hidden = !useCloses;
+    $('estDone').textContent = '';
+    var list = [], o = { muMethod: muM, sigmaMethod: sgM };
+    if (muM === 'prices') {
+      var past = readNum('estPast', TR('j_lbl_past'), {}), now = readNum('estNow', TR('j_lbl_now'), {});
+      var days = readNum('estDays', TR('j_lbl_days'), { min: 1, integer: true });
+      list.push(past, now, days); o.past = past.value; o.now = now.value; o.days = days.value;
+    } else { ['estPast', 'estNow', 'estDays'].forEach(clearMsg); }
+    if (sgM === 'atr') {
+      var atr = readNum('estAtr', TR('j_lbl_datr'), { min: 0, minExclusive: true }); list.push(atr); o.atr = atr.value;
+    } else clearMsg('estAtr');
+    if (sgM === 'iv') {
+      var pr = readNum('estPrice', TR('j_lbl_price'), { min: 0, minExclusive: true }), iv = readNum('estIv', TR('j_lbl_iv'), { min: 0, minExclusive: true });
+      if (iv.ok && iv.value < 1) { iv.note = TR('j_iv_note', fmtNum(iv.value)); showMsg('estIv', iv); }
+      list.push(pr, iv); o.price = pr.value; o.iv = iv.value;
+    } else { ['estPrice', 'estIv'].forEach(clearMsg); }
+    if (useCloses) {
+      var pc = T.parseCloses($('estCloses').value);
+      if (pc.ok && sgM === 'closes' && !(T.closeStats(pc.values).sd > 0)) {
+        pc = { ok: false, values: [], code: 'flat', message: TR('j_flat_closes') };
+      }
+      showMsg('estCloses', pc); list.push(pc); o.closes = pc.values;
+    } else clearMsg('estCloses');
+    var bad = '';
+    for (var i = 0; i < list.length; i++) if (!list[i].ok) { bad = list[i].message; break; }
+    if (bad) {
+      workFail($('estWork'), bad);
+      $('estMuOut').textContent = '–'; $('estSigOut').textContent = '–'; $('estHour').textContent = '';
+      $('estUse').disabled = true; estLast = null;
+      return;
+    }
+    var w = T.work.est(o), v = w.values;
+    renderWork($('estWork'), w);
+    $('estMuOut').textContent = T.fmtSignedPts(v.mu, 2);
+    $('estSigOut').textContent = fmtNum(v.sigma, 2);
+    var hr = T.rescaleToShorterUnit(v.mu, v.sigma, 23);
+    $('estHour').textContent = TR('j_est_hour', T.fmtSignedPts(hr.mu, 3), fmtNum(hr.sigma, 2));
+    $('estUse').disabled = false;
+    estLast = { mu: v.mu, sigma: v.sigma };
+  }
+  function useEstimates() {
+    if (!estLast) return;
+    $('f2mu').value = String(+estLast.mu.toFixed(4));
+    $('f2sigma').value = String(+estLast.sigma.toFixed(4));
+    renderF2();
+    $('estDone').textContent = TR('j_est_done', T.fmtSignedPts(+estLast.mu.toFixed(4), 4), fmtNum(+estLast.sigma.toFixed(4), 4));
+    $('f2form').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    try { $('f2mu').focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
+  }
+
+  function renderAll() { renderF1(); renderF2(); renderF3(); renderF4(); renderF5(); renderEst(); renderMain(); }
+
+  /* ---------- theme-aware colours for canvas/SVG ---------- */
+  function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  /* ---------- path simulation ---------- */
+  var anim = null, simTimer = null, bigTimer = null, lastPaths = null;
+  function simPending() {
+    clearTimeout(simTimer); clearTimeout(bigTimer); lastPaths = null;
+    if (anim) { cancelAnimationFrame(anim); anim = null; }
+    var of100 = '<small>' + esc(TR('j_of_100')) + '</small>';
+    $('cTp').innerHTML = '–' + of100; $('cSl').innerHTML = '–' + of100; $('cTo').innerHTML = '–' + of100;
+    ['chkFormula', 'chkSim', 'chkGap'].forEach(function (id) { $(id).textContent = '–'; });
+    $('chkPill').innerHTML = '<span class="pill">' + esc(TR('j_waiting')) + '</span>';
+    $('bigRunNote').textContent = TR('j_fix_sim');
+    var cv = $('pathCanvas'), ctx = cv.getContext('2d'); ctx.clearRect(0, 0, cv.width, cv.height);
+  }
+  function scheduleSims() {
+    clearTimeout(simTimer);
+    simTimer = setTimeout(function () { runPaths(); runEquity(); }, 180);
+  }
+  function simOptions() {
+    var s = last.s, r = last.r;
+    return T.simSettings({ tp: r.A, sl: r.B, side: s.side, mu: s.useTrend ? s.mu.value : 0, sigma: s.useTrend ? s.sigma.value : 0,
+      timed: s.useTime, sigmaH: r.sigmaH, mode: radio('model') || 'ideal' });
+  }
+  function seedValue() { var v = Math.round(T.parseNum($('seed').value)); return isFinite(v) ? v : 1; }
+  function fmtDist(points) {
+    if (unit() === 'ticks') return TR('j_dist_ticks', fmtNum(T.pointsToTicks(points, inst()), 2));
+    return TR('j_pts_short', fmtNum(points));
+  }
+
+  function runPaths() {
+    if (!last) return;
+    var o = simOptions(), seed = seedValue(), r = last.r;
+    var rng = T.rngFromSeed(seed), normal = T.normalFrom(rng), paths = [];
+    for (var i = 0; i < 100; i++) paths.push(T.simulatePath(o, rng, normal, true));
+    lastPaths = { paths: paths, o: o, s: last.s };
+    var theory = r.pTp;
+    $('chkFormulaL').textContent = TR('j_formula_says', r.formula);
+    $('chkFormula').textContent = fmtPct(theory);
+    ['chkSim', 'chkGap'].forEach(function (id) { $(id).textContent = '…'; });
+    $('chkPill').innerHTML = '<span class="pill">' + esc(TR('j_running')) + '</span>';
+    drawPaths(true);
+    clearTimeout(bigTimer);
+    $('bigRunNote').textContent = TR('j_running_note');
+    bigTimer = setTimeout(function () {
+      var n = 20000, c = T.simulateMany(o, n, seed + 7919), got = c.tp / n, noise = T.noise95(theory, n), gap = got - theory;
+      $('chkSim').textContent = fmtPct(got);
+      $('chkGap').innerHTML = T.fmtSignedPts(gap * 100, 1) + '<small>' + esc(TR('j_gap_noise', fmtNum(noise * 100, 1))) + '</small>';
+      var agree = Math.abs(gap) <= noise * 1.5;
+      $('chkPill').innerHTML = agree ? '<span class="pill good">' + esc(TR('j_pill_agree')) + '</span>' :
+        '<span class="pill warn">' + esc(TR(o.mode === 'real' ? 'j_pill_gap_real' : 'j_pill_gap_noise')) + '</span>';
+      $('bigRunNote').textContent = TR('j_big_note', fmtPct(c.tp / n), fmtPct(c.sl / n),
+        o.timed ? TR('j_big_note_to', fmtPct(c.timeout / n)) : '', r.formula, fmtPct(theory), fmtNum(noise * 100, 1));
+    }, 60);
+  }
+
+  function drawPaths(animate) {
+    if (!lastPaths) return;
+    if (anim) { cancelAnimationFrame(anim); anim = null; }
+    var cv = $('pathCanvas'), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = cv.clientWidth, H = cv.clientHeight;
+    if (!W || !H) return;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    var ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var P = lastPaths, s = P.s, o = P.o;
+    var hi = o.A, lo = -o.B, pad = (hi - lo) * 0.12;
+    var left = 8, right = W - 8, top = 26, bottom = H - 26;
+    var maxSteps = 1;
+    if (o.timed) maxSteps = o.maxSteps;
+    else {
+      var st = P.paths.map(function (p) { return p.steps; }).sort(function (a, b) { return a - b; });
+      maxSteps = Math.max(10, st[Math.floor(st.length * 0.95)]);
+    }
+    var xs = function (i) { return left + (right - left) * i / maxSteps; };
+    var ys = function (v) { return top + (bottom - top) * (hi + pad - v) / ((hi - lo) + 2 * pad); };
+    var col = { tp: cssVar('--tp'), sl: cssVar('--sl'), timeout: cssVar('--to'), ink: cssVar('--ink-2'), grid: cssVar('--grid'), muted: cssVar('--mut'), surface: cssVar('--surface') };
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.lineWidth = 1; ctx.strokeStyle = col.grid;
+      ctx.beginPath(); ctx.moveTo(left, Math.round(ys(0)) + 0.5); ctx.lineTo(right, Math.round(ys(0)) + 0.5); ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = col.tp; ctx.beginPath(); ctx.moveTo(left, ys(hi)); ctx.lineTo(right, ys(hi)); ctx.stroke();
+      ctx.strokeStyle = col.sl; ctx.beginPath(); ctx.moveTo(left, ys(lo)); ctx.lineTo(right, ys(lo)); ctx.stroke();
+      ctx.font = '600 12px Inter, system-ui, sans-serif'; ctx.fillStyle = col.ink;
+      ctx.textBaseline = 'bottom'; ctx.fillText(TR('j_canvas_tp', fmtDist(o.A)), left + 2, ys(hi) - 5);
+      ctx.textBaseline = 'top'; ctx.fillText(TR('j_canvas_sl', MINUS + fmtDist(o.B)), left + 2, ys(lo) + 5);
+      ctx.textBaseline = 'bottom'; ctx.fillStyle = col.muted; ctx.textAlign = 'right';
+      ctx.lineWidth = 3; ctx.strokeStyle = col.surface; ctx.lineJoin = 'round';
+      var entryTxt = TR(s.side === 'short' ? 'j_canvas_entry_short' : 'j_canvas_entry_long');
+      ctx.strokeText(entryTxt, right - 2, ys(0) - 4); ctx.fillText(entryTxt, right - 2, ys(0) - 4);
+      ctx.fillText(o.timed ? TR('j_canvas_time_bars', s.bars.value) : TR('j_canvas_time'), right - 2, H - 4);
+      ctx.textAlign = 'left';
+    }
+    function drawOne(p) {
+      var pts = p.points, n = Math.min(p.points.length, Math.ceil(maxSteps * 1.02) + 2), stride = Math.max(1, Math.floor(n / 500));
+      ctx.save(); ctx.beginPath(); ctx.rect(left, 0, right - left, H); ctx.clip();
+      ctx.strokeStyle = col[p.outcome]; ctx.globalAlpha = 0.42; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(xs(0), ys(0));
+      for (var i = stride; i < n; i += stride) ctx.lineTo(xs(i), ys(pts[i]));
+      ctx.lineTo(xs(n - 1), ys(pts[n - 1]));
+      ctx.stroke();
+      ctx.restore();
+      ctx.globalAlpha = 1;
+      n = pts.length;
+      if (p.outcome !== 'timeout' && n - 1 <= maxSteps) {
+        ctx.fillStyle = col[p.outcome];
+        ctx.beginPath(); ctx.arc(xs(n - 1), ys(pts[n - 1]), 2.6, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    var counts = { tp: 0, sl: 0, timeout: 0 };
+    function tallyShow() {
+      var of100 = '<small>' + esc(TR('j_of_100')) + '</small>';
+      $('cTp').innerHTML = counts.tp + of100;
+      $('cSl').innerHTML = counts.sl + of100;
+      $('cTo').innerHTML = counts.timeout + of100;
+    }
+    function label() {
+      $('pathCanvas').setAttribute('aria-label', TR('j_canvas_aria', counts.tp, counts.sl, counts.timeout));
+    }
+    frame();
+    var paths = P.paths;
+    if (!animate || reduceMotion) {
+      paths.forEach(function (p) { drawOne(p); counts[p.outcome]++; });
+      tallyShow(); label();
+      return;
+    }
+    var k = 0, t0 = null, dur = 1800;
+    function stepFrame(ts) {
+      if (t0 === null) t0 = ts;
+      var target = Math.min(100, Math.ceil((ts - t0) / dur * 100));
+      while (k < target) { drawOne(paths[k]); counts[paths[k].outcome]++; k++; }
+      tallyShow();
+      if (k < 100) anim = requestAnimationFrame(stepFrame);
+      else { anim = null; label(); }
+    }
+    anim = requestAnimationFrame(stepFrame);
+  }
+
+  /* ---------- equity simulation (SVG) ---------- */
+  var eq = null, eqIdx = null;
+  function fmtVal0(x) {
+    if (!isFinite(x)) return '–';
+    if (eq && eq.money) { var r = Math.round(x); return (r < 0 ? MINUS : '') + '$' + Math.abs(r).toLocaleString('en-US'); }
+    return TR('j_pts_short', fmtNum(x, 1));
+  }
+  function runEquity() {
+    if (!last) return;
+    var s = last.s, r = last.r;
+    if (!(r.be < 1)) {
+      eq = null;
+      $('eqSvg').querySelectorAll(':not(title):not(desc)').forEach(function (n) { n.remove(); });
+      $('eqNote').textContent = TR('j_eq_never');
+      return;
+    }
+    var useUser = radio('eqp') === 'user' && isFinite(r.wr);
+    var p = useUser ? r.wr : r.pBase;
+    var n = parseInt($('nTrades').value, 10) || 100;
+    var m = money(), scale = m ? T.dollarsPerPoint(inst()) * r.qty : 1;
+    var winNet = (r.A - r.c) * scale, lossNet = (r.B + r.c) * scale;
+    eq = T.simulateEquity(p, winNet, lossNet, n, 400, seedValue() + 104729);
+    eq.n = n; eq.p = p; eq.useUser = useUser; eq.money = m;
+    $('eLoss').textContent = fmtPct(eq.lossShare, 0);
+    $('eDD').textContent = fmtVal0(-eq.ddMedian);
+    $('eDD95').textContent = fmtVal0(-eq.dd95);
+    $('eStreak').innerHTML = Math.round(eq.streakMedian) + '<small>' + esc(TR('j_streak_small', eq.streakMax)) + '</small>';
+    var winTxt = m ? fmtMoney(winNet) : TR('j_pts', fmtNum(winNet, 2)), lossTxt = m ? fmtMoney(lossNet) : TR('j_pts', fmtNum(lossNet, 2));
+    $('eqNote').textContent = TR('j_eq_note', 400, n, fmtPct(p),
+      TR(useUser ? 'j_eq_src_user' : r.formula === 'F2' ? 'j_eq_src_f2' : 'j_eq_src_f1'), winTxt, lossTxt,
+      m ? '' : TR('j_eq_pick_inst'), fmtVal0(eq.finalMedian),
+      s.useTime ? TR('j_eq_timeouts') : '');
+    var rows = '', stepN = Math.max(1, Math.round(n / 10));
+    for (var t = stepN; t <= n; t += stepN) rows += '<tr><td>' + t + '</td><td class="n">' + fmtVal0(eq.p5[t]) + '</td><td class="n">' + fmtVal0(eq.p50[t]) + '</td><td class="n">' + fmtVal0(eq.p95[t]) + '</td></tr>';
+    $('eqTable').innerHTML = rows;
+    eqIdx = null;
+    drawEquity();
+  }
+
+  function niceTicks(lo, hi, count) {
+    var span = hi - lo || 1, raw = span / count, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    var norm = raw / mag, step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+    var out = [], v = Math.ceil(lo / step) * step;
+    for (; v <= hi + 1e-9; v += step) out.push(Math.abs(v) < 1e-9 ? 0 : v);
+    return out;
+  }
+  function shortVal(v) {
+    var a = Math.abs(v), s;
+    if (a >= 1e6) s = (a / 1e6).toFixed(a >= 1e7 ? 0 : 1) + 'M';
+    else if (a >= 1e3) s = (a / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace(/\.0$/, '') + 'k';
+    else s = String(+a.toFixed(a < 10 ? 1 : 0));
+    return (v < 0 ? MINUS : '') + (eq && eq.money ? '$' : '') + s;
+  }
+
+  var geo = null;
+  function drawEquity() {
+    var svg = $('eqSvg');
+    if (!eq) return;
+    var W = svg.clientWidth || 700, H = svg.clientHeight || 320;
+    var m = { l: 58, r: 14, t: 12, b: 34 };
+    var n = eq.n;
+    var lo = Math.min(0, Math.min.apply(null, eq.p5), Math.min.apply(null, eq.sample));
+    var hi = Math.max(0, Math.max.apply(null, eq.p95), Math.max.apply(null, eq.sample));
+    var ticks = niceTicks(lo, hi, 5);
+    lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks[ticks.length - 1]);
+    var x = function (i) { return m.l + (W - m.l - m.r) * i / n; };
+    var y = function (v) { return m.t + (H - m.t - m.b) * (hi - v) / (hi - lo || 1); };
+    geo = { x: x, y: y, m: m, W: W, H: H, n: n };
+    var parts = [];
+    ticks.forEach(function (v) {
+      var yy = Math.round(y(v)) + 0.5;
+      parts.push('<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + (v === 0 ? 'var(--mut)' : 'var(--grid)') + '" stroke-width="1"/>');
+      parts.push('<text x="' + (m.l - 8) + '" y="' + (yy + 4) + '" text-anchor="end">' + shortVal(v) + '</text>');
+    });
+    var xt = niceTicks(0, n, Math.min(6, Math.max(3, Math.floor(W / 120))));
+    xt.forEach(function (v) {
+      if (v < 0 || v > n) return;
+      parts.push('<text x="' + x(v) + '" y="' + (H - m.b + 18) + '" text-anchor="middle">' + v + '</text>');
+    });
+    parts.push('<text x="' + (W - m.r) + '" y="' + (H - 2) + '" text-anchor="end">' + esc(TR(eq.money ? 'j_axis_trade' : 'j_axis_trade_pts')) + '</text>');
+    var band = 'M' + x(0) + ',' + y(eq.p95[0]);
+    for (var i = 1; i <= n; i++) band += 'L' + x(i).toFixed(1) + ',' + y(eq.p95[i]).toFixed(1);
+    for (i = n; i >= 0; i--) band += 'L' + x(i).toFixed(1) + ',' + y(eq.p5[i]).toFixed(1);
+    parts.push('<path d="' + band + 'Z" fill="var(--band-fill)" stroke="none"/>');
+    function line(arr, color, w) {
+      var d = 'M' + x(0) + ',' + y(arr[0]);
+      for (var j = 1; j <= n; j++) d += 'L' + x(j).toFixed(1) + ',' + y(arr[j]).toFixed(1);
+      return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + w + '" stroke-linejoin="round" stroke-linecap="round"/>';
+    }
+    parts.push(line(eq.sample, 'var(--tp)', 1.6));
+    parts.push(line(eq.p50, 'var(--median)', 2));
+    parts.push('<g id="eqHover" style="display:none"><line id="eqCross" y1="' + m.t + '" y2="' + (H - m.b) + '" stroke="var(--mut)" stroke-width="1"/><circle id="eqDotM" r="4.5" fill="var(--median)" stroke="var(--surface)" stroke-width="2"/><circle id="eqDotS" r="4.5" fill="var(--tp)" stroke="var(--surface)" stroke-width="2"/></g>');
+    parts.push('<rect id="eqHit" x="' + m.l + '" y="' + m.t + '" width="' + (W - m.l - m.r) + '" height="' + (H - m.t - m.b) + '" fill="transparent"/>');
+    var keep = svg.querySelectorAll('title, desc');
+    svg.innerHTML = '';
+    keep.forEach(function (k) { svg.appendChild(k); });
+    svg.insertAdjacentHTML('beforeend', parts.join(''));
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    if (eqIdx !== null) showTip(eqIdx);
+  }
+
+  function showTip(i) {
+    if (!eq || !geo) return;
+    i = Math.max(0, Math.min(geo.n, i)); eqIdx = i;
+    var g = $('eqHover'); if (!g) return;
+    g.style.display = '';
+    var X = geo.x(i);
+    $('eqCross').setAttribute('x1', X); $('eqCross').setAttribute('x2', X);
+    $('eqDotM').setAttribute('cx', X); $('eqDotM').setAttribute('cy', geo.y(eq.p50[i]));
+    $('eqDotS').setAttribute('cx', X); $('eqDotS').setAttribute('cy', geo.y(eq.sample[i]));
+    var tip = $('eqTip');
+    tip.innerHTML = '<b>' + esc(TR('j_tip_after', i)) + '</b>' +
+      '<div class="r"><span>' + esc(TR('j_tip_p95')) + '</span><span>' + fmtVal0(eq.p95[i]) + '</span></div>' +
+      '<div class="r"><span>' + esc(TR('j_tip_median')) + '</span><span>' + fmtVal0(eq.p50[i]) + '</span></div>' +
+      '<div class="r"><span>' + esc(TR('j_tip_p5')) + '</span><span>' + fmtVal0(eq.p5[i]) + '</span></div>' +
+      '<div class="r"><span>' + esc(TR('j_tip_example')) + '</span><span>' + fmtVal0(eq.sample[i]) + '</span></div>';
+    tip.hidden = false;
+    var wrapW = $('eqWrap').clientWidth, tw = tip.offsetWidth;
+    var left = X + 14; if (left + tw > wrapW) left = X - tw - 14;
+    tip.style.left = Math.max(0, left) + 'px';
+    tip.style.top = (geo.m.t + 6) + 'px';
+  }
+  function hideTip() { eqIdx = null; $('eqTip').hidden = true; var g = $('eqHover'); if (g) g.style.display = 'none'; }
+  $('eqSvg').addEventListener('pointermove', function (e) {
+    if (!geo) return;
+    var rect = this.getBoundingClientRect(), px = e.clientX - rect.left;
+    var i = Math.round((px - geo.m.l) / (geo.W - geo.m.l - geo.m.r) * geo.n);
+    if (px < geo.m.l - 10) { hideTip(); return; }
+    showTip(i);
+  });
+  $('eqSvg').addEventListener('pointerleave', hideTip);
+  $('eqSvg').addEventListener('keydown', function (e) {
+    if (!geo) return;
+    var big = Math.max(1, Math.round(geo.n / 10));
+    if (e.key === 'ArrowRight') { showTip((eqIdx === null ? 0 : eqIdx) + (e.shiftKey ? big : 1)); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { showTip((eqIdx === null ? geo.n : eqIdx) - (e.shiftKey ? big : 1)); e.preventDefault(); }
+    else if (e.key === 'Home') { showTip(0); e.preventDefault(); }
+    else if (e.key === 'End') { showTip(geo.n); e.preventDefault(); }
+    else if (e.key === 'Escape') hideTip();
+  });
+  $('eqSvg').addEventListener('blur', hideTip);
+
+  /* ---------- wiring ---------- */
+  $('inst').addEventListener('change', function () { applySettings(true); });
+  document.querySelectorAll('input[name="unit"]').forEach(function (el) { el.addEventListener('change', function () { applySettings(true); }); });
+  ['cTick', 'cTv'].forEach(function (id) { $(id).addEventListener('input', function () { applySettings(false); }); });
+  ['f1form', 'f2form', 'f3form', 'f4form', 'f5form', 'estForm', 'calcForm'].forEach(function (id) {
+    var f = $(id);
+    f.addEventListener('submit', function (e) { e.preventDefault(); });
+  });
+  $('f1form').addEventListener('input', renderF1);
+  $('f2form').addEventListener('input', renderF2);
+  $('f2form').addEventListener('change', renderF2);
+  $('f3form').addEventListener('input', renderF3);
+  $('f4form').addEventListener('input', renderF4);
+  $('f5form').addEventListener('input', renderF5);
+  $('estForm').addEventListener('input', renderEst);
+  $('estForm').addEventListener('change', renderEst);
+  $('estUse').addEventListener('click', useEstimates);
+  $('calcForm').addEventListener('input', renderMain);
+  $('calcForm').addEventListener('change', renderMain);
+  document.querySelectorAll('input[name="model"]').forEach(function (el) { el.addEventListener('change', runPaths); });
+  document.querySelectorAll('input[name="eqp"]').forEach(function (el) { el.addEventListener('change', runEquity); });
+  $('nTrades').addEventListener('change', runEquity);
+  $('rerun').addEventListener('click', function () {
+    var next = (seedValue() * 1103515245 + 12345) % 2147483647; if (next < 0) next += 2147483647;
+    $('seed').value = next % 1000000;
+    runPaths(); runEquity();
+  });
+  $('replay').addEventListener('click', runPaths);
+  $('seed').addEventListener('change', function () { runPaths(); runEquity(); });
+  $('eqRerun').addEventListener('click', function () {
+    var next = (seedValue() * 48271) % 2147483647;
+    $('seed').value = next % 1000000;
+    runEquity();
+  });
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { drawPaths(false); drawEquity(); }, 150);
+  });
+  function redrawForTheme() { drawPaths(false); drawEquity(); }
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', redrawForTheme);
+  }
+  if (window.MutationObserver) new MutationObserver(redrawForTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  applySettings(false);
+})();
+
+  </script>
+</BaseLayout>
+
+<style is:global>
+@layer theme, base, components, utilities;
+:root{
+  --ground:#001429; --surface:#0d1b2e; --surface-2:#12233b; --surface-3:#0a1a2f; --ink:#f3f6fb; --ink-2:#cbd5e1; --mut:#94a3b8;
+  --rule:#2b3a52; --grid:#22324a;
+  --brand:#2b77ee; --brand-deep:#8dbbff; --link:#60a5fa; --brand-soft:#0f3566;
+  --band:#001429; --band-2:#002040; --on-band:#ffffff; --on-band-2:#cbd5e1; --on-band-rule:rgba(255,255,255,.12); --on-band-card:rgba(255,255,255,.05);
+  --tp:#4f92f5; --sl:#f26a2a; --to:#7b88a0; --median:#e9f0fb; --band-fill:rgba(79,146,245,.22);
+  --good:#5fd39b; --good-bg:rgba(34,197,94,.12); --bad:#ff8f84; --bad-bg:rgba(239,68,68,.12); --warn:#fbbf24; --warn-bg:rgba(234,179,8,.10); --warn-rule:rgba(234,179,8,.35);
+  --code-bg:rgba(0,0,0,.4); --code-ink:#e5e7eb; --focus:#8dbbff; --btn-ink:#ffffff; --btn:#0f3ec3;
+  --math:#e9f0fb; --math-num:#9cc3ff;
+}
+@layer components{
+.tpsl *,.tpsl *::before,.tpsl *::after{box-sizing:border-box}
+.tpsl [hidden]{display:none !important}
+.tpsl img,.tpsl svg,.tpsl canvas{max-width:100%}
+.tpsl :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+.tpsl h1{font-family:Electrolize,"Segoe UI",Roboto,Arial,sans-serif;font-weight:400;letter-spacing:.005em;text-wrap:balance;line-height:1.15;margin:0}
+.tpsl h3{font-size:1.1rem;line-height:1.35;margin:0;font-weight:650;text-wrap:balance}
+.tpsl p{margin:0}
+.tpsl .num{font-variant-numeric:tabular-nums}
+
+/* header */
+
+/* hero */
+.tpsl .answer{margin-top:18px;font-size:1.15rem;line-height:1.6;color:var(--on-band-2);max-width:60ch}
+.tpsl .answer strong{color:var(--on-band);font-weight:600}
+.tpsl .odds-card{background:var(--on-band-card);border:1px solid var(--on-band-rule);border-radius:14px;padding:20px 20px 18px}
+.tpsl .odds-card .cap{font-size:.88rem;color:var(--on-band-2)}
+.tpsl .odds-card .big{font-size:3.2rem;font-weight:650;line-height:1.05;margin-top:6px;color:#fff;letter-spacing:-.02em}
+.tpsl .odds-card .big small{font-size:1rem;font-weight:500;color:var(--on-band-2);letter-spacing:0;margin-left:6px}
+.tpsl .odds-card .sub{margin-top:14px;display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:.92rem;color:var(--on-band-2)}
+.tpsl .odds-card .sub b{color:#fff;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.tpsl .odds-card .bar{margin-top:14px}
+.tpsl .odds-card .jump{margin-top:14px;font-size:.88rem}
+.tpsl .odds-card .jump a{color:#bcd6ff}
+
+/* odds bar */
+.tpsl .bar{display:flex;gap:2px;height:14px;border-radius:7px;overflow:hidden;background:transparent}
+.tpsl .bar i{display:block;height:100%;min-width:2px}
+.tpsl .bar .tp{background:var(--tp)} .tpsl .bar .sl{background:var(--sl)} .tpsl .bar .to{background:var(--to)}
+.tpsl .hero .bar .tp{background:#4f92f5}.tpsl .hero .bar .sl{background:#ea6128}.tpsl .hero .bar .to{background:#7b88a0}
+.tpsl .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;font-size:.86rem;color:var(--ink-2)}
+.tpsl .hero .legend{color:var(--on-band-2)}
+.tpsl .legend span{display:inline-flex;align-items:center;gap:6px}
+.tpsl .sw{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.tpsl .sw.tp{background:var(--tp)}.tpsl .sw.sl{background:var(--sl)}.tpsl .sw.to{background:var(--to)}
+.tpsl .hero .sw.tp{background:#4f92f5}.tpsl .hero .sw.sl{background:#ea6128}.tpsl .hero .sw.to{background:#7b88a0}
+
+/* sections */
+.tpsl .prose{max-width:70ch}
+.tpsl .prose p,.tpsl .prose ul,.tpsl .prose ol{margin-top:14px;color:var(--ink-2)}
+.tpsl .prose ul,.tpsl .prose ol{padding-left:1.25em}
+.tpsl .prose li{margin-top:6px}
+.tpsl .prose strong{color:var(--ink)}
+
+/* table of contents */
+
+/* settings */
+.tpsl .settings{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px 28px;align-items:start;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(16px,2.5vw,24px);margin-top:22px}
+@media (max-width:820px){.tpsl .settings{grid-template-columns:minmax(0,1fr)}}
+
+/* forms */
+.tpsl .panel{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(16px,2.5vw,24px)}
+.tpsl fieldset{border:0;margin:0;padding:0;min-width:0}
+.tpsl legend{padding:0;float:left;width:100%}
+.tpsl .group{display:grid;gap:14px}
+.tpsl .group + .group{margin-top:22px;padding-top:20px;border-top:1px solid var(--rule)}
+.tpsl .group-title{font-weight:650;font-size:1rem;color:var(--ink)}
+.tpsl .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.tpsl .field{display:grid;gap:6px;min-width:0;align-content:start}
+.tpsl .field label,.tpsl .lbl{font-size:.9rem;font-weight:600;color:var(--ink)}
+.tpsl .hint{font-size:.82rem;color:var(--mut);line-height:1.45}
+.tpsl input[type=number],.tpsl input[type=text],.tpsl select{width:100%;height:44px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px;padding:0 12px;font:inherit;font-size:1rem;font-variant-numeric:tabular-nums}
+.tpsl input[type=number]:hover,.tpsl input[type=text]:hover,.tpsl select:hover{border-color:var(--brand)}
+.tpsl input[type=number]:focus,.tpsl input[type=text]:focus,.tpsl select:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+.tpsl input:disabled{opacity:.55}
+.tpsl input[aria-invalid=true]{border-color:var(--bad);background:var(--bad-bg)}
+.tpsl .fmsg{font-size:.82rem;line-height:1.45;border-radius:6px;padding:6px 8px}
+.tpsl .fmsg.err{color:var(--bad);background:var(--bad-bg)}
+.tpsl .fmsg.note{color:var(--warn);background:var(--warn-bg)}
+.tpsl .seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:10px;padding:3px;gap:3px;background:var(--surface-2);max-width:100%}
+.tpsl .seg label{position:relative;display:inline-flex}
+.tpsl .seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.tpsl .seg input:disabled{cursor:not-allowed}
+.tpsl .seg input:disabled + span{opacity:.45;cursor:not-allowed}
+.tpsl .seg span{padding:7px 14px;border-radius:7px;font-size:.9rem;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.tpsl .seg input:checked + span{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+.tpsl .seg input:focus-visible + span{outline:2px solid var(--focus);outline-offset:1px}
+.tpsl .check{display:flex;align-items:flex-start;gap:10px;font-weight:600;font-size:.95rem;cursor:pointer}
+.tpsl .check input{width:18px;height:18px;margin-top:3px;accent-color:var(--brand);flex:none}
+.tpsl .conv{font-size:.84rem;color:var(--mut);font-variant-numeric:tabular-nums;min-height:1.2em}
+.tpsl .echo{font-size:.84rem;color:var(--mut)}
+
+.tpsl .status{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:.93rem;line-height:1.45}
+.tpsl .status.ok{background:var(--good-bg);color:var(--good)}
+.tpsl .status.warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-rule)}
+.tpsl .status.bad{background:var(--bad-bg);color:var(--bad)}
+.tpsl .status svg{flex:none;margin-top:2px}
+.tpsl .status b{font-weight:650}
+.tpsl .bigfig{margin-top:18px}
+.tpsl .bigfig .cap{font-size:.93rem;color:var(--ink-2)}
+.tpsl .bigfig .val{font-size:clamp(2.4rem,1.9rem + 2vw,3.2rem);font-weight:650;line-height:1.05;letter-spacing:-.02em;margin-top:4px}
+.tpsl .bigfig .val small{font-size:1rem;font-weight:500;color:var(--mut);margin-left:6px;letter-spacing:0}
+.tpsl .bigfig .bar{margin-top:14px}
+.tpsl .kv{display:grid;grid-template-columns:minmax(0,1fr) auto;margin-top:18px;border-top:1px solid var(--rule)}
+.tpsl .kv dt,.tpsl .kv dd{padding:10px 0;border-bottom:1px solid var(--rule);margin:0}
+.tpsl .kv dt{color:var(--ink-2);font-size:.93rem;padding-right:12px}
+.tpsl .kv dt small{display:block;color:var(--mut);font-size:.8rem;line-height:1.35;margin-top:2px}
+.tpsl .kv dd{text-align:right;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tpsl .kv dd small{display:block;font-weight:500;color:var(--mut);font-size:.8rem}
+.tpsl .kv dd.pos{color:var(--good)} .tpsl .kv dd.neg{color:var(--bad)}
+.tpsl .verdict{margin-top:16px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--surface-2);font-size:.96rem;line-height:1.5}
+.tpsl .verdict.good{background:var(--good-bg);color:var(--good)}
+.tpsl .verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.tpsl .verdict svg{flex:none;margin-top:3px}
+.tpsl .fine{font-size:.8rem;color:var(--mut);margin-top:12px;line-height:1.5}
+
+/* all-in-one calculator */
+.tpsl .calc{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:24px;margin-top:28px;align-items:start}
+@media (max-width:920px){.tpsl .calc{grid-template-columns:minmax(0,1fr)}}
+.tpsl .results{position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px)}
+@media (max-width:920px){.tpsl .results{position:static}}
+
+/* formula sections */
+.tpsl .plate{margin-top:24px;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(16px,3vw,28px);display:grid;gap:12px;max-width:880px}
+.tpsl .plate > *,.tpsl .plate .sub > *,.tpsl .steps li > *,.tpsl .example > *,.tpsl .work > *{min-width:0}
+.tpsl .plate{grid-template-columns:minmax(0,1fr)}
+.tpsl .plate .cap{font-size:.86rem;color:var(--mut)}
+.tpsl .mx{overflow-x:auto;overflow-y:hidden;max-width:100%;padding-block:2px}
+.tpsl math{font-family:"Cambria Math","STIX Two Math","Latin Modern Math",math,"Times New Roman",serif;color:var(--math)}
+.tpsl math mn{color:var(--math-num)}
+.tpsl .plate math{font-size:1.55rem}
+@media (max-width:600px){.tpsl .plate math{font-size:1.22rem}.tpsl .steps math{font-size:1.06rem}}
+@media (max-width:440px){.tpsl .plate{padding:14px}.tpsl .plate math{font-size:1.04rem}}
+.tpsl .plate .sub math{font-size:1.2rem}
+.tpsl .plate .sub{padding-top:10px;border-top:1px dashed var(--rule)}
+.tpsl .plate .sub p{font-size:.92rem;color:var(--ink-2)}
+.tpsl .block{margin-top:28px;max-width:880px}
+.tpsl .block > h3{font-size:1.15rem}
+.tpsl .block > p{margin-top:10px;color:var(--ink-2);max-width:72ch}
+.tpsl .letters{margin-top:12px}
+.tpsl .letters table{min-width:540px}
+.tpsl .letters td:first-child{font-family:"Cambria Math","STIX Two Math",Georgia,serif;font-size:1.1rem;white-space:nowrap}
+.tpsl .fit{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
+.tpsl .fit > div{padding:14px 16px;border-radius:10px;background:var(--surface-3);border:1px solid var(--grid)}
+.tpsl .fit h4{margin:0;font-size:.95rem}
+.tpsl .fit ul{margin:8px 0 0;padding-left:1.15em;color:var(--ink-2);font-size:.94rem}
+.tpsl .fit li + li{margin-top:4px}
+.tpsl .analogy{margin-top:12px;padding:12px 16px;border-radius:10px;background:var(--surface-2);color:var(--ink-2)}
+.tpsl .analogy strong{color:var(--ink)}
+.tpsl .steps{list-style:none;counter-reset:st;padding:0;margin:12px 0 0}
+.tpsl .steps li{counter-increment:st;display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:2px 10px;padding:10px 0;border-top:1px dashed var(--rule)}
+.tpsl .steps li:first-child{border-top:0}
+.tpsl .steps li > *{grid-column:2}
+.tpsl .steps li::before{content:counter(st);grid-column:1;grid-row:1;font-family:Electrolize,"Segoe UI",sans-serif;color:var(--brand);font-size:1.05rem;line-height:1.5}
+.tpsl .steps .st-l{font-size:.88rem;color:var(--ink-2)}
+.tpsl .steps math{font-size:1.18rem}
+.tpsl .steps .mx + .mx{margin-top:2px}
+.tpsl .steps .mx{padding-left:0}
+.tpsl .example{margin-top:12px;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(14px,2.5vw,22px)}
+.tpsl .example .given{font-size:.94rem;color:var(--ink-2)}
+.tpsl .mini{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:20px;margin-top:12px;align-items:start}
+@media (max-width:900px){.tpsl .mini{grid-template-columns:minmax(0,1fr)}}
+.tpsl .mini form{display:grid;gap:14px}
+.tpsl .work{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(14px,2.5vw,22px)}
+.tpsl .work-h{font-weight:650;font-size:.95rem}
+.tpsl .work .steps li::before{color:var(--sl)}
+.tpsl .result-line{margin-top:10px;padding-top:12px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.tpsl .result-line .v{font-size:2rem;font-weight:650;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.tpsl .result-line .l{color:var(--ink-2);font-size:.93rem}
+.tpsl .result-line .bar{flex:1 1 100%}
+.tpsl .cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.tpsl .cmp .tile .v{font-size:1.4rem}
+.tpsl .source{margin-top:22px;max-width:880px;font-size:.9rem;color:var(--ink-2);padding-top:12px;border-top:1px solid var(--rule)}
+.tpsl .source b{color:var(--ink)}
+.tpsl .source ul{margin:6px 0 0;padding-left:1.15em}
+.tpsl .source li + li{margin-top:4px}
+.tpsl details.more{margin-top:14px;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+.tpsl details.more > summary{cursor:pointer;padding:12px 16px;font-weight:600;color:var(--link)}
+.tpsl details.more > div{padding:0 16px 16px;color:var(--ink-2)}
+.tpsl details.more > div p + p,.tpsl details.more > div p + .mx,.tpsl details.more > div .mx + p{margin-top:10px}
+.js .tpsl .nojs{display:none}
+.tpsl .nojs{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--surface-2);color:var(--ink-2);font-size:.94rem}
+
+/* F2: where the trend and volatility come from, and the estimate helper */
+.tpsl .derive > h4{margin-top:26px;font-size:1.02rem;font-weight:650;line-height:1.35}
+.tpsl .derive > p,.tpsl .derive > ul{margin-top:10px;color:var(--ink-2);max-width:72ch}
+.tpsl .derive > ul{padding-left:1.2em}
+.tpsl .derive > ul li + li{margin-top:4px}
+.tpsl .derive strong{color:var(--ink)}
+.tpsl .formula{margin-top:12px;padding:12px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--rule)}
+.tpsl .formula math{font-size:1.25rem}
+@media (max-width:440px){.tpsl .formula{padding:10px 12px}.tpsl .formula math{font-size:1.05rem}}
+.tpsl .ways{list-style:none;counter-reset:way;margin:12px 0 0;padding:0;display:grid;gap:12px}
+.tpsl .ways > li{counter-increment:way;padding:14px 16px;border-radius:10px;background:var(--surface-3);border:1px solid var(--grid);display:grid;gap:8px;min-width:0}
+.tpsl .ways > li > *{min-width:0}
+.tpsl .ways h5{margin:0;font-size:.98rem;font-weight:650;color:var(--ink)}
+.tpsl .ways h5::before{content:"Way " counter(way) ". ";color:var(--brand);font-family:Electrolize,"Segoe UI",sans-serif;font-weight:400}
+.tpsl .ways p{margin:0;color:var(--ink-2);font-size:.95rem}
+.tpsl .ways math{font-size:1.15rem}
+.tpsl code.cell{font:500 .86rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--surface-2);color:var(--ink);padding:1px 6px;border-radius:5px;overflow-wrap:anywhere}
+.tpsl .tw td code.cell{white-space:nowrap}
+.tpsl .est-grid{display:grid;gap:14px}
+.tpsl textarea{width:100%;min-height:104px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px 12px;font:inherit;font-size:.95rem;line-height:1.5;font-variant-numeric:tabular-nums;resize:vertical}
+.tpsl textarea:hover{border-color:var(--brand)}
+.tpsl textarea:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+.tpsl textarea[aria-invalid=true]{border-color:var(--bad);background:var(--bad-bg)}
+.tpsl .est-actions{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:14px}
+.tpsl .est-actions .btn:disabled{opacity:.5;cursor:not-allowed}
+.tpsl .est-done{font-size:.9rem;color:var(--good)}
+
+/* takeaways + definitions */
+.tpsl .takeaways h2{font-size:1.35rem}
+.tpsl .takeaways ul{margin:12px 0 0;padding-left:1.2em;display:grid;gap:8px;color:var(--ink-2)}
+.tpsl .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 32px;margin-top:24px}
+.tpsl .defs div{padding:14px 0;border-top:1px solid var(--rule)}
+.tpsl .defs dt{font-weight:650}
+.tpsl .defs dd{margin:4px 0 0;color:var(--ink-2);font-size:.95rem}
+
+/* sims */
+.tpsl .toolbar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;margin-top:24px}
+.tpsl .toolbar .field{min-width:120px}
+.tpsl .toolbar input[type=number]{width:120px}
+.tpsl .btn{height:44px;padding:0 18px;border-radius:9px;border:1px solid var(--btn);background:var(--btn);color:var(--btn-ink);font:inherit;font-weight:600;font-size:.95rem;cursor:pointer}
+.tpsl .btn:hover{background:var(--brand-deep);border-color:var(--brand-deep);color:var(--btn-ink)}
+.tpsl .btn.ghost{background:transparent;color:var(--link)}
+.tpsl .btn.ghost:hover{background:var(--surface-2);color:var(--link)}
+.tpsl .simbox{margin-top:18px;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(12px,2vw,20px)}
+.tpsl .hypo-tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.04em;color:var(--warn);background:var(--warn-bg);border:1px solid var(--warn-rule);border-radius:6px;padding:2px 8px}
+.tpsl .canvas-wrap{position:relative;margin-top:12px}
+.tpsl #pathCanvas{display:block;width:100%;height:340px}
+@media (max-width:560px){.tpsl #pathCanvas{height:280px}}
+.tpsl .tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.tpsl .tile{padding:12px 14px;border-radius:10px;background:var(--surface-2)}
+.tpsl .tile .t{font-size:.84rem;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.tpsl .tile .v{font-size:1.6rem;font-weight:650;line-height:1.2;margin-top:2px;font-variant-numeric:tabular-nums}
+.tpsl .tile .v small{font-size:.9rem;color:var(--mut);font-weight:500}
+.tpsl .check-row{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;padding:14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface-3)}
+.tpsl .check-row .tile{background:transparent;padding:0}
+.tpsl .pill{display:inline-flex;align-items:center;gap:6px;font-size:.86rem;font-weight:650;padding:4px 10px;border-radius:999px}
+.tpsl .pill.good{background:var(--good-bg);color:var(--good)}
+.tpsl .pill.warn{background:var(--warn-bg);color:var(--warn)}
+.tpsl .note{margin-top:14px;font-size:.93rem;color:var(--ink-2);max-width:75ch}
+.tpsl .disclosure{margin-top:16px;border:1px solid var(--warn-rule);background:var(--warn-bg);color:var(--ink);border-radius:10px;padding:12px 14px;font-size:.84rem;line-height:1.55}
+.tpsl .disclosure b{display:block;color:var(--warn);margin-bottom:4px;font-size:.82rem;letter-spacing:.02em}
+.tpsl .disclosure.compact{font-size:.78rem;padding:10px 12px;margin-top:14px}
+.tpsl #eqWrap{position:relative;margin-top:12px}
+.tpsl #eqSvg{display:block;width:100%;height:320px;overflow:visible}
+.tpsl #eqSvg text{fill:var(--mut);font-size:12px;font-family:Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.tpsl .tip{position:absolute;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--rule);box-shadow:0 6px 20px rgba(0,20,41,.14);border-radius:8px;padding:8px 10px;font-size:.82rem;line-height:1.45;min-width:170px;font-variant-numeric:tabular-nums;z-index:3}
+.tpsl .tip b{font-weight:650}
+.tpsl .tip .r{display:flex;justify-content:space-between;gap:12px}
+.tpsl details.table-view{margin-top:12px}
+.tpsl details.table-view summary{cursor:pointer;font-weight:600;color:var(--link);font-size:.92rem}
+
+/* tables */
+.tpsl .tw{overflow-x:auto;margin-top:18px;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+.tpsl table{border-collapse:collapse;width:100%;font-size:.93rem}
+.tpsl th,.tpsl td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+.tpsl thead th{background:var(--surface-2);font-weight:650;font-size:.86rem;color:var(--ink-2)}
+.tpsl tbody tr:last-child td,.tpsl tbody tr:last-child th{border-bottom:0}
+.tpsl td.n,.tpsl th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tpsl caption{caption-side:bottom;text-align:left;padding:10px 14px;font-size:.82rem;color:var(--mut)}
+
+.tpsl .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start}
+@media (max-width:880px){.tpsl .split{grid-template-columns:minmax(0,1fr)}}
+.tpsl .callout{margin-top:18px;padding:14px 16px;border-radius:10px;background:var(--surface-2);font-size:.95rem;color:var(--ink-2)}
+.tpsl .callout strong{color:var(--ink)}
+.tpsl pre.code{margin:16px 0 0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:14px 16px;overflow-x:auto;font:500 .86rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.tpsl .src{font-size:.82rem;color:var(--mut);margin-top:8px}
+
+/* faq */
+
+/* maths */
+.tpsl details.maths{margin-top:22px;background:var(--surface);border:1px solid var(--rule);border-radius:14px}
+.tpsl details.maths > summary{cursor:pointer;padding:18px 22px;font-family:Electrolize,"Segoe UI",sans-serif;font-size:1.3rem;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.tpsl details.maths > summary::-webkit-details-marker{display:none}
+.tpsl details.maths > summary::after{content:"+";font-family:Inter,sans-serif;font-size:1.4rem;color:var(--brand)}
+.tpsl details.maths[open] > summary::after{content:"\2212"}
+.tpsl .maths-body{padding:0 22px 22px}
+.tpsl .maths-body h3{margin-top:22px}
+.tpsl .refs{margin-top:16px;padding-left:1.3em;color:var(--ink-2);font-size:.93rem}
+.tpsl .refs li{margin-top:8px}
+
+/* disclaimers + footer */
+.tpsl .legal{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(16px,3vw,26px);margin-top:22px}
+.tpsl .legal h3{margin-top:18px}
+.tpsl .legal h3:first-child{margin-top:0}
+.tpsl .legal p{margin-top:8px;color:var(--ink-2);font-size:.95rem}
+
+.tpsl{color-scheme:dark;font-size:1rem;line-height:1.62;color:#fff}
+.tpsl [hidden]{display:none !important}
+.tpsl p{margin:0}
+.tpsl a{color:var(--link);text-underline-offset:2px}
+.tpsl a:hover{text-decoration:underline}
+.tpsl .odds-card{background:linear-gradient(135deg,rgba(31,41,55,.6),rgba(17,24,39,.6));border-color:rgba(55,65,81,.6);border-radius:16px;padding:24px}
+.tpsl .odds-card .cap{margin-top:0}
+.tpsl .answer{font-size:1.05rem;line-height:1.65;color:#d1d5db}
+.tpsl .answer strong{color:#fff;font-weight:600}
+.tpsl h3{color:#fff}
+.tpsl h4{color:#fff}
+.tpsl .takeaways{max-width:none;margin:0;padding:22px 26px;border:1px solid rgba(55,65,81,.5);border-left:4px solid #f97316}
+.tpsl .takeaways h2{font-family:Electrolize,"Segoe UI",sans-serif;font-weight:400;font-size:1.45rem;color:#fff}
+.tpsl .settings h2{font-family:Electrolize,"Segoe UI",sans-serif;font-weight:400;color:#fff}
+.tpsl .settings{margin-top:0}
+.tpsl .prose ul,.tpsl .fit ul,.tpsl .takeaways ul,.tpsl .source ul,.tpsl .derive > ul{list-style:disc}
+.tpsl .prose ol,.tpsl .refs{list-style:decimal}
+.tpsl .fsec > div > .plate,.tpsl .fsec > div > .block,.tpsl .fsec > div > .source{max-width:none;margin-left:0;margin-right:0}
+.tpsl .block > p,.tpsl .derive > p,.tpsl .derive > ul{max-width:none}
+.tpsl .takeaways ul{grid-template-columns:1fr}
+@media (min-width:900px){.tpsl .takeaways ul{grid-template-columns:1fr 1fr;gap:10px 32px}.tpsl #wider-tp .prose,.tpsl #ai .prose,.tpsl #improve .prose{column-count:2;column-gap:40px}.tpsl #wider-tp .prose > *,.tpsl #ai .prose > *,.tpsl #improve .prose > *{break-inside:avoid}.tpsl .legal{column-count:2;column-gap:40px}.tpsl .legal > *{break-inside:avoid}}
+.tpsl .prose{max-width:none}
+.tpsl .fsec .plate .mx{text-align:center}
+@media (min-width:901px){.tpsl .mini > form{position:sticky;top:96px;align-self:start}}
+.tpsl .legal{max-width:none;margin:0}
+.tpsl .defs{margin-top:0}
+.tpsl .defs > div{background:linear-gradient(135deg,rgba(31,41,55,.5),rgba(17,24,39,.5));border:1px solid rgba(55,65,81,.5);border-radius:12px;padding:16px 18px}
+.tpsl .defs dt{color:#60a5fa}
+.tpsl .split{margin-top:0}
+.tpsl :is(.plate,.panel,.work,.example,.simbox,.settings,.takeaways,.legal,.formula,.check-row,.tw,details.more,details.maths){background:linear-gradient(135deg,rgba(31,41,55,.5),rgba(17,24,39,.5));border-color:rgba(55,65,81,.5);border-radius:16px}
+.tpsl :is(.ways > li,.fit > div){background:rgba(255,255,255,.03);border-color:rgba(55,65,81,.5);border-radius:12px}
+.tpsl thead th{background:rgba(59,130,246,.10);color:#93c5fd}
+.tpsl .callout{background:rgba(59,130,246,.10);border:1px solid rgba(59,130,246,.30);border-radius:14px;color:#d1d5db}
+.tpsl .callout strong{color:#60a5fa}
+.tpsl .analogy{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.28);border-radius:14px;color:#d1d5db}
+.tpsl .analogy strong{color:#4ade80}
+.tpsl .tile{background:rgba(255,255,255,.04);border:1px solid rgba(55,65,81,.4)}
+.tpsl .seg{background:rgba(0,0,0,.25)}
+.tpsl .seg input:checked + span{background:#0f3ec3;color:#fff;box-shadow:none}
+.tpsl .btn{background:#0f3ec3;border-color:#0f3ec3;color:#fff;transition:box-shadow .2s,transform .2s}
+.tpsl .btn:hover{background:#0f3ec3;border-color:#0f3ec3;color:#fff;box-shadow:0 0 20px 4px rgba(51,102,255,.4)}
+.tpsl .btn.ghost{background:transparent;color:#60a5fa;border-color:rgba(96,165,250,.5)}
+.tpsl .btn.ghost:hover{background:rgba(96,165,250,.1);box-shadow:none}
+.tpsl input[type=number],.tpsl input[type=text],.tpsl select,.tpsl textarea{background:rgba(0,0,0,.25)}
+.tpsl .work .steps li::before{color:#f97316}
+.tpsl .steps li::before,.tpsl .ways h5::before{color:#60a5fa}
+.tpsl .tip{background:#0d1b2e;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.tpsl details.maths > summary{color:#fff}
+.tpsl .refs a,.tpsl .source a{word-break:break-word}
+
+}
+</style>
+
+<style is:global>
+/* global.css sets overflow-x:hidden on html and body, which turns body into a scroll container and breaks position:sticky (sidebar index, results panel). clip avoids that. */
+html, body{overflow-x:clip}
+/* global.css applies content-visibility:auto to every non-first <section>; the calculators and canvases measure themselves on load, so keep them laid out. */
+.tpsl section{content-visibility:visible !important}
+</style>

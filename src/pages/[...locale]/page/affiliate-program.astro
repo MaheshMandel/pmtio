@@ -1,0 +1,586 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" },
+    { "@type": "ListItem", "position": 2, "name": "Affiliate Program", "item": absoluteLocalizedPath(locale, 'page/affiliate-program') }
+  ]
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "PickMyTrade Affiliate Program — Earn 10% Recurring Commission",
+  "description": "Join PickMyTrade's affiliate program and earn 10% recurring commission on every referral. Promote the #1 TradingView automation platform and build passive income.",
+  "url": absoluteLocalizedPath(locale, 'page/affiliate-program'),
+  "isPartOf": { "@type": "WebSite", "name": "PickMyTrade", "url": "https://pickmytrade.io/" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PickMyTrade",
+    "logo": { "@type": "ImageObject", "url": "https://pickmytrade.io/assets/logo.png" }
+  }
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much can I earn with the PickMyTrade affiliate program?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You earn 10% recurring commission on every subscription payment made by your referrals. With PickMyTrade plans starting at $50/month, a single active monthly referral earns you $5/month — indefinitely, as long as they remain subscribed. Refer 20 traders and earn $100/month passively."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I join the PickMyTrade affiliate program?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Create a free PickMyTrade account at app.pickmytrade.io, navigate to your profile settings to find your unique referral link, and start sharing. You earn 10% commissions the moment your referrals subscribe to any paid plan — no minimum threshold, no approval process."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does the affiliate cookie tracking last?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PickMyTrade uses advanced cookie tracking that preserves your referral credit across return visits — even months after the initial click. So if a trader visits via your link today and subscribes three months later, you still earn the commission."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When and how are affiliate commissions paid?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Commissions are paid monthly. Payouts are processed automatically for every active subscription billing cycle from your referred users. You can monitor all referrals, conversions, and accumulated earnings in real-time from your affiliate dashboard."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between the Affiliate Program and the Partner Program?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Affiliate Program suits individual traders, bloggers, and content creators who want to earn recurring commissions by sharing a referral link. The Partner Program is designed for community leaders, Discord server owners, finance educators, and influencers seeking a deeper strategic collaboration — including custom resources, co-marketing, and tailored partnership terms."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a cap on how much I can earn?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. There is no cap on referrals or total earnings. You can refer unlimited traders and earn 10% on every active subscription billing cycle — forever. The more you refer, the more you earn."
+      }
+    }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('affiliate.page_title')}
+  description={t('affiliate.page_description')}
+  keywords={t('affiliate.page_keywords')}
+  structuredData={[schema1, schema2, schema3]}
+>
+
+  <style>
+    #affiliateModal:not(.hidden),
+    #contactModal:not(.hidden) { display: flex; }
+
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .shine-badge {
+      background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shine 3s linear infinite;
+    }
+    @keyframes shine { to { background-position: 200% center; } }
+
+    .faq-item summary { list-style: none; cursor: pointer; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item[open] .faq-icon { transform: rotate(45deg); }
+    .faq-icon { transition: transform 0.3s ease; }
+
+    .stat-card {
+      border: 1px solid rgba(59,130,246,0.2);
+      background: rgba(59,130,246,0.05);
+      backdrop-filter: blur(12px);
+    }
+
+    .program-card-glow:hover {
+      box-shadow: 0 0 40px rgba(59,130,246,0.15), 0 20px 40px rgba(0,0,0,0.3);
+    }
+  </style>
+
+  <!-- BREADCRUMB -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-blue-400 transition" itemprop="item">
+            <span itemprop="name">{t('affiliate.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('affiliate.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="relative grid-bg bg-[#001429] pt-12 pb-16 px-6 flex flex-col justify-center items-center text-center overflow-hidden">
+    <!-- Glow blobs -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-175 h-100 bg-blue-600/8 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 left-10 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 right-10 w-72 h-72 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <span class="relative inline-flex items-center gap-2 px-4 py-1.5 bg-blue-600/15 text-blue-400 rounded-full text-xs font-semibold mb-5 border border-blue-500/30 uppercase tracking-widest">
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+      {t('affiliate.hero_badge')}
+    </span>
+
+    <h1 class="relative text-4xl sm:text-6xl font-extrabold leading-none mb-4 max-w-5xl text-white tracking-tight">
+      {t('affiliate.hero_title_pre')} <span class="shine-badge">{t('affiliate.hero_title_percent')}</span> {t('affiliate.hero_title_mid')}<br class="hidden sm:block"> {t('affiliate.hero_title_post')}
+    </h1>
+    <p class="relative max-w-2xl mx-auto text-gray-400 text-lg leading-relaxed mb-8">
+      {t('affiliate.hero_p_pre')} <strong class="text-white font-semibold">{t('affiliate.hero_p_strong')}</strong> {t('affiliate.hero_p_post')}
+    </p>
+
+    <div class="relative flex flex-col sm:flex-row gap-3 justify-center mb-8">
+      <a href="https://app.pickmytrade.io/?register=true" target="_blank"
+        class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-blue-500/50 hover:scale-105 text-sm">
+        {t('affiliate.hero_cta_primary')}
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <a href="#how-it-works"
+        class="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/15 hover:border-white/30 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-300 text-sm backdrop-blur-sm">
+        {t('affiliate.hero_cta_secondary')}
+      </a>
+    </div>
+
+    <!-- Trust chips -->
+    <div class="relative flex flex-wrap justify-center gap-2">
+      <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-xs text-gray-300">
+        <i class="fa-solid fa-check-circle text-green-400"></i> {t('affiliate.chip_no_approval')}
+      </div>
+      <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-xs text-gray-300">
+        <i class="fa-solid fa-infinity text-blue-400"></i> {t('affiliate.chip_unlimited')}
+      </div>
+      <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-xs text-gray-300">
+        <i class="fa-solid fa-rotate text-purple-400"></i> {t('affiliate.chip_recurring')}
+      </div>
+      <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-xs text-gray-300">
+        <i class="fa-solid fa-bolt text-yellow-400"></i> {t('affiliate.chip_instant')}
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <section class="bg-[#000d1a] border-y border-white/5 py-8">
+    <div class="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="stat-card rounded-xl p-4 text-center">
+        <p class="text-3xl font-extrabold text-white mb-0.5">{t('affiliate.stat1_value')}</p>
+        <p class="text-xs text-gray-400">{t('affiliate.stat1_label')}</p>
+      </div>
+      <div class="stat-card rounded-xl p-4 text-center">
+        <p class="text-3xl font-extrabold text-white mb-0.5">{t('affiliate.stat2_value')}</p>
+        <p class="text-xs text-gray-400">{t('affiliate.stat2_label')}</p>
+      </div>
+      <div class="stat-card rounded-xl p-4 text-center">
+        <p class="text-3xl font-extrabold text-white mb-0.5">{t('affiliate.stat3_value')}</p>
+        <p class="text-xs text-gray-400">{t('affiliate.stat3_label')}</p>
+      </div>
+      <div class="stat-card rounded-xl p-4 text-center">
+        <p class="text-3xl font-extrabold text-white mb-0.5">{t('affiliate.stat4_value')}</p>
+        <p class="text-xs text-gray-400">{t('affiliate.stat4_label')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEO PARAGRAPH — AI-citable definitional content -->
+  <section class="bg-[#001429] py-10" aria-label="About the PickMyTrade Affiliate Program">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">{t('affiliate.seo_title')}</h2>
+      <p class="text-gray-300 text-base leading-relaxed">
+        {t('affiliate.seo_p_1')} <strong class="text-white">{t('affiliate.seo_p_strong1')}</strong> {t('affiliate.seo_p_2')} <strong class="text-white">{t('affiliate.seo_p_strong2')}</strong> {t('affiliate.seo_p_3')}
+      </p>
+    </div>
+  </section>
+
+  <!-- PROGRAM OPTIONS -->
+  <section class="py-14 bg-linear-to-b from-[#001429] to-[#001d38] text-center">
+    <span class="inline-block px-4 py-1.5 bg-blue-600/15 text-blue-400 rounded-full text-xs font-semibold mb-3 border border-blue-500/25 uppercase tracking-widest">
+      {t('affiliate.options_badge')}
+    </span>
+    <h2 class="text-3xl md:text-4xl font-bold mb-3 text-white tracking-tight">{t('affiliate.options_title')}</h2>
+    <p class="text-gray-400 mb-10 max-w-xl mx-auto">{t('affiliate.options_subtitle')}</p>
+
+    <div class="flex flex-col md:flex-row justify-center gap-6 px-6 max-w-5xl mx-auto">
+      <!-- Affiliate Card -->
+      <div class="program-card-glow group relative bg-[#001d38] text-white p-7 rounded-3xl border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-2 flex-1 flex flex-col items-center text-center overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-blue-500 to-transparent"></div>
+        <div class="w-14 h-14 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all duration-300">
+          <i class="fa-solid fa-users text-2xl text-blue-400"></i>
+        </div>
+        <div class="inline-block px-3 py-1 bg-blue-600/15 border border-blue-500/20 rounded-full text-xs text-blue-400 font-bold uppercase tracking-widest mb-3">{t('affiliate.aff_card_badge')}</div>
+        <h3 class="text-xl font-bold mb-1 text-white">{t('affiliate.aff_card_title')}</h3>
+        <p class="text-xs text-blue-400/80 font-semibold uppercase tracking-widest mb-4">{t('affiliate.aff_card_subtitle')}</p>
+        <p class="mb-5 leading-relaxed text-gray-400 text-sm flex-1">
+          {t('affiliate.aff_card_desc')}
+        </p>
+        <!-- Commission projection -->
+        <div class="w-full bg-blue-600/10 border border-blue-500/20 rounded-xl p-3 mb-5 text-left">
+          <p class="text-xs text-blue-400 font-semibold uppercase tracking-widest mb-2">{t('affiliate.earnings_title')}</p>
+          <div class="flex justify-between text-xs text-gray-300 mb-1">
+            <span>{t('affiliate.earnings_row1_label')}</span><span class="text-white font-bold">{t('affiliate.earnings_row1_value')}</span>
+          </div>
+          <div class="flex justify-between text-xs text-gray-300 mb-1">
+            <span>{t('affiliate.earnings_row2_label')}</span><span class="text-white font-bold">{t('affiliate.earnings_row2_value')}</span>
+          </div>
+          <div class="flex justify-between text-xs text-gray-300">
+            <span>{t('affiliate.earnings_row3_label')}</span><span class="text-green-400 font-bold">{t('affiliate.earnings_row3_value')}</span>
+          </div>
+        </div>
+        <button id="openAffiliateBtn"
+          class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 transition-all duration-300 hover:shadow-blue-500/40 text-sm">
+          {t('affiliate.aff_card_cta')}
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Partner Card -->
+      <div class="program-card-glow group relative bg-[#001d38] text-white p-7 rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-2 flex-1 flex flex-col items-center text-center overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-white/20 to-transparent"></div>
+        <div class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-white/10 transition-all duration-300">
+          <i class="fa-solid fa-handshake text-2xl text-gray-300"></i>
+        </div>
+        <div class="inline-block px-3 py-1 bg-white/5 border border-white/15 rounded-full text-xs text-gray-400 font-bold uppercase tracking-widest mb-3">{t('affiliate.partner_card_badge')}</div>
+        <h3 class="text-xl font-bold mb-1 text-white">{t('affiliate.partner_card_title')}</h3>
+        <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-4">{t('affiliate.partner_card_subtitle')}</p>
+        <p class="mb-5 leading-relaxed text-gray-400 text-sm flex-1">
+          {t('affiliate.partner_card_desc')}
+        </p>
+        <ul class="w-full space-y-2 mb-5 text-left">
+          <li class="flex items-center gap-2 text-sm text-gray-300">
+            <i class="fa-solid fa-check-circle text-green-400 text-xs shrink-0"></i> {t('affiliate.partner_feature1')}
+          </li>
+          <li class="flex items-center gap-2 text-sm text-gray-300">
+            <i class="fa-solid fa-check-circle text-green-400 text-xs shrink-0"></i> {t('affiliate.partner_feature2')}
+          </li>
+          <li class="flex items-center gap-2 text-sm text-gray-300">
+            <i class="fa-solid fa-check-circle text-green-400 text-xs shrink-0"></i> {t('affiliate.partner_feature3')}
+          </li>
+        </ul>
+        <button id="openModalBtn"
+          class="w-full inline-flex items-center justify-center gap-2 bg-white/8 hover:bg-white/15 border border-white/20 hover:border-white/40 text-white px-8 py-3 rounded-xl font-bold transition-all duration-300 text-sm">
+          {t('affiliate.partner_card_cta')}
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="py-14 bg-[#000d1a] text-center">
+    <span class="inline-block px-4 py-1.5 bg-blue-600/15 text-blue-400 rounded-full text-xs font-semibold mb-3 border border-blue-500/25 uppercase tracking-widest">
+      {t('affiliate.benefits_badge')}
+    </span>
+    <h2 class="text-3xl font-bold mb-3 text-white">{t('affiliate.benefits_title')}</h2>
+    <p class="text-gray-400 mb-10 max-w-xl mx-auto">{t('affiliate.benefits_subtitle')}</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 px-6 max-w-6xl mx-auto">
+      <div class="group relative bg-[#001429] border border-white/8 hover:border-blue-500/40 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden text-center">
+        <div class="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-blue-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <p class="text-4xl font-extrabold text-blue-400 mb-2">{t('affiliate.benefit1_value')}</p>
+        <h3 class="text-base font-bold mb-2 text-white">{t('affiliate.benefit1_title')}</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.benefit1_desc')}</p>
+      </div>
+
+      <div class="group relative bg-[#001429] border border-white/8 hover:border-blue-500/40 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden text-center">
+        <div class="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-blue-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <p class="text-4xl font-extrabold text-blue-400 mb-2">{t('affiliate.benefit2_value')}</p>
+        <h3 class="text-base font-bold mb-2 text-white">{t('affiliate.benefit2_title')}</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.benefit2_desc')}</p>
+      </div>
+
+      <div class="group relative bg-[#001429] border border-white/8 hover:border-blue-500/40 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden text-center">
+        <div class="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-blue-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <p class="text-4xl font-extrabold text-blue-400 mb-2">{t('affiliate.benefit3_value')}</p>
+        <h3 class="text-base font-bold mb-2 text-white">{t('affiliate.benefit3_title')}</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.benefit3_desc')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IS IT FOR -->
+  <section class="py-14 bg-linear-to-b from-[#001429] to-[#001d38] text-center">
+    <span class="inline-block px-4 py-1.5 bg-blue-600/15 text-blue-400 rounded-full text-xs font-semibold mb-3 border border-blue-500/25 uppercase tracking-widest">
+      {t('affiliate.audience_badge')}
+    </span>
+    <h2 class="text-3xl font-bold mb-3 text-white">{t('affiliate.audience_title')}</h2>
+    <p class="text-gray-400 mb-10 max-w-2xl mx-auto">{t('affiliate.audience_subtitle')}</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-6 max-w-6xl mx-auto">
+      <div class="flex items-start gap-3 bg-[#001d38] border border-white/8 hover:border-blue-500/30 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#002040] group">
+        <div class="w-12 h-12 shrink-0 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <i class="fa-brands fa-youtube text-xl text-red-400"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white mb-1">{t('affiliate.audience1_title')}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.audience1_desc')}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-[#001d38] border border-white/8 hover:border-blue-500/30 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#002040] group">
+        <div class="w-12 h-12 shrink-0 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <i class="fa-brands fa-discord text-xl text-indigo-400"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white mb-1">{t('affiliate.audience2_title')}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.audience2_desc')}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-[#001d38] border border-white/8 hover:border-blue-500/30 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#002040] group">
+        <div class="w-12 h-12 shrink-0 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <i class="fa-solid fa-pen-nib text-xl text-green-400"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white mb-1">{t('affiliate.audience3_title')}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.audience3_desc')}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-[#001d38] border border-white/8 hover:border-blue-500/30 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#002040] group">
+        <div class="w-12 h-12 shrink-0 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <i class="fa-solid fa-chalkboard-user text-xl text-yellow-400"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white mb-1">{t('affiliate.audience4_title')}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.audience4_desc')}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-[#001d38] border border-white/8 hover:border-blue-500/30 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#002040] group">
+        <div class="w-12 h-12 shrink-0 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <i class="fa-brands fa-twitter text-xl text-sky-400"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white mb-1">{t('affiliate.audience5_title')}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.audience5_desc')}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-[#001d38] border border-white/8 hover:border-blue-500/30 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#002040] group">
+        <div class="w-12 h-12 shrink-0 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <i class="fa-solid fa-building-columns text-xl text-purple-400"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white mb-1">{t('affiliate.audience6_title')}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{t('affiliate.audience6_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GET STARTED STEPS -->
+  <section id="how-it-works" class="py-14 bg-[#000d1a] text-center">
+    <span class="inline-block px-4 py-1.5 bg-blue-600/15 text-blue-400 rounded-full text-xs font-semibold mb-3 border border-blue-500/25 uppercase tracking-widest">
+      {t('affiliate.steps_badge')}
+    </span>
+    <h2 class="text-3xl font-bold mb-3 text-white">{t('affiliate.steps_title')}</h2>
+    <p class="text-gray-400 mb-12 max-w-xl mx-auto">{t('affiliate.steps_subtitle')}</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-6 max-w-6xl mx-auto mb-12">
+      {[
+        { n: 1, icon: "fa-right-to-bracket", title: t('affiliate.step1_title'), desc: t('affiliate.step1_desc') },
+        { n: 2, icon: "fa-link", title: t('affiliate.step2_title'), desc: t('affiliate.step2_desc') },
+        { n: 3, icon: "fa-paper-plane", title: t('affiliate.step3_title'), desc: t('affiliate.step3_desc') },
+        { n: 4, icon: "fa-chart-line", title: t('affiliate.step4_title'), desc: t('affiliate.step4_desc') },
+        { n: 5, icon: "fa-dollar-sign", title: t('affiliate.step5_title'), desc: t('affiliate.step5_desc') },
+        { n: 6, icon: "fa-trophy", title: t('affiliate.step6_title'), desc: t('affiliate.step6_desc') },
+      ].map(({ n, icon, title, desc }) => (
+        <div class="group relative bg-[#001429] border border-white/8 hover:border-blue-500/40 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 flex flex-col items-center text-center overflow-hidden">
+          <div class="absolute -top-5 left-6 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-600/40 border-4 border-[#000d1a] group-hover:scale-110 transition-transform duration-300">
+            <span class="text-white font-bold text-sm">{n}</span>
+          </div>
+          <div class="w-14 h-14 mt-5 mb-4 bg-blue-500/10 border border-blue-500/15 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-500/20 transition-all duration-300">
+            <i class={`fa-solid ${icon} text-2xl text-blue-400`}></i>
+          </div>
+          <h3 class="text-base font-bold mb-2 text-white">{title}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{desc}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- CTA callout -->
+    <div class="relative bg-linear-to-br from-blue-600/15 to-blue-900/10 border border-blue-500/25 rounded-2xl py-10 px-8 flex flex-col items-center max-w-3xl mx-auto overflow-hidden">
+      <div class="absolute inset-0 grid-bg opacity-30"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-400/60 to-transparent"></div>
+      <span class="relative inline-flex items-center gap-2 px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded-full text-xs text-blue-400 font-bold uppercase tracking-widest mb-4">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> {t('affiliate.cta_badge')}
+      </span>
+      <h2 class="relative text-2xl md:text-3xl font-extrabold mb-3 text-center text-white">
+        {t('affiliate.cta_title')}
+      </h2>
+      <p class="relative text-sm mb-6 text-center text-gray-300 max-w-lg">
+        {t('affiliate.cta_subtitle')}
+      </p>
+      <a href="https://app.pickmytrade.io/?register=true" target="_blank"
+        class="relative inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-blue-500/50 hover:scale-105 text-sm">
+        {t('affiliate.cta_button')}
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-14 bg-[#001429]">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="text-center mb-10">
+        <span class="inline-block px-4 py-1.5 bg-blue-600/15 text-blue-400 rounded-full text-xs font-semibold mb-3 border border-blue-500/25 uppercase tracking-widest">
+          {t('affiliate.faq_badge')}
+        </span>
+        <h2 class="text-3xl font-bold text-white mb-3">{t('affiliate.faq_title')}</h2>
+        <p class="text-gray-400">{t('affiliate.faq_subtitle')}</p>
+      </div>
+
+      <div class="space-y-3">
+        {[
+          { q: t('affiliate.faq_q1'), a: t('affiliate.faq_a1') },
+          { q: t('affiliate.faq_q2'), a: t('affiliate.faq_a2') },
+          { q: t('affiliate.faq_q3'), a: t('affiliate.faq_a3') },
+          { q: t('affiliate.faq_q4'), a: t('affiliate.faq_a4') },
+          { q: t('affiliate.faq_q5'), a: t('affiliate.faq_a5') },
+          { q: t('affiliate.faq_q6'), a: t('affiliate.faq_a6') }
+        ].map(({ q, a }) => (
+          <details class="faq-item group bg-[#001d38] border border-white/8 hover:border-blue-500/30 rounded-2xl overflow-hidden transition-all duration-300">
+            <summary class="flex items-center justify-between gap-4 p-6 text-white font-semibold text-base cursor-pointer select-none group-hover:text-blue-300 transition-colors duration-200">
+              <span>{q}</span>
+              <span class="faq-icon shrink-0 w-8 h-8 bg-blue-600/15 border border-blue-500/20 rounded-lg flex items-center justify-center text-blue-400">
+                <i class="fa-solid fa-plus text-sm"></i>
+              </span>
+            </summary>
+            <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed border-t border-white/5 pt-4">
+              {a}
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- AFFILIATE MODAL -->
+  <div id="affiliateModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-md">
+    <div class="relative bg-[#001d38] border border-blue-500/25 rounded-3xl shadow-2xl shadow-blue-900/30 p-8 max-w-md w-full mx-4 text-center overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-400/60 to-transparent"></div>
+      <button id="closeModalBtn"
+        class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="w-14 h-14 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <i class="fa-solid fa-users text-2xl text-blue-400"></i>
+      </div>
+      <h4 class="text-2xl font-bold mb-2 text-white">{t('affiliate.aff_modal_title')}</h4>
+      <p class="mb-6 text-gray-400 text-sm leading-relaxed">{t('affiliate.aff_modal_desc')}</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button id="signUpBtn"
+          class="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow transition-all duration-200">
+          {t('affiliate.aff_modal_signup')}
+        </button>
+        <button id="viewDocsBtn"
+          class="flex-1 border border-white/15 hover:border-blue-500/50 text-gray-300 hover:text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200">
+          {t('affiliate.aff_modal_docs')}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT MODAL -->
+  <div id="contactModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-md">
+    <div class="relative bg-[#001d38] border border-white/15 rounded-3xl shadow-2xl p-8 max-w-md w-full mx-4 text-center overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent"></div>
+      <button id="closeContactModalBtn"
+        class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <i class="fa-solid fa-envelope text-2xl text-gray-300"></i>
+      </div>
+      <h4 class="text-2xl font-bold mb-2 text-white">{t('affiliate.contact_modal_title')}</h4>
+      <p class="mb-5 text-gray-400 text-sm leading-relaxed">{t('affiliate.contact_modal_desc')}</p>
+      <div class="mb-6">
+        <a href="mailto:support@pickmytrade.com"
+          class="inline-block bg-white/5 border border-white/10 hover:border-blue-500/40 text-blue-400 px-5 py-2.5 rounded-xl font-mono text-sm transition-colors">
+          support@pickmytrade.com
+        </a>
+      </div>
+      <button id="connectBtn"
+        class="w-full bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow transition-all duration-200">
+        {t('affiliate.contact_modal_button')}
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const partnershipEmail = "support@pickmytrade.com";
+
+      const openModalBtn = document.getElementById('openModalBtn');
+      const contactModal = document.getElementById('contactModal');
+      const connectBtn = document.getElementById('connectBtn');
+      const closeContactModalBtn = document.getElementById('closeContactModalBtn');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const openAffiliateBtn = document.getElementById('openAffiliateBtn');
+      const affiliateModal = document.getElementById('affiliateModal');
+      const viewDocsBtn = document.getElementById('viewDocsBtn');
+      const signUpBtn = document.getElementById('signUpBtn');
+
+      openModalBtn?.addEventListener('click', () => contactModal?.classList.remove('hidden'));
+      openAffiliateBtn?.addEventListener('click', () => affiliateModal?.classList.remove('hidden'));
+      closeModalBtn?.addEventListener('click', () => affiliateModal?.classList.add('hidden'));
+      closeContactModalBtn?.addEventListener('click', () => contactModal?.classList.add('hidden'));
+
+      affiliateModal?.addEventListener('click', (e) => {
+        if (e.target === affiliateModal) affiliateModal.classList.add('hidden');
+      });
+      contactModal?.addEventListener('click', (e) => {
+        if (e.target === contactModal) contactModal.classList.add('hidden');
+      });
+
+      connectBtn?.addEventListener('click', () => {
+        window.location.href = `mailto:${partnershipEmail}?subject=Partner%20Program%20Inquiry`;
+      });
+      viewDocsBtn?.addEventListener('click', () => {
+        window.open('https://docs.pickmytrade.trade/docs/referral-system/', '_blank');
+      });
+      signUpBtn?.addEventListener('click', () => {
+        window.open('https://app.pickmytrade.trade/?register=true');
+      });
+    });
+  </script>
+
+</BaseLayout>

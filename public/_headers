@@ -1,0 +1,87 @@
+# =============================================================================
+# Cloudflare Pages / Netlify _headers
+# Security headers + caching for pickmytrade.io
+# =============================================================================
+#
+# Notes:
+# - HSTS preload requires HTTPS-only on the apex + all subdomains for 1+ year.
+#   Submit at hstspreload.org once verified.
+# - Content-Security-Policy is intentionally OMITTED: the site loads assets
+#   from cdnjs, fonts.googleapis, jsdelivr, ladesk, youtube, etc.
+#   A strict CSP would break the site without per-source tuning. Add later.
+#
+# Caching rules below are deliberately written so that NO rule depends on
+# "a later rule overrides an earlier one" — Cloudflare Pages and Netlify do not
+# agree on that precedence, and this file targets both. Every path pattern here
+# matches exactly one class of file.
+# =============================================================================
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  X-DNS-Prefetch-Control: on
+
+# ── Long-cache immutable assets ──────────────────────────────────────────────
+# Astro emits content-hashed filenames into /_astro/, so these are safe to pin
+# for a year: a changed file gets a new URL.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images are matched by EXTENSION, not by the /assets/ directory.
+#
+# The previous rule here was `/assets/*`, which looks like it targets static
+# files but does not: dist/assets/ also contains four real content pages
+# (forex, futures, options, stocks — plus their four locale copies, 20
+# pages in total). Those were being served `max-age=31536000, immutable`, so an
+# edit to any of them would have stayed invisible to browsers and CDN edges for
+# a year. Freshness is exactly what AI search surfaces weight most heavily, so
+# that rule was actively working against the pages it covered.
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# ── HTML ─────────────────────────────────────────────────────────────────────
+# Intentionally has no rule. The site builds with `format: "file"` and
+# `trailingSlash: "never"`, so pages are SERVED at extensionless URLs
+# (/pricing, /assets/futures). A `/*.html` pattern therefore matched almost
+# nothing — the intended short-cache never applied. Rather than re-add a rule
+# that cannot fire, HTML is left to the platform default, which revalidates on
+# every request and purges the edge on deploy. That is the behaviour the old
+# rule was reaching for anyway.
+
+# ── AI crawler files ─────────────────────────────────────────────────────────
+# Short cache so AI crawlers pick up changes quickly.
+# (There is no /llms-full.txt rule here: no such file is generated. The previous
+# entry advertised caching and a content type for a URL that 404s.)
+/llms.txt
+  Cache-Control: public, max-age=3600
+  Content-Type: text/plain; charset=utf-8
+
+/robots.txt
+  Cache-Control: public, max-age=3600
+  Content-Type: text/plain; charset=utf-8
+
+# Sitemaps must never be long-cached — they are the recrawl signal itself.
+/sitemap-index.xml
+  Cache-Control: public, max-age=3600
+
+/sitemap-0.xml
+  Cache-Control: public, max-age=3600

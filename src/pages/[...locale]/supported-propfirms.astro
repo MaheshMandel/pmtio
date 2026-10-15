@@ -1,0 +1,425 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalePaths, localizedPath, useTranslations, absoluteLocalizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+import propfirmsData from '../../../config/propfirms.json';
+import propfirmsFullData from '../../../config/propfirms-full.json';
+
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+
+// Firms with a dedicated review page (config-driven propfirms/[slug] pages,
+// plus hand-written single-page profiles like boxcar-trading that aren't in
+// config/propfirms.json).
+const guideSlugs = new Set([...propfirmsData.propfirms.map((f) => f.slug), 'boxcar-trading']);
+// Firms with generated automation/copier guides (config/propfirms-full.json).
+// Boxcar Trading intentionally has neither — it only has the review page above —
+// so its row below must not link into these families.
+const automationSlugs = new Set(propfirmsFullData.propfirms.map((f) => f.slug));
+const methodologyUpdated = propfirmsData.meta.last_updated;
+
+interface PropFirmRow {
+  name: string;
+  slug: string;
+  logo: string;
+  rating: number;
+  fee: string;
+  profit: string;
+  drawdown: string;
+  payout: string;
+}
+
+const propFirms: PropFirmRow[] = [
+  { name: "Alpha Capital",        slug: "alpha-capital",        logo: "/assets/alphacapitalgroup.svg",             rating: 4.3, fee: "$99/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Bi-Weekly" },
+  { name: "AlphaTicks",           slug: "alphaticks",            logo: "/assets/propfirm/AlphaTicks.png",           rating: 4.2, fee: "$79/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Bi-Monthly" },
+  { name: "Apex Trader Funding",  slug: "apex-trader-funding",  logo: "/assets/apex-logo-stack-light.png",         rating: 4.7, fee: "$147/mo",    profit: "$3000 (6%)",  drawdown: "$2500 (5%)",  payout: "Bi-Weekly" },
+  { name: "AquaFutures",          slug: "aquafutures",           logo: "/assets/aquafutures.png",                   rating: 4.1, fee: "$89/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+  { name: "Blue Guardian Futures",slug: "blue-guardian-futures", logo: "/assets/propfirm/Blue_Guardian_Futures.png",rating: 4.5, fee: "$335/mo",    profit: "$5000 (10%)", drawdown: "$3000 (6%)",  payout: "Bi-Weekly" },
+  { name: "BluSky Trading",       slug: "blusky-trading",        logo: "/assets/propfirm/BluSky_Trading.png",       rating: 4.3, fee: "$112/mo",    profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Daily" },
+  { name: "Boxcar Trading",       slug: "boxcar-trading",        logo: "/assets/propfirm/BoxcarTrading.svg",        rating: 4.0, fee: "$140/once",  profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Daily" },
+  { name: "Day Traders",          slug: "day-traders",           logo: "/assets/propfirm/Day_Traders.png",          rating: 4.6, fee: "$379/once",  profit: "$3000 (6%)",  drawdown: "$2500 (5%)",  payout: "Daily" },
+  { name: "E8 Markets",           slug: "e8-markets",            logo: "/assets/propfirm/E8.png",                   rating: 4.4, fee: "$98/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+  { name: "FundedNext",           slug: "fundednext",            logo: "/assets/fundednext.png",                    rating: 4.5, fee: "$129/mo",    profit: "$4000 (8%)",  drawdown: "$2500 (5%)",  payout: "Bi-Weekly" },
+  { name: "Funding Futures",      slug: "funding-futures",       logo: "/assets/propfirm/Funding_Futures.png",      rating: 4.1, fee: "$95/mo",     profit: "$3000 (6%)",  drawdown: "$2500 (5%)",  payout: "Bi-Weekly" },
+  { name: "FundingPips",          slug: "fundingpips",           logo: "/assets/fundingpips.webp",                  rating: 4.2, fee: "$89/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+  { name: "Futures Elite",        slug: "futures-elite",         logo: "/assets/propfirm/Futures_Elite.jpg",        rating: 4.7, fee: "$99/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Bi-Weekly" },
+  { name: "Fxify Futures",        slug: "fxify-futures",         logo: "/assets/propfirm/Fxify_Futures.png",        rating: 4.3, fee: "$89/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Bi-Weekly" },
+  { name: "Goat Funded Trader",   slug: "goat-funded-trader",    logo: "/assets/propfirm/GOAT_Funded_Futures.png",  rating: 4.5, fee: "$99/mo",     profit: "$4500 (9%)",  drawdown: "$2500 (5%)",  payout: "Weekly" },
+  { name: "Holaprime",            slug: "holaprime",             logo: "/assets/propfirm/Holaprime.png",            rating: 4.0, fee: "$120/mo",    profit: "$3500 (7%)",  drawdown: "$2200 (4.4%)",payout: "Monthly" },
+  { name: "Lucid Trading",        slug: "lucid-trading",         logo: "/assets/propfirm/Lucid_Trading.png",        rating: 4.4, fee: "$145/mo",    profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+  { name: "Maven Trading",        slug: "maven",                 logo: "/assets/maventrading.png",                  rating: 4.3, fee: "$99/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Bi-Weekly" },
+  { name: "Phidias",              slug: "phidias",               logo: "/assets/propfirm/Phidias.jpg",              rating: 4.2, fee: "$180/mo",    profit: "$4000 (8%)",  drawdown: "$2500 (5%)",  payout: "Bi-Weekly" },
+  { name: "QT Funded",            slug: "qt-funded",             logo: "/assets/quanttekel.svg",                    rating: 4.1, fee: "$99/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+  { name: "Take Profit Trader",   slug: "take-profit-trader",    logo: "/assets/takeprofittrader.svg",              rating: 4.6, fee: "$150/mo",    profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Daily" },
+  { name: "The Futures Desk",     slug: "the-futures-desk",      logo: "/assets/propfirm/The_Futures_Desk.png",     rating: 4.2, fee: "$115/mo",    profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+  { name: "TickTickTrader",       slug: "tickticktrader",        logo: "/assets/propfirm/TickTickTrader.jpg",       rating: 4.4, fee: "$99/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Daily" },
+  { name: "Top One Futures",      slug: "top-one-futures",       logo: "/assets/propfirm/Top_One_Futures.png",      rating: 4.3, fee: "$115/mo",    profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+  { name: "Top One Trader",       slug: "top-one-trader",        logo: "/assets/toponetrader.png",                  rating: 4.2, fee: "$99/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Bi-Weekly" },
+  { name: "Topstep",              slug: "topstep",               logo: "/assets/propfirm/TopStepX.png",             rating: 4.8, fee: "$165/mo",    profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Daily" },
+  { name: "Tradeify",             slug: "tradeify",              logo: "/assets/propfirm/Tradeify.png",             rating: 4.5, fee: "$99/mo",     profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Bi-Weekly" },
+  { name: "TX3 Funding",          slug: "tx3-funding",           logo: "/assets/propfirm/TX3_Funding.png",          rating: 4.3, fee: "$110/mo",    profit: "$3000 (6%)",  drawdown: "$2000 (4%)",  payout: "Weekly" },
+];
+
+const schema1 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io/" },
+    { "@type": "ListItem", "position": 2, "name": "Supported Prop Firms", "item": absoluteLocalizedPath(locale, 'supported-propfirms') }
+  ]
+};
+
+const schema2 = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Prop Trading Firms Supported by PickMyTrade",
+  "description": "Complete list of 28 prop trading firms covered by PickMyTrade, including automation, copy trading, and independent firm reviews.",
+  "numberOfItems": 28,
+  "itemListOrder": "https://schema.org/ItemListUnordered",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1,  "name": "Apex Trader Funding",  "url": absoluteLocalizedPath(locale, 'propfirms/apex-trader-funding') },
+    { "@type": "ListItem", "position": 2,  "name": "Topstep",              "url": absoluteLocalizedPath(locale, 'propfirms/topstep') },
+    { "@type": "ListItem", "position": 3,  "name": "Take Profit Trader",   "url": absoluteLocalizedPath(locale, 'propfirms/take-profit-trader') },
+    { "@type": "ListItem", "position": 4,  "name": "Tradeify",             "url": absoluteLocalizedPath(locale, 'propfirms/tradeify') },
+    { "@type": "ListItem", "position": 5,  "name": "E8 Markets",           "url": absoluteLocalizedPath(locale, 'propfirms/e8-markets') },
+    { "@type": "ListItem", "position": 6,  "name": "FundedNext",           "url": absoluteLocalizedPath(locale, 'propfirms/fundednext') },
+    { "@type": "ListItem", "position": 7,  "name": "Alpha Capital",        "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-alpha-capital-copier') },
+    { "@type": "ListItem", "position": 8,  "name": "Blue Guardian Futures", "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-blue-guardian-futures-copier') },
+    { "@type": "ListItem", "position": 9,  "name": "BluSky Trading",       "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-blusky-trading-copier') },
+    { "@type": "ListItem", "position": 10, "name": "Day Traders",          "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-day-traders-copier') },
+    { "@type": "ListItem", "position": 11, "name": "Futures Elite",        "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-futures-elite-copier') },
+    { "@type": "ListItem", "position": 12, "name": "FundingPips",          "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-fundingpips-copier') },
+    { "@type": "ListItem", "position": 13, "name": "Funding Futures",      "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-funding-futures-copier') },
+    { "@type": "ListItem", "position": 14, "name": "FXIFY Futures",        "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-fxify-futures-copier') },
+    { "@type": "ListItem", "position": 15, "name": "Goat Funded Trader",   "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-goat-funded-trader-copier') },
+    { "@type": "ListItem", "position": 16, "name": "HolaPrime",            "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-holaprime-copier') },
+    { "@type": "ListItem", "position": 17, "name": "Lucid Trading",        "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-lucid-trading-copier') },
+    { "@type": "ListItem", "position": 18, "name": "Maven",                "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-maven-copier') },
+    { "@type": "ListItem", "position": 19, "name": "Phidias",              "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-phidias-copier') },
+    { "@type": "ListItem", "position": 20, "name": "QT Funded",            "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-qt-funded-copier') },
+    { "@type": "ListItem", "position": 21, "name": "The Futures Desk",     "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-the-futures-desk-copier') },
+    { "@type": "ListItem", "position": 22, "name": "TickTickTrader",       "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-tickticktrader-copier') },
+    { "@type": "ListItem", "position": 23, "name": "Top One Futures",      "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-top-one-futures-copier') },
+    { "@type": "ListItem", "position": 24, "name": "Top One Trader",       "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-top-one-trader-copier') },
+    { "@type": "ListItem", "position": 25, "name": "TX3 Funding",          "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-tx3-funding-copier') },
+    { "@type": "ListItem", "position": 26, "name": "AlphaTicks",           "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-alphaticks-copier') },
+    { "@type": "ListItem", "position": 27, "name": "AquaFutures",          "url": absoluteLocalizedPath(locale, 'copier/tradingview-to-aquafutures-copier') },
+    { "@type": "ListItem", "position": 28, "name": "Boxcar Trading",       "url": absoluteLocalizedPath(locale, 'propfirms/boxcar-trading') }
+  ]
+};
+
+const schema3 = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickmytrade.io" }
+  ]
+};
+---
+<BaseLayout
+  locale={locale}
+  title={t('supported_propfirms.page_title')}
+  description={t('supported_propfirms.page_description')}
+  keywords={t('supported_propfirms.page_keywords')}
+  structuredData={[schema1, schema2, schema3]}
+>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(43,119,238,0.5); border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(43,119,238,0.8); }
+  </style>
+
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="bg-[#001429] pt-20 pb-3 sm:pb-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5">
+      <ol class="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-gray-400" itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition" itemprop="item">
+            <span itemprop="name">{t('supported_propfirms.breadcrumb_home')}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-gray-600">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="text-white font-semibold" itemprop="name">{t('supported_propfirms.breadcrumb_current')}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="mt-10 pt-32 pb-16 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto">
+      <div class="inline-block bg-blue-500/15 border border-blue-500/30 px-6 py-2 rounded-full text-xs tracking-widest font-semibold text-blue-400 mb-6 electrolize-regular" data-aos="fade-down">
+        {t('supported_propfirms.hero_badge')}
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" data-aos="fade-up">
+        {t('supported_propfirms.hero_title_prefix')} <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{t('supported_propfirms.hero_title_highlight')}</span>
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8" data-aos="fade-up" data-aos-delay="100">
+        {t('supported_propfirms.hero_desc_1')}
+        <strong class="text-orange-400">{t('supported_propfirms.hero_desc_automation')}</strong> {t('supported_propfirms.hero_desc_2')}
+        <strong class="text-blue-400">{t('supported_propfirms.hero_desc_copier')}</strong> {t('supported_propfirms.hero_desc_3')}
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+        <a href="https://app.pickmytrade.io/?register=true"
+           class="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl font-bold text-lg shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-1">
+          {t('supported_propfirms.hero_cta')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prop Firms Comparison Table -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto">
+    <div class="text-center mb-12" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-4 bg-gradient-to-r from-[#0F3EC3]/20 to-[#2B77EE]/20 backdrop-blur-sm border border-[#2B77EE]/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-building text-[#2B77EE]"></i>
+        <span class="text-xs sm:text-sm font-semibold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">{t('supported_propfirms.comparison_badge')}</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-3 text-white">{t('supported_propfirms.comparison_title')}</h2>
+      <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto">
+        {t('supported_propfirms.comparison_subtitle')}
+      </p>
+    </div>
+
+    <div class="bg-gradient-to-br from-[#122B75]/40 via-[#0F3EC3]/20 to-[#122B75]/40 backdrop-blur-sm border border-[#2B77EE]/50 rounded-2xl overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+      <!-- Disclaimer Note -->
+      <div class="flex items-start gap-3 px-6 py-4 bg-[#0F3EC3]/15 border-b border-[#2B77EE]/40">
+        <i class="fa-solid fa-circle-info text-[#7FB8F9] mt-0.5 shrink-0"></i>
+        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+          {t('supported_propfirms.disclaimer_1')} <strong class="text-white">{t('supported_propfirms.disclaimer_strong')}</strong>{t('supported_propfirms.disclaimer_2')}
+        </p>
+      </div>
+
+      <!-- Desktop Table -->
+      <div class="hidden lg:block overflow-x-auto custom-scrollbar">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gradient-to-r from-[#0F3EC3]/30 to-[#2B77EE]/30 border-b border-[#2B77EE]/50">
+              <th class="px-6 py-4 text-left text-xs font-bold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+                <i class="fa-solid fa-building mr-2"></i>{t('supported_propfirms.th_propfirm')}
+              </th>
+              <th class="px-4 py-4 text-center text-xs font-bold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+                <i class="fa-solid fa-star mr-2"></i>{t('supported_propfirms.th_rating')}
+              </th>
+              <th class="px-4 py-4 text-center text-xs font-bold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+                <i class="fa-solid fa-dollar-sign mr-2"></i>{t('supported_propfirms.th_fee')}
+                <span class="block normal-case font-sans text-[10px] text-white mt-1 tracking-normal">{t('supported_propfirms.th_fee_note_1')} <br/> {t('supported_propfirms.th_fee_note_2')}</span>
+              </th>
+              <th class="px-4 py-4 text-center text-xs font-bold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+                <i class="fa-solid fa-bullseye mr-2"></i>{t('supported_propfirms.th_profit')}
+              </th>
+              <th class="px-4 py-4 text-center text-xs font-bold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+                <i class="fa-solid fa-chart-line mr-2"></i>{t('supported_propfirms.th_drawdown')}
+              </th>
+              <th class="px-4 py-4 text-center text-xs font-bold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+                <i class="fa-solid fa-calendar mr-2"></i>{t('supported_propfirms.th_payout')}
+              </th>
+              <th class="px-6 py-4 text-center text-xs font-bold text-[#7FB8F9] uppercase tracking-wider electrolize-regular">
+                <i class="fa-solid fa-cogs mr-2"></i>{t('supported_propfirms.th_actions')}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#2B77EE]/20">
+            {propFirms.map((firm) => (
+              <tr class="hover:bg-[#0F3EC3]/10 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-3">
+                    <img
+              width="32"
+              height="32"
+                      src={firm.logo}
+                      alt={t('supported_propfirms.firm_logo_alt', { name: firm.name })}
+                      class="w-8 h-8 rounded-lg object-contain bg-white/10 p-1"
+                      onerror={"this.src='/assets/logo.webp'"}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span class="font-semibold text-white">{firm.name}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-4 text-center">
+                  <div class="flex items-center justify-center gap-1 text-yellow-400">
+                    <i class="fa-solid fa-star text-sm"></i>
+                    <span class="text-white font-semibold">{firm.rating}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-4 text-center text-gray-300">{firm.fee}</td>
+                <td class="px-4 py-4 text-center text-gray-300">{firm.profit}</td>
+                <td class="px-4 py-4 text-center text-gray-300">{firm.drawdown}</td>
+                <td class="px-4 py-4 text-center text-gray-300">{firm.payout}</td>
+                <td class="px-6 py-4 text-center">
+                  <div class="flex items-center justify-center gap-2">
+                    {guideSlugs.has(firm.slug) && (
+                      <a
+                        href={localizedPath(locale, `propfirms/${firm.slug}`)}
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 text-xs font-semibold hover:bg-green-500/30 transition-all"
+                        title={t('supported_propfirms.action_review_title')}
+                      >
+                        <i class="fa-solid fa-star"></i>
+                      </a>
+                    )}
+                    {automationSlugs.has(firm.slug) && (
+                      <a
+                        href={localizedPath(locale, `automation/tradingview-to-${firm.slug}-automation`)}
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/20 border border-orange-500/50 rounded-lg text-orange-400 text-xs font-semibold hover:bg-orange-500/30 transition-all"
+                        title={t('supported_propfirms.action_automation_title')}
+                      >
+                        <i class="fa-solid fa-robot"></i>
+                      </a>
+                    )}
+                    {automationSlugs.has(firm.slug) && (
+                      <a
+                        href={localizedPath(locale, `copier/tradingview-to-${firm.slug}-copier`)}
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/20 border border-blue-500/50 rounded-lg text-blue-400 text-xs font-semibold hover:bg-blue-500/30 transition-all"
+                        title={t('supported_propfirms.action_copier_title')}
+                      >
+                        <i class="fa-solid fa-copy"></i>
+                      </a>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="lg:hidden divide-y divide-[#2B77EE]/20">
+        {propFirms.map((firm) => (
+          <div class="p-4 hover:bg-white/5 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <img
+              width="40"
+              height="40"
+                  src={firm.logo}
+                  alt={t('supported_propfirms.firm_logo_alt', { name: firm.name })}
+                  class="w-10 h-10 rounded-lg object-contain bg-white/10 p-1"
+                  onerror={"this.src='/assets/logo.webp'"}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div>
+                  <span class="font-semibold block">{firm.name}</span>
+                  <div class="flex items-center gap-1 text-yellow-400 text-xs">
+                    <i class="fa-solid fa-star"></i>
+                    <span class="text-white">{firm.rating}</span>
+                  </div>
+                </div>
+              </div>
+              <span class="text-blue-400 font-semibold text-sm">{firm.fee}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-xs text-gray-400 mb-3">
+              <div><span class="text-gray-500">{t('supported_propfirms.mobile_target_label')}</span> {firm.profit}</div>
+              <div><span class="text-gray-500">{t('supported_propfirms.mobile_dd_label')}</span> {firm.drawdown}</div>
+              <div><span class="text-gray-500">{t('supported_propfirms.mobile_payout_label')}</span> {firm.payout}</div>
+            </div>
+            <div class="flex gap-2 flex-wrap">
+              {guideSlugs.has(firm.slug) && (
+                <a
+                  href={localizedPath(locale, `propfirms/${firm.slug}`)}
+                  class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 text-xs font-semibold"
+                >
+                  <i class="fa-solid fa-star"></i> {t('supported_propfirms.mobile_review')}
+                </a>
+              )}
+              {automationSlugs.has(firm.slug) && (
+                <a
+                  href={localizedPath(locale, `automation/tradingview-to-${firm.slug}-automation`)}
+                  class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-orange-500/20 border border-orange-500/50 rounded-lg text-orange-400 text-xs font-semibold"
+                >
+                  <i class="fa-solid fa-robot"></i> {t('supported_propfirms.mobile_automation')}
+                </a>
+              )}
+              {automationSlugs.has(firm.slug) && (
+                <a
+                  href={localizedPath(locale, `copier/tradingview-to-${firm.slug}-copier`)}
+                  class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-blue-500/20 border border-blue-500/50 rounded-lg text-blue-400 text-xs font-semibold"
+                >
+                  <i class="fa-solid fa-copy"></i> {t('supported_propfirms.mobile_copier')}
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Methodology / E-E-A-T -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-8" data-aos="fade-up">
+      <div class="inline-flex items-center gap-2 mb-4 bg-green-500/15 border border-green-500/30 rounded-full px-4 py-2">
+        <i class="fa-solid fa-magnifying-glass text-green-400"></i>
+        <span class="text-xs font-semibold text-green-400 uppercase tracking-wider">{t('supported_propfirms.methodology_badge')}</span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4">{t('supported_propfirms.methodology_title')}</h2>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('supported_propfirms.methodology_p1')}</p>
+      <p class="text-gray-300 leading-relaxed mb-4">{t('supported_propfirms.methodology_p2')}</p>
+      <p class="text-sm text-gray-500">{t('supported_propfirms.methodology_updated_label')} {methodologyUpdated}</p>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+    <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">{t('supported_propfirms.features_title')}</h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-500/50 transition-all" data-aos="fade-up" data-aos-delay="0">
+        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 text-xl mb-4">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">{t('supported_propfirms.feature1_title')}</h3>
+        <p class="text-gray-400 text-sm">{t('supported_propfirms.feature1_desc')}</p>
+      </div>
+
+      <div class="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-purple-500/50 transition-all" data-aos="fade-up" data-aos-delay="100">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 text-xl mb-4">
+          <i class="fa-solid fa-copy"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">{t('supported_propfirms.feature2_title')}</h3>
+        <p class="text-gray-400 text-sm">{t('supported_propfirms.feature2_desc')}</p>
+      </div>
+
+      <div class="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-green-500/50 transition-all" data-aos="fade-up" data-aos-delay="200">
+        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center text-green-400 text-xl mb-4">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">{t('supported_propfirms.feature3_title')}</h3>
+        <p class="text-gray-400 text-sm">{t('supported_propfirms.feature3_desc')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center">
+    <div class="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl p-12 border border-blue-500/30" data-aos="fade-up">
+      <h2 class="text-3xl font-bold mb-4">{t('supported_propfirms.cta_title')}</h2>
+      <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+        {t('supported_propfirms.cta_subtitle')}
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href={localizedPath(locale, 'page/contact')} class="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl font-semibold transition-all">
+          {t('supported_propfirms.cta_request')}
+        </a>
+        <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl font-semibold shadow-lg shadow-blue-600/20 transition-all">
+          {t('supported_propfirms.cta_start')}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

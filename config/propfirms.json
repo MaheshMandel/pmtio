@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "generator_version": "1.0",
+    "last_updated": "2026-09-28",
+    "description": "Configuration for prop firm integration guide pages"
+  },
+  "propfirms": [
+    {
+      "name": "Apex Trader Funding",
+      "slug": "apex-trader-funding",
+      "tagline": "Automate your TradingView alerts to Apex Trader Funding in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "account_sizes": "$25K - $150K (Apex 4.0)",
+      "profit_split": "Up to 90%",
+      "profit_target": "8-10%",
+      "platforms": "Rithmic, Tradovate",
+      "seo": {
+        "title": "Apex Trader Funding Integration | TradingView Automation",
+        "description": "Complete guide to integrating Apex Trader Funding with PickMyTrade. Setup in 5 minutes, manage multiple accounts, advanced risk management. Free trial.",
+        "keywords": "apex trader funding tradingview, automate apex trader funding, apex webhook automation, tradingview to apex, apex automation"
+      }
+    },
+    {
+      "name": "Topstep",
+      "slug": "topstep",
+      "tagline": "Copy and automate your TradingView strategies to your Topstep and TopstepX accounts with PickMyTrade. Mirror one source account to the other accounts you own, size each one on its own, and run it all in the cloud with no plugin and no VPS. Built for futures traders working through the Trading Combine toward a funded account.",
+      "active_traders": "950",
+      "account_sizes": "$50K - $150K",
+      "profit_split": "Up to 90%",
+      "profit_target": "$3K - $9K",
+      "platforms": "TopstepX, Rithmic, Tradovate",
+      "seo": {
+        "title": "Topstep Trade Copier for TradingView | PickMyTrade",
+        "description": "Copy and automate TradingView strategies to Topstep and TopstepX accounts with PickMyTrade. Cloud-based trade copier, multi-account support, no plugins. 7-day free trial.",
+        "keywords": "topstep trade copier, topstep copy trading, topstepx copy trading, topstepx trade copier, topstep automated trading, topstep trade copier setup, topstep trade copier rules, can you use tradingview with topstep, can i use topstep on tradingview, topstep tradovate, topstep rithmic, topstep api key, how to get topstep api key, topstep consistency rule, topstepx tradingview, topstepx automated trading"
+      }
+    },
+    {
+      "name": "Take Profit Trader",
+      "slug": "take-profit-trader",
+      "tagline": "Connect TradingView to Take Profit Trader accounts. Automate evaluation and funded account trading with advanced risk management.",
+      "active_traders": "540",
+      "account_sizes": "$25K - $200K",
+      "profit_split": "Up to 90%",
+      "profit_target": "6-10%",
+      "platforms": "Rithmic",
+      "seo": {
+        "title": "Take Profit Trader Integration | TradingView Automation",
+        "description": "Automate Take Profit Trader accounts with TradingView. Complete integration guide, risk management, multi-account support.",
+        "keywords": "take profit trader tradingview, automate take profit trader, tradingview to take profit trader, tpt automation"
+      }
+    },
+    {
+      "name": "FundedNext",
+      "slug": "fundednext",
+      "tagline": "PickMyTrade does not automate MT4 or MT5 accounts, so FundedNext is not currently supported. If FundedNext adds a platform PickMyTrade connects to (Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader or Ironbeam), automation becomes possible then.",
+      "active_traders": "420",
+      "account_sizes": "$6K - $300K",
+      "profit_split": "Up to 90%",
+      "profit_target": "8-15%",
+      "platforms": "MT4, MT5",
+      "seo": {
+        "title": "FundedNext + PickMyTrade: Not Currently Supported",
+        "description": "PickMyTrade does not automate MT4 or MT5 accounts, so FundedNext is not currently supported. See PickMyTrade's full list of supported prop firms and brokers instead.",
+        "keywords": "fundednext tradingview, automate fundednext, fundednext webhook, tradingview to fundednext, fundednext automation"
+      }
+    },
+    {
+      "name": "E8 Markets",
+      "slug": "e8-markets",
+      "tagline": "PickMyTrade does not automate MT4, MT5 or DXTrade accounts, so E8 Markets is not currently supported. If E8 Markets adds a platform PickMyTrade connects to (Tradovate, Rithmic, Interactive Brokers, TradeStation, TradeLocker, ProjectX, Match-Trader, Tradier, cTrader or Ironbeam), automation becomes possible then.",
+      "active_traders": "380",
+      "account_sizes": "$25K - $400K",
+      "profit_split": "Up to 80%",
+      "profit_target": "8-10%",
+      "platforms": "MT4, MT5, DXTrade",
+      "seo": {
+        "title": "E8 Markets + PickMyTrade: Not Currently Supported",
+        "description": "PickMyTrade does not automate MT4, MT5 or DXTrade accounts, so E8 Markets is not currently supported. See PickMyTrade's full list of supported prop firms and brokers instead.",
+        "keywords": "e8 markets tradingview, automate e8 markets, e8 webhook, tradingview to e8 markets, e8 automation"
+      }
+    },
+    {
+      "name": "Tradeify",
+      "slug": "tradeify",
+      "tagline": "Automate your TradingView alerts to Tradeify in milliseconds. No coding required. Webhook execution. Advanced risk management.",
+      "active_traders": "610",
+      "account_sizes": "$25K - $150K",
+      "profit_split": "Up to 90%",
+      "profit_target": "6-9%",
+      "platforms": "Tradovate, Rithmic",
+      "seo": {
+        "title": "Tradeify Integration | TradingView Automation",
+        "description": "Complete guide to integrating Tradeify with PickMyTrade. Setup in 5 minutes, manage multiple accounts, advanced risk management. Free trial.",
+        "keywords": "tradeify tradingview, automate tradeify, tradeify webhook automation, tradingview to tradeify, tradeify automation"
+      }
+    }
+  ]
+}

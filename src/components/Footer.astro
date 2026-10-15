@@ -1,0 +1,561 @@
+---
+import { localizedPath, useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/config';
+import { HELP_PAGES_ENABLED } from '../data/helpPages';
+import brokerList from '../../active-broker-list.json';
+import propfirmsData from '../../config/propfirms.json';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const year = new Date().getFullYear();
+
+const brokers = Object.entries(
+  brokerList as Record<string, { name: string; url: string; target?: string }>,
+).map(([key, val]) => ({
+  key,
+  name: val.name,
+  href: val.url.startsWith('http')
+    ? val.url
+    : localizedPath(locale, val.url.replace(/^\.\//, '')),
+  target: val.target ?? '_self',
+}));
+
+// Comparison pages are translated (de/es/fr/it), so links are locale-prefixed.
+// PineConnector's page lives on pickmytrade.trade.
+const comparisons = [
+  { competitor: '3Commas', href: localizedPath(locale, 'compare/pickmytrade-vs-3commas') },
+  { competitor: 'Cornix', href: localizedPath(locale, 'compare/pickmytrade-vs-cornix') },
+  { competitor: 'WunderTrading', href: localizedPath(locale, 'compare/pickmytrade-vs-wundertrading') },
+  { competitor: 'PineConnector', href: `https://pickmytrade.trade${localizedPath(locale, 'compare/pickmytrade-vs-pineconnector')}` },
+  { competitor: 'Autoview', href: localizedPath(locale, 'compare/pickmytrade-vs-autoview') },
+  { competitor: 'SignalStack', href: localizedPath(locale, 'compare/pickmytrade-vs-signalstack') },
+];
+
+const propfirms = (
+  (propfirmsData as any).propfirms as { slug: string; name: string }[]
+).slice(0, 7);
+---
+
+<footer class='bg-[#0a0a0f] border-t border-gray-800'>
+  <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
+    <!-- Top Section -->
+    <div
+      class='flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 pb-12 border-b border-gray-800'>
+      <div class='flex items-center gap-3'>
+        <a
+          href={localizedPath(locale)}
+          class='flex items-center gap-2'>
+          <img
+              width="32"
+              height="32"
+            src='/logo.png'
+            alt='PickMyTrade'
+            class='w-8 h-8 aspect-square object-contain'
+          />
+          <span class='text-xl font-bold text-white'>PickMyTrade</span>
+        </a>
+        <span class='hidden sm:inline-block text-gray-500 mx-3'>|</span>
+        <p class='hidden sm:block text-gray-400 text-sm'>
+          {t('footer.tagline_short')}
+        </p>
+      </div>
+      <div class='flex items-center gap-4'>
+        <a
+          href='https://discord.gg/FkJ7g7498S'
+          target='_blank'
+          rel='noopener noreferrer'
+          aria-label='PickMyTrade on Discord'
+          class='w-10 h-10 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition'>
+          <i class='fab fa-discord text-lg' aria-hidden='true'></i>
+        </a>
+        <a
+          href='https://twitter.com/pickmytrade'
+          target='_blank'
+          rel='noopener noreferrer'
+          aria-label='PickMyTrade on Twitter/X'
+          class='w-10 h-10 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition'>
+          <i class='fab fa-x-twitter text-lg' aria-hidden='true'></i>
+        </a>
+        <a
+          href='https://app.pickmytrade.io/register'
+          class='ml-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition'>
+          {t('footer.start_free_trial')}
+        </a>
+      </div>
+    </div>
+
+    <!-- Links Grid -->
+    <div class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-8 pt-12'>
+      <!-- Brokers -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          {t('footer.brokers_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          {
+            brokers.map((b) => (
+              <li>
+                <a
+                  href={b.href}
+                  target={b.target}
+                  rel={
+                    b.target === '_blank' ? 'noopener noreferrer' : undefined
+                  }
+                  class='text-gray-400 hover:text-white transition'>
+                  {b.name}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a
+              href={localizedPath(locale, 'upcoming/tradingview-to-tastytrade')}
+              class='text-gray-400 hover:text-white transition'
+              >Tastytrade</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Upcoming -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          Upcoming
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          <li>
+            <a
+              href={localizedPath(locale, 'upcoming/brokers')}
+              class='text-gray-400 hover:text-white transition'
+              >Upcoming Brokers</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'upcoming/tradingview-to-tastytrade')}
+              class='text-gray-400 hover:text-white transition'
+              >TradingView to Tastytrade</a>
+          </li>
+        </ul>
+
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mt-8 mb-4'>
+          {t('footer.tools_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          <li>
+            <a
+              href={localizedPath(locale, 'tools/tp-sl-probability-calculator')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_tp_sl_calculator')}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Prop Firms -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          {t('footer.propfirms_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          {
+            propfirms.map((f) => (
+              <li>
+                <a
+                  href={localizedPath(locale, `propfirms/${f.slug}`)}
+                  class='text-gray-400 hover:text-white transition'>
+                  {f.name}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a
+              href={localizedPath(locale, 'supported-propfirms')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.all_propfirms')}</a>
+          </li>
+          <!-- Index pages for the /automation, /copier and /broker families.
+               Nothing in the global nav or footer previously linked to any
+               individual page in those families. -->
+          <li>
+            <a
+              href={localizedPath(locale, 'automation')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('hub.automation_h1')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'copier')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('hub.copier_h1')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'broker')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('hub.broker_h1')}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Use Cases -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          {t('footer.usecases_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          <li>
+            <a
+              href={localizedPath(locale, 'use-cases/prop-firm-traders')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.usecase_prop_firm')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'use-cases/systematic-traders')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.usecase_systematic')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'use-cases/strategy-developers')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.usecase_strategy')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'use-cases/day-traders')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.usecase_day')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'use-cases/swing-traders')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.usecase_swing')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'tradingview-automation')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.usecase_multi_account')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'trendspider')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_trendspider')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'tradingview-automation')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.usecase_tv_automation')}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          {t('footer.resources_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          <li>
+            <a
+              href={localizedPath(locale, 'trade-copier')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_trade_copier')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'pricing')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_pricing')}</a>
+          </li>
+          <li>
+            <a
+              href='https://docs.pickmytrade.io/docs/'
+              target='_blank'
+              rel='noopener noreferrer'
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_docs')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'help/tws')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_tws_help')}</a>
+          </li>
+          {HELP_PAGES_ENABLED && (
+            <li>
+              <a
+                href={localizedPath(locale, 'help/rithmic')}
+                class='text-gray-400 hover:text-white transition'
+                >{t('footer.link_rithmic_help')}</a>
+            </li>
+          )}
+          <li>
+            <a
+              href={localizedPath(locale, 'ai-ml/trading-plan')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_ai_trading_plan')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'ai-ml/advanced-guide')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_ai_advanced_guide')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'page/affiliate-program')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_affiliate')}</a>
+          </li>
+          <li>
+            <a
+              href='https://blog.pickmytrade.io'
+              target='_blank'
+              rel='noopener noreferrer'
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_blog')}</a>
+          </li>
+          <li>
+            <a
+              href='https://discord.gg/FkJ7g7498S'
+              target='_blank'
+              rel='noopener noreferrer'
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_pmt_community')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'webhook-to-broker')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_webhook_broker')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'general-faq')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_general_faq')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'broker-faq')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_broker_faq')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'prop-firm-faq')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_propfirm_faq')}</a>
+          </li>
+          <li>
+            <a
+              href='https://docs.pickmytrade.io/docs/#faq'
+              target='_blank'
+              rel='noopener noreferrer'
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_pmt_faq')}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Compare -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          {t('footer.compare_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          <li>
+            <a
+              href={localizedPath(locale, 'compare')}
+              class='text-gray-400 hover:text-white transition font-medium'
+              >{t('nav.see_all_comparisons')}</a>
+          </li>
+          {
+            comparisons.map((c) => (
+              <li>
+                <a
+                  href={c.href}
+                  class='text-gray-400 hover:text-white transition'>
+                  {t('footer.vs_competitor', { competitor: c.competitor })}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          {t('footer.company_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          <li>
+            <a
+              href={localizedPath(locale, 'about')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_about')}</a>
+          </li>
+          <li>
+            <a
+              href='https://pickmytrade.com/'
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_company_home')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'page/contact')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_contact')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'page/affiliate-program')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_affiliate')}</a>
+          </li>
+          <li>
+            <a
+              href='https://discord.gg/FkJ7g7498S'
+              target='_blank'
+              rel='noopener noreferrer'
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_discord')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'quantvps')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_quantvps')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'tradoxvps')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_tradoxvps')}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h3
+          class='text-white font-semibold text-sm uppercase tracking-wider mb-4'>
+          {t('footer.legal_heading')}
+        </h3>
+        <ul class='space-y-3 text-sm'>
+          <li>
+            <a
+              href={localizedPath(locale, 'legal/disclaimer')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_disclosure')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'legal/privacy')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_privacy')}</a>
+          </li>
+          <li>
+            <a
+              href={localizedPath(locale, 'legal/terms')}
+              class='text-gray-400 hover:text-white transition'
+              >{t('footer.link_terms')}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disclaimer Section -->
+  <div class='bg-gradient-to-r from-blue-600 to-blue-700'>
+    <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+      <div class='text-xs text-white/80 space-y-3 leading-relaxed'>
+        <p>
+          <strong>{t('footer.risk_warning_title')}</strong>
+          {t('footer.risk_disclosure_body')}
+          <strong>{t('footer.risk_disclosure_emphasis')}</strong>
+        </p>
+        <p>
+          <strong>{t('footer.testimonial_title')}</strong>
+          {t('footer.testimonial_body')}
+        </p>
+        <p>
+          <strong>{t('footer.third_party_title')}</strong>
+          {t('footer.third_party_body')}
+        </p>
+        <p>
+          <strong>{t('footer.general_disclaimer_title')}</strong>
+          {t('footer.general_disclaimer_body')}
+        </p>
+      </div>
+
+      <!-- Cross-domain routing block -->
+      <p class='mt-4 text-center text-xs text-white/90'>
+        {t('footer.routing_tradovate_q')}
+        <a href='https://pickmytrade.trade/' class='underline hover:text-white'>pickmytrade.trade</a>.
+        {t('footer.routing_other_broker_q')}
+        <a href='https://pickmytrade.io/' class='underline hover:text-white'>pickmytrade.io</a>.
+        {t('footer.routing_company_q')}
+        <a href='https://pickmytrade.com/' class='underline hover:text-white'>pickmytrade.com</a>.
+      </p>
+
+      <!-- NAP / Entity info -->
+      <div
+        class='mt-6 pt-6 border-t border-white/20 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/80'>
+        <span
+          itemscope
+          itemtype='https://schema.org/Organization'>
+          <strong itemprop='name'>PickMyTrade Pvt. Ltd.</strong>
+        </span>
+        <span class='flex items-center gap-2'>
+          <i class='fas fa-envelope text-white/60'></i>
+          <a
+            href='mailto:support@pickmytrade.com'
+            class='text-white/90 hover:text-white'
+            >support@pickmytrade.com</a
+          >
+        </span>
+        <span class='flex items-center gap-2'>
+          <i class='fas fa-globe text-white/60'></i>
+          pickmytrade.io
+        </span>
+      </div>
+
+      <div
+        class='mt-4 pt-4 border-t border-white/20 flex flex-col sm:flex-row justify-between items-center gap-4'>
+        <p class='text-sm text-white'>
+          © {year} PickMyTrade Pvt. Ltd. {t('footer.rights')}
+          <span class='block sm:inline text-white/60'>{t('footer.official_domains')}</span>
+        </p>
+        <div class='flex items-center gap-6 text-sm text-white/80'>
+          <span class='flex items-center gap-2'>
+            <i class='fas fa-users text-white/60'></i>
+            {t('footer.trusted_by')}
+          </span>
+          <span class='flex items-center gap-2'>
+            <i class='fas fa-chart-line text-white/60'></i>
+            {t('footer.brokers_count')}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

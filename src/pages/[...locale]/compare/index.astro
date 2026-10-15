@@ -1,0 +1,258 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import "../../../styles/compare-editorial.css";
+import CompareSpy from "../../../components/CompareSpy.astro";
+import { getLocalePaths } from "../../../i18n/utils";
+import type { Locale } from "../../../i18n/config";
+import Localize from "../../../components/Localize.astro";
+import { makeTr, localizeLd } from "../../../i18n/compare-i18n.mjs";
+
+// Compare pages are translated (de/es/fr/it): text is swapped in by <Localize> from src/i18n/compare/<locale>.json.
+export const getStaticPaths = getLocalePaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const tr = makeTr(locale);
+const title = tr("Compare PickMyTrade: Crypto, MetaTrader and Per-Signal Tools");
+const description = tr("PickMyTrade is $50 a month, one plan, with no crypto and no MetaTrader. Compare it with 3Commas, Cornix, WunderTrading, PineConnector, Autoview, SignalStack.");
+const lastUpdated = "2026-09-23";
+
+const faqsEn = [
+  {
+    "question": "Who writes these comparisons?",
+    "answer": "PickMyTrade does. They are vendor-authored and we say so on every page. What makes them checkable is that each competitor fact is taken from that competitor's own pricing page, documentation or help centre, and carries the date we read it. Everything on this page was checked 22 September 2026."
+  },
+  {
+    "question": "Why are some comparisons on pickmytrade.trade instead?",
+    "answer": "Each competitor is covered once, on one domain, so the two sites never publish conflicting facts about the same tool. This domain owns the tools built around a market or a billing model we do not serve. Tradovate, prop-firm futures and TradingView-to-Tradovate comparisons live on pickmytrade.trade."
+  },
+  {
+    "question": "How much does PickMyTrade cost?",
+    "answer": "$50 per month or $500 per year. There is one plan and every feature is in it, with no per-trade fees and no higher tier. The trial is 7 days of full access with no credit card."
+  },
+  {
+    "question": "How many accounts does one subscription cover?",
+    "answer": "One subscription covers unlimited accounts under one broker login. Five Apex accounts under a single Tradovate login all automate on one $50 subscription. If your accounts sit under separate broker logins, each login needs its own subscription."
+  },
+  {
+    "question": "Can I set multiple take-profit and stop-loss levels?",
+    "answer": "Yes. PickMyTrade sets stop loss and take profit five different ways per alert, with bracket and OCO orders, trailing stops, breakeven with an offset, partial closes, and the ability to change SL/TP on a trade that is already open."
+  },
+  {
+    "question": "Can I set a daily loss limit or restrict trading hours?",
+    "answer": "Yes. Every connected account can carry its own daily and weekly profit and loss limits, plus trading-time windows that restrict when automation is allowed to place a trade, with a one-click switch to pause it."
+  },
+  {
+    "question": "Can one alert reach multiple accounts?",
+    "answer": "Yes. A single alert can be sent to every connected account at its own size, and the Tradovate copier mirrors an admin account to followers with a multiplier set per follower."
+  }
+];
+const faqs = faqsEn.map((f) => ({ question: tr(f.question), answer: tr(f.answer) }));
+
+const ld = [
+  { "@context": "https://schema.org", ...{
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "PickMyTrade",
+      "item": "https://pickmytrade.io/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://pickmytrade.io/compare/"
+    }
+  ]
+} },
+  { "@context": "https://schema.org", ...{
+  "@type": "WebPage",
+  "@id": "https://pickmytrade.io/compare/#webpage",
+  "url": "https://pickmytrade.io/compare/",
+  "name": "PickMyTrade compared with crypto bots, MetaTrader bridges and per-signal tools",
+  "datePublished": "2026-09-23",
+  "dateModified": "2026-09-23",
+  "publisher": {
+    "@id": "https://pickmytrade.io/#organization"
+  }
+} },
+  { "@context": "https://schema.org", ...{
+  "@type": "ItemList",
+  "@id": "https://pickmytrade.io/compare/#comparisons",
+  "name": "PickMyTrade comparisons on pickmytrade.io",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "PickMyTrade vs 3Commas",
+      "url": "https://pickmytrade.io/compare/pickmytrade-vs-3commas/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "PickMyTrade vs Cornix",
+      "url": "https://pickmytrade.io/compare/pickmytrade-vs-cornix/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "PickMyTrade vs WunderTrading",
+      "url": "https://pickmytrade.io/compare/pickmytrade-vs-wundertrading/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "PickMyTrade vs Autoview",
+      "url": "https://pickmytrade.io/compare/pickmytrade-vs-autoview/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "name": "PickMyTrade vs SignalStack",
+      "url": "https://pickmytrade.io/compare/pickmytrade-vs-signalstack/"
+    }
+  ]
+} },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "https://pickmytrade.io/compare/#faq",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  },
+];
+const ldLocalized = localizeLd(ld, locale, tr);
+---
+<BaseLayout locale={locale} title={title} description={description} structuredData={ldLocalized}>
+<Localize locale={locale}>
+<div class="ed">
+<header class="hero">
+<div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Compare</span></nav>
+<div class="hero-grid">
+<div class="hero-copy">
+<p class="eyebrow">Comparison guide · 2026</p>
+
+<h1>PickMyTrade compared with crypto bots, MetaTrader bridges and per-signal tools</h1>
+<p class="lede">{description}</p>
+<p class="meta"><span>Last reviewed: <time datetime={lastUpdated}>September 23, 2026</time></span></p>
+<div class="actions"><a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start free trial</a></div>
+</div>
+<div class="hero-visual"><aside class="dir dir-two" aria-label="In this directory"><p class="dir-k">In this directory</p><ul><li><a href="/compare/pickmytrade-vs-3commas/">3Commas</a></li><li><a href="/compare/pickmytrade-vs-cornix/">Cornix</a></li><li><a href="/compare/pickmytrade-vs-wundertrading/">WunderTrading</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-pineconnector/">PineConnector</a></li><li><a href="/compare/pickmytrade-vs-autoview/">Autoview</a></li><li><a href="/compare/pickmytrade-vs-signalstack/">SignalStack</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-crosstrade/">CrossTrade</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/">TradersPost</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-tradesyncer/">TradeSyncer</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-tradecopia/">Tradecopia</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-replikanto/">Replikanto</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-copygram/">Copygram</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-lune/">Lune</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-quantcrawler/">QuantCrawler Ghost</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-signal-trade-app/">Signal Trade App</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-roboquant/">RoboQuant Connect</a></li><li><a href="https://pickmytrade.trade/compare/pickmytrade-vs-alertdragon/">AlertDragon</a></li></ul></aside></div>
+</div>
+<ul class="standards in-hero">
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>50,000+ traders served</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>7-day free trial, no credit card</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Runs in the cloud — your computer can be off</span></li>
+<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Tradovate connects by OAuth, with no API fee</span></li>
+</ul>
+</div>
+</header>
+
+<nav class="secnav" aria-label="On this page">
+<div class="wrap secnav-inner">
+<ul>
+<li><a href="#comparing-pickmytrade-with-these-six-tools" data-target="comparing-pickmytrade-with-these-six-tools">The comparisons</a></li>
+<li><a href="#comparisons-that-live-on-pickmytrade-trade" data-target="comparisons-that-live-on-pickmytrade-trade">Elsewhere</a></li>
+<li><a href="#frequently-asked-questions" data-target="frequently-asked-questions">FAQ</a></li>
+</ul>
+<a class="btn btn-primary btn-sm" href="https://app.pickmytrade.trade/?register=true">Start free trial</a>
+</div>
+</nav>
+
+<section id="comparing-pickmytrade-with-these-six-tools" class="sec">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">The comparisons</p>
+<h2>Comparing PickMyTrade with these six tools</h2>
+</div>
+<div class="link-cards two">
+<article class="link-card"><h3><a href="/compare/pickmytrade-vs-3commas/">PickMyTrade vs 3Commas</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="/compare/pickmytrade-vs-cornix/">PickMyTrade vs Cornix</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="/compare/pickmytrade-vs-wundertrading/">PickMyTrade vs WunderTrading</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-pineconnector/">PickMyTrade vs PineConnector (on pickmytrade.trade)</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="/compare/pickmytrade-vs-autoview/">PickMyTrade vs Autoview</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="/compare/pickmytrade-vs-signalstack/">PickMyTrade vs SignalStack</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+</div>
+<p class="src-p">Comparisons owned by pickmytrade.io. Competitor prices are as published by each company and were checked 22 September 2026.</p>
+        <p class="prose">One more page sits in this directory but is not a head-to-head: <a href="/compare/best-trade-copier/">Best trade copier for prop firms and futures</a> is a category guide for readers who have not shortlisted anything yet.</p>
+</div>
+</section>
+
+<section id="comparisons-that-live-on-pickmytrade-trade" class="sec band">
+<div class="wrap">
+<div class="head">
+<p class="eyebrow">Elsewhere</p>
+<h2>Comparisons that live on pickmytrade.trade</h2>
+</div>
+<div class="measure">
+<p class="prose">PickMyTrade runs two sites, and each competitor is covered once, on one of them, so the two never publish different facts about the same tool. This domain takes the tools built around a market or a billing model we do not serve. <a href="https://pickmytrade.trade/compare/">pickmytrade.trade/compare/</a> takes the Tradovate, prop-firm futures and TradingView-alert-to-Tradovate side, where most of the direct overlap sits.</p>
+        <p class="prose">Go there for PineConnector, CrossTrade, TradersPost, Replikanto, Tradecopia, TradeSyncer, Copygram, AlertDragon, RoboQuant, Lune, QuantCrawler and Signal Trade App. Those pages carry the NinjaTrader, copier-licence, per-account cost and prop-firm arguments in full. If you are not sure which side your question belongs on, start with <a href="https://pickmytrade.trade/compare/pickmytrade-alternatives/">PickMyTrade alternatives</a>, which maps every tool by the job it does.</p>
+</div>
+<div class="link-cards">
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-crosstrade/">PickMyTrade vs CrossTrade</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/">PickMyTrade vs TradersPost</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-tradesyncer/">PickMyTrade vs TradeSyncer</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-tradecopia/">PickMyTrade vs Tradecopia</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-replikanto/">PickMyTrade vs Replikanto</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-copygram/">PickMyTrade vs Copygram</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-lune/">PickMyTrade vs Lune</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-quantcrawler/">PickMyTrade vs QuantCrawler Ghost</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-signal-trade-app/">PickMyTrade vs Signal Trade App</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-roboquant/">PickMyTrade vs RoboQuant Connect</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+<article class="link-card"><h3><a href="https://pickmytrade.trade/compare/pickmytrade-vs-alertdragon/">PickMyTrade vs AlertDragon</a></h3><span class="go">Read the comparison <span aria-hidden="true">→</span></span></article>
+</div>
+</div>
+</section>
+
+<section id="frequently-asked-questions" class="sec">
+<div class="wrap">
+<div class="faq-wrap">
+<p class="eyebrow">FAQ</p>
+<h2>Frequently asked questions</h2>
+<div class="faq">
+{faqs.map((f) => (
+<details>
+<summary><span>{f.question}</span><i aria-hidden="true"></i></summary>
+<div class="ans"><p>{f.answer}</p></div>
+</details>
+))}
+</div>
+</div>
+</div>
+</section>
+
+<section id="sources" class="sec sec-quiet" aria-label="Sources and disclosure">
+<div class="wrap">
+<div class="measure">
+<p class="eyebrow">Sources</p>
+<h2 class="h-sm">Sources and disclosure</h2>
+<p class="src-p">Prepared by PickMyTrade. Competitor details come from each company's own pages, all checked 22 September 2026: <a href="https://3commas.io/pricing" target="_blank" rel="noopener noreferrer">3Commas pricing</a>, <a href="https://cornix.io/" target="_blank" rel="noopener noreferrer">Cornix pricing</a>, <a href="https://wundertrading.com/en/pricing" target="_blank" rel="noopener noreferrer">WunderTrading pricing</a>, <a href="https://www.pineconnector.com/" target="_blank" rel="noopener noreferrer">PineConnector plans</a>, <a href="https://autoview.com/pricing/" target="_blank" rel="noopener noreferrer">Autoview pricing</a>, <a href="https://signalstack.com/pricing/" target="_blank" rel="noopener noreferrer">SignalStack pricing</a> and <a href="https://signalstack.com/brokers/" target="_blank" rel="noopener noreferrer">SignalStack brokers</a>. Prices and features change; check both sites before you buy.</p>
+<p class="src-p risk"><strong>Risk disclosure.</strong> Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. The content on this page is for educational and informational purposes only and does not constitute financial, investment, or trading advice. Only trade with capital you can afford to lose.</p>
+</div>
+</div>
+</section>
+
+<section class="cta-sec">
+<div class="wrap">
+<div class="cta">
+<div>
+<h2 class="h-sm">Ready to get started?</h2>
+<p>Connect your broker and run your own alert on a 7-day free trial. No credit card.</p>
+</div>
+<div class="cta-actions">
+<a class="btn btn-primary" href="https://app.pickmytrade.trade/?register=true">Start your 7-day free trial <span aria-hidden="true">→</span></a>
+<a class="btn btn-quiet" href="/pricing/">See pricing <span aria-hidden="true">→</span></a>
+</div>
+</div>
+</div>
+</section>
+</div>
+</Localize>
+
+<CompareSpy />
+</BaseLayout>

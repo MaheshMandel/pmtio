@@ -1,0 +1,179 @@
+---
+// Reading-engagement motion for long-form article pages:
+//  - a scroll reading-progress bar (top of viewport)
+//  - scrollspy that highlights the active link in the on-page
+//    "Table of contents" nav as the reader moves through sections
+//  - a back-to-top button that fades in after scrolling
+//  - flowing dashes along any SVG line marked .flow-line
+// Self-contained and scoped to pages that render this component.
+// Respects prefers-reduced-motion.
+---
+
+<div id="reading-progress" aria-hidden="true"><span></span></div>
+
+<button id="back-to-top" type="button" aria-label="Back to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<style is:global>
+  /* Reading progress bar */
+  #reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 70;
+    pointer-events: none;
+    background: transparent;
+  }
+  #reading-progress > span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2b77ee, #6ea8fe, #a855f7);
+    box-shadow: 0 0 12px rgba(43, 119, 238, 0.75);
+    transition: width 0.12s linear;
+  }
+
+  /* Back-to-top button */
+  #back-to-top {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 70;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: #0f3ec3;
+    border: 1px solid rgba(110, 168, 254, 0.4);
+    box-shadow: 0 8px 24px rgba(15, 62, 195, 0.5);
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  #back-to-top.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  #back-to-top:hover {
+    transform: translateY(-3px) scale(1.06);
+    box-shadow: 0 0 22px 4px rgba(51, 102, 255, 0.6);
+  }
+
+  /* Scrollspy — active table-of-contents link (works for both pages' chip links) */
+  nav[aria-label="Table of contents"] a.spy-active,
+  nav[aria-label="Table of contents"] li.spy-active > a {
+    border-color: rgba(43, 119, 238, 0.85) !important;
+    background: rgba(43, 119, 238, 0.16) !important;
+    box-shadow: 0 0 0 1px rgba(43, 119, 238, 0.5),
+      0 8px 20px rgba(43, 119, 238, 0.2);
+  }
+  nav[aria-label="Table of contents"] a.spy-active,
+  nav[aria-label="Table of contents"] a.spy-active span,
+  nav[aria-label="Table of contents"] li.spy-active > a {
+    color: #6ea8fe !important;
+  }
+  nav[aria-label="Table of contents"] a {
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease,
+      box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  /* Flowing dashes along pipeline/diagram arrows */
+  .flow-line {
+    stroke-dasharray: 7 7;
+    animation: flow-dash 0.9s linear infinite;
+  }
+  @keyframes flow-dash {
+    to {
+      stroke-dashoffset: -14;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #reading-progress > span,
+    nav[aria-label="Table of contents"] a {
+      transition: none;
+    }
+    .flow-line {
+      animation: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var bar = document.querySelector("#reading-progress > span");
+    var btt = document.getElementById("back-to-top");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    var toc = document.querySelector('nav[aria-label="Table of contents"]');
+    var links = [];
+    var map = {};
+    var sections = [];
+    if (toc) {
+      links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
+      links.forEach(function (a) {
+        var id = decodeURIComponent((a.getAttribute("href") || "").slice(1));
+        if (id && document.getElementById(id)) {
+          map[id] = a;
+          sections.push(document.getElementById(id));
+        }
+      });
+    }
+
+    function setActive(id) {
+      links.forEach(function (l) {
+        l.classList.remove("spy-active");
+        var li = l.closest("li");
+        if (li) li.classList.remove("spy-active");
+      });
+      var a = map[id];
+      if (a) {
+        a.classList.add("spy-active");
+        var li = a.closest("li");
+        if (li) li.classList.add("spy-active");
+      }
+    }
+
+    function update() {
+      var doc = document.documentElement;
+      var scrollable = doc.scrollHeight - doc.clientHeight;
+      var top = window.pageYOffset || doc.scrollTop;
+      var pct = scrollable > 0 ? (top / scrollable) * 100 : 0;
+      if (bar) bar.style.width = pct.toFixed(1) + "%";
+
+      if (btt) {
+        if (top > 600) btt.classList.add("show");
+        else btt.classList.remove("show");
+      }
+
+      if (sections.length) {
+        var current = sections[0].id;
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= 160) {
+            current = sections[i].id;
+          }
+        }
+        setActive(current);
+      }
+    }
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+
+    if (btt) {
+      btt.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+      });
+    }
+
+    update();
+  })();
+</script>

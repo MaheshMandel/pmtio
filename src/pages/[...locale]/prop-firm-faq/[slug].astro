@@ -1,0 +1,1264 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FirmFacts from '../../../components/FirmFacts.astro';
+import { getLocalePaths, localizedPath, absoluteLocalizedPath, useTranslations } from '../../../i18n/utils';
+import propfirmsData from '../../../../config/propfirms.json';
+import { FIRM_FAQ_EXTRAS } from '../../../data/firmFaqExtras';
+import { firmHasSupportedPlatform, toOrList, hasAutomationCaveat } from '../../../lib/firmSupport';
+
+// ──────────────────────────────────────────────────────────────
+// Extended firm catalogue (firms not in propfirms.json)
+// slug here is the ROUTE slug — no "-faq" suffix
+// ──────────────────────────────────────────────────────────────
+const extendedFirms = [
+  { slug: 'topstep',                name: 'Topstep',                description: 'The Trading Combine, TopstepX platform migration, Maximum Loss Limit, Consistency Rule, ProjectX Gateway API, and funded futures accounts.' },
+  { slug: 'fundednext',             name: 'FundedNext',             description: 'Stellar 2-Step / 1-Step / Lite / Express models, on-evaluation profit share, Bolt / Rapid / Legacy futures, drawdown and consistency rules.' },
+  { slug: 'myfundedfx',             name: 'MyFundedFX',             description: 'Lightning / Standard / Express evaluations, drawdown rules, payouts, the Seacrest Markets restructuring, and how MFX differs from MyFundedFutures.' },
+  { slug: 'ftmo',                   name: 'FTMO',                   description: 'The two-step Challenge and Verification, daily and maximum loss limits, scaling plan, OANDA US access for American traders, automation rules.' },
+  { slug: 'fundingpips',            name: 'FundingPips',            description: '1-Step, 2-Step Standard, 2-Step Pro, and Zero evaluations, the instant-funding pathway, hybrid drawdown, and Rise withdrawal cycles.' },
+  { slug: 'the5ers',                name: 'The5%ers',               description: "Bootcamp, High-Stakes Challenge, Hyper Growth, and ProGrowth programs — the firm's signature low-leverage funded forex approach." },
+  { slug: 'e8-markets',             name: 'E8 Markets',             description: 'E8 One / Signature / Classic / Track evaluations, the ELEV8R scaling program, profit splits, payouts — for forex and futures.' },
+  { slug: 'alpha-capital-group',    name: 'Alpha Capital Group',    description: 'Six UK forex challenges (Alpha One / Pro 6-8-10% / Swing / Three), 80% split, $2M scaling cap, MT5/cTrader/DXTrade/TradeLocker platforms.' },
+  { slug: 'aqua-funded',            name: 'AquaFunded',             description: 'Multi-asset prop firm: evaluation tracks, drawdown structure, payout cadence, and how to automate AquaFunded with PickMyTrade.' },
+  { slug: 'audacity-capital',       name: 'Audacity Capital',       description: 'UK-based prop firm: account tiers, profit targets, drawdown rules, payout schedule, KYC, and supported trading platforms.' },
+  { slug: 'blueguardian',           name: 'BlueGuardian',           description: 'BlueGuardian challenges, drawdown rules, profit splits, payouts, restricted strategies, and automation guidance via PickMyTrade.' },
+  { slug: 'blufx',                  name: 'BluFX',                  description: 'Subscription-based forex prop model: live and demo plans, monthly fees, profit splits, withdrawal cycles, and supported platforms.' },
+  { slug: 'brightfunded',           name: 'BrightFunded',           description: 'BrightFunded 2-step evaluations, drawdown rules, profit splits, payouts, copy-trade / EA policy, and PickMyTrade automation.' },
+  { slug: 'city-traders-imperium',  name: 'City Traders Imperium',  description: 'CTI direct-funded and 2-step programs, scaling plan, monthly payout schedule, swing rules, and platform options.' },
+  { slug: 'for-traders',            name: 'For Traders',            description: 'For Traders evaluation tracks, drawdown rules, profit splits, payouts, restricted countries, and PickMyTrade integration.' },
+  { slug: 'funded-trading-plus',    name: 'Funded Trading Plus',    description: 'FTP challenges and instant-funded accounts, scaling, profit splits, payouts, news/HFT/EA rules, and platform availability.' },
+  { slug: 'funder-pro',             name: 'FunderPro',              description: "FunderPro's 1-step, 2-step, and Direct Funded plans, drawdown rules, splits, payouts, and supported platforms / automation." },
+  { slug: 'fxify',                  name: 'FXIFY',                  description: 'FXIFY 1-step / 2-step / 3-step funded plans, profit targets, drawdown limits, profit splits, payout cycles, and add-ons.' },
+  { slug: 'lucid-trading',          name: 'Lucid Trading',          description: 'Lucid Trading hedging, copier and bot rules, news trading, payouts, consistency, drawdown, live-account transition and account limits.', platforms: 'Tradovate, Rithmic' },
+  { slug: 'rebelsfunding',          name: 'RebelsFunding',          description: 'RebelsFunding rules on EAs and bots, copiers, martingale, the 1.5% risk rule, minimum hold time, news trading, drawdown, payouts and KYC.', platforms: 'RF-Trader' },
+  { slug: 'goat-funded-trader',     name: 'Goat Funded Trader',     description: 'GFT evaluation plans, profit targets, drawdown structure, payout cadence, EA rules, and platform support.' },
+  { slug: 'lark-funding',           name: 'Lark Funding',           description: "Lark Funding's futures evaluations, trailing drawdown, profit targets, payout structure, and supported futures platforms." },
+  { slug: 'leeloo-trading',         name: 'Leeloo Trading',         description: 'Leeloo (now part of Take Profit Trader) futures evaluations, trailing drawdown, contract scaling, and platform options.' },
+  { slug: 'lux-trading-firm',       name: 'Lux Trading Firm',       description: 'UK firm: 1-Stage Evaluation ($100K / $400K / $1M) + $400K Instant Funding, 80% split, 100% fee refund, 2x scaling to $10M, MatchTrader automation.' },
+  { slug: 'maven-trading',          name: 'Maven Trading',          description: 'Maven Trading evaluations, profit targets, drawdown rules, profit splits, payout schedule, and supported platforms.' },
+  { slug: 'oneup-trader',           name: 'OneUp Trader',           description: 'OneUp Trader monthly futures evaluations, trailing drawdown, profit targets, performance payouts, and platform support.' },
+  { slug: 'smart-prop-trader',      name: 'Smart Prop Trader',      description: 'Smart Prop Trader evaluations, drawdown rules, profit splits, payout cycles, restricted strategies, and PickMyTrade automation.' },
+  { slug: 'the-funded-trader',      name: 'The Funded Trader',      description: 'TFT Standard / Rapid / Royal / Knight evaluations, drawdown rules, scaling, payouts, and supported trading platforms.' },
+  { slug: 'the-trading-pit',        name: 'The Trading Pit',        description: 'Liechtenstein-based prop firm (Pinorena Capital): CFD Standard/Pro/Aggressive + Futures Prime $50K/$100K/$150K plans, 80% splits.' },
+];
+
+// Build a normalised lookup: slug → { name, description, seo? }
+// Prefer propfirms.json when the slug matches
+type JsonFirm = typeof propfirmsData.propfirms[0];
+type ExtFirm  = typeof extendedFirms[0];
+type FirmEntry = {
+  slug: string;
+  name: string;
+  description: string;
+  seo?: JsonFirm['seo'];
+  account_sizes?: string;
+  profit_split?: string;
+  profit_target?: string;
+  platforms?: string;
+  active_traders?: string;
+};
+
+const jsonFirmMap = new Map<string, JsonFirm>(
+  propfirmsData.propfirms.map((f: JsonFirm) => [f.slug, f])
+);
+
+// Full catalogue: json firms first, then extended (deduplicated by slug)
+const allFirms: FirmEntry[] = [
+  ...propfirmsData.propfirms.map((f: JsonFirm): FirmEntry => ({
+    slug: f.slug,
+    name: f.name,
+    description: f.seo.description,
+    seo: f.seo,
+    account_sizes: f.account_sizes,
+    profit_split: f.profit_split,
+    profit_target: f.profit_target,
+    platforms: f.platforms,
+    active_traders: f.active_traders,
+  })),
+  ...extendedFirms
+    .filter((e: ExtFirm) => !jsonFirmMap.has(e.slug))
+    .map((e: ExtFirm): FirmEntry => ({
+      slug: e.slug,
+      name: e.name,
+      description: e.description,
+      platforms: (e as { platforms?: string }).platforms,
+    })),
+];
+
+export function getStaticPaths() {
+  // Rebuild inside getStaticPaths (Astro requirement — no module-scope refs)
+  type JsonFirmInner = { slug: string; name: string; seo: { title: string; description: string; keywords: string }; account_sizes: string; profit_split: string; profit_target: string; platforms: string; active_traders?: string };
+  const extFirmsInner = [
+    { slug: 'topstep',                name: 'Topstep' },
+    { slug: 'fundednext',             name: 'FundedNext' },
+    { slug: 'myfundedfx',             name: 'MyFundedFX' },
+    { slug: 'ftmo',                   name: 'FTMO' },
+    { slug: 'fundingpips',            name: 'FundingPips' },
+    { slug: 'the5ers',                name: 'The5%ers' },
+    { slug: 'e8-markets',             name: 'E8 Markets' },
+    { slug: 'alpha-capital-group',    name: 'Alpha Capital Group' },
+    { slug: 'aqua-funded',            name: 'AquaFunded' },
+    { slug: 'audacity-capital',       name: 'Audacity Capital' },
+    { slug: 'blueguardian',           name: 'BlueGuardian' },
+    { slug: 'blufx',                  name: 'BluFX' },
+    { slug: 'brightfunded',           name: 'BrightFunded' },
+    { slug: 'city-traders-imperium',  name: 'City Traders Imperium' },
+    { slug: 'for-traders',            name: 'For Traders' },
+    { slug: 'funded-trading-plus',    name: 'Funded Trading Plus' },
+    { slug: 'funder-pro',             name: 'FunderPro' },
+    { slug: 'fxify',                  name: 'FXIFY' },
+    { slug: 'lucid-trading',          name: 'Lucid Trading' },
+    { slug: 'rebelsfunding',          name: 'RebelsFunding' },
+    { slug: 'goat-funded-trader',     name: 'Goat Funded Trader' },
+    { slug: 'lark-funding',           name: 'Lark Funding' },
+    { slug: 'leeloo-trading',         name: 'Leeloo Trading' },
+    { slug: 'lux-trading-firm',       name: 'Lux Trading Firm' },
+    { slug: 'maven-trading',          name: 'Maven Trading' },
+    { slug: 'oneup-trader',           name: 'OneUp Trader' },
+    { slug: 'smart-prop-trader',      name: 'Smart Prop Trader' },
+    { slug: 'the-funded-trader',      name: 'The Funded Trader' },
+    { slug: 'the-trading-pit',        name: 'The Trading Pit' },
+  ];
+
+  const jsonSlugs = new Set<string>(propfirmsData.propfirms.map((f: JsonFirmInner) => f.slug));
+  const allSlugs = [
+    ...propfirmsData.propfirms.map((f: JsonFirmInner) => f.slug),
+    ...extFirmsInner.filter(e => !jsonSlugs.has(e.slug)).map(e => e.slug),
+  ];
+
+  return getLocalePaths().flatMap(({ params, props }) =>
+    allSlugs.map((slug) => ({
+      params: { locale: params.locale, slug },
+      props: { locale: props.locale, slug },
+    }))
+  );
+}
+
+const { locale, slug } = Astro.props;
+const firm = allFirms.find((f) => f.slug === slug) as FirmEntry;
+const t = useTranslations(locale);
+const isSupported = firm.platforms ? firmHasSupportedPlatform(firm.platforms) : true;
+const unsupportedPlatforms = firm.platforms ? toOrList(firm.platforms, locale) : '';
+
+// Always use the FAQ-specific, localized metadata. firm.seo.* belongs to the
+// propfirms/[slug] landing page — reusing it here shipped this page a byte-
+// identical <title>/description to its /propfirms/ sibling (and an English one
+// on every locale), so the two pages cannibalised each other in search.
+// The default templates below promise "how to automate {name}", which is
+// false for firms whose platforms are all MT4/MT5/DXTrade — see firmSupport.ts.
+const pageTitle = isSupported
+  ? t('propfirm_faq_detail.meta_title_fallback', { name: firm.name })
+  : t('propfirm_faq_detail.meta_title_fallback_unsupported', { name: firm.name });
+const pageDescription = isSupported
+  ? t('propfirm_faq_detail.meta_description_fallback', { name: firm.name })
+  : t('propfirm_faq_detail.meta_description_fallback_unsupported', { name: firm.name, platforms: unsupportedPlatforms });
+const pageKeywords = t('propfirm_faq_detail.meta_keywords_fallback', { name: firm.name });
+
+const pageUrl = absoluteLocalizedPath(locale, `prop-firm-faq/${firm.slug}`);
+
+// ──────────────────────────────────────────────────────────────
+// FAQPage schema, generated from the same translation keys the
+// page renders.
+//
+// This page shows 43 Q&A pairs in <details> blocks, but the schema below used
+// to declare only 3 hand-written ones — and one of those ("What is {name}?")
+// answered with "See the firm's official website for current rules", which
+// hands the citation to the firm instead of keeping it. Across the 30 prop-firm
+// pages that was ~1,200 answered questions invisible to machine readers, on the
+// deepest content the site has.
+//
+// Driving both from one list is what keeps them honest: SECTIONS mirrors the
+// rendered accordion exactly (section order and question counts), so schema and
+// visible copy cannot drift apart. faqPairCount is asserted against the number
+// of <details> blocks by scripts/check-faq-schema.mjs.
+// ──────────────────────────────────────────────────────────────
+
+/** Section id → number of Q&A pairs rendered, in on-page order. */
+const FAQ_SECTIONS: Array<[string, number]> = [
+  ['basics', 4],
+  ['accounttypes', 4],
+  ['pricing', 3],
+  ['targets', 3],
+  ['drawdown', 4],
+  ['consistency', 3],
+  ['days', 3],
+  ['instruments', 2],
+  ['automation', 4],
+  ['platforms', 3],
+  ['pmt', 5],
+  ['payouts', 5],
+];
+
+/**
+ * Three answers are rendered as a `_pre` string followed by an inline link, so
+ * the plain `_aN` key does not exist for them. The schema text has to match what
+ * a reader sees, so the link's visible label is appended back on.
+ */
+const ANSWER_LINK_SUFFIX: Record<string, string> = {
+  automation_a2: 'app.pickmytrade.io.',
+  automation_a4: 'docs.pickmytrade.trade.',
+  pmt_a2: 'pickmytrade.io.',
+};
+
+// automation_q2/a2 and automation_q4/a4 claim PickMyTrade connects to {name} —
+// false when firm.platforms are all brokers PickMyTrade doesn't support, so
+// this pair gets swapped for both the visible accordion below and this schema
+// (same override, one source, so DOM and JSON-LD can't drift apart).
+const unsupportedFaqOverrides: Record<string, { q: string; a: string }> = isSupported ? {} : {
+  automation_2: {
+    q: t('propfirm_faq_detail.automation_q2_unsupported', { name: firm.name }),
+    a: t('propfirm_faq_detail.automation_a2_unsupported', { name: firm.name, platforms: unsupportedPlatforms }),
+  },
+  automation_4: {
+    q: t('propfirm_faq_detail.automation_q4_unsupported', { name: firm.name }),
+    a: t('propfirm_faq_detail.automation_a4_unsupported', { name: firm.name }),
+  },
+  pmt_1: {
+    q: t('propfirm_faq_detail.pmt_q1_unsupported', { name: firm.name }),
+    a: t('propfirm_faq_detail.pmt_a1_unsupported', { name: firm.name, platforms: unsupportedPlatforms }),
+  },
+  pmt_5: {
+    q: t('propfirm_faq_detail.pmt_q5_unsupported', { name: firm.name }),
+    a: t('propfirm_faq_detail.pmt_a5_unsupported', { name: firm.name, platforms: unsupportedPlatforms }),
+  },
+};
+
+// ──────────────────────────────────────────────────────────────
+// Per-firm trader FAQ extras (src/data/firmFaqExtras.ts). A REPLACE entry hides
+// the shared-template question it names (visible accordion AND schema) and takes
+// its place in the extras section below; every other entry is appended. The
+// match is on the rendered template question, so a drifted template wording
+// fails the build instead of silently leaving two answers on the page.
+// ──────────────────────────────────────────────────────────────
+const firmExtras = FIRM_FAQ_EXTRAS[firm.slug] ?? [];
+const tEn = useTranslations('en'); // extras are English; match on the English template question in every locale
+const templateQuestionKeys = new Map<string, string>();
+for (const [section, count] of FAQ_SECTIONS) {
+  for (let n = 1; n <= count; n++) {
+    templateQuestionKeys.set(
+      tEn(`propfirm_faq_detail.${section}_q${n}` as Parameters<typeof t>[0], { name: firm.name }),
+      `${section}_${n}`,
+    );
+  }
+}
+const replacedKeys = new Set<string>();
+for (const e of firmExtras) {
+  if (e.action !== 'REPLACE') continue;
+  const key = templateQuestionKeys.get(e.existing ?? '');
+  if (!key) throw new Error(`[prop-firm-faq/${firm.slug}] ${e.id}: no template question matches "${e.existing}"`);
+  replacedKeys.add(key);
+}
+const EXTRA_GROUPS: Array<{ id: 'main' | 'futures' | 'cfd'; heading: string }> =
+  firm.slug === 'fundednext'
+    ? [
+        { id: 'futures', heading: 'FundedNext Futures: trader questions answered' },
+        { id: 'cfd', heading: 'FundedNext CFD: trader questions answered' },
+      ]
+    : [{ id: 'main', heading: `${firm.name}: trader questions answered` }];
+const extrasByGroup = EXTRA_GROUPS
+  .map((g) => ({ ...g, items: firmExtras.filter((e) => e.group === g.id) }))
+  .filter((g) => g.items.length > 0);
+const extraEntities = extrasByGroup.flatMap((g) => g.items).map((e) => ({
+  '@type': 'Question',
+  name: e.q,
+  acceptedAnswer: { '@type': 'Answer', text: e.text },
+}));
+
+const faqEntities = FAQ_SECTIONS.flatMap(([section, count]) =>
+  Array.from({ length: count }, (_, i) => {
+    const n = i + 1;
+    if (replacedKeys.has(`${section}_${n}`)) return null;
+    const override = unsupportedFaqOverrides[`${section}_${n}`];
+    if (override) {
+      return {
+        '@type': 'Question',
+        name: override.q,
+        acceptedAnswer: { '@type': 'Answer', text: override.a },
+      };
+    }
+
+    const answerId = `${section}_a${n}`;
+    const suffix = ANSWER_LINK_SUFFIX[answerId];
+    const answerKey = suffix ? `${answerId}_pre` : answerId;
+    const params = { name: firm.name };
+
+    const answer =
+      t(`propfirm_faq_detail.${answerKey}` as Parameters<typeof t>[0], params) +
+      (suffix ? suffix : '');
+
+    return {
+      '@type': 'Question',
+      name: t(`propfirm_faq_detail.${section}_q${n}` as Parameters<typeof t>[0], params),
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    };
+  }),
+).filter(Boolean).concat(extraEntities);
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home",          "item": "https://pickmytrade.io/" },
+      { "@type": "ListItem", "position": 2, "name": "Prop Firm FAQ", "item": absoluteLocalizedPath(locale, 'prop-firm-faq') },
+      { "@type": "ListItem", "position": 3, "name": `${firm.name} FAQ`, "item": pageUrl }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1","h2","summary","details > div"] },
+    "name": `${firm.name} FAQ`,
+    "description": pageDescription,
+    "url": pageUrl,
+    // All 43 rendered Q&A pairs, in page order — not a hand-picked 3.
+    // Localised automatically: these come from the same t() calls the accordion
+    // uses, so the German page ships German schema.
+    "mainEntity": faqEntities
+  }
+];
+---
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={pageDescription}
+  keywords={pageKeywords}
+  canonical={pageUrl}
+  structuredData={structuredData}
+>
+  <main id="main-content" role="main">
+
+    <!-- Hero -->
+    <section class="bg-gradient-to-b from-[#001429] via-[#001f3f] to-[#002040] pt-28 pb-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+        <nav aria-label="Breadcrumb" class="flex justify-center mb-6" data-aos="fade-down">
+          <ol class="flex items-center space-x-2 text-sm text-gray-400">
+            <li><a href={localizedPath(locale, '')} class="hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.breadcrumb_home')}</a></li>
+            <li><i class="fa-solid fa-chevron-right text-xs text-gray-600"></i></li>
+            <li><a href={localizedPath(locale, 'prop-firm-faq')} class="hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.breadcrumb_hub')}</a></li>
+            <li><i class="fa-solid fa-chevron-right text-xs text-gray-600"></i></li>
+            <li class="text-[#2B77EE]">{firm.name}</li>
+          </ol>
+        </nav>
+        <span class="inline-block px-4 py-1.5 rounded-full bg-[#2B77EE]/10 border border-[#2B77EE]/30 text-[#2B77EE] text-xs font-semibold uppercase tracking-wider mb-5" data-aos="fade-up">
+          <i class="fa-solid fa-shield-halved mr-1.5" aria-hidden="true"></i>{t('propfirm_faq_detail.hero_badge')}
+        </span>
+        <h1 class="text-3xl md:text-5xl font-bold mb-6 leading-tight" data-aos="fade-up">
+          <span class="bg-gradient-to-r from-[#2B77EE] to-blue-400 bg-clip-text text-transparent">{firm.name}</span> {t('propfirm_faq_detail.hero_title_suffix')}
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">
+          {firm.description}
+        </p>
+        {isSupported && hasAutomationCaveat(firm.slug) && (
+          <div class="max-w-2xl mx-auto mb-8 text-left bg-amber-500/10 border border-amber-500/30 rounded-xl p-5" data-aos="fade-up" data-aos-delay="150">
+            <h2 class="text-white font-bold mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-amber-400" aria-hidden="true"></i>
+              {t('firm_automation_rules_box.heading')}
+            </h2>
+            <p class="text-gray-300 text-sm leading-relaxed mb-3">{t('firm_automation_rules_box.body')}</p>
+            <a href={localizedPath(locale, 'faq/prop-firm-automation')} class="text-amber-400 hover:text-amber-300 text-sm font-semibold">
+              {t('firm_automation_rules_box.link_text')} <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        )}
+        <div class="flex flex-wrap gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
+          {isSupported ? (
+            <a href="https://app.pickmytrade.io/?register=true" class="px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25">
+              {t('propfirm_faq_detail.hero_cta_trial')} <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          ) : (
+            <a href={localizedPath(locale, 'supported-propfirms')} class="px-8 py-3 bg-[#2B77EE] hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25">
+              {t('firm_unsupported.cta_button')}
+            </a>
+          )}
+          <a href="#faq-content" class="px-8 py-3 border border-white/20 hover:border-[#2B77EE]/50 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/5">
+            {t('propfirm_faq_detail.hero_cta_browse')} <i class="fa-solid fa-chevron-down ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FE-34: firm-specific, dated facts (config/propfirm-facts.json) -->
+    <FirmFacts slug={firm.slug} name={firm.name} locale={locale} />
+
+    <!-- Search Bar -->
+    <section id="search-section" class="bg-[#001a33] py-10 px-4 border-y border-white/5">
+      <div class="max-w-3xl mx-auto">
+        <label for="faq-search" class="block text-white/80 text-sm font-semibold mb-3 text-center">
+          <i class="fa-solid fa-magnifying-glass text-[#2B77EE] mr-2"></i>{t('propfirm_faq_detail.search_label')}
+        </label>
+        <div class="relative">
+          <input
+            id="faq-search"
+            type="search"
+            placeholder={t('propfirm_faq_detail.search_placeholder')}
+            class="w-full bg-[#001429] border border-[#2B77EE]/30 focus:border-[#2B77EE] focus:outline-none text-white placeholder-gray-500 rounded-xl px-12 py-4 text-base transition-colors"
+            autocomplete="off"
+            role="combobox"
+            aria-controls="faq-search-results"
+            aria-expanded="false"
+            aria-autocomplete="list"
+          />
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#2B77EE] pointer-events-none"></i>
+          <button
+            id="faq-search-clear"
+            type="button"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white hidden"
+            aria-label="Clear search"
+          >
+            <i class="fa-solid fa-circle-xmark text-lg"></i>
+          </button>
+          <div
+            id="faq-search-results"
+            style="display:none"
+            role="listbox"
+            aria-label="Search results"
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Nav -->
+    <section class="bg-[#002040] py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-10" data-aos="fade-up">
+          <i class="fa-solid fa-list text-[#2B77EE] mr-3" aria-hidden="true"></i>{t('propfirm_faq_detail.nav_title')}
+        </h2>
+        <nav class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" data-aos="fade-up" data-aos-delay="100" aria-label="FAQ sections">
+          <a href="#basics" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">1</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_basics_title', { name: firm.name })}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_basics_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#account-types" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">2</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_accounttypes_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_accounttypes_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#pricing" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">3</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_pricing_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_pricing_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#targets" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">4</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_targets_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_targets_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#drawdown" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">5</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_drawdown_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_drawdown_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#consistency" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">6</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_consistency_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_consistency_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#days" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">7</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_days_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_days_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#instruments" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">8</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_instruments_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_instruments_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#automation" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">9</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_automation_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_automation_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#platforms" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">10</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_platforms_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_platforms_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#pmt" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">11</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_pmt_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_pmt_sub')}</span>
+              </div>
+            </div>
+          </a>
+          <a href="#payouts" class="bg-[#001429] border border-white/10 rounded-xl p-4 hover:border-[#2B77EE]/50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#2B77EE]/20 rounded-lg flex items-center justify-center text-[#2B77EE] text-sm font-bold flex-shrink-0">12</div>
+              <div>
+                <h3 class="text-white font-semibold text-sm group-hover:text-[#2B77EE] transition-colors">{t('propfirm_faq_detail.nav_payouts_title')}</h3>
+                <span class="text-gray-500 text-xs">{t('propfirm_faq_detail.nav_payouts_sub')}</span>
+              </div>
+            </div>
+          </a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Account Details Card (only for firms with propfirms.json data) -->
+    {firm.account_sizes && (
+      <section class="bg-[#001429] py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-gradient-to-br from-[#002040] to-[#001429] border border-[#2B77EE]/30 rounded-xl p-6" data-aos="fade-right">
+              <h3 class="text-lg font-bold mb-4 text-[#2B77EE]">{t('propfirm_faq_detail.card_quickref_title')}</h3>
+              <div class="space-y-3">
+                {firm.account_sizes && (
+                  <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                    <span class="text-gray-400 text-sm">{t('propfirm_faq_detail.card_account_sizes_label')}</span>
+                    <span class="text-white font-semibold text-sm">{firm.account_sizes}</span>
+                  </div>
+                )}
+                {firm.profit_split && (
+                  <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                    <span class="text-gray-400 text-sm">{t('propfirm_faq_detail.card_profit_split_label')}</span>
+                    <span class="text-white font-semibold text-sm">{firm.profit_split}</span>
+                  </div>
+                )}
+                {firm.profit_target && (
+                  <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                    <span class="text-gray-400 text-sm">{t('propfirm_faq_detail.card_profit_target_label')}</span>
+                    <span class="text-white font-semibold text-sm">{firm.profit_target}</span>
+                  </div>
+                )}
+                {firm.platforms && (
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">{t('propfirm_faq_detail.card_platforms_label')}</span>
+                    <span class="text-white font-semibold text-sm">{firm.platforms}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div class="bg-gradient-to-br from-[#002040] to-[#001429] border border-white/10 rounded-xl p-6" data-aos="fade-left">
+              <h3 class="text-lg font-bold mb-4 text-white/80">{t('propfirm_faq_detail.card_why_automate_title', { name: firm.name })}</h3>
+              <ul class="space-y-3">
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-green-400 mt-0.5 shrink-0"></i>
+                  <span class="text-gray-300 text-sm">{t('propfirm_faq_detail.card_benefit_1')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-green-400 mt-0.5 shrink-0"></i>
+                  <span class="text-gray-300 text-sm">{t('propfirm_faq_detail.card_benefit_2')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-green-400 mt-0.5 shrink-0"></i>
+                  <span class="text-gray-300 text-sm">{t('propfirm_faq_detail.card_benefit_3')}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check-circle text-green-400 mt-0.5 shrink-0"></i>
+                  <span class="text-gray-300 text-sm">{t('propfirm_faq_detail.card_benefit_4')}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="text-center mt-6">
+            <a href={localizedPath(locale, `propfirms/${firm.slug}`)} class="text-[#2B77EE] hover:text-blue-300 text-sm font-semibold">
+              {t('propfirm_faq_detail.card_back_to_propfirm', { name: firm.name })} <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- FAQ Content -->
+    <div id="faq-content" class="bg-gradient-to-b from-[#001429] to-[#002040] py-16 px-4">
+      <div class="max-w-4xl mx-auto">
+
+        <!-- Basics -->
+        <section id="basics" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-book text-[#2B77EE]"></i>{t('propfirm_faq_detail.basics_heading', { name: firm.name })}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('basics_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.basics_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.basics_a1', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('basics_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.basics_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.basics_a2')}</div>
+            </details>
+)}
+            {!replacedKeys.has('basics_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.basics_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.basics_a3', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('basics_4') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.basics_q4', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.basics_a4')}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Account Types -->
+        <section id="account-types" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-layer-group text-[#2B77EE]"></i>{t('propfirm_faq_detail.accounttypes_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('accounttypes_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.accounttypes_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.accounttypes_a1', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('accounttypes_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.accounttypes_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.accounttypes_a2')}</div>
+            </details>
+)}
+            {!replacedKeys.has('accounttypes_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.accounttypes_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.accounttypes_a3', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('accounttypes_4') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.accounttypes_q4', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.accounttypes_a4', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Plans & Pricing -->
+        <section id="pricing" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-tag text-[#2B77EE]"></i>{t('propfirm_faq_detail.pricing_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('pricing_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.pricing_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {t('propfirm_faq_detail.pricing_a1', { name: firm.name })}
+                {firm.account_sizes && <> {t('propfirm_faq_detail.pricing_a1_range')} <strong>{firm.account_sizes}</strong>.</>}
+              </div>
+            </details>
+)}
+            {!replacedKeys.has('pricing_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.pricing_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.pricing_a2', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('pricing_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.pricing_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.pricing_a3', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Profit Targets -->
+        <section id="targets" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-bullseye text-[#2B77EE]"></i>{t('propfirm_faq_detail.targets_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('targets_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.targets_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {t('propfirm_faq_detail.targets_a1', { name: firm.name })}
+                {firm.profit_target && <> {t('propfirm_faq_detail.targets_a1_typical')} <strong>{firm.profit_target}</strong>.</>}
+              </div>
+            </details>
+)}
+            {!replacedKeys.has('targets_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.targets_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.targets_a2', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('targets_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.targets_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.targets_a3', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Drawdowns -->
+        <section id="drawdown" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-chart-line text-[#2B77EE]"></i>{t('propfirm_faq_detail.drawdown_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('drawdown_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.drawdown_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.drawdown_a1', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('drawdown_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.drawdown_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.drawdown_a2', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('drawdown_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.drawdown_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.drawdown_a3', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('drawdown_4') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.drawdown_q4', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.drawdown_a4', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Consistency Rule -->
+        <section id="consistency" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-scale-balanced text-[#2B77EE]"></i>{t('propfirm_faq_detail.consistency_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('consistency_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.consistency_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.consistency_a1', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('consistency_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.consistency_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.consistency_a2', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('consistency_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.consistency_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.consistency_a3', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Trading Days & Hours -->
+        <section id="days" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-calendar text-[#2B77EE]"></i>{t('propfirm_faq_detail.days_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('days_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.days_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.days_a1', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('days_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.days_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.days_a2', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('days_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.days_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.days_a3', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Instruments & Markets -->
+        <section id="instruments" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-chart-bar text-[#2B77EE]"></i>{t('propfirm_faq_detail.instruments_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('instruments_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.instruments_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {t('propfirm_faq_detail.instruments_a1', { name: firm.name })}
+                {firm.platforms && <> {t('propfirm_faq_detail.instruments_a1_platforms')} <strong>{firm.platforms}</strong>.</>}
+              </div>
+            </details>
+)}
+            {!replacedKeys.has('instruments_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.instruments_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.instruments_a2', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Automation & EAs -->
+        <section id="automation" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-robot text-[#2B77EE]"></i>{t('propfirm_faq_detail.automation_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('automation_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.automation_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.automation_a1', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('automation_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{isSupported ? t('propfirm_faq_detail.automation_q2', { name: firm.name }) : t('propfirm_faq_detail.automation_q2_unsupported', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {isSupported ? (
+                  <>{t('propfirm_faq_detail.automation_a2_pre', { name: firm.name })}<a href="https://app.pickmytrade.io/?register=true" class="text-[#2B77EE] hover:underline">app.pickmytrade.io</a>.</>
+                ) : (
+                  t('propfirm_faq_detail.automation_a2_unsupported', { name: firm.name, platforms: unsupportedPlatforms })
+                )}
+              </div>
+            </details>
+)}
+            {!replacedKeys.has('automation_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.automation_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.automation_a3', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('automation_4') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{isSupported ? t('propfirm_faq_detail.automation_q4', { name: firm.name }) : t('propfirm_faq_detail.automation_q4_unsupported', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {isSupported ? (
+                  <>{t('propfirm_faq_detail.automation_a4_pre')}<a href="https://docs.pickmytrade.trade/docs/trading-time-settings/" class="text-[#2B77EE] hover:underline" target="_blank" rel="noopener">docs.pickmytrade.trade</a>.</>
+                ) : (
+                  t('propfirm_faq_detail.automation_a4_unsupported', { name: firm.name })
+                )}
+              </div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Platforms -->
+        <section id="platforms" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-desktop text-[#2B77EE]"></i>{t('propfirm_faq_detail.platforms_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('platforms_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.platforms_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {t('propfirm_faq_detail.platforms_a1', { name: firm.name })}
+                {firm.platforms && <> {t('propfirm_faq_detail.platforms_a1_listed')} <strong>{firm.platforms}</strong>.</>}
+              </div>
+            </details>
+)}
+            {!replacedKeys.has('platforms_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.platforms_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.platforms_a2', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('platforms_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.platforms_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.platforms_a3', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- PMT Webhook Setup -->
+        <section id="pmt" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-webhook text-[#2B77EE]"></i>{t('propfirm_faq_detail.pmt_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('pmt_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{isSupported ? t('propfirm_faq_detail.pmt_q1', { name: firm.name }) : t('propfirm_faq_detail.pmt_q1_unsupported', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{isSupported ? t('propfirm_faq_detail.pmt_a1', { name: firm.name }) : t('propfirm_faq_detail.pmt_a1_unsupported', { name: firm.name, platforms: unsupportedPlatforms })}</div>
+            </details>
+)}
+            {!replacedKeys.has('pmt_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.pmt_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {t('propfirm_faq_detail.pmt_a2_pre')}<a href="https://pickmytrade.io" class="text-[#2B77EE] hover:underline">pickmytrade.io</a>.
+              </div>
+            </details>
+)}
+            {!replacedKeys.has('pmt_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.pmt_q3')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.pmt_a3')}</div>
+            </details>
+)}
+            {!replacedKeys.has('pmt_4') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.pmt_q4')}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.pmt_a4')}</div>
+            </details>
+)}
+            {!replacedKeys.has('pmt_5') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{isSupported ? t('propfirm_faq_detail.pmt_q5', { name: firm.name }) : t('propfirm_faq_detail.pmt_q5_unsupported', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{isSupported ? t('propfirm_faq_detail.pmt_a5') : t('propfirm_faq_detail.pmt_a5_unsupported', { name: firm.name, platforms: unsupportedPlatforms })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        <!-- Payouts -->
+        <section id="payouts" class="mb-16">
+          <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+            <i class="fa-solid fa-money-bill-wave text-[#2B77EE]"></i>{t('propfirm_faq_detail.payouts_heading')}
+          </h2>
+          <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+            {!replacedKeys.has('payouts_1') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.payouts_q1', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">
+                {t('propfirm_faq_detail.payouts_a1', { name: firm.name })}
+                {firm.profit_split && <> {t('propfirm_faq_detail.payouts_a1_split')} <strong>{firm.profit_split}</strong>.</>}
+              </div>
+            </details>
+)}
+            {!replacedKeys.has('payouts_2') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.payouts_q2', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.payouts_a2', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('payouts_3') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.payouts_q3', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.payouts_a3', { name: firm.name })}</div>
+            </details>
+)}
+            {!replacedKeys.has('payouts_4') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.payouts_q4', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.payouts_a4')}</div>
+            </details>
+)}
+            {!replacedKeys.has('payouts_5') && (
+<details class="group border-b border-white/10 py-4">
+              <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                <span class="font-semibold text-white flex-1">{t('propfirm_faq_detail.payouts_q5', { name: firm.name })}</span>
+                <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+              </summary>
+              <div class="mt-3 text-white/80 leading-relaxed">{t('propfirm_faq_detail.payouts_a5', { name: firm.name })}</div>
+            </details>
+)}
+          </div>
+        </section>
+
+        {extrasByGroup.map((g) => (
+          <section id={`trader-questions-${g.id}`} class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 pb-4 border-b-2 border-[#2B77EE] flex items-center gap-3" data-aos="fade-up">
+              <i class="fa-solid fa-circle-question text-[#2B77EE]"></i>{g.heading}
+            </h2>
+            <div class="bg-[#001a33] rounded-2xl px-6 py-2 border border-white/5">
+              {g.items.map((e) => (
+                <details class="group border-b border-white/10 py-4">
+                  <summary class="flex justify-between items-start gap-4 cursor-pointer list-none">
+                    <span class="font-semibold text-white flex-1">{e.q}</span>
+                    <i class="fa-solid fa-chevron-down text-[#2B77EE] mt-1 shrink-0"></i>
+                  </summary>
+                  <div class="mt-3 text-white/80 leading-relaxed" set:html={e.html}></div>
+                </details>
+              ))}
+            </div>
+          </section>
+        ))}
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Back to Hub -->
+  <section class="bg-[#001429] py-10 px-4 border-t border-white/10">
+    <div class="max-w-4xl mx-auto text-center">
+      <a href={localizedPath(locale, 'prop-firm-faq')} class="inline-flex items-center gap-2 text-[#2B77EE] hover:text-blue-400 font-semibold transition-colors">
+        <i class="fa-solid fa-arrow-left"></i> {t('propfirm_faq_detail.back_to_hub')}
+      </a>
+    </div>
+  </section>
+
+  <!-- Secondary CTA -->
+  <section class="bg-gradient-to-br from-[#0F3EC3] to-[#2B77EE] py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center" data-aos="fade-up">
+      <h2 class="text-3xl md:text-4xl font-bold text-white electrolize mb-4">{isSupported ? t('propfirm_faq_detail.cta_title', { name: firm.name }) : t('firm_unsupported.cta_title', { name: firm.name })}</h2>
+      <p class="text-white/90 mb-8">{isSupported ? t('propfirm_faq_detail.cta_subtitle', { name: firm.name }) : t('firm_unsupported.cta_subtitle', { platforms: unsupportedPlatforms })}</p>
+      <a href={isSupported ? 'https://app.pickmytrade.io/?register=true' : localizedPath(locale, 'supported-propfirms')} class="bg-white text-[#0F3EC3] px-10 py-4 rounded-xl font-bold electrolize hover:shadow-[0_0_30px_5px_rgba(255,255,255,0.4)] transition-all inline-block">{isSupported ? t('propfirm_faq_detail.cta_button') : t('firm_unsupported.cta_button')}</a>
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="bg-[#000a15] py-10 px-4 border-t border-white/10">
+    <div class="max-w-4xl mx-auto text-sm text-white/60 leading-relaxed space-y-3">
+      <h2 class="text-lg font-bold text-white/80 electrolize mb-2">{t('propfirm_faq_detail.disclaimer_title')}</h2>
+      <p>{t('propfirm_faq_detail.disclaimer_text', { name: firm.name })}</p>
+    </div>
+  </section>
+
+  <Fragment slot="scripts">
+    <script is:inline define:vars={{ i18nSearch: {
+      noResults: t('propfirm_faq_detail.search_no_results'),
+      resultsOne: t('propfirm_faq_detail.search_results_one'),
+      resultsMany: t('propfirm_faq_detail.search_results_many'),
+      viewQuestion: t('propfirm_faq_detail.search_view_question'),
+    } }}>
+      document.addEventListener('DOMContentLoaded', function () {
+        var searchInput = document.getElementById('faq-search');
+        var searchClear = document.getElementById('faq-search-clear');
+        var searchResults = document.getElementById('faq-search-results');
+        if (!searchInput || !searchClear || !searchResults) return;
+
+        var allDetails = Array.from(document.querySelectorAll('#faq-content details'));
+
+        function closeResults() {
+          searchResults.style.display = 'none';
+          searchResults.innerHTML = '';
+        }
+
+        function runSearch() {
+          var query = searchInput.value.trim().toLowerCase();
+          searchClear.classList.toggle('hidden', query.length === 0);
+
+          if (query.length < 2) { closeResults(); return; }
+
+          var matches = allDetails.filter(function (d) {
+            return (d.textContent || '').toLowerCase().includes(query);
+          });
+
+          searchResults.style.display = 'block';
+
+          if (matches.length === 0) {
+            searchResults.innerHTML = '<div class="bg-[#001429] border border-white/10 rounded-xl p-4 mt-2 text-gray-400 text-sm">' + i18nSearch.noResults + '</div>';
+            return;
+          }
+
+          var countLabel = (matches.length === 1 ? i18nSearch.resultsOne : i18nSearch.resultsMany).replace('{count}', matches.length);
+          var html = '<div class="mt-2 rounded-xl overflow-hidden border border-[#2B77EE]/20 bg-[#001a33]">'
+            + '<div class="px-4 py-2 text-xs text-[#2B77EE] border-b border-white/10">' + countLabel + '</div>';
+
+          matches.slice(0, 8).forEach(function (d, i) {
+            var span = d.querySelector('summary span');
+            var q = span ? (span.textContent || '').trim() : i18nSearch.viewQuestion;
+            html += '<button data-ridx="' + i + '" class="w-full text-left px-4 py-3 text-sm text-white/90 hover:bg-[#2B77EE]/20 border-b border-white/5 last:border-0 transition-colors">' + q + '</button>';
+          });
+          html += '</div>';
+          searchResults.innerHTML = html;
+
+          searchResults.querySelectorAll('button[data-ridx]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var idx = parseInt(btn.getAttribute('data-ridx') || '0', 10);
+              var target = matches[idx];
+              if (target) {
+                target.open = true;
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+              closeResults();
+              searchInput.value = '';
+              searchClear.classList.add('hidden');
+            });
+          });
+        }
+
+        searchInput.addEventListener('input', runSearch);
+
+        searchClear.addEventListener('click', function () {
+          searchInput.value = '';
+          searchClear.classList.add('hidden');
+          closeResults();
+          searchInput.focus();
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            closeResults();
+          }
+        });
+      });
+    </script>
+  </Fragment>
+</BaseLayout>

@@ -10,9 +10,8 @@
 /blog/tradingview-broker-automation   https://blog.pickmytrade.io/   301
 /blog/tradingview-broker-automation/  https://blog.pickmytrade.io/   301
 /blog           https://blog.pickmytrade.io         301
-/blog/*         https://blog.pickmytrade.io/:splat  301
 /docs           https://docs.pickmytrade.io         301
-/docs/*         https://docs.pickmytrade.io/:splat  301
+# (/blog/* and /docs/* wildcard rules live at the END of this file.)
 
 # App shortcuts
 /signup         https://app.pickmytrade.io/signup   301
@@ -31,7 +30,7 @@
 # which is how the orphaned /en homepage stayed indexed after the migration.
 /en                  /                301
 /en/                 /                301
-/en/*                /:splat/          301
+# (/en/* wildcard rule lives at the END of this file.)
 
 # .html extension drops → clean URL equivalents
 /about.html                         /about/                              301
@@ -1241,3 +1240,14 @@
 /compare/pickmytrade-vs-tradersposts  https://pickmytrade.trade/compare/pickmytrade-vs-traderspost/  301
 /on  /  301
 /signup  https://app.pickmytrade.io/?register=true  301
+
+# =============================================================================
+# WILDCARD RULES — KEEP AT THE END OF THIS FILE.
+# Cloudflare counts every rule that follows a wildcard/placeholder rule as
+# "dynamic" (limit 100), so a splat near the top pushed ~1,000 static rules over
+# the limit and failed the deploy (error 100324, 2026-10-15). Add new static
+# rules ABOVE this block. Exact rules above still win (first match wins).
+# =============================================================================
+/blog/*         https://blog.pickmytrade.io/:splat  301
+/docs/*         https://docs.pickmytrade.io/:splat  301
+/en/*           /:splat/                            301

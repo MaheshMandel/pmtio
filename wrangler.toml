@@ -1,0 +1,8 @@
+name = "pmtio"
+compatibility_date = "2026-10-12"
+
+# Assets-only deploy of the static Astro build. Without this file,
+# `wrangler deploy` auto-configures the project (adds @astrojs/cloudflare and a
+# _worker.js entry), which is not what this static site needs.
+[assets]
+directory = "./dist"
